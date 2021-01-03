@@ -1,0 +1,33 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30621.155
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SORD.Library.API", "SORD.Library.API\SORD.Library.API.csproj", "{F123CB45-696F-46D2-8C23-3A56FE8D8FEF}"
+EndProject
+Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SORD.Library.Db", "SORD.Library.Db\SORD.Library.Db.sqlproj", "{A471D7B8-43F2-442A-B733-19442A60EEC1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F123CB45-696F-46D2-8C23-3A56FE8D8FEF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F123CB45-696F-46D2-8C23-3A56FE8D8FEF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F123CB45-696F-46D2-8C23-3A56FE8D8FEF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F123CB45-696F-46D2-8C23-3A56FE8D8FEF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A471D7B8-43F2-442A-B733-19442A60EEC1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A471D7B8-43F2-442A-B733-19442A60EEC1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A471D7B8-43F2-442A-B733-19442A60EEC1}.Debug|Any CPU.Deploy.0 = Debug|Any CPU
+		{A471D7B8-43F2-442A-B733-19442A60EEC1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A471D7B8-43F2-442A-B733-19442A60EEC1}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A471D7B8-43F2-442A-B733-19442A60EEC1}.Release|Any CPU.Deploy.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {366DA443-8339-4CA4-9495-3D24EEB41472}
+	EndGlobalSection
+EndGlobal
