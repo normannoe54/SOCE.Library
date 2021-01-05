@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SORD.Library.API", "SORD.Li
 EndProject
 Project("{00D1A9C2-B5F0-4AF3-8072-F6C62B433612}") = "SORD.Library.Db", "SORD.Library.Db\SORD.Library.Db.sqlproj", "{A471D7B8-43F2-442A-B733-19442A60EEC1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SORD.Library.Kernel", "SORD.Library.Kernel\SORD.Library.Kernel.csproj", "{D7BE3086-97D2-4498-A574-A82A6A03A952}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SORD.Library.Kernel", "SORD.Library.Kernel\SORD.Library.Kernel.csproj", "{D7BE3086-97D2-4498-A574-A82A6A03A952}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SORD.Library.Access", "SORD.Library.Access\SORD.Library.Access.csproj", "{EDF6DA2B-84C3-49FB-8014-198650F6FAF6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SORD.Library.Access", "SORD.Library.Access\SORD.Library.Access.csproj", "{EDF6DA2B-84C3-49FB-8014-198650F6FAF6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SORD.Library.UI", "SORD.Library.UI\SORD.Library.UI.csproj", "{055CEED7-6BC1-4E04-A4A9-748B7CCF1378}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -35,6 +37,10 @@ Global
 		{EDF6DA2B-84C3-49FB-8014-198650F6FAF6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EDF6DA2B-84C3-49FB-8014-198650F6FAF6}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{EDF6DA2B-84C3-49FB-8014-198650F6FAF6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{055CEED7-6BC1-4E04-A4A9-748B7CCF1378}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{055CEED7-6BC1-4E04-A4A9-748B7CCF1378}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{055CEED7-6BC1-4E04-A4A9-748B7CCF1378}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{055CEED7-6BC1-4E04-A4A9-748B7CCF1378}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
