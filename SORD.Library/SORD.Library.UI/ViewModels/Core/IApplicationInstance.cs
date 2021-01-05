@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace SORD.Library.UI
+namespace SORD.Library.UI.ViewModels
 {
     public interface IApplicationInstance
     {

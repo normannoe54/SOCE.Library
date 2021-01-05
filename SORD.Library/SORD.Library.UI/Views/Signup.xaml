@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="SORD.Library.UI.Views.Signup"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SORD.Library.UI.Views"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d"
+             Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <!--<materialDesign:PackIcon Height="80" Width="80" Grid.Row="1" Kind="AccountBoxOutline" HorizontalAlignment="Center" Foreground="SlateGray"/>-->
+        <Label Grid.Row="0" FontSize="30" FontFamily="ComicSans" FontWeight="Bold"  Content="Sign Up" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="User" Width="25" Height="25" Foreground="Crimson"/>
+            <TextBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Username" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson"/>
+        </StackPanel>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="Email" Width="25" Height="25" Foreground="Crimson"/>
+            <TextBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="LockAdd" Width="25" Height="25" Foreground="Crimson"/>
+            <PasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Create Password" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson"/>
+        </StackPanel>
+        <StackPanel Grid.Row="4" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="LockCheck" Width="25" Height="25" Foreground="Crimson"/>
+            <PasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Reenter Password" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson"/>
+        </StackPanel>
+        <Button Grid.Row="5" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="Crimson">
+            <Button.Content>
+                <materialDesign:PackIcon Kind="AccountAdd" Width="25" Height="25" Foreground="White"/>
+            </Button.Content>
+        </Button>
+        <Button Grid.Row="6" HorizontalAlignment ="Left" VerticalAlignment="Bottom" Margin ="0 30 0 0" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Login">
+            <Button.Content>
+                <materialDesign:PackIcon Kind="ArrowBack" Foreground="SlateGray" Height="20" Width="20" HorizontalAlignment="Left" />
+            </Button.Content>
+        </Button>
+    </Grid>
+</UserControl>

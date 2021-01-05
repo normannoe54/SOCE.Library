@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PropertyChanged;
 
-namespace SORD.Library.UI
+namespace SORD.Library.UI.ViewModels
 {
     [AddINotifyPropertyChangedInterface]
     public class BaseVM : INotifyPropertyChanged

@@ -3,6 +3,7 @@ using Castle.Windsor;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using SORD.Library.UI.ViewModels;
 
 namespace SORD.Library.UI
 {

@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Input;
 
-namespace SORD.Library.UI
+namespace SORD.Library.UI.ViewModels
 {
     public class ApplicationInstance : BaseVM, IApplicationInstance
     {
@@ -10,32 +13,34 @@ namespace SORD.Library.UI
 
         public ICommand UpdateMWCommand { get; set; }
 
+        public ICommand CloseCommand { get; set; }
+
         public ApplicationInstance()
         {
-            this.CurrentPage = new ProjectVM();
-            this.UpdateMWCommand = new RelayCommand<ApplicationPage>(this.GoToPage);
+            CurrentPage = new LoginVM();
+            UpdateMWCommand = new RelayCommand<ApplicationPage>(GoToPage);
+            CloseCommand = new RelayCommand(CloseWindow);
         }
 
         public void GoToPage(ApplicationPage page)
         {
             switch (page)
             {
-                case ApplicationPage.Project:
-                    CurrentPage = new ProjectVM();
+                case ApplicationPage.Login:
+                    CurrentPage = new LoginVM();
                     break;
-                case ApplicationPage.Account:
-                    CurrentPage = new AccountVM();
+                case ApplicationPage.ForgotPassword:
+                    CurrentPage = new ForgotPasswordVM();
                     break;
-                case ApplicationPage.Docu:
-                    CurrentPage = new DocuVM();
-                    break;
-                case ApplicationPage.Contact:
-                    CurrentPage = new ContactVM();
-                    break;
-                case ApplicationPage.NewProj:
-                    CurrentPage = new NewProjectVM();
+                case ApplicationPage.Signup:
+                    CurrentPage = new SignupVM();
                     break;
             }
+        }
+
+        public void CloseWindow()
+        {
+            this.CloseWindow();
         }
     }
 }

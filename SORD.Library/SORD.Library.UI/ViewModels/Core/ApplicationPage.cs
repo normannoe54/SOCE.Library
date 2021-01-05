@@ -2,14 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SORD.Library.UI
+namespace SORD.Library.UI.ViewModels
 {
     public enum ApplicationPage
     {
-        Project = 1,
-        Account = 2,
-        Docu = 3,
-        Contact = 4,
-        NewProj = 5
+        Login = 1,
+        ForgotPassword = 2,
+        Signup = 3,
     }
 }
