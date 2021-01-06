@@ -10,6 +10,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using SORD.Library.API.Test.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace SORD.Library.API.Test
 {
@@ -25,7 +27,9 @@ namespace SORD.Library.API.Test
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<UserContext>(x => x.UseSqlServer(Configuration.GetConnectionString("UserConnection")));
             services.AddControllers();
+            services.AddScoped<IUserData, UserData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

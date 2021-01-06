@@ -24,7 +24,7 @@ namespace SORD.Library.API.Test.Controllers
         public UsersController(IUserData userController)
         {
             _userController = userController;
-        }        
+        }
 
         /// <summary>
         /// GET api/commands
