@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
+using System.Windows;
 
 namespace SORD.Library.UI.ViewModels
 {
@@ -19,7 +20,7 @@ namespace SORD.Library.UI.ViewModels
         {
             CurrentPage = new LoginVM();
             UpdateMWCommand = new RelayCommand<ApplicationPage>(GoToPage);
-            CloseCommand = new RelayCommand(CloseWindow);
+            CloseCommand = new RelayCommand<Window>(CloseWindow);
         }
 
         public void GoToPage(ApplicationPage page)
@@ -38,9 +39,9 @@ namespace SORD.Library.UI.ViewModels
             }
         }
 
-        public void CloseWindow()
+        public void CloseWindow(Window windowtoclose)
         {
-            this.CloseWindow();
+            windowtoclose.Close();
         }
     }
 }
