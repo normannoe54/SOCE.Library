@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Mvc;
 using SORD.Library.API.Test.Data;
+using SORD.Library.API.Test.Dtos;
 using SORD.Library.API.Test.Models;
 using System;
 using System.Collections.Generic;
@@ -17,13 +19,17 @@ namespace SORD.Library.API.Test.Controllers
         /// </summary>
         private readonly IUserData _userController;
 
+        private readonly IMapper _mapper;
+
         /// <summary>
-        /// Constructor
+        /// constructor
         /// </summary>
         /// <param name="userController"></param>
-        public UsersController(IUserData userController)
+        /// <param name="mapper"></param>
+        public UsersController(IUserData userController, IMapper mapper)
         {
             _userController = userController;
+            _mapper = mapper;
         }
 
         /// <summary>
@@ -34,6 +40,7 @@ namespace SORD.Library.API.Test.Controllers
         public ActionResult <IEnumerable<User>> GetUsers()
         {
             IEnumerable<User> users = _userController.GetUsers();
+            IEnumerable<UserReadDto> usersdto = _mapper.Map<IEnumerable<UserReadDto>>(users);
             return Ok(users);
         }
 
@@ -43,10 +50,18 @@ namespace SORD.Library.API.Test.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("{id}")]
-        public ActionResult<User> GetUser(int id)
+        public ActionResult<UserReadDto> GetUser(int id)
         {
             User user = _userController.GetUserById(id);
-            return Ok(user);
+
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            UserReadDto userreaddto = _mapper.Map<UserReadDto>(user);
+
+            return Ok(userreaddto);
         }
 
     }

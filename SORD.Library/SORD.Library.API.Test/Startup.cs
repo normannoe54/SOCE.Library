@@ -12,6 +12,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SORD.Library.API.Test.Data;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 
 namespace SORD.Library.API.Test
 {
@@ -29,7 +30,8 @@ namespace SORD.Library.API.Test
         {
             services.AddDbContext<UserContext>(x => x.UseSqlServer(Configuration.GetConnectionString("UserConnection")));
             services.AddControllers();
-            services.AddScoped<IUserData, UserData>();
+            services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
+            services.AddScoped<IUserData, SqlUserData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
