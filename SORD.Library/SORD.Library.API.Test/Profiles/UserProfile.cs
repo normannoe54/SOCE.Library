@@ -13,6 +13,9 @@ namespace SORD.Library.API.Test.Profiles
         public UserProfile()
         {
             CreateMap<User, UserReadDto>();
+            CreateMap<UserCreateDto, User>();
+            CreateMap<UserUpdateDto, User>();
+            CreateMap<User, UserUpdateDto>();
         }
     }
 }

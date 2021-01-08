@@ -15,6 +15,17 @@ namespace SORD.Library.API.Test.Data
             _context = context;
         }
 
+        public void CreateUser(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            _context.users.Add(user);
+        }
+
+
+
         public User GetUserById(int id)
         {
             return _context.users.FirstOrDefault<User>(x=> x.Id == id);
@@ -23,6 +34,28 @@ namespace SORD.Library.API.Test.Data
         public IEnumerable<User> GetUsers()
         {
             return _context.users.ToList();
+        }
+
+        public bool SaveChanges()
+        {
+            //0 is success?
+            bool ret = _context.SaveChanges() >= 0;
+
+            return ret;
+        }
+
+        public void UpdateUser(User user)
+        {
+            //return nothing
+        }
+
+        public void DeleteCommand(User user)
+        {
+            if (user == null)
+            {
+                throw new ArgumentNullException(nameof(user));
+            }
+            _context.users.Remove(user);
         }
     }
 }

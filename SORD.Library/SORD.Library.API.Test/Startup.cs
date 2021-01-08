@@ -13,6 +13,8 @@ using System.Threading.Tasks;
 using SORD.Library.API.Test.Data;
 using Microsoft.EntityFrameworkCore;
 using AutoMapper;
+using Newtonsoft.Json.Serialization;
+
 
 namespace SORD.Library.API.Test
 {
@@ -29,7 +31,7 @@ namespace SORD.Library.API.Test
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<UserContext>(x => x.UseSqlServer(Configuration.GetConnectionString("UserConnection")));
-            services.AddControllers();
+            services.AddControllers().AddNewtonsoftJson(x => x.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver());
             services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
             services.AddScoped<IUserData, SqlUserData>();
         }
