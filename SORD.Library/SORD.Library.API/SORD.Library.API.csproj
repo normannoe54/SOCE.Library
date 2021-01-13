@@ -5,6 +5,9 @@
     <RootNamespace>SORD.Library.API</RootNamespace>
   </PropertyGroup>
   <ItemGroup>
+    <None Remove="SORD.Library.Database.db-shm" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="10.0.0" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="8.0.0" />
     <PackageReference Include="BCrypt.Net-Next" Version="4.0.0" />
@@ -17,5 +20,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="3.1.6" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.5.1" />
     <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.7.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SORD.Library.Models\SORD.Library.Models.csproj" />
   </ItemGroup>
 </Project>

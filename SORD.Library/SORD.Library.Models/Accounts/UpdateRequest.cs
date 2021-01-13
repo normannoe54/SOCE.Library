@@ -9,10 +9,7 @@ namespace SORD.Library.Models.Accounts
         private string _confirmPassword;
         private string _role;
         private string _email;
-        
-        public string Title { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+       
 
         [EnumDataType(typeof(Role))]
         public string Role
