@@ -62,6 +62,7 @@ namespace SORD.Library.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest model)
         {
+            string headertest = Request.Headers["origin"];
             _accountService.Register(model, Request.Headers["origin"]);
             return Ok(new { message = "Registration successful, please check your email for verification instructions" });
         }

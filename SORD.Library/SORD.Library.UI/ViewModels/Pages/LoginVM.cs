@@ -17,7 +17,7 @@ namespace SORD.Library.UI.ViewModels
         {
             LoginRequest.Password = "pass123";
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
-            //this.LoginAttemptCommand = new RelayCommand<AuthenticateRequest>(LoginCommand.Login);
+            this.LoginAttemptCommand = new RelayCommand<AuthenticateRequest>(AccountCommand.Login);
         }   
     }
 }

@@ -31,7 +31,7 @@
             <materialDesign:PackIcon Kind="LockCheck" Width="25" Height="25" Foreground="Crimson"/>
             <PasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Reenter Password" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson"/>
         </StackPanel>
-        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="Crimson">
+        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="Crimson" Command="{Binding RegisterCommand}" CommandParameter="{Binding Register}">
             <Button.Content>
                 <materialDesign:PackIcon Kind="AccountAdd" Width="25" Height="25" Foreground="White"/>
             </Button.Content>

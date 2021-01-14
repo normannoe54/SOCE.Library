@@ -11,12 +11,15 @@ namespace SORD.Library.UI.ViewModels
         public RegisterRequest Register { get; set; } = new RegisterRequest();
         public ICommand GoToNewViewCommand { get; set; }
 
+        public ICommand RegisterCommand { get; set; }
+
         public SignupVM()
         {
             Register.Password = "pass123";
             Register.ConfirmPassword = "pass123";
             Register.AcceptTerms = true;
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
+            this.RegisterCommand = new RelayCommand<RegisterRequest>(AccountCommand.Register);
         }
     }
 }

@@ -24,6 +24,7 @@ namespace SORD.Library.UI
 
             Task<AuthenticateResponse> loginresponse = APIHelper.ApiCall<AuthenticateResponse>("Accounts/authenticate", HttpMethod.Post, sinput);
 
+            //send output
         }
 
         /// <summary>
@@ -37,6 +38,21 @@ namespace SORD.Library.UI
 
             Task<AuthenticateResponse> loginresponse = APIHelper.ApiCall<AuthenticateResponse>("Accounts/register", HttpMethod.Post, sinput);
 
+            //send output
+        }
+
+        /// <summary>
+        /// Register command
+        /// </summary>
+        /// <param name="loginrequest"></param>
+        public static void SendForgotEmail(ForgotPasswordRequest fprequest)
+        {
+            //serialized input
+            string sinput = JsonSerializer.Serialize(fprequest);
+
+            Task<string> response = APIHelper.ApiCall<string>("Accounts/verify-email", HttpMethod.Post, sinput);
+
+            //send output
         }
     }
 }
