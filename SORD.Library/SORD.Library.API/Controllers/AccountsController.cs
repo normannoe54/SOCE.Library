@@ -62,15 +62,18 @@ namespace SORD.Library.Controllers
         [HttpPost("register")]
         public IActionResult Register(RegisterRequest model)
         {
-            string headertest = Request.Headers["origin"];
-            _accountService.Register(model, Request.Headers["origin"]);
+            var baseUrl = $"{Request.Scheme}://{Request.Host.Value.ToString()}{Request.PathBase.Value.ToString()}";
+            //string headertest = Request.RequestUri.GetLeftPart(UriPartial.Authority);
+            //string headertest = Request.Headers["origin"];
+            //_accountService.Register(model, Request.Headers["origin"]);
+            _accountService.Register(model, baseUrl);
             return Ok(new { message = "Registration successful, please check your email for verification instructions" });
         }
 
-        [HttpPost("verify-email")]
-        public IActionResult VerifyEmail(VerifyEmailRequest model)
+        [HttpGet("verify-email/{token}")]
+        public IActionResult VerifyEmail(string token)
         {
-            _accountService.VerifyEmail(model.Token);
+            _accountService.VerifyEmail(token);
             return Ok(new { message = "Verification successful, you can now login" });
         }
 

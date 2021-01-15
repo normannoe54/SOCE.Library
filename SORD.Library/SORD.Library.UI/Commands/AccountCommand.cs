@@ -13,33 +13,9 @@ namespace SORD.Library.UI
 {
     public static class AccountCommand
     {
-        /// <summary>
-        /// Login command
-        /// </summary>
-        /// <param name="loginrequest"></param>
-        public static void Login(AuthenticateRequest loginrequest)
-        {
-            //serialized input
-            string sinput = JsonSerializer.Serialize(loginrequest);
 
-            Task<AuthenticateResponse> loginresponse = APIHelper.ApiCall<AuthenticateResponse>("Accounts/authenticate", HttpMethod.Post, sinput);
 
-            //send output
-        }
 
-        /// <summary>
-        /// Register command
-        /// </summary>
-        /// <param name="loginrequest"></param>
-        public static void Register(RegisterRequest registerrequest)
-        {
-            //serialized input
-            string sinput = JsonSerializer.Serialize(registerrequest);
-
-            Task<AuthenticateResponse> loginresponse = APIHelper.ApiCall<AuthenticateResponse>("Accounts/register", HttpMethod.Post, sinput);
-
-            //send output
-        }
 
         /// <summary>
         /// Register command

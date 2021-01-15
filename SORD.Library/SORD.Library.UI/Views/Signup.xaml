@@ -14,7 +14,6 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
             <RowDefinition Height="auto" />
-            <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
         <!--<materialDesign:PackIcon Height="80" Width="80" Grid.Row="1" Kind="AccountBoxOutline" HorizontalAlignment="Center" Foreground="SlateGray"/>-->

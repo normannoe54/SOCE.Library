@@ -14,8 +14,7 @@
                     <RowDefinition Height="20" />
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row ="0" VerticalAlignment="Top"  HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="20" Height="20" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" 
-                        Command="{Binding CloseCommand}" CommandParameter="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}}">
+                <Button Grid.Row ="0" VerticalAlignment="Top"  HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="20" Height="20" Background="Transparent" BorderBrush="Transparent" ToolTip="Close"  Command="{Binding CloseCommand}">
                 <materialDesign:PackIcon Kind="Close" Foreground="Crimson"/>
                 </Button>
                 <ContentControl  Grid.Row="1" Content="{Binding CurrentPage}"/>

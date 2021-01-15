@@ -20,7 +20,7 @@ namespace SORD.Library.UI.ViewModels
         {
             CurrentPage = new LoginVM();
             UpdateMWCommand = new RelayCommand<ApplicationPage>(GoToPage);
-            CloseCommand = new RelayCommand<Window>(CloseWindow);
+            CloseCommand = new RelayCommand(CloseWindow);
         }
 
         public void GoToPage(ApplicationPage page)
@@ -39,9 +39,9 @@ namespace SORD.Library.UI.ViewModels
             }
         }
 
-        public void CloseWindow(Window windowtoclose)
+        public void CloseWindow()
         {
-            windowtoclose.Close();
+            Application.Current.MainWindow.Close();
         }
     }
 }

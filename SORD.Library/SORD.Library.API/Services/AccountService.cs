@@ -55,8 +55,11 @@ namespace SORD.Library.Services
         {
             var account = _context.Accounts.SingleOrDefault(x => x.Email == model.Email);
 
-            if (account == null || !account.IsVerified || !BC.Verify(model.Password, account.PasswordHash))
-                throw new AppException("Email or password is incorrect");
+            if (account == null || !BC.Verify(model.Password, account.PasswordHash))
+                throw new AppException("Email or password is incorrect"); 
+            
+            //if (account == null || !account.IsVerified || !BC.Verify(model.Password, account.PasswordHash))
+            //    throw new AppException("Email or password is incorrect");
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = generateJwtToken(account);
@@ -327,7 +330,7 @@ namespace SORD.Library.Services
             string message;
             if (!string.IsNullOrEmpty(origin))
             {
-                var verifyUrl = $"{origin}/account/verify-email?token={account.VerificationToken}";
+                var verifyUrl = $"{origin}/accounts/verify-email/{account.VerificationToken}";
                 message = $@"<p>Please click the below link to verify your email address:</p>
                              <p><a href=""{verifyUrl}"">{verifyUrl}</a></p>";
             }
