@@ -8,8 +8,9 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using SORD.Library.UI.Helpers;
+using SORD.Library.Models;
 using System.Windows;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SORD.Library.UI.ViewModels
 {
@@ -19,6 +20,8 @@ namespace SORD.Library.UI.ViewModels
         public ICommand GoToNewViewCommand { get; set; }
 
         public ICommand RegisterCommand { get; set; }
+
+        public string SignUpMessage { get; set; }
 
         public SignupVM()
         {
@@ -33,16 +36,41 @@ namespace SORD.Library.UI.ViewModels
         /// Register command
         /// </summary>
         /// <param name="loginrequest"></param>
-        public static void RegisterCom(RegisterRequest registerrequest)
+        public void RegisterCom(RegisterRequest registerrequest)
         {
             //serialized input
             string sinput = JsonSerializer.Serialize(registerrequest);
 
-            Task<AuthenticateResponse> loginresponse = APIHelper.ApiCall<AuthenticateResponse>("Accounts/register", HttpMethod.Post, sinput);
+            Task<HttpResponseMessage> loginresponse = APIHelper.ApiCall("Accounts/register", HttpMethod.Post, sinput);
 
             //if not verified -> one message
             //if username or password incorrect -> another message
-            
+
+            //Server error most like if caught - TODO in future
+            HttpResponseMessage response = loginresponse.Result;
+
+            if (response == null)
+            {
+                SignUpMessage = $"Review username and password {Environment.NewLine} account was not found";
+            }
+            else
+            {
+                //Launch another window here!
+                AuthenticateResponse authresp = response.Content.ReadAsAsync<AuthenticateResponse>().Result;
+
+                if (authresp.IsVerified)
+                {
+                    //User is authenticated
+
+                    //close login window
+                    Application.Current.MainWindow.Close();
+                }
+                else
+                {
+                    SignUpMessage = $"The account was registered {Environment.NewLine} but never verified";
+                    //Resend verification email?
+                }
+            }
         }
     }
 }

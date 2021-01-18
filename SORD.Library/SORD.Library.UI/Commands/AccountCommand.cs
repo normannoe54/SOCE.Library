@@ -7,15 +7,12 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using SORD.Library.UI.Helpers;
+using SORD.Library.Models ;
 
 namespace SORD.Library.UI
 {
     public static class AccountCommand
     {
-
-
-
 
         /// <summary>
         /// Register command
@@ -26,7 +23,7 @@ namespace SORD.Library.UI
             //serialized input
             string sinput = JsonSerializer.Serialize(fprequest);
 
-            Task<string> response = APIHelper.ApiCall<string>("Accounts/verify-email", HttpMethod.Post, sinput);
+            Task<HttpResponseMessage> response = APIHelper.ApiCall("Accounts/verify-email", HttpMethod.Post, sinput);
 
             //send output
         }

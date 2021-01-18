@@ -66,8 +66,8 @@ namespace SORD.Library.Controllers
             //string headertest = Request.RequestUri.GetLeftPart(UriPartial.Authority);
             //string headertest = Request.Headers["origin"];
             //_accountService.Register(model, Request.Headers["origin"]);
-            _accountService.Register(model, baseUrl);
-            return Ok(new { message = "Registration successful, please check your email for verification instructions" });
+            ActionResult res = _accountService.Register(model, baseUrl);
+            return res;
         }
 
         [HttpGet("verify-email/{token}")]

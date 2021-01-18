@@ -12,6 +12,7 @@ using System.Text;
 using SORD.Library.Entities;
 using SORD.Library.Helpers;
 using SORD.Library.Models.Accounts;
+using Microsoft.AspNetCore.Mvc;
 
 namespace SORD.Library.Services
 {
@@ -20,7 +21,7 @@ namespace SORD.Library.Services
         AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
         AuthenticateResponse RefreshToken(string token, string ipAddress);
         void RevokeToken(string token, string ipAddress);
-        void Register(RegisterRequest model, string origin);
+        ActionResult Register(RegisterRequest model, string origin);
         void VerifyEmail(string token);
         void ForgotPassword(ForgotPasswordRequest model, string origin);
         void ValidateResetToken(ValidateResetTokenRequest model);
@@ -115,14 +116,12 @@ namespace SORD.Library.Services
             _context.SaveChanges();
         }
 
-        public void Register(RegisterRequest model, string origin)
+        public ActionResult Register(RegisterRequest model, string origin)
         {
             // validate
             if (_context.Accounts.Any(x => x.Email == model.Email))
             {
-                // send already registered error in email to prevent account enumeration
-                sendAlreadyRegisteredEmail(model.Email, origin);
-                return;
+                return new BadRequestObjectResult(RegisterEnum.AlreadyExists);
             }
 
             // map model to new account object
@@ -143,6 +142,8 @@ namespace SORD.Library.Services
 
             // send email
             sendVerificationEmail(account, origin);
+
+            return new BadRequestObjectResult(RegisterEnum.Registered);
         }
 
         public void VerifyEmail(string token)

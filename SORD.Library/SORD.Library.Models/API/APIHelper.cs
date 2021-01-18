@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using System.Net.Http;
 using System.Text.Json;
 
-namespace SORD.Library.UI.Helpers
+namespace SORD.Library.Models
 {
     public static class APIHelper
     {
         //yes this is where the api route lives for now LOL
-        public static string baseapiroute = "https://localhost:44369";
+        private static string baseapiroute = "https://localhost:44369";
 
         /// <summary>
         /// Default APICall with json body casted to an object output
@@ -22,7 +22,7 @@ namespace SORD.Library.UI.Helpers
         /// <param name="jsonbody"></param>
         /// <param name="authtoken"></param>
         /// <returns></returns>
-        public static async Task<T> ApiCall<T>(string uripath, HttpMethod methodtype, string jsonbody, string authtoken = "")
+        public static async Task<HttpResponseMessage> ApiCall(string uripath, HttpMethod methodtype, string jsonbody, string authtoken = "")
         {
             //setup client for api request
             HttpClient client = new HttpClient();
@@ -30,22 +30,31 @@ namespace SORD.Library.UI.Helpers
             var request = new HttpRequestMessage
             {
                 Method = methodtype,
-                RequestUri = new Uri($"{baseapiroute }/{uripath}"),
+                RequestUri = new Uri($"{baseapiroute}/{uripath}"),
                 Content = new StringContent(jsonbody, Encoding.UTF8, "application/json"),
                 //add authentication
             };
 
-            var response = await client.SendAsync(request).ConfigureAwait(false);
+            HttpResponseMessage response = await client.SendAsync(request).ConfigureAwait(false);
 
-            T responsefinal = default(T);
+            return response;
+        //    T responsefinal = default(T);
 
-            //If successfully login - save token 
-            if (response.IsSuccessStatusCode)
-            {
-                responsefinal = response.Content.ReadAsAsync<T>().Result;
-            }
+        //    //If successfully login - save token 
+        //    try
+        //    {
+        //        if (response.Content != null)
+        //        {
+        //            responsefinal = response.Content.ReadAsAsync<T>().Result;
+        //        }
+        //    }
+        //    catch
+        //    {
 
-            return responsefinal;
+        //    }
+
+
+        //    return responsefinal;
         }
     }
 }

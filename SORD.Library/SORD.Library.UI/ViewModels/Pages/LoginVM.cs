@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Text.Json;
 using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using SORD.Library.UI.Helpers;
+using SORD.Library.Models;
 using System.Windows;
 
 namespace SORD.Library.UI.ViewModels
@@ -39,18 +39,22 @@ namespace SORD.Library.UI.ViewModels
             //serialized input
             string sinput = JsonSerializer.Serialize(loginrequest);
 
-            Task<AuthenticateResponse> loginresponse = APIHelper.ApiCall<AuthenticateResponse>("Accounts/authenticate", HttpMethod.Post, sinput);
+            Task<HttpResponseMessage> loginresponse = APIHelper.ApiCall("Accounts/authenticate", HttpMethod.Post, sinput);
 
-            //Server error most like if caught - TODO in future
-            try
+            HttpResponseMessage response = loginresponse.Result;
+
+            if (response == null)
             {
-                if (loginresponse.Result == null)
+                LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
+            }
+            else
+            {
+                //Launch another window here!
+                AuthenticateResponse authresp = response.Content.ReadAsAsync<AuthenticateResponse>().Result;
+
+                if (authresp.IsVerified)
                 {
-                    LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
-                }
-                else if (loginresponse.Result.IsVerified)
-                {
-                    //Launch another window here!
+                    //User is authenticated
 
                     //close login window
                     Application.Current.MainWindow.Close();
@@ -61,12 +65,6 @@ namespace SORD.Library.UI.ViewModels
                     //Resend verification email?
                 }
             }
-            catch
-            {
-                LoginMessage = $"Server error {Environment.NewLine} contact this person";
-            }
-            
-        
         }
     }
 }
