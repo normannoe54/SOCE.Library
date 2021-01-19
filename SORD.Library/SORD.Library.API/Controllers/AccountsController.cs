@@ -27,7 +27,14 @@ namespace SORD.Library.Controllers
         [HttpPost("authenticate")]
         public ActionResult<AuthenticateResponse> Authenticate(AuthenticateRequest model)
         {
-            var response = _accountService.Authenticate(model, ipAddress());
+            AuthenticateResponse response = _accountService.Authenticate(model, ipAddress());
+
+            //Username and password not found or doesnt match
+            if (response == null)
+            {
+                return BadRequest();
+            }
+
             setTokenCookie(response.RefreshToken);
             return Ok(response);
         }
@@ -60,14 +67,18 @@ namespace SORD.Library.Controllers
         }
 
         [HttpPost("register")]
-        public IActionResult Register(RegisterRequest model)
+        public ActionResult<AccountResponse> Register(RegisterRequest model)
         {
-            var baseUrl = $"{Request.Scheme}://{Request.Host.Value.ToString()}{Request.PathBase.Value.ToString()}";
-            //string headertest = Request.RequestUri.GetLeftPart(UriPartial.Authority);
-            //string headertest = Request.Headers["origin"];
-            //_accountService.Register(model, Request.Headers["origin"]);
-            ActionResult res = _accountService.Register(model, baseUrl);
-            return res;
+            string baseUrl = $"{Request.Scheme}://{Request.Host.Value.ToString()}{Request.PathBase.Value.ToString()}";
+            ActionResult<AccountResponse> response = _accountService.Register(model, baseUrl);
+
+            //Username and password not found or doesnt match
+            if (response == null)
+            {
+                return BadRequest();
+            }
+
+            return response;
         }
 
         [HttpGet("verify-email/{token}")]

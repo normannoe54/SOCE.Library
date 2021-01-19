@@ -26,6 +26,7 @@ namespace SORD.Library.UI.ViewModels
         public LoginVM()
         {
             LoginRequest.Password = "pass123";
+            LoginMessage = "";
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
             this.LoginCommand = new RelayCommand<AuthenticateRequest>(LoginCom);
         }
@@ -43,18 +44,14 @@ namespace SORD.Library.UI.ViewModels
 
             HttpResponseMessage response = loginresponse.Result;
 
-            if (response == null)
+            if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
-                LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
-            }
-            else
-            {
-                //Launch another window here!
                 AuthenticateResponse authresp = response.Content.ReadAsAsync<AuthenticateResponse>().Result;
 
                 if (authresp.IsVerified)
                 {
                     //User is authenticated
+
 
                     //close login window
                     Application.Current.MainWindow.Close();
@@ -64,6 +61,10 @@ namespace SORD.Library.UI.ViewModels
                     LoginMessage = $"The account was registered {Environment.NewLine} but never verified";
                     //Resend verification email?
                 }
+            }
+            else
+            {
+                LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
             }
         }
     }

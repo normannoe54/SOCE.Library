@@ -32,13 +32,13 @@
                 <materialDesign:PackIcon Kind="Login" Width="25" Height="25" Foreground="White"/>
             </Button.Content>
         </Button>
-        <Button Grid.Row="4" Height="14" HorizontalAlignment ="Center" Margin ="0 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" FontSize="10" FontWeight="Light" Content="Forgot Password?" Foreground="SlateGray" Command="{Binding GoToNewViewCommand}" CommandParameter="ForgotPassword"/>
-        <TextBlock Margin="0 50 0 10" Grid.Row="5" FontSize="10" FontFamily="ComicSans"   VerticalAlignment="Center" HorizontalAlignment="Center" Text="{Binding LoginMessage}"/>
+        <Button Grid.Row="4" Height="16" HorizontalAlignment ="Center" Margin ="0 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" FontSize="12" FontWeight="Light" Content="Forgot Password?" Foreground="SlateGray" Command="{Binding GoToNewViewCommand}" CommandParameter="ForgotPassword"/>
+        <TextBlock Margin="0 50 0 10" Grid.Row="5" FontSize="12" Foreground="Red" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding LoginMessage}"/>
         <StackPanel Grid.Row="6" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
-            <Label FontSize="10" FontWeight="Light" Content="Dont have an account?" Foreground="SlateGray" VerticalAlignment="Center"/>
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 -6 0 -6" Height="14"  Command = "{Binding GoToNewViewCommand}" CommandParameter="Signup">
+            <Label FontSize="12" FontWeight="Light" Content="Dont have an account?" Foreground="SlateGray" VerticalAlignment="Center"/>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command = "{Binding GoToNewViewCommand}" CommandParameter="Signup">
                 <Button.Content>
-                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" FontSize="10"  Content="Sign Up" Foreground="Crimson" />
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" FontSize="12"  Content="Sign Up" Foreground="Crimson" />
                 </Button.Content>
             </Button>
         </StackPanel>

@@ -21,7 +21,7 @@ namespace SORD.Library.Services
         AuthenticateResponse Authenticate(AuthenticateRequest model, string ipAddress);
         AuthenticateResponse RefreshToken(string token, string ipAddress);
         void RevokeToken(string token, string ipAddress);
-        ActionResult Register(RegisterRequest model, string origin);
+        AccountResponse Register(RegisterRequest model, string origin);
         void VerifyEmail(string token);
         void ForgotPassword(ForgotPasswordRequest model, string origin);
         void ValidateResetToken(ValidateResetTokenRequest model);
@@ -57,10 +57,11 @@ namespace SORD.Library.Services
             var account = _context.Accounts.SingleOrDefault(x => x.Email == model.Email);
 
             if (account == null || !BC.Verify(model.Password, account.PasswordHash))
-                throw new AppException("Email or password is incorrect"); 
-            
-            //if (account == null || !account.IsVerified || !BC.Verify(model.Password, account.PasswordHash))
-            //    throw new AppException("Email or password is incorrect");
+            {
+                //account username and password failure
+                return null;
+                //throw new AppException("Email or password is incorrect");
+            }
 
             // authentication successful so generate jwt and refresh tokens
             var jwtToken = generateJwtToken(account);
@@ -77,6 +78,7 @@ namespace SORD.Library.Services
             var response = _mapper.Map<AuthenticateResponse>(account);
             response.JwtToken = jwtToken;
             response.RefreshToken = refreshToken.Token;
+
             return response;
         }
 
@@ -116,12 +118,13 @@ namespace SORD.Library.Services
             _context.SaveChanges();
         }
 
-        public ActionResult Register(RegisterRequest model, string origin)
+        public AccountResponse Register(RegisterRequest model, string origin)
         {
             // validate
             if (_context.Accounts.Any(x => x.Email == model.Email))
             {
-                return new BadRequestObjectResult(RegisterEnum.AlreadyExists);
+                return null;
+                //throw new AppException("Account already exists");
             }
 
             // map model to new account object
@@ -143,7 +146,7 @@ namespace SORD.Library.Services
             // send email
             sendVerificationEmail(account, origin);
 
-            return new BadRequestObjectResult(RegisterEnum.Registered);
+            return _mapper.Map<AccountResponse>(account);
         }
 
         public void VerifyEmail(string token)
