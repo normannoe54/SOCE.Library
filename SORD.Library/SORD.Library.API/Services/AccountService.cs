@@ -9,12 +9,12 @@ using System.Linq;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
-using SORD.Library.Entities;
-using SORD.Library.Helpers;
-using SORD.Library.Models.Accounts;
+using SOCE.Library.Entities;
+using SOCE.Library.Helpers;
+using SOCE.Library.Models.Accounts;
 using Microsoft.AspNetCore.Mvc;
 
-namespace SORD.Library.Services
+namespace SOCE.Library.Services
 {
     public interface IAccountService
     {

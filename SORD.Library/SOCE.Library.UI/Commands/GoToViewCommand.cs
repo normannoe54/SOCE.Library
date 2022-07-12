@@ -1,0 +1,15 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using SOCE.Library.UI.ViewModels;
+
+namespace SOCE.Library.UI
+{
+    public static class GoToViewCommand
+    {
+        public static void GoToPageWrapper(ApplicationPage page)
+        {
+            IoC.Application.GoToPage(page);
+        }
+    }
+}

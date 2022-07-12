@@ -1,4 +1,4 @@
-namespace SORD.Library.Helpers
+namespace SOCE.Library.Helpers
 {
     public class AppSettings
     {

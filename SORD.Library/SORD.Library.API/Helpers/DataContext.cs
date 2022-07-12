@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using SORD.Library.Entities;
+using SOCE.Library.Entities;
 
-namespace SORD.Library.Helpers
+namespace SOCE.Library.Helpers
 {
     public class DataContext : DbContext
     {
@@ -18,7 +18,7 @@ namespace SORD.Library.Helpers
         protected override void OnConfiguring(DbContextOptionsBuilder options)
         {
             // connect to sqlite database
-            options.UseSqlite(Configuration.GetConnectionString("SORD.Library.Database"));
+            options.UseSqlite(Configuration.GetConnectionString("SOCE.Library.Database"));
         }
     }
 }

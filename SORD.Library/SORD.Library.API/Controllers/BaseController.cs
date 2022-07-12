@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using SORD.Library.Entities;
+using SOCE.Library.Entities;
 
-namespace SORD.Library.Controllers
+namespace SOCE.Library.Controllers
 {
     [Controller]
     public abstract class BaseController : ControllerBase

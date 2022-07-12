@@ -4,9 +4,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using SORD.Library.Helpers;
+using SOCE.Library.Helpers;
 
-namespace SORD.Library.Migrations
+namespace SOCE.Library.Migrations
 {
     [DbContext(typeof(DataContext))]
     [Migration("20200715105414_InitialCreate")]
@@ -18,7 +18,7 @@ namespace SORD.Library.Migrations
             modelBuilder
                 .HasAnnotation("ProductVersion", "3.1.5");
 
-            modelBuilder.Entity("SORD.Library.Entities.Account", b =>
+            modelBuilder.Entity("SOCE.Library.Entities.Account", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,9 +71,9 @@ namespace SORD.Library.Migrations
                     b.ToTable("Accounts");
                 });
 
-            modelBuilder.Entity("SORD.Library.Entities.Account", b =>
+            modelBuilder.Entity("SOCE.Library.Entities.Account", b =>
                 {
-                    b.OwnsMany("SORD.Library.Entities.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("SOCE.Library.Entities.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()

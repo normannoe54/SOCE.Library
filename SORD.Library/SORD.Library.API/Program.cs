@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 
-namespace SORD.Library
+namespace SOCE.Library
 {
     public class Program
     {

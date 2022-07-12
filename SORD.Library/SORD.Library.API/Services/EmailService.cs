@@ -3,9 +3,9 @@ using MailKit.Security;
 using Microsoft.Extensions.Options;
 using MimeKit;
 using MimeKit.Text;
-using SORD.Library.Helpers;
+using SOCE.Library.Helpers;
 
-namespace SORD.Library.Services
+namespace SOCE.Library.Services
 {
     public interface IEmailService
     {

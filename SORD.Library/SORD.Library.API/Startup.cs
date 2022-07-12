@@ -5,11 +5,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using System;
-using SORD.Library.Helpers;
-using SORD.Library.Middleware;
-using SORD.Library.Services;
+using SOCE.Library.Helpers;
+using SOCE.Library.Middleware;
+using SOCE.Library.Services;
 
-namespace SORD.Library
+namespace SOCE.Library
 {
     public class Startup
     {

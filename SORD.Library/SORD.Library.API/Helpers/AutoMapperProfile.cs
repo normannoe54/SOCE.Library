@@ -1,8 +1,8 @@
 using AutoMapper;
-using SORD.Library.Entities;
-using SORD.Library.Models.Accounts;
+using SOCE.Library.Entities;
+using SOCE.Library.Models.Accounts;
 
-namespace SORD.Library.Helpers
+namespace SOCE.Library.Helpers
 {
     public class AutoMapperProfile : Profile
     {

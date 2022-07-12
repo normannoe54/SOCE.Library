@@ -3,11 +3,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using SORD.Library.Entities;
-using SORD.Library.Models.Accounts;
-using SORD.Library.Services;
+using SOCE.Library.Entities;
+using SOCE.Library.Models.Accounts;
+using SOCE.Library.Services;
 
-namespace SORD.Library.Controllers
+namespace SOCE.Library.Controllers
 {
     [ApiController]
     [Route("[controller]")]
