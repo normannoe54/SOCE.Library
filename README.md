@@ -1,2 +1,2 @@
-# SORD.Library
-Base repository for SORD platform
+# SOCE.Library
+Base repository for SOCE platform
