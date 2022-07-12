@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SOCE.Library.Helpers;
 
-namespace SOCE.Library.Migrations
+namespace SOCE.Library.API.Migrations
 {
     [DbContext(typeof(DataContext))]
     partial class DataContextModelSnapshot : ModelSnapshot
@@ -14,7 +14,7 @@ namespace SOCE.Library.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "3.1.5");
+                .HasAnnotation("ProductVersion", "3.1.27");
 
             modelBuilder.Entity("SOCE.Library.Entities.Account", b =>
                 {
@@ -31,12 +31,6 @@ namespace SOCE.Library.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("FirstName")
-                        .HasColumnType("TEXT");
-
-                    b.Property<string>("LastName")
-                        .HasColumnType("TEXT");
-
                     b.Property<string>("PasswordHash")
                         .HasColumnType("TEXT");
 
@@ -51,9 +45,6 @@ namespace SOCE.Library.Migrations
 
                     b.Property<int>("Role")
                         .HasColumnType("INTEGER");
-
-                    b.Property<string>("Title")
-                        .HasColumnType("TEXT");
 
                     b.Property<DateTime?>("Updated")
                         .HasColumnType("TEXT");

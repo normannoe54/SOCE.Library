@@ -4,9 +4,9 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.Json;
 using System.Threading.Tasks;
-using SORD.Library.Helpers;
+using SOCE.Library.Helpers;
 
-namespace SORD.Library.Middleware
+namespace SOCE.Library.Middleware
 {
     public class ErrorHandlerMiddleware
     {

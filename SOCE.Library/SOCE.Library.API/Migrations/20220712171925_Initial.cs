@@ -1,9 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace SOCE.Library.Migrations
+namespace SOCE.Library.API.Migrations
 {
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,9 +13,6 @@ namespace SOCE.Library.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Title = table.Column<string>(nullable: true),
-                    FirstName = table.Column<string>(nullable: true),
-                    LastName = table.Column<string>(nullable: true),
                     Email = table.Column<string>(nullable: true),
                     PasswordHash = table.Column<string>(nullable: true),
                     AcceptTerms = table.Column<bool>(nullable: false),
