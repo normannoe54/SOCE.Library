@@ -15,7 +15,20 @@ namespace SOCE.Library.UI.ViewModels
 { 
     public class LoginVM : BaseVM
     {
-        public AuthenticateRequest LoginRequest { get; set; } = new AuthenticateRequest();
+        private AuthenticateRequest _loginRequest = new AuthenticateRequest();
+        public AuthenticateRequest LoginRequest
+        {
+            get
+            {
+                return _loginRequest;
+            }
+            set
+            {
+                _loginRequest = value;
+                RaisePropertyChanged(nameof(LoginRequest));
+            }
+        }
+
         public ICommand GoToNewViewCommand { get; set; }
 
         public ICommand LoginCommand { get; set; }
@@ -25,8 +38,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public LoginVM()
         {
-            LoginRequest.Password = "pass123";
-            LoginMessage = "";
+            //LoginRequest.Password = "pass123";
+            //LoginMessage = "";
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
             this.LoginCommand = new RelayCommand<AuthenticateRequest>(LoginCom);
         }

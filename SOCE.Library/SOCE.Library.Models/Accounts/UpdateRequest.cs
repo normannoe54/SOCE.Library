@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security;
 using SOCE.Library.Entities;
 
 namespace SOCE.Library.Models.Accounts
@@ -40,11 +41,11 @@ namespace SOCE.Library.Models.Accounts
         }
 
         // helpers
-
         private string replaceEmptyWithNull(string value)
         {
             // replace empty string with null to make field optional
             return string.IsNullOrEmpty(value) ? null : value;
         }
+
     }
 }

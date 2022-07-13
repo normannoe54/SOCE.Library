@@ -16,7 +16,21 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class SignupVM : BaseVM
     {
-        public RegisterRequest Register { get; set; } = new RegisterRequest();
+        private RegisterRequest _register = new RegisterRequest();
+        public RegisterRequest Register
+        {
+            get
+            {
+                return _register;
+            }
+            set
+            {
+                _register = value;
+                RaisePropertyChanged(nameof(Register));
+            }
+        }
+
+        //public RegisterRequest Register { get; set; } = new RegisterRequest();
         public ICommand GoToNewViewCommand { get; set; }
 
         public ICommand RegisterCommand { get; set; }
@@ -25,8 +39,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public SignupVM()
         {
-            Register.Password = "pass123";
-            Register.ConfirmPassword = "pass123";
+            //Register.Password = "pass123";
+            //Register.ConfirmPassword = "pass123";
             Register.AcceptTerms = true;
             //SignUpMessage = "Testing Message";
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
