@@ -12,11 +12,11 @@ using SOCE.Library.Models;
 using System.Windows;
 
 namespace SOCE.Library.UI.ViewModels
-{ 
+{
     public class LoginVM : BaseVM
     {
-        private AuthenticateRequest _loginRequest = new AuthenticateRequest();
-        public AuthenticateRequest LoginRequest
+        private AuthRequestModel _loginRequest = new AuthRequestModel();
+        public AuthRequestModel LoginRequest
         {
             get
             {
@@ -33,52 +33,85 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand LoginCommand { get; set; }
 
-        //Default message
-        public string LoginMessage { get; set; }
+        private string _loginMessage { get; set; }
+        public string LoginMessage
+        {
+            get
+            {
+                return _loginMessage;
+            }
+            set
+            {
+                _loginMessage = value;
+                RaisePropertyChanged(nameof(LoginMessage));
+            }
+        }
 
         public LoginVM()
         {
             //LoginRequest.Password = "pass123";
             //LoginMessage = "";
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
-            this.LoginCommand = new RelayCommand<AuthenticateRequest>(LoginCom);
+            this.LoginCommand = new RelayCommand<AuthRequestModel>(LoginCom);
         }
 
         /// <summary>
         /// Login command
         /// </summary>
         /// <param name="loginrequest"></param>
-        public void LoginCom(AuthenticateRequest loginrequest)
+        public void LoginCom(AuthRequestModel loginrequest)
         {
+            //check email
+            string emailcheck = loginrequest.Email.Substring(loginrequest.Email.LastIndexOf('@') + 1);
+
+            if (emailcheck != "email.com")
+            {
+                LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
+                return;
+            }
+
+            AuthenticateRequest convertedinput = loginrequest.ConvertAPIModel();
+
             //serialized input
-            string sinput = JsonSerializer.Serialize(loginrequest);
+            string sinput = JsonSerializer.Serialize(convertedinput);
 
             Task<HttpResponseMessage> loginresponse = APIHelper.ApiCall("Accounts/authenticate", HttpMethod.Post, sinput);
 
-            HttpResponseMessage response = loginresponse.Result;
-
-            if (response.StatusCode == System.Net.HttpStatusCode.OK)
+            try
             {
-                AuthenticateResponse authresp = response.Content.ReadAsAsync<AuthenticateResponse>().Result;
+                HttpResponseMessage response = loginresponse.Result;
 
-                if (authresp.IsVerified)
+                if (response.StatusCode == System.Net.HttpStatusCode.OK)
                 {
-                    //User is authenticated
+                    AuthenticateResponse authresp = response.Content.ReadAsAsync<AuthenticateResponse>().Result;
+
+                    if (authresp.IsVerified)
+                    {
+                        //User is authenticated
 
 
-                    //close login window
-                    Application.Current.MainWindow.Close();
+                        //close login window
+                        Application.Current.MainWindow.Close();
+                    }
+                    else
+                    {
+                        LoginMessage = $"The account was registered {Environment.NewLine} but never verified";
+                        //Resend verification email?
+                    }
                 }
                 else
                 {
-                    LoginMessage = $"The account was registered {Environment.NewLine} but never verified";
-                    //Resend verification email?
+                    LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
                 }
             }
-            else
+            catch
             {
+                LoginRequest.Email = "";
+                LoginRequest.Password = "";
+
                 LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
             }
+
         }
     }
 }

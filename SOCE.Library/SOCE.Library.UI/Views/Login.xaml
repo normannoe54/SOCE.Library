@@ -34,7 +34,22 @@
             </Button.Content>
         </Button>
         <Button Grid.Row="4" Height="16" HorizontalAlignment ="Center" Margin ="0 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" FontSize="12" FontWeight="Light" Content="Forgot Password?" Foreground="SlateGray" Command="{Binding GoToNewViewCommand}" CommandParameter="ForgotPassword"/>
-        <TextBlock Margin="0 50 0 10" Grid.Row="5" FontSize="12" Foreground="Red" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding LoginMessage}"/>
+        <TextBlock Margin="0 50 0 10" Grid.Row="5" FontSize="12" Foreground="Red" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding LoginMessage, NotifyOnTargetUpdated=True}">
+            <TextBlock.Triggers>
+                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </TextBlock.Triggers>
+        </TextBlock>
         <StackPanel Grid.Row="6" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
             <Label FontSize="12" FontWeight="Light" Content="Dont have an account?" Foreground="SlateGray" VerticalAlignment="Center"/>
             <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command = "{Binding GoToNewViewCommand}" CommandParameter="Signup">

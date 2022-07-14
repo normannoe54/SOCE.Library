@@ -166,7 +166,6 @@ namespace SOCE.Library.Controllers
         }
 
         // helper methods
-
         private void setTokenCookie(string token)
         {
             var cookieOptions = new CookieOptions

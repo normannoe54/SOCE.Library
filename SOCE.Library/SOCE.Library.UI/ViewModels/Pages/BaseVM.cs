@@ -5,17 +5,16 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using PropertyChanged;
 
 namespace SOCE.Library.UI.ViewModels
 {
-    [AddINotifyPropertyChangedInterface]
-    public class BaseVM : INotifyPropertyChanged
+    //[AddINotifyPropertyChangedInterface]
+    public class BaseVM : PropertyChangedBase
     {
         /// <summary>
         /// The event that fires when any child property changes its value
         /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
+        //public event PropertyChangedEventHandler PropertyChanged = (sender, e) => { };
 
         protected async Task RunCommand(Expression<Func<bool>> updatingFlag, Func<Task> action)
         {
@@ -37,12 +36,12 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public void RaisePropertyChanged(string propertyName)
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        //public void RaisePropertyChanged(string propertyName)
+        //{
+        //    if (PropertyChanged != null)
+        //    {
+        //        PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+        //    }
+        //}
     }
 }

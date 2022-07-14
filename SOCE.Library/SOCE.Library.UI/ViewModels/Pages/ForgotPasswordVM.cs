@@ -9,7 +9,19 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class ForgotPasswordVM : BaseVM
     {
-        public ForgotPasswordRequest ForgetPassswordRequest { get; set; }
+        public ForgotPassRequestModel _forgetPassswordRequest { get; set; }
+        public ForgotPassRequestModel ForgetPassswordRequest
+        {
+            get
+            {
+                return _forgetPassswordRequest;
+            }
+            set
+            {
+                _forgetPassswordRequest = value;
+                RaisePropertyChanged(nameof(ForgetPassswordRequest));
+            }
+        }
 
         public ICommand GoToNewViewCommand { get; set; }
 
@@ -18,7 +30,7 @@ namespace SOCE.Library.UI.ViewModels
         public ForgotPasswordVM()
         {
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
-            this.SendEmailCommand = new RelayCommand<ForgotPasswordRequest>(AccountCommand.SendForgotEmail);
+            this.SendEmailCommand = new RelayCommand<ForgotPassRequestModel>(AccountCommand.SendForgotEmail);
         }
     }
 }

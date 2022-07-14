@@ -16,8 +16,8 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class SignupVM : BaseVM
     {
-        private RegisterRequest _register = new RegisterRequest();
-        public RegisterRequest Register
+        private RegisterRequestModel _register = new RegisterRequestModel();
+        public RegisterRequestModel Register
         {
             get
             {
@@ -44,17 +44,19 @@ namespace SOCE.Library.UI.ViewModels
             Register.AcceptTerms = true;
             //SignUpMessage = "Testing Message";
             this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
-            this.RegisterCommand = new RelayCommand<RegisterRequest>(RegisterCom);
+            this.RegisterCommand = new RelayCommand<RegisterRequestModel>(RegisterCom);
         }
 
         /// <summary>
         /// Register command
         /// </summary>
         /// <param name="loginrequest"></param>
-        public void RegisterCom(RegisterRequest registerrequest)
+        public void RegisterCom(RegisterRequestModel registerrequest)
         {
+            RegisterRequest convertedinput = registerrequest.ConvertAPIModel();
+
             //serialized input
-            string sinput = JsonSerializer.Serialize(registerrequest);
+            string sinput = JsonSerializer.Serialize(convertedinput);
 
             Task<HttpResponseMessage> loginresponse = APIHelper.ApiCall("Accounts/register", HttpMethod.Post, sinput);
 
@@ -64,8 +66,9 @@ namespace SOCE.Library.UI.ViewModels
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 //Launch login page with message saying "Account successfully registered, sign in here" - TODO
-
-
+                GoToViewCommand.GoToPageWrapper(ApplicationPage.Login);
+                LoginVM loginvm = IoC.Application.CurrentPage as LoginVM;
+                loginvm.LoginMessage = $"Account has been created, {Environment.NewLine} verify email to login.";
             }
             else
             {

@@ -160,6 +160,7 @@ namespace SOCE.Library.Services
 
             _context.Accounts.Update(account);
             _context.SaveChanges();
+            sendVerificationEmailConfirmation(account);
         }
 
         public void ForgotPassword(ForgotPasswordRequest model, string origin)
@@ -350,6 +351,17 @@ namespace SOCE.Library.Services
                 html: $@"<h4>Verify Email</h4>
                          <p>Thanks for registering!</p>
                          {message}"
+            );
+        }
+
+        private void sendVerificationEmailConfirmation(Account account)
+        {
+            _emailService.Send(
+                to: account.Email,
+                subject: "Sign-up Verification Successful",
+                html: $@"<h4>Verify Email</h4>
+                         <p>Email verification successful!</p>
+                         <p>Email verification successful, login to activate the application</p>"
             );
         }
 

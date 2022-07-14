@@ -10,7 +10,19 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class ApplicationInstance : BaseVM, IApplicationInstance
     {
-        public BaseVM CurrentPage { get; set; }
+        private BaseVM _currentPage { get; set; }
+        public BaseVM CurrentPage
+        {
+            get
+            {
+                return _currentPage;
+            }
+            set
+            {
+                _currentPage = value;
+                RaisePropertyChanged(nameof(CurrentPage));
+            }
+        }
 
         public ICommand UpdateMWCommand { get; set; }
 
