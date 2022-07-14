@@ -19,7 +19,7 @@
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" FontSize="30" FontFamily="ComicSans" FontWeight="Bold"  Content="SOCE" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <Label Grid.Row="0" FontSize="30" FontFamily="ComicSans" FontWeight="Bold"  Content="LOGIN" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
             <materialDesign:PackIcon Kind="User" Width="25" Height="25" Foreground="Crimson"/>
             <TextBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson" Text="{Binding LoginRequest.Email}"/>
