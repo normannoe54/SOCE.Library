@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SOCE.Library.UI.Views"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              Height="350" Width="300" Background="Transparent">
@@ -25,7 +26,7 @@
         </StackPanel>
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
             <materialDesign:PackIcon Kind="Lock" Width="25" Height="25" Foreground="Crimson"/>
-            <PasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson"/>
+            <component:BindablePasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" Width="200" BorderBrush="Black" Password="{Binding LoginRequest.Password}"/>
         </StackPanel>
         <Button Grid.Row="3" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="Crimson" Command="{Binding LoginCommand}" CommandParameter="{Binding LoginRequest}">
             <Button.Content>

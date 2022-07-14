@@ -21,6 +21,13 @@ namespace SOCE.Library.UI.Views
         {
             InitializeComponent();
             this.DataContext = IoC.Application;
+            this.MouseDown += Window_MouseDown;
+        }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ChangedButton == MouseButton.Left)
+                this.DragMove();
         }
     }
 }
