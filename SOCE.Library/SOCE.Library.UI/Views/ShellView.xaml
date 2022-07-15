@@ -24,7 +24,7 @@
                     <Button Grid.Row ="0" VerticalAlignment="Top"  HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Close"  Command="{Binding CloseCommand}">
                         <materialDesign:PackIcon Kind="Close" Foreground="Crimson"/>
                     </Button>
-                    <ContentControl  Grid.Row="1" Content="{Binding CurrentPage}"/>
+                    <ContentControl  Grid.Row="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>
             </Grid>
             
