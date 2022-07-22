@@ -15,19 +15,12 @@ namespace SOCE.Library.UI.Views
     /// <summary>
     /// Interaction logic for Window1.xaml
     /// </summary>
-    public partial class ShellView : Window
+    public partial class ShellLoginView : UserControl
     {
-        public ShellView()
+        public ShellLoginView()
         {
             InitializeComponent();
-            this.DataContext = IoC.Application;
-            this.MouseDown += Window_MouseDown;
-        }
-
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (e.ChangedButton == MouseButton.Left)
-                this.DragMove();
+            this.DataContext = IoCLogin.Application;
         }
     }
 }

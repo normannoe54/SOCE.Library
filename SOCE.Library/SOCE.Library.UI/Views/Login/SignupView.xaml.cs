@@ -16,9 +16,9 @@ namespace SOCE.Library.UI.Views
     /// <summary>
     /// Interaction logic for Signup.xaml
     /// </summary>
-    public partial class Signup : UserControl
+    public partial class SignupView : UserControl
     {
-        public Signup()
+        public SignupView()
         {
             InitializeComponent();
         }

@@ -7,10 +7,10 @@ using System.Windows.Input;
 
 namespace SOCE.Library.UI.ViewModels
 {
-    public interface IApplicationInstance
+    public interface ILoginAI : IBaseAI
     {
-        BaseVM CurrentPage { get; set; }
-        void GoToPage(ApplicationPage page);
+        //BaseVM CurrentPage { get; set; }
+        void GoToPage(LoginPage page);
         ICommand UpdateMWCommand { get; set; }
     }
 }

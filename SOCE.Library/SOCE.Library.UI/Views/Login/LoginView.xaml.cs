@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for ForgotPassword.xaml
+    /// Interaction logic for Login.xaml
     /// </summary>
-    public partial class ForgotPassword : UserControl
+    public partial class LoginView : UserControl
     {
-        public ForgotPassword()
+        public LoginView()
         {
             InitializeComponent();
         }

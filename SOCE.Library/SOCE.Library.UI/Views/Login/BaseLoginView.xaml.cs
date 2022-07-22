@@ -14,11 +14,11 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for Login.xaml
+    /// Interaction logic for BaseLogin.xaml
     /// </summary>
-    public partial class Login : UserControl
+    public partial class BaseLoginView : UserControl
     {
-        public Login()
+        public BaseLoginView()
         {
             InitializeComponent();
         }

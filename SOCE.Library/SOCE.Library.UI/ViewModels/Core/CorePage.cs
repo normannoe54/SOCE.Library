@@ -4,10 +4,9 @@ using System.Text;
 
 namespace SOCE.Library.UI.ViewModels
 {
-    public enum ApplicationPage
+    public enum CorePage
     {
         Login = 1,
-        ForgotPassword = 2,
-        Signup = 3,
+        Portal = 2
     }
 }

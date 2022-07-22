@@ -8,10 +8,10 @@ using System.Windows;
 
 namespace SOCE.Library.UI.ViewModels
 {
-    public class ApplicationInstance : BaseVM, IApplicationInstance
+    public class CoreAI : BaseVM, ICoreAI
     {
-        private BaseVM _currentPage { get; set; }
-        public BaseVM CurrentPage
+        private BaseAI _currentPage { get; set; }
+        public BaseAI CurrentPage
         {
             get
             {
@@ -24,29 +24,23 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public ICommand UpdateMWCommand { get; set; }
-
         public ICommand CloseCommand { get; set; }
 
-        public ApplicationInstance()
+        public CoreAI()
         {
-            CurrentPage = new LoginVM();
-            UpdateMWCommand = new RelayCommand<ApplicationPage>(GoToPage);
+            CurrentPage = IoCLogin.Application as BaseAI;
             CloseCommand = new RelayCommand(CloseWindow);
         }
 
-        public void GoToPage(ApplicationPage page)
+        public void GoToPage(CorePage page)
         {
             switch (page)
             {
-                case ApplicationPage.Login:
-                    CurrentPage = new LoginVM();
+                case CorePage.Login:
+                    CurrentPage = IoCLogin.Application as BaseAI;
                     break;
-                case ApplicationPage.ForgotPassword:
-                    CurrentPage = new ForgotPasswordVM();
-                    break;
-                case ApplicationPage.Signup:
-                    CurrentPage = new SignupVM();
+                case CorePage.Portal:
+                    CurrentPage = IoCPortal.Application as BaseAI;
                     break;
             }
         }

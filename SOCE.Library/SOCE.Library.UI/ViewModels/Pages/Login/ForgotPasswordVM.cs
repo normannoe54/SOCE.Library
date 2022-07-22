@@ -29,7 +29,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public ForgotPasswordVM()
         {
-            this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
+            this.GoToNewViewCommand = new RelayCommand<LoginPage>(GoToViewCommand.GoToPageWrapper);
             this.SendEmailCommand = new RelayCommand<ForgotPassRequestModel>(AccountCommand.SendForgotEmail);
         }
     }

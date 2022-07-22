@@ -7,9 +7,9 @@ namespace SOCE.Library.UI
 {
     public static class GoToViewCommand
     {
-        public static void GoToPageWrapper(ApplicationPage page)
+        public static void GoToPageWrapper(LoginPage page)
         {
-            IoC.Application.GoToPage(page);
+            IoCLogin.Application.GoToPage(page);
         }
     }
 }

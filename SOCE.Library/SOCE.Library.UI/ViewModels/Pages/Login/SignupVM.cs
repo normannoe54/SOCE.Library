@@ -43,7 +43,7 @@ namespace SOCE.Library.UI.ViewModels
             //Register.ConfirmPassword = "pass123";
             Register.AcceptTerms = true;
             //SignUpMessage = "Testing Message";
-            this.GoToNewViewCommand = new RelayCommand<ApplicationPage>(GoToViewCommand.GoToPageWrapper);
+            this.GoToNewViewCommand = new RelayCommand<LoginPage>(GoToViewCommand.GoToPageWrapper);
             this.RegisterCommand = new RelayCommand<RegisterRequestModel>(RegisterCom);
         }
 
@@ -66,8 +66,8 @@ namespace SOCE.Library.UI.ViewModels
             if (response.StatusCode == System.Net.HttpStatusCode.OK)
             {
                 //Launch login page with message saying "Account successfully registered, sign in here" - TODO
-                GoToViewCommand.GoToPageWrapper(ApplicationPage.Login);
-                LoginVM loginvm = IoC.Application.CurrentPage as LoginVM;
+                GoToViewCommand.GoToPageWrapper(LoginPage.Login);
+                LoginVM loginvm = IoCLogin.Application.CurrentPage as LoginVM;
                 loginvm.LoginMessage = $"Account has been created, {Environment.NewLine} verify email to login.";
             }
             else

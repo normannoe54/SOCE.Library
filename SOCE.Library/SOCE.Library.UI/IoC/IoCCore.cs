@@ -7,15 +7,15 @@ using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI
 {
-    public static class IoC
+    public static class IoCCore
     {
         public static WindsorContainer Container { get; set; }
-        public static IApplicationInstance Application { get; set; }
-        static IoC()
+        public static ICoreAI Application { get; set; }
+        static IoCCore()
         {
             Container = new WindsorContainer();
-            Container.Register(Component.For<IApplicationInstance>().ImplementedBy<ApplicationInstance>());
-            Application = Container.Resolve<IApplicationInstance>();
+            Container.Register(Component.For<ICoreAI>().ImplementedBy<CoreAI>());
+            Application = Container.Resolve<ICoreAI>();
         }
     }
 }
