@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SOCE.Library.UI.Views
+namespace SOCE.Library.UI.Views.Portal
 {
     /// <summary>
-    /// Interaction logic for ForgotPassword.xaml
+    /// Interaction logic for EmployeeDataView.xaml
     /// </summary>
-    public partial class ForgotPasswordView : UserControl
+    public partial class EmployeeDataView : UserControl
     {
-        public ForgotPasswordView()
+        public EmployeeDataView()
         {
             InitializeComponent();
         }

@@ -8,13 +8,13 @@
 
   <ItemGroup>
     <None Remove="Resources\building.jpg" />
+    <None Remove="Resources\SOCEIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Helpers\Validation\" />
     <Folder Include="Models\" />
-    <Folder Include="ViewModels\Pages\NewFolder\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -32,6 +32,7 @@
 
   <ItemGroup>
     <Resource Include="Resources\building.jpg" />
+    <Resource Include="Resources\SOCEIcon.png" />
   </ItemGroup>
 
   <ItemGroup>

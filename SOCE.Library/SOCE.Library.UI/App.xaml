@@ -5,7 +5,7 @@
              xmlns:views="clr-namespace:SOCE.Library.UI.Views"
              xmlns:viewmodels="clr-namespace:SOCE.Library.UI.ViewModels"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"         
-             StartupUri="Views/ShellView.xaml">
+             StartupUri="Views/Shell/ShellView.xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -58,7 +58,7 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#F7F6F4" />
-                        <Setter Property="Foreground" Value="Red" />
+                        <Setter Property="Foreground" Value="DarkRed" />
                     </Trigger>
                 </Style.Triggers>
             </Style>

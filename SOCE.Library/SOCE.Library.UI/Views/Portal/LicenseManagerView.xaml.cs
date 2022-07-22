@@ -16,9 +16,9 @@ namespace SOCE.Library.UI.Views.Portal
     /// <summary>
     /// Interaction logic for LiscenceManagerView.xaml
     /// </summary>
-    public partial class LiscenceManagerView : UserControl
+    public partial class LicenseManagerView : UserControl
     {
-        public LiscenceManagerView()
+        public LicenseManagerView()
         {
             InitializeComponent();
         }

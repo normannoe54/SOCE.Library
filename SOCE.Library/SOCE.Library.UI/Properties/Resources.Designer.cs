@@ -69,5 +69,15 @@ namespace SOCE.Library.UI.Properties {
                 return ((byte[])(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] SOCEIcon {
+            get {
+                object obj = ResourceManager.GetObject("SOCEIcon", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
