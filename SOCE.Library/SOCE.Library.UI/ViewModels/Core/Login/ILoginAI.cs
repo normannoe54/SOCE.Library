@@ -9,7 +9,6 @@ namespace SOCE.Library.UI.ViewModels
 {
     public interface ILoginAI : IBaseAI
     {
-        //BaseVM CurrentPage { get; set; }
         void GoToPage(LoginPage page);
         ICommand UpdateMWCommand { get; set; }
     }

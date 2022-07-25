@@ -7,14 +7,13 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Resources\building.jpg" />
+    <None Remove="Resources\AMZPicture.png" />
     <None Remove="Resources\SOCEIcon.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Converters\" />
     <Folder Include="Helpers\Validation\" />
-    <Folder Include="Models\" />
   </ItemGroup>
 
   <ItemGroup>
@@ -31,7 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\building.jpg" />
+    <Resource Include="Resources\AMZPicture.png" />
     <Resource Include="Resources\SOCEIcon.png" />
   </ItemGroup>
 

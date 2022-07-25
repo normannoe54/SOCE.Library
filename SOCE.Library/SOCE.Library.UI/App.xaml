@@ -16,21 +16,40 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type viewmodels:LoginVM}">
-                <views:LoginView/>
+            <DataTemplate DataType="{x:Type viewmodels:EmployeeDataVM}">
+                <views:EmployeeDataView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
-                <views:ForgotPasswordView/>
+            <DataTemplate DataType="{x:Type viewmodels:EmployeeVM}">
+                <views:EmployeeView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:SignupVM}">
-                <views:SignupView/>
+            <DataTemplate DataType="{x:Type viewmodels:HomeViewVM}">
+                <views:HomeView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
+                <views:LicenseManagerView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:ProjectDataVM}">
+                <views:ProjectDataView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
+                <views:ResourcesView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:TimesheetVM}">
+                <views:TimesheetView/>
+            </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">
                 <views:ShellPortalView/>
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:LoginAI}">
                 <views:ShellLoginView/>
             </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:LoginVM}">
+                <views:LoginView/>
+            </DataTemplate>
+
+            <SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>
 
             <Style x:Key="menuTitle" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="#ffffff" />

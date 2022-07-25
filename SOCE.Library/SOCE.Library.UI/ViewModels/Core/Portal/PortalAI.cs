@@ -10,25 +10,48 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class PortalAI : BaseAI, IPortalAI
     {
+        public ICommand GoToNewViewCommand { get; set; }
+
+        public ICommand GoToLoginCommand { get; set; }
+
         public PortalAI()
         {
-            CurrentPage = new LoginVM();
+            CurrentPage = new HomeViewVM();
+            GoToNewViewCommand = new RelayCommand<PortalPage>(GoToPage);
+            GoToLoginCommand = new RelayCommand(GoToLogin);
         }
 
         public void GoToPage(PortalPage page)
         {
             switch (page)
             {
-                case PortalPage.Login:
-                    CurrentPage = new LoginVM();
+                case PortalPage.Home:
+                    CurrentPage = new HomeViewVM();
                     break;
-                case PortalPage.ForgotPassword:
-                    CurrentPage = new ForgotPasswordVM();
+                case PortalPage.Employee:
+                    CurrentPage = new EmployeeVM();
                     break;
-                case PortalPage.Signup:
-                    CurrentPage = new SignupVM();
+                case PortalPage.EmployeeData:
+                    CurrentPage = new EmployeeDataVM();
+                    break;
+                case PortalPage.Timesheet:
+                    CurrentPage = new TimesheetVM();
+                    break;
+                case PortalPage.Resources:
+                    CurrentPage = new ResourcesVM();
+                    break;
+                case PortalPage.ProjectData:
+                    CurrentPage = new ProjectDataVM();
+                    break;
+                case PortalPage.LicenseManager:
+                    CurrentPage = new LicenseManagerVM();
                     break;
             }
+        }
+
+        public void GoToLogin()
+        {
+            IoCCore.Application.CurrentPage = IoCLogin.Application as BaseAI;          
         }
     }
 }

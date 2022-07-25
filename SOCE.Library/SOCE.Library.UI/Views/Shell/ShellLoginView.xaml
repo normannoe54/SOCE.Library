@@ -5,8 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-        mc:Ignorable="d"
-        Background="Purple">
+        mc:Ignorable="d">
     <Grid>
         <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="0">
             <Grid>
@@ -15,10 +14,8 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Image Grid.Column="0" Source="/SOCE.Library.UI;component/Resources/building.jpg" Stretch="UniformToFill"/>
-                <Grid Grid.Column="1">
-                    <ContentControl Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                </Grid>
+                <Image Grid.Column="0" Source="/SOCE.Library.UI;component/Resources/AMZPicture.png" Stretch="UniformToFill"/>
+                <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Grid>
 
         </Border>

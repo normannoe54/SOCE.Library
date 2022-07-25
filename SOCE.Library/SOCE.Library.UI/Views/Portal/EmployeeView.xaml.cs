@@ -11,7 +11,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SOCE.Library.UI.Views.Portal
+namespace SOCE.Library.UI.Views
 {
     /// <summary>
     /// Interaction logic for EmployeeView.xaml

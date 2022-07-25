@@ -63,9 +63,9 @@ namespace SOCE.Library.UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
-        internal static byte[] building {
+        internal static byte[] AMZPicture {
             get {
-                object obj = ResourceManager.GetObject("building", resourceCulture);
+                object obj = ResourceManager.GetObject("AMZPicture", resourceCulture);
                 return ((byte[])(obj));
             }
         }

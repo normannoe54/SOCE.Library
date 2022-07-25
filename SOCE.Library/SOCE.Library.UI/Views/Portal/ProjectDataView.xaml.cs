@@ -11,14 +11,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace SOCE.Library.UI.Views.Portal
+namespace SOCE.Library.UI.Views
 {
     /// <summary>
     /// Interaction logic for ManageProjectView.xaml
     /// </summary>
-    public partial class ManageProjectsView : UserControl
+    public partial class ProjectDataView : UserControl
     {
-        public ManageProjectsView()
+        public ProjectDataView()
         {
             InitializeComponent();
         }

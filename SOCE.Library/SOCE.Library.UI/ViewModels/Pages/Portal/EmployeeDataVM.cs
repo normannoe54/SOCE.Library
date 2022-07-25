@@ -1,10 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Windows.Input;
+using SOCE.Library.Models.Accounts;
 
-namespace SOCE.Library.UI.ViewModels.Pages.Portal
+
+namespace SOCE.Library.UI.ViewModels
 {
-    class EmployeeDataVM
+    public class EmployeeDataVM : BaseVM
     {
+
+        public EmployeeDataVM()
+        {
+        }
     }
 }

@@ -6,9 +6,9 @@
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Height="780" Width="1280" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency ="True" Background="Transparent">
+        Height="900" Width="1800" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency ="True" Background="Transparent">
     <Grid>
-        <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="0">
+        <Border  BorderThickness="0">
             <Grid>
                 <Grid>
                     <!--<Grid.RowDefinitions>

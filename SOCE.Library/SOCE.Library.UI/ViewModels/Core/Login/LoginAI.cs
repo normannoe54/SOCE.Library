@@ -10,20 +10,6 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class LoginAI : BaseAI, ILoginAI
     {
-        //private BaseVM _currentPage { get; set; }
-        //public BaseVM CurrentPage
-        //{
-        //    get
-        //    {
-        //        return _currentPage;
-        //    }
-        //    set
-        //    {
-        //        _currentPage = value;
-        //        RaisePropertyChanged(nameof(CurrentPage));
-        //    }
-        //}
-
         public ICommand UpdateMWCommand { get; set; }
 
         public LoginAI()

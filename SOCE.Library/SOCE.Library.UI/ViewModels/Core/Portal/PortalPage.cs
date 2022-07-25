@@ -6,8 +6,13 @@ namespace SOCE.Library.UI.ViewModels
 {
     public enum PortalPage
     {
-        Login = 1,
-        ForgotPassword = 2,
-        Signup = 3,
+        Home = 1,
+        Employee = 2,
+        EmployeeData = 3,
+        ProjectData = 4,
+        LicenseManager = 5,
+        Resources = 6,
+        Timesheet = 7,
+
     }
 }

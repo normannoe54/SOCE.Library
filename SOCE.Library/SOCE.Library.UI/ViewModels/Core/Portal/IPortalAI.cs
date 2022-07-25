@@ -9,7 +9,8 @@ namespace SOCE.Library.UI.ViewModels
 {
     public interface IPortalAI: IBaseAI
     {
-        //BaseVM CurrentPage { get; set; }
+        ICommand GoToNewViewCommand { get; set; }
+
         void GoToPage(PortalPage page);
     }
 }
