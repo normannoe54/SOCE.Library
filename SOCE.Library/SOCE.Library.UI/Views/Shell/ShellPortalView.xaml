@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-         Height="780" Width="1500">
+         >
 
     <!--<Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
@@ -81,15 +81,17 @@
                                 <TextBlock Text="License Manager" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>
-
-                        <TextBlock Text="Administration" Style="{StaticResource menuTitle}"/>
-
+                        
                         <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Person" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Employees" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>
+                        
+                        <TextBlock Text="Administration" Style="{StaticResource menuTitle}"/>
+
+                        
 
                         <Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData">
                             <StackPanel Orientation="Horizontal">

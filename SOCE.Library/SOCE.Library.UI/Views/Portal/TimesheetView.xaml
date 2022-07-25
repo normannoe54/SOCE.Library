@@ -3,10 +3,182 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:SOCE.Library.UI.Views"
-             mc:Ignorable="d" 
-             Background="Aqua">
-    <Grid>
-            
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Grid.Column="1" Margin="30 20 20 20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!--Page Title-->
+        <TextBlock Text="Timesheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Margin="0 20 0 0" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
+
+
+        <!--Seprator-->
+        <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
+
+        <!--Counter Title-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <TextBlock Text="January 2019" FontSize="18" FontWeight="SemiBold"/>
+            <TextBlock Margin="10 0 0 0" Text="Week 04" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Gray"/>
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Previous"  Foreground="Gray"/>
+                </StackPanel>
+            </Button>
+            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Current" Margin="0 0 10 0"  Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Gray"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Gray"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+
+        <Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <!--<StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>-->
+            <TextBlock Text="Work Report"/>
+            <!--</StackPanel>-->
+        </Button>
+
+        <Grid Grid.Row="3" Margin="0 10 0 -30">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="21 Mon" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Content="22 Tue" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="23 Wed" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" Content="24 Thu" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Content="25 Fri" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Content="26 Sat" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" Content="27 Sun" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+            <Label Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Total" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+
+        </Grid>
+
+        <DataGrid Grid.Row="4"
+                  Background="Transparent"  
+                  AlternationCount="2147483647" 
+                  ItemsSource="{Binding Rowdata, Mode=TwoWay}"
+                  SelectedItem="{Binding SelectedRowItem , Mode=TwoWay}"
+                  CanUserAddRows="False" 
+                  AutoGenerateColumns="False"
+                  GridLinesVisibility="None">
+            <DataGrid.Resources>
+                <Style TargetType="DataGridCell" x:Name="Test">
+                    <Style.Setters>
+                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                        <Setter Property="TextBlock.Height" Value="40" />
+                        <Setter Property="TextBlock.VerticalAlignment" Value="Bottom" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                    <Border BorderBrush="LightGray" BorderThickness="1">
+                                        <Grid Background="{TemplateBinding Background}">
+                                            <ContentPresenter VerticalAlignment="Center" />
+                                        </Grid>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style.Setters>
+                    <!--<Style.Triggers>
+                        <Trigger Property="IsSelected" Value="True">
+                            <Setter Property="Background" Value="{x:Null}" />
+                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                        </Trigger>
+                    </Style.Triggers>-->
+                </Style>
+            </DataGrid.Resources>
+            <DataGrid.ItemContainerStyle>
+                <Style TargetType="DataGridRow">
+                    <Style.Triggers>
+                        <Trigger Property="ItemsControl.AlternationIndex" Value="0">
+                            <Setter Property="Background" Value="LightGray"/>
+                            <Setter Property="IsEnabled" Value="False"/>
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.ItemContainerStyle>
+            <DataGrid.Columns>
+                <!--<DataGridTextColumn Header="Project" Binding="{Binding ProjectName}" Width="*"/>
+                <DataGridTextColumn Header="Project Num" Binding="{Binding JobNum}" Width="*"/>
+                <DataGridTextColumn Header="21 Sun." Binding="{Binding SundayTime}" Width="*"/>
+                <DataGridTextColumn Header="22 Mon." Binding="{Binding MondayTime}" Width="*"/>
+                <DataGridTextColumn Header="23 Tues." Binding="{Binding TuesdayTime}"  Width="*"/>
+                <DataGridTextColumn Header="24 Wed." Binding="{Binding WednesdayTime}" Width="*"/>
+                <DataGridTextColumn Header="25 Thurs." Binding="{Binding ThursdayTime}" Width="*"/>
+                <DataGridTextColumn Header="26 Fri." Binding="{Binding FridayTime}" Width="*"/>
+                <DataGridTextColumn Header="27 Sat." Binding="{Binding SaturdayTime}"  Width="*"/>
+                <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>-->
+                <!-- use custom combo box column to get better combos. Use ItemsSourceBinding as your binding template to be applied to each combo -->
+                <!--<materialDesign:DataGridComboBoxColumn 
+                    IsEditable="True" 
+                    Width="100" 
+                    SelectedValueBinding="{Binding ProjectModel}" 
+                    ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ProjectList}">
+                    --><!--Setting the editing element style allows access to all of the combo box's properties
+                      <materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
+                          <Style TargetType="ComboBox" BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly={x:Type ComboBox}, ResourceId=MaterialDataGridComboBoxColumnEditingStyle}}" >
+                              <Setter Property="IsEditable" Value="True" />
+                          </Style>
+                      </materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
+                      --><!--
+                </materialDesign:DataGridComboBoxColumn>-->
+
+
+                <DataGridTemplateColumn IsReadOnly="True" Width="2*">
+                    <DataGridTemplateColumn.CellTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal" >
+                                <TextBlock Text="{Binding ProjectModel.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold"/>
+                                <TextBlock Text="{Binding ProjectModel.JobNum, StringFormat='[ {0} ]'}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </DataGridTemplateColumn.CellTemplate>
+                </DataGridTemplateColumn>
+                <materialDesign:DataGridTextColumn Binding="{Binding MondayTime}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding TuesdayTime}"  Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding WednesdayTime}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding ThursdayTime}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding FridayTime}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding SaturdayTime}"  Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding SundayTime}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding Total}" IsReadOnly="True"  Width="*">
+                    <DataGridTextColumn.CellStyle>
+                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                            <Setter Property="Background" Value="LightGray" />
+                            <Setter Property="IsEnabled" Value="False" />
+                        </Style>
+                    </DataGridTextColumn.CellStyle>
+                </materialDesign:DataGridTextColumn>
+            </DataGrid.Columns>
+        </DataGrid>
     </Grid>
 </UserControl>

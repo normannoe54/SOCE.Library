@@ -17,7 +17,19 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _employees = value;
+                TextEmployees = Employees.Count + " Total";
                 RaisePropertyChanged(nameof(Employees));
+            }
+        }
+
+        private string _textEmployees;
+        public string TextEmployees
+        {
+            get { return _textEmployees; }
+            set
+            {
+                _textEmployees = value;
+                RaisePropertyChanged(nameof(TextEmployees));
             }
         }
 

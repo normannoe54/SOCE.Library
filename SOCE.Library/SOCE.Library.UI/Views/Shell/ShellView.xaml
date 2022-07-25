@@ -16,7 +16,7 @@
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>-->
                     <Button Panel.ZIndex="2" VerticalAlignment="Top"  HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Close"  Command="{Binding CloseCommand}">
-                        <materialDesign:PackIcon Kind="Close" Foreground="Crimson"/>
+                        <materialDesign:PackIcon Kind="Close" Foreground="{StaticResource SOCERed}"/>
                     </Button>
                     <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>

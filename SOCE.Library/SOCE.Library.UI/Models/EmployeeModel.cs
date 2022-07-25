@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace SOCE.Library.UI
 {
-    public class EmployeeModel
+    public class EmployeeModel 
     {
         public string Character { get; set; }
         public Brush BgColor { get; set; }
