@@ -6,13 +6,15 @@ using System.Windows.Input;
 using SOCE.Library.Models.Accounts;
 using System.Windows.Media;
 using System.Linq;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace SOCE.Library.UI.ViewModels
 {
     public class TimesheetVM : BaseVM
     {
-        private ObservableCollection<TimesheetRowModel> _rowdata;
-        public ObservableCollection<TimesheetRowModel> Rowdata
+        private TrulyObservableCollection<TimesheetRowModel> _rowdata = new TrulyObservableCollection<TimesheetRowModel>();
+        public TrulyObservableCollection<TimesheetRowModel> Rowdata
         {
             get { return _rowdata; }
             set
@@ -34,29 +36,50 @@ namespace SOCE.Library.UI.ViewModels
         }
 
 
-        public TimesheetRowModel SelectedRowItem
-        {
-            set
-            {
-                SumTotal();
-            }
-        }
+        //public TimesheetRowModel SelectedRowItem
+        //{
+        //    set
+        //    {
+        //        SumTotal();
+        //    }
+        //}
 
 
         public TimesheetVM()
-        {
-            ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
+        {          
+            TrulyObservableCollection<TimesheetRowModel> members = new TrulyObservableCollection<TimesheetRowModel>();
             members.Add(new TimesheetRowModel {ProjectModel = new ProjectModel { ProjectName = "Total", JobNum = null }, MondayTime = 0, TuesdayTime = 0, WednesdayTime = 0, ThursdayTime = 0, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
             members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
             members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
             members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
             members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 }); 
             Rowdata = members;
-            SumTotal();
+            CheckProcess();
+            Rowdata.CollectionChanged += ContentCollectionChanged;
         }
 
-        private void SumTotal()
+        public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Rowdata.CollectionChanged -= ContentCollectionChanged;
+            CheckProcess();
+            Rowdata.CollectionChanged += ContentCollectionChanged;
+        }
+
+        private void CheckProcess()
+        {
+            SumTable();
+
+            var lastitem = Rowdata.Last();
+
+            if (!String.IsNullOrEmpty(lastitem.ProjectModel?.ProjectName))
+            {
+                Rowdata.Add(new TimesheetRowModel());
+            }
+
+        }
+
+        private void SumTable()
         {
             double m = 0;
             double tu = 0;
@@ -66,13 +89,13 @@ namespace SOCE.Library.UI.ViewModels
             double sat = 0;
             double sun = 0;
 
-            for (int i = 1; i< Rowdata.Count;i++)
+            for (int i = 1; i < Rowdata.Count; i++)
             {
-                m +=Rowdata[i].MondayTime;
+                m += Rowdata[i].MondayTime;
                 tu += +Rowdata[i].TuesdayTime;
                 w += Rowdata[i].WednesdayTime;
                 th += Rowdata[i].ThursdayTime;
-                f +=Rowdata[i].FridayTime;
+                f += Rowdata[i].FridayTime;
                 sat += Rowdata[i].SaturdayTime;
                 sun += Rowdata[i].SundayTime;
             }
@@ -84,7 +107,6 @@ namespace SOCE.Library.UI.ViewModels
             Rowdata[0].FridayTime = f;
             Rowdata[0].SaturdayTime = sat;
             Rowdata[0].SundayTime = sun;
-
         }
 
         //    List<TimesheetRowModel> curr = Rowdata;

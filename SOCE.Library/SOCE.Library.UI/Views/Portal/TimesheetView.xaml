@@ -18,7 +18,6 @@
         <!--Page Title-->
         <TextBlock Text="Timesheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Margin="0 20 0 0" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
 
-
         <!--Seprator-->
         <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
 
@@ -49,7 +48,6 @@
             </Button>
         </StackPanel>
 
-
         <Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
             <!--<StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>-->
@@ -57,7 +55,7 @@
             <!--</StackPanel>-->
         </Button>
 
-        <Grid Grid.Row="3" Margin="0 10 0 -30">
+        <Grid Grid.Row="3" Margin="0 10 0 -20">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -70,7 +68,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
             <Label Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="21 Mon" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
             <Label Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Content="22 Tue" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
             <Label Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="23 Wed" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
@@ -79,15 +76,14 @@
             <Label Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Content="26 Sat" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
             <Label Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" Content="27 Sun" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
             <Label Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Total" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-
         </Grid>
 
         <DataGrid Grid.Row="4"
                   Background="Transparent"  
                   AlternationCount="2147483647" 
                   ItemsSource="{Binding Rowdata, Mode=TwoWay}"
-                  SelectedItem="{Binding SelectedRowItem , Mode=TwoWay}"
-                  CanUserAddRows="False" 
+                  CanUserAddRows="False"
+                  CanUserSortColumns="False"
                   AutoGenerateColumns="False"
                   GridLinesVisibility="None">
             <DataGrid.Resources>
@@ -101,7 +97,7 @@
                                 <ControlTemplate TargetType="{x:Type DataGridCell}">
                                     <Border BorderBrush="LightGray" BorderThickness="1">
                                         <Grid Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center" />
+                                            <ContentPresenter VerticalAlignment="Center"/>
                                         </Grid>
                                     </Border>
                                 </ControlTemplate>
@@ -127,54 +123,28 @@
                 </Style>
             </DataGrid.ItemContainerStyle>
             <DataGrid.Columns>
-                <!--<DataGridTextColumn Header="Project" Binding="{Binding ProjectName}" Width="*"/>
-                <DataGridTextColumn Header="Project Num" Binding="{Binding JobNum}" Width="*"/>
-                <DataGridTextColumn Header="21 Sun." Binding="{Binding SundayTime}" Width="*"/>
-                <DataGridTextColumn Header="22 Mon." Binding="{Binding MondayTime}" Width="*"/>
-                <DataGridTextColumn Header="23 Tues." Binding="{Binding TuesdayTime}"  Width="*"/>
-                <DataGridTextColumn Header="24 Wed." Binding="{Binding WednesdayTime}" Width="*"/>
-                <DataGridTextColumn Header="25 Thurs." Binding="{Binding ThursdayTime}" Width="*"/>
-                <DataGridTextColumn Header="26 Fri." Binding="{Binding FridayTime}" Width="*"/>
-                <DataGridTextColumn Header="27 Sat." Binding="{Binding SaturdayTime}"  Width="*"/>
-                <DataGridTextColumn Header="Total" Binding="{Binding Total}" Width="*"/>-->
-                <!-- use custom combo box column to get better combos. Use ItemsSourceBinding as your binding template to be applied to each combo -->
-                <!--<materialDesign:DataGridComboBoxColumn 
-                    IsEditable="True" 
-                    Width="100" 
-                    SelectedValueBinding="{Binding ProjectModel}" 
-                    ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ProjectList}">
-                    --><!--Setting the editing element style allows access to all of the combo box's properties
-                      <materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
-                          <Style TargetType="ComboBox" BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly={x:Type ComboBox}, ResourceId=MaterialDataGridComboBoxColumnEditingStyle}}" >
-                              <Setter Property="IsEditable" Value="True" />
-                          </Style>
-                      </materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
-                      --><!--
-                </materialDesign:DataGridComboBoxColumn>-->
-
-
                 <DataGridTemplateColumn IsReadOnly="True" Width="2*">
                     <DataGridTemplateColumn.CellTemplate>
                         <DataTemplate>
-                            <StackPanel Orientation="Horizontal" >
-                                <TextBlock Text="{Binding ProjectModel.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold"/>
-                                <TextBlock Text="{Binding ProjectModel.JobNum, StringFormat='[ {0} ]'}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular"/>
+                            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
+                                <TextBlock Text="{Binding ProjectModel.JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                <TextBlock Text="{Binding ProjectModel.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
                             </StackPanel>
                         </DataTemplate>
                     </DataGridTemplateColumn.CellTemplate>
                 </DataGridTemplateColumn>
-                <materialDesign:DataGridTextColumn Binding="{Binding MondayTime}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding TuesdayTime}"  Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding WednesdayTime}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding ThursdayTime}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding FridayTime}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding SaturdayTime}"  Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding SundayTime}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding Total}" IsReadOnly="True"  Width="*">
+                <materialDesign:DataGridTextColumn Binding="{Binding MondayTime, StringFormat= ' {0} h'}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding TuesdayTime, StringFormat= ' {0} h'}"  Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding WednesdayTime, StringFormat= ' {0} h'}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding ThursdayTime, StringFormat= ' {0} h'}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding FridayTime, StringFormat= ' {0} h'}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding SaturdayTime, StringFormat= ' {0} h'}"  Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding SundayTime, StringFormat= ' {0} h'}" Width="*"/>
+                <materialDesign:DataGridTextColumn Binding="{Binding Total, StringFormat= ' {0} h'}" IsReadOnly="True" Width="*">
                     <DataGridTextColumn.CellStyle>
                         <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                            <Setter Property="Background" Value="LightGray" />
-                            <Setter Property="IsEnabled" Value="False" />
+                            <Setter Property="Background" Value="LightGray"/>
+                            <Setter Property="IsEnabled" Value="False"/>
                         </Style>
                     </DataGridTextColumn.CellStyle>
                 </materialDesign:DataGridTextColumn>

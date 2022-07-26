@@ -29,6 +29,19 @@ namespace SOCE.Library.UI
             }
         }
 
+        public string JobNumStr
+        {
+            get
+            {
+                string jobnumstr = "";
+                if (JobNum!=null)
+                {
+                    jobnumstr = $"[{JobNum?.ToString()}]";
+                }
+                return jobnumstr;
+            }
+        }
+
         private bool _isAdservice;
         public bool IsAdservice
         {
