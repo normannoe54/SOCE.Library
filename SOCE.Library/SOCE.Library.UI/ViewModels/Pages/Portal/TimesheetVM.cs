@@ -8,11 +8,17 @@ using System.Windows.Media;
 using System.Linq;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
     public class TimesheetVM : BaseVM
     {
+        public ICommand AddRowCommand { get; set; }
+        public ICommand WorkReportCommand { get; set; }
+        public ICommand SubmitTimeSheetCommand { get; set; }
+        public ICommand RemoveRowCommand { get; set; }
+
         private TrulyObservableCollection<TimesheetRowModel> _rowdata = new TrulyObservableCollection<TimesheetRowModel>();
         public TrulyObservableCollection<TimesheetRowModel> Rowdata
         {
@@ -35,47 +41,85 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private TimesheetRowModel _selectedRow = new TimesheetRowModel();
+        public TimesheetRowModel SelectedRow
+        {
+            get { return _selectedRow; }
+            set
+            {
+                _selectedRow = value;
+                RaisePropertyChanged(nameof(SelectedRow));
+            }
+        }
 
-        //public TimesheetRowModel SelectedRowItem
-        //{
-        //    set
-        //    {
-        //        SumTotal();
-        //    }
-        //}
-
+        private TimesheetRowModel _totalHeader = new TimesheetRowModel();
+        public TimesheetRowModel TotalHeader
+        {
+            get { return _totalHeader; }
+            set
+            {
+                _totalHeader = value;
+                RaisePropertyChanged(nameof(TotalHeader));
+            }
+        }
 
         public TimesheetVM()
-        {          
+        {
+            //For demonstration purposes
+            List<ProjectModel> pm = new List<ProjectModel>();
+            pm.Add(new ProjectModel { ProjectName = "DSD1 Delivery Station", JobNum = 223501, Description = "", IsAdservice = false });
+            pm.Add(new ProjectModel { ProjectName = "East 55th St.", JobNum = 228103, Description = "", IsAdservice = false });
+            pm.Add(new ProjectModel { ProjectName = "Byers Subaru", JobNum = 220103, Description = "", IsAdservice = false });
+            pm.Add(new ProjectModel { ProjectName = "CMH086", JobNum = 211116, Description = "", IsAdservice = false });
+            pm.Add(new ProjectModel { ProjectName = "John Hinderer", JobNum = 210109.2, Description = "", IsAdservice = true });
+            pm.Add(new ProjectModel { ProjectName = "Germain Ford", JobNum = 210118, Description = "", IsAdservice = false });
+            pm.Add(new ProjectModel { ProjectName = "Germain Ford", JobNum = 210118.3, Description = "", IsAdservice = true });
+            pm.Add(new ProjectModel { ProjectName = "ABQ TNS", JobNum = 211125.6, Description = "", IsAdservice = true });
+            ProjectList = new ObservableCollection<ProjectModel>(pm);
+
+
             TrulyObservableCollection<TimesheetRowModel> members = new TrulyObservableCollection<TimesheetRowModel>();
-            members.Add(new TimesheetRowModel {ProjectModel = new ProjectModel { ProjectName = "Total", JobNum = null }, MondayTime = 0, TuesdayTime = 0, WednesdayTime = 0, ThursdayTime = 0, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 }); 
+            //members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "Total", JobNum = null }, MondayTime = 0, TuesdayTime = 0, WednesdayTime = 0, ThursdayTime = 0, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
             Rowdata = members;
-            CheckProcess();
+
+            this.AddRowCommand = new RelayCommand(AddRowToCollection);
+            this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
+            this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
+            this.RemoveRowCommand = new RelayCommand(RemoveRow);
+            SumTable();
             Rowdata.CollectionChanged += ContentCollectionChanged;
         }
 
         public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             Rowdata.CollectionChanged -= ContentCollectionChanged;
-            CheckProcess();
+            SumTable();
             Rowdata.CollectionChanged += ContentCollectionChanged;
         }
 
-        private void CheckProcess()
+        private void AddRowToCollection()
         {
-            SumTable();
+            Rowdata.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "" } });
+        }
 
-            var lastitem = Rowdata.Last();
+        private void RemoveRow()
+        {
+            Rowdata.Remove(SelectedRow);
+        }
 
-            if (!String.IsNullOrEmpty(lastitem.ProjectModel?.ProjectName))
-            {
-                Rowdata.Add(new TimesheetRowModel());
-            }
+        private void SubmitTimesheet()
+        {
+
+        }
+
+
+        private void ExportWorkReport()
+        {
 
         }
 
@@ -89,7 +133,7 @@ namespace SOCE.Library.UI.ViewModels
             double sat = 0;
             double sun = 0;
 
-            for (int i = 1; i < Rowdata.Count; i++)
+            for (int i = 0; i < Rowdata.Count; i++)
             {
                 m += Rowdata[i].MondayTime;
                 tu += +Rowdata[i].TuesdayTime;
@@ -100,13 +144,13 @@ namespace SOCE.Library.UI.ViewModels
                 sun += Rowdata[i].SundayTime;
             }
 
-            Rowdata[0].MondayTime = m;
-            Rowdata[0].TuesdayTime = tu;
-            Rowdata[0].WednesdayTime = w;
-            Rowdata[0].ThursdayTime = th;
-            Rowdata[0].FridayTime = f;
-            Rowdata[0].SaturdayTime = sat;
-            Rowdata[0].SundayTime = sun;
+            TotalHeader.MondayTime = m;
+            TotalHeader.TuesdayTime = tu;
+            TotalHeader.WednesdayTime = w;
+            TotalHeader.ThursdayTime = th;
+            TotalHeader.FridayTime = f;
+            TotalHeader.SaturdayTime = sat;
+            TotalHeader.SundayTime = sun;
         }
 
         //    List<TimesheetRowModel> curr = Rowdata;

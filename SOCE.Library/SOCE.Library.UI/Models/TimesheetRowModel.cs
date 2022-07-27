@@ -18,38 +18,16 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ProjectModel _projectModel;
-        public ProjectModel ProjectModel
+        private ProjectModel _project;
+        public ProjectModel Project
         {
-            get { return _projectModel; }
+            get { return _project; }
             set
             {
-                _projectModel = value;
-                RaisePropertyChanged(nameof(ProjectModel));
+                _project = value;
+                RaisePropertyChanged(nameof(Project));
             }
         }
-
-        //private string _projectName;
-        //public string ProjectName
-        //{
-        //    get { return _projectName; }
-        //    set
-        //    {
-        //        _projectName = value;
-        //        RaisePropertyChanged(nameof(ProjectName));
-        //    }
-        //}
-
-        //private double _jobNum;
-        //public double JobNum
-        //{
-        //    get { return _jobNum; }
-        //    set
-        //    {
-        //        _jobNum = value;
-        //        RaisePropertyChanged(nameof(JobNum));
-        //    }
-        //}
 
         private double _mondayTime;
         public double MondayTime

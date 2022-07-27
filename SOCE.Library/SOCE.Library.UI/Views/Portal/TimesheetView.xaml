@@ -11,8 +11,8 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
         </Grid.RowDefinitions>
 
         <!--Page Title-->
@@ -28,6 +28,8 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+           
+
             <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Gray"/>
@@ -49,70 +51,137 @@
         </StackPanel>
 
         <Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
-            <!--<StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>-->
-            <TextBlock Text="Work Report"/>
-            <!--</StackPanel>-->
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                <TextBlock Text="Work Report"/>
+            </StackPanel>
         </Button>
 
-        <Grid Grid.Row="3" Margin="0 10 0 -20">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="21 Mon" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Content="22 Tue" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="23 Wed" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" Content="24 Thu" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Content="25 Fri" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Content="26 Sat" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" Content="27 Sun" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-            <Label Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Total" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
-        </Grid>
+        <!--<ComboBox Grid.Row="2" materialDesign:HintAssist.Hint="Search" 
+                                      IsTextSearchEnabled="False" IsEditable="True" 
+                                      StaysOpenOnEdit="True" materialDesign:HintAssist.HintOpacity=".26"
+                                      ItemsSource="{Binding ProjectList}"
+                                      SelectedItem="{Binding Project}">
+            <ComboBox.ItemTemplate>
+                <DataTemplate DataType="ProjectModel">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                        <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ComboBox.ItemTemplate>
+        </ComboBox>-->
 
-        <DataGrid Grid.Row="4"
+
+
+
+        <!--<ListView Grid.Row="4" ItemsSource="{Binding Rowdata, Mode=TwoWay}">
+            <ListView.View>
+                <GridView>
+                    <GridViewColumn>
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <ComboBox Width="100" ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ListBox},Path=DataContext.Test}">
+                                </ComboBox>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn DisplayMemberBinding="{Binding MondayTime, StringFormat= ' {0} h'}"/>
+                    <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" />
+                    <GridViewColumn DisplayMemberBinding="{Binding Description}" Header="Description" />
+                </GridView>
+            </ListView.View>
+        </ListView>-->
+
+        <ScrollViewer Grid.Row="3">
+            <StackPanel>
+                <Grid Margin="0 10 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                            <TextBlock Text="Add Project"/>
+                        </StackPanel>
+                    </Button>
+                    <Label Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Content="21 Mon" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Content="22 Tue" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Content="23 Wed" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" Content="24 Thu" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Content="25 Fri" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Content="26 Sat" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" Content="27 Sun" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                    <Label Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Content="Total" FontSize="14" FontWeight="DemiBold" Foreground="DimGray"/>
+                </Grid>
+
+                <Grid Margin="0 10 0 -20" Background="LightGray" Height="40">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Total"  IsEnabled="False" Margin="10 0 0 0" Foreground="Gray"/>
+                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.MondayTime, StringFormat= ' {0} h'}"  Foreground="Gray"/>
+                    <TextBlock Grid.Column="3" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.TuesdayTime, StringFormat= ' {0} h'}"  Foreground="Gray"/>
+                    <TextBlock Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.WednesdayTime, StringFormat= ' {0} h'}"  Foreground="Gray"/>
+                    <TextBlock Grid.Column="5" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.ThursdayTime, StringFormat= ' {0} h'}" Foreground="Gray"/>
+                    <TextBlock Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.FridayTime, StringFormat= ' {0} h'}" Foreground="Gray"/>
+                    <TextBlock Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.SaturdayTime, StringFormat= ' {0} h'}" Foreground="Gray"/>
+                    <TextBlock Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.SundayTime, StringFormat= ' {0} h'}"  Foreground="Gray"/>
+                    <TextBlock Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.Total, StringFormat= ' {0} h'}"  Foreground="Gray"/>
+                </Grid>
+                <DataGrid
                   Background="Transparent"  
-                  AlternationCount="2147483647" 
                   ItemsSource="{Binding Rowdata, Mode=TwoWay}"
+                  SelectedItem="{Binding SelectedRow}"
                   CanUserAddRows="False"
                   CanUserSortColumns="False"
                   AutoGenerateColumns="False"
                   GridLinesVisibility="None">
-            <DataGrid.Resources>
-                <Style TargetType="DataGridCell" x:Name="Test">
-                    <Style.Setters>
-                        <Setter Property="TextBlock.TextAlignment" Value="Center" />
-                        <Setter Property="TextBlock.Height" Value="40" />
-                        <Setter Property="TextBlock.VerticalAlignment" Value="Bottom" />
-                        <Setter Property="Template">
-                            <Setter.Value>
-                                <ControlTemplate TargetType="{x:Type DataGridCell}">
-                                    <Border BorderBrush="LightGray" BorderThickness="1">
-                                        <Grid Background="{TemplateBinding Background}">
-                                            <ContentPresenter VerticalAlignment="Center"/>
-                                        </Grid>
-                                    </Border>
-                                </ControlTemplate>
-                            </Setter.Value>
-                        </Setter>
-                    </Style.Setters>
-                    <!--<Style.Triggers>
+                    <DataGrid.Resources>
+                        <Style TargetType="DataGridCell">
+                            <Style.Setters>
+                                <Setter Property="TextBlock.TextAlignment" Value="Center" />
+                                <Setter Property="TextBlock.Height" Value="40" />
+                                <Setter Property="TextBlock.VerticalAlignment" Value="Bottom" />
+                                <Setter Property="Template">
+                                    <Setter.Value>
+                                        <ControlTemplate TargetType="{x:Type DataGridCell}">
+                                            <Border BorderBrush="LightGray" BorderThickness="1">
+                                                <Grid Background="{TemplateBinding Background}">
+                                                    <ContentPresenter VerticalAlignment="Center"/>
+                                                </Grid>
+                                            </Border>
+                                        </ControlTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style.Setters>
+                            <Style.Triggers>
                         <Trigger Property="IsSelected" Value="True">
-                            <Setter Property="Background" Value="{x:Null}" />
-                            <Setter Property="BorderBrush" Value="{x:Null}" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderBrush" Value="Transparent" />
                         </Trigger>
-                    </Style.Triggers>-->
-                </Style>
-            </DataGrid.Resources>
-            <DataGrid.ItemContainerStyle>
+                    </Style.Triggers>
+                        </Style>
+                    </DataGrid.Resources>
+                    <!--<DataGrid.ItemContainerStyle>
                 <Style TargetType="DataGridRow">
                     <Style.Triggers>
                         <Trigger Property="ItemsControl.AlternationIndex" Value="0">
@@ -121,34 +190,76 @@
                         </Trigger>
                     </Style.Triggers>
                 </Style>
-            </DataGrid.ItemContainerStyle>
-            <DataGrid.Columns>
-                <DataGridTemplateColumn IsReadOnly="True" Width="2*">
-                    <DataGridTemplateColumn.CellTemplate>
-                        <DataTemplate>
-                            <StackPanel Orientation="Horizontal" Margin="10 0 0 0">
-                                <TextBlock Text="{Binding ProjectModel.JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
-                                <TextBlock Text="{Binding ProjectModel.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+            </DataGrid.ItemContainerStyle>-->
+                    <DataGrid.Columns>
+                        <DataGridTemplateColumn Width="2*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <!--<DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding Project.JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                <TextBox Text="{Binding Project.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
                             </StackPanel>
-                        </DataTemplate>
-                    </DataGridTemplateColumn.CellTemplate>
-                </DataGridTemplateColumn>
-                <materialDesign:DataGridTextColumn Binding="{Binding MondayTime, StringFormat= ' {0} h'}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding TuesdayTime, StringFormat= ' {0} h'}"  Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding WednesdayTime, StringFormat= ' {0} h'}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding ThursdayTime, StringFormat= ' {0} h'}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding FridayTime, StringFormat= ' {0} h'}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding SaturdayTime, StringFormat= ' {0} h'}"  Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding SundayTime, StringFormat= ' {0} h'}" Width="*"/>
-                <materialDesign:DataGridTextColumn Binding="{Binding Total, StringFormat= ' {0} h'}" IsReadOnly="True" Width="*">
-                    <DataGridTextColumn.CellStyle>
-                        <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
-                            <Setter Property="Background" Value="LightGray"/>
-                            <Setter Property="IsEnabled" Value="False"/>
-                        </Style>
-                    </DataGridTextColumn.CellStyle>
-                </materialDesign:DataGridTextColumn>
-            </DataGrid.Columns>
-        </DataGrid>
+                        </DataTemplate>-->
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding LoginRequest}">
+                                            <Button.Content>
+                                                <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <ComboBox materialDesign:HintAssist.Hint="Search" 
+                                      Width="200"
+                                      Margin="10 0 0 0"
+                                      VerticalAlignment="Center"
+                                      HorizontalAlignment="Left"
+                                      Foreground="Black"
+                                      Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                      IsTextSearchEnabled="False" IsEditable="True" 
+                                      StaysOpenOnEdit="True" materialDesign:HintAssist.HintOpacity=".26"
+                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.ProjectList}"
+                                      SelectedItem="{Binding Project, UpdateSourceTrigger=PropertyChanged}"
+                                      Text="{Binding Project.Name}">
+                                            <ComboBox.ItemTemplate>
+                                                <DataTemplate DataType="ProjectModel">
+                                                    <StackPanel Orientation="Horizontal">
+                                                        <TextBlock Text="{Binding JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                                        <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                                                    </StackPanel>
+                                                </DataTemplate>
+                                            </ComboBox.ItemTemplate>
+                                        </ComboBox>
+                                    </StackPanel>
+
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>
+                        <materialDesign:DataGridTextColumn Binding="{Binding MondayTime, StringFormat= ' {0} h'}" Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding TuesdayTime, StringFormat= ' {0} h'}"  Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding WednesdayTime, StringFormat= ' {0} h'}" Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding ThursdayTime, StringFormat= ' {0} h'}" Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding FridayTime, StringFormat= ' {0} h'}" Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding SaturdayTime, StringFormat= ' {0} h'}"  Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding SundayTime, StringFormat= ' {0} h'}" Width="*"/>
+                        <materialDesign:DataGridTextColumn Binding="{Binding Total, StringFormat= ' {0} h'}" IsReadOnly="True" Width="*">
+                            <DataGridTextColumn.CellStyle>
+                                <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                    <Setter Property="Background" Value="LightGray"/>
+                                    <Setter Property="Foreground" Value="Gray"/>
+                                    <Setter Property="IsEnabled" Value="False"/>
+                                </Style>
+                            </DataGridTextColumn.CellStyle>
+                        </materialDesign:DataGridTextColumn>
+                    </DataGrid.Columns>
+                </DataGrid>
+            </StackPanel>
+
+
+        </ScrollViewer>
+        <Button Grid.Row="4" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                <TextBlock Text="Submit"/>
+            </StackPanel>
+        </Button>
     </Grid>
 </UserControl>
