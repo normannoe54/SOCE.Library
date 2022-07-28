@@ -46,6 +46,12 @@
             <DataTemplate DataType="{x:Type viewmodels:LoginVM}">
                 <views:LoginView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:SignupVM}">
+                <views:SignupView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
+                <views:ForgotPasswordView/>
+            </DataTemplate>
 
             <SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>
 
