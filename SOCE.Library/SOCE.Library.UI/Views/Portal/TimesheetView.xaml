@@ -119,6 +119,7 @@
                   AutoGenerateColumns="False"
                   GridLinesVisibility="None">
                     <DataGrid.Resources>
+                        <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
                         <local:TableColorConverter x:Key="valueconverter"/>
                         <Style TargetType="DataGridCell">
                             <Style.Setters>
@@ -148,27 +149,50 @@
                         </Style>
                     </DataGrid.Resources>
                     <DataGrid.Columns>
+                        <!--<materialDesign:DataGridComboBoxColumn Width="*"
+                                                               materialDesign:HintAssist.Hint="Search"   
+                                                               IsEditable="True"                                                            
+                                                               SelectedValueBinding="{Binding Project}" 
+                                                               DisplayMemberPath="ProjectName" 
+                                                               TextBinding="{Binding Project.ProjectName}"
+                                                               ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ProjectList}">
+                            --><!--Setting the editing element style allows access to all of the combo box's properties
+                      <materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
+                          <Style TargetType="ComboBox" BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly={x:Type ComboBox}, ResourceId=MaterialDataGridComboBoxColumnEditingStyle}}" >
+                              <Setter Property="IsEditable" Value="True" />
+                          </Style>
+                      </materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>--><!--
+
+                        </materialDesign:DataGridComboBoxColumn>-->
+
                         <DataGridTemplateColumn Width="2*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding LoginRequest}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}}" CommandParameter="{Binding LoginRequest}">
                                             <Button.Content>
                                                 <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
                                             </Button.Content>
                                         </Button>
-                                        <ComboBox materialDesign:HintAssist.Hint="Search" 
-                                      Width="200"
-                                      Margin="10 0 0 0"
-                                      VerticalAlignment="Center"
-                                      HorizontalAlignment="Left"
-                                      Foreground="Black"
-                                      Style="{StaticResource MaterialDesignDataGridComboBox}"
-                                      IsTextSearchEnabled="False" IsEditable="True" 
-                                      StaysOpenOnEdit="True" materialDesign:HintAssist.HintOpacity=".26"
-                                      ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.ProjectList}"
-                                      SelectedItem="{Binding Project, UpdateSourceTrigger=PropertyChanged}"
-                                      Text="{Binding Project.Name}">
+                                        <ComboBox Grid.Column="1" materialDesign:HintAssist.Hint="Search"  
+                                                  Margin="10 0 0 0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  Foreground="Black"
+                                                  Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  IsTextSearchEnabled="True" IsEditable="False" 
+                                                  StaysOpenOnEdit="True"
+                                                  materialDesign:HintAssist.HintOpacity=".26"
+                                                  SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedIndex="{Binding Path= SelectedItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=DataGrid},Path=DataContext.ProjectList}"
+                                                  TextSearch.TextPath="ProjectName"
+                                                  MaxDropDownHeight="250">
                                             <ComboBox.ItemTemplate>
                                                 <DataTemplate DataType="ProjectModel">
                                                     <StackPanel Orientation="Horizontal">
@@ -178,11 +202,34 @@
                                                 </DataTemplate>
                                             </ComboBox.ItemTemplate>
                                         </ComboBox>
-                                    </StackPanel>
+
+                                        <materialDesign:PackIcon 
+                                            Grid.Column="2" 
+                                            Padding ="0" 
+                                            Margin="10 0 0 0"
+                                            VerticalAlignment="Center" 
+                                            HorizontalAlignment="Right" 
+                                            Kind="StarAddOutline" 
+                                            Foreground="DarkGoldenrod"
+                                            Visibility="{Binding Project.IsAdservice, Converter={StaticResource BoolToVis}}"/>
+                                        
+
+
+                                    </Grid>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
                         </DataGridTemplateColumn>
-
+                        
+                        
+                        <!-- Project Number Time -->
+                        <!--<DataGridTextColumn Width="*" IsReadOnly="True" Binding="{Binding Project.JobNum}"/>-->
+                        <!--<DataGridTemplateColumn Width="*">
+                            <DataGridTemplateColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text ="{Binding JobNumStr}"/>
+                                </DataTemplate>
+                            </DataGridTemplateColumn.CellTemplate>
+                        </DataGridTemplateColumn>-->
                         <!-- Monday Time -->
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
@@ -393,7 +440,7 @@
                 </DataGrid>
             </StackPanel>
         </ScrollViewer>
-        
+
         <Button Grid.Row="4" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>

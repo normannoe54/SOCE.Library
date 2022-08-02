@@ -79,12 +79,8 @@ namespace SOCE.Library.UI.ViewModels
 
 
             TrulyObservableCollection<TimesheetRowModel> members = new TrulyObservableCollection<TimesheetRowModel>();
-            //members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "Total", JobNum = null }, MondayTime = 0, TuesdayTime = 0, WednesdayTime = 0, ThursdayTime = 0, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
-            members.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "AMAZON TNS", JobNum = 34123512 }, MondayTime = 1.5, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 });
+            members.Add(new TimesheetRowModel { Project = pm[0] } );
+            members.Add(new TimesheetRowModel { Project = pm[1] });
             Rowdata = members;
 
             this.AddRowCommand = new RelayCommand(AddRowToCollection);

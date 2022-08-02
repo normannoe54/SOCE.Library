@@ -7,21 +7,24 @@ namespace SOCE.Library.UI
 {
     public class TimesheetRowModel : PropertyChangedBase
     {
-        private bool _selectedCurr;
-        public bool SelectedCurr
+        private int _selectedItemIndex = -1;
+        public int SelectedItemIndex
         {
-            get { return _selectedCurr; }
+            get { return _selectedItemIndex; }
             set
             {
-                _selectedCurr = value;
-                RaisePropertyChanged(nameof(SelectedCurr));
+                _selectedItemIndex = value;
+                RaisePropertyChanged(nameof(SelectedItemIndex));
             }
         }
 
         private ProjectModel _project;
         public ProjectModel Project
         {
-            get { return _project; }
+            get
+            {      
+                return _project; 
+            }
             set
             {
                 _project = value;
