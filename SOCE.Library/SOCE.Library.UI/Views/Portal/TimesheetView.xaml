@@ -108,7 +108,137 @@
                     <TextBlock Grid.Column="8" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.SundayTime, StringFormat= ' {0} h'}" FontWeight="SemiBold" Foreground="Gray"/>
                     <TextBlock Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHeader.Total, StringFormat= ' {0} h'}" FontWeight="SemiBold" Foreground="Gray"/>
                 </Grid>
-                <DataGrid
+
+                <!-- Bind Rows using the default StackPanel for the ItemsPanel -->
+                <ListView Background="Transparent" 
+                          SelectionMode="Single" 
+                          ItemsSource="{Binding Rowdata, Mode=TwoWay}" 
+                          SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}">
+                    <ListView.Resources>
+                        <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
+                        <local:TableColorConverter x:Key="valueconverter"/>
+
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <!-- Set the Template for each row to a TextBlock and another ItemsControl -->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <ComboBox Grid.Column="1" materialDesign:HintAssist.Hint="Search"  
+                                                  Margin="10 0 0 0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  Foreground="Black"
+                                                  Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  IsTextSearchEnabled="True" IsEditable="False" 
+                                                  StaysOpenOnEdit="True"
+                                                  materialDesign:HintAssist.HintOpacity=".26"
+                                                  SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedIndex="{Binding Path= SelectedItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"
+                                                  TextSearch.TextPath="ProjectName"
+                                                  MaxDropDownHeight="250">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="ProjectModel">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <materialDesign:PackIcon 
+                                            Grid.Column="2" 
+                                            Padding ="0" 
+                                            Margin="10 0 0 0"
+                                            VerticalAlignment="Center" 
+                                            HorizontalAlignment="Right" 
+                                            Kind="StarAddOutline" 
+                                            Foreground="DarkGoldenrod"
+                                            Visibility="{Binding Project.IsAdservice, Converter={StaticResource BoolToVis}}"/>
+                                </Grid>
+                                    
+                                 <!--Need to set Width of name TextBlock so items line up correctly--> 
+                                <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->
+                                <TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>
+                                <ItemsControl HorizontalContentAlignment="Stretch" ItemsSource="{Binding Entries}" Background="Transparent" Grid.Column="2" Grid.IsSharedSizeScope="True">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" SharedSizeGroup="ColumnSize" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox 
+                                                    Text="{Binding TimeEntry, StringFormat= ' {0} h'}" 
+                                                    TextAlignment="Center"
+                                                    Height="40" 
+                                                    VerticalAlignment="Bottom" 
+                                                    FontWeight="SemiBold" 
+                                                    BorderBrush="LightGray" 
+                                                    BorderThickness="1"
+                                                    Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter}}">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="TextBox">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                                </Trigger>
+                                                                <Trigger Property="IsFocused" Value="True">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <WrapPanel Orientation="Horizontal"/>
+                                            <!--<StackPanel Orientation="Horizontal"/>-->
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <TextBlock Grid.Column="3" Text="{Binding Total, StringFormat= ' {0} h'}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+
+                <!--<DataGrid
                   Background="Transparent"  
                   ItemsSource="{Binding Rowdata, Mode=TwoWay}"
                   SelectedItem="{Binding SelectedRow}"
@@ -149,21 +279,20 @@
                         </Style>
                     </DataGrid.Resources>
                     <DataGrid.Columns>
-                        <!--<materialDesign:DataGridComboBoxColumn Width="*"
+                        <materialDesign:DataGridComboBoxColumn Width="*"
                                                                materialDesign:HintAssist.Hint="Search"   
                                                                IsEditable="True"                                                            
                                                                SelectedValueBinding="{Binding Project}" 
                                                                DisplayMemberPath="ProjectName" 
                                                                TextBinding="{Binding Project.ProjectName}"
                                                                ItemsSourceBinding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type DataGrid}}, Path=DataContext.ProjectList}">
-                            --><!--Setting the editing element style allows access to all of the combo box's properties
                       <materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
                           <Style TargetType="ComboBox" BasedOn="{StaticResource {ComponentResourceKey TypeInTargetAssembly={x:Type ComboBox}, ResourceId=MaterialDataGridComboBoxColumnEditingStyle}}" >
                               <Setter Property="IsEditable" Value="True" />
                           </Style>
-                      </materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>--><!--
+                      </materialDesign:MaterialDataGridComboBoxColumn.EditingElementStyle>
 
-                        </materialDesign:DataGridComboBoxColumn>-->
+                        </materialDesign:DataGridComboBoxColumn>
 
                         <DataGridTemplateColumn Width="2*">
                             <DataGridTemplateColumn.CellTemplate>
@@ -221,16 +350,16 @@
                         </DataGridTemplateColumn>
                         
                         
-                        <!-- Project Number Time -->
-                        <!--<DataGridTextColumn Width="*" IsReadOnly="True" Binding="{Binding Project.JobNum}"/>-->
-                        <!--<DataGridTemplateColumn Width="*">
+                         --><!--Project Number Time--><!-- 
+                        <DataGridTextColumn Width="*" IsReadOnly="True" Binding="{Binding Project.JobNum}"/>
+                        <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
                                     <TextBlock Text ="{Binding JobNumStr}"/>
                                 </DataTemplate>
                             </DataGridTemplateColumn.CellTemplate>
-                        </DataGridTemplateColumn>-->
-                        <!-- Monday Time -->
+                        </DataGridTemplateColumn>
+                         --><!--Monday Time--><!-- 
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -258,7 +387,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Tuesday Time -->
+                         --><!--Tuesday Time--><!-- 
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -286,7 +415,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Wednesday Time -->
+                         --><!--Wednesday Time--><!-- 
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -314,7 +443,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Thursday Time -->
+                         --><!--Thursday Time--><!-- 
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -342,7 +471,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Friday Time -->
+                         --><!--Friday Time--><!-- 
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -370,7 +499,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Saturday Time -->
+                         --><!--Saturday Time--><!-- 
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -398,7 +527,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!--Sunday Time-->
+                        --><!--Sunday Time--><!--
                         <DataGridTemplateColumn Width="*">
                             <DataGridTemplateColumn.CellTemplate>
                                 <DataTemplate>
@@ -426,7 +555,7 @@
                             </DataGridTemplateColumn.CellEditingTemplate>
                         </DataGridTemplateColumn>
 
-                        <!-- Total Time -->
+                         --><!--Total Time--><!-- 
                         <materialDesign:DataGridTextColumn Binding="{Binding Total, StringFormat= ' {0} h'}" IsReadOnly="True" Width="*">
                             <DataGridTextColumn.CellStyle>
                                 <Style TargetType="DataGridCell" BasedOn="{StaticResource {x:Type DataGridCell}}">
@@ -437,7 +566,7 @@
                             </DataGridTextColumn.CellStyle>
                         </materialDesign:DataGridTextColumn>
                     </DataGrid.Columns>
-                </DataGrid>
+                </DataGrid>-->
             </StackPanel>
         </ScrollViewer>
 

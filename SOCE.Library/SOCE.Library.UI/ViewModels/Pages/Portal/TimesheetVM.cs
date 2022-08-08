@@ -9,6 +9,8 @@ using System.Linq;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Threading;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -19,8 +21,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand SubmitTimeSheetCommand { get; set; }
         public ICommand RemoveRowCommand { get; set; }
 
-        private TrulyObservableCollection<TimesheetRowModel> _rowdata = new TrulyObservableCollection<TimesheetRowModel>();
-        public TrulyObservableCollection<TimesheetRowModel> Rowdata
+        private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
+        public ObservableCollection<TimesheetRowModel> Rowdata
         {
             get { return _rowdata; }
             set
@@ -63,6 +65,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
+
         public TimesheetVM()
         {
             //For demonstration purposes
@@ -77,16 +81,28 @@ namespace SOCE.Library.UI.ViewModels
             pm.Add(new ProjectModel { ProjectName = "ABQ TNS", JobNum = 211125.6, Description = "", IsAdservice = true });
             ProjectList = new ObservableCollection<ProjectModel>(pm);
 
+            //get current date
+            DateTime current = DateTime.Now.Date;
+            DateTime final = current.AddDays(16);
+
+            int diff = (final - current).Days;
+
+            List<TREntryModel> trentrymodels = new List<TREntryModel>();
+
+            for(int i = 0; i < diff;i++)
+            {
+                BlankEntry.Add(new TREntryModel{ Date = current.AddDays(i)});
+            }
 
             TrulyObservableCollection<TimesheetRowModel> members = new TrulyObservableCollection<TimesheetRowModel>();
-            members.Add(new TimesheetRowModel { Project = pm[0] } );
-            members.Add(new TimesheetRowModel { Project = pm[1] });
+            members.Add(new TimesheetRowModel { Project = pm[0], Entries = AddNewBlankRow()});
+            members.Add(new TimesheetRowModel { Project = pm[1], Entries = AddNewBlankRow()});
             Rowdata = members;
 
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
-            this.RemoveRowCommand = new RelayCommand(RemoveRow);
+            this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
             SumTable();
             Rowdata.CollectionChanged += ContentCollectionChanged;
         }
@@ -100,12 +116,13 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddRowToCollection()
         {
+
             Rowdata.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "" } });
         }
 
-        private void RemoveRow()
+        private void RemoveRow(TimesheetRowModel trm)
         {
-            Rowdata.Remove(SelectedRow);
+            Rowdata.Remove(trm);
         }
 
         private void SubmitTimesheet()
@@ -149,9 +166,16 @@ namespace SOCE.Library.UI.ViewModels
             TotalHeader.SundayTime = sun;
         }
 
-        //    List<TimesheetRowModel> curr = Rowdata;
-        //    curr.Re
-        //    Rowdata[0] = new TimesheetRowModel { ProjectModel = new ProjectModel { ProjectName = "Total", JobNum = null }, MondayTime = montime, TuesdayTime = 2, WednesdayTime = 0, ThursdayTime = 1, FridayTime = 0, SaturdayTime = 0, SundayTime = 0 };
-        //}
+        private ObservableCollection<TREntryModel> AddNewBlankRow()
+        {
+            ObservableCollection<TREntryModel> newblank = new ObservableCollection<TREntryModel>();
+
+            foreach(TREntryModel tr in BlankEntry)
+            {
+                newblank.Add(new TREntryModel() { Date = tr.Date, TimeEntry = tr.TimeEntry });
+            }
+            return newblank;
+        }
+
     }
 }

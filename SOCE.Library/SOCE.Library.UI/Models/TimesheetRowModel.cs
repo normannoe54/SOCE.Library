@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Media;
+using System.Linq;
+using System.Collections.ObjectModel;
 
 namespace SOCE.Library.UI
 {
@@ -31,6 +33,22 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(Project));
             }
         }
+
+        private ObservableCollection<TREntryModel> _entries;
+        public ObservableCollection<TREntryModel> Entries
+        {
+            get
+            {
+                return _entries;
+            }
+            set
+            {
+                _entries = value;
+                SetTotalNew();
+                RaisePropertyChanged(nameof(Entries));
+            }
+        }
+
 
         private double _mondayTime;
         public double MondayTime
@@ -154,6 +172,12 @@ namespace SOCE.Library.UI
         private void SetTotal()
         {
             Total = MondayTime + TuesdayTime + WednesdayTime + ThursdayTime + FridayTime + SaturdayTime + SundayTime;
+        }
+
+        private void SetTotalNew()
+        {
+            Total = Entries.Sum(i => i.TimeEntry);
+            //Total = MondayTime + TuesdayTime + WednesdayTime + ThursdayTime + FridayTime + SaturdayTime + SundayTime;
         }
     }
 }
