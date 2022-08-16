@@ -35,7 +35,7 @@
             <DataTemplate DataType="{x:Type viewmodels:TimesheetVM}">
                 <views:TimesheetView/>
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">
                 <views:ShellPortalView/>
             </DataTemplate>
@@ -102,7 +102,7 @@
                     </Trigger>
                 </Style.Triggers>
             </Style>
-            
+
             <Style x:Key="menuButtonIcon" TargetType="materialDesign:PackIcon">
                 <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
                 <Setter Property="Margin" Value="25 0 0 0"/>

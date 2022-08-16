@@ -2,13 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Windows.Input;
-using SOCE.Library.Models.Accounts;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Text.Json;
-using System.Net.Http.Formatting;
 using System.Threading.Tasks;
-using SOCE.Library.Models;
 using System.Windows;
 
 namespace SOCE.Library.UI.ViewModels

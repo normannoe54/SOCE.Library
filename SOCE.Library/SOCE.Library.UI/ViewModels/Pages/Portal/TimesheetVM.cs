@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows.Input;
-using SOCE.Library.Models.Accounts;
 using System.Windows.Media;
 using System.Linq;
 using System.Collections.Specialized;
@@ -16,6 +15,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class TimesheetVM : BaseVM
     {
+        public List<RegisteredTimesheetDataModel> TimesheetData;
         public ICommand AddRowCommand { get; set; }
         public ICommand WorkReportCommand { get; set; }
         public ICommand SubmitTimeSheetCommand { get; set; }
@@ -28,6 +28,8 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _rowdata = value;
+                SumTable();
+                CollectDates();
                 RaisePropertyChanged(nameof(Rowdata));
             }
         }
@@ -54,8 +56,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private TimesheetRowModel _totalHeader = new TimesheetRowModel();
-        public TimesheetRowModel TotalHeader
+        private ObservableCollection<DoubleWrapper> _totalHeader = new ObservableCollection<DoubleWrapper>();
+        public ObservableCollection<DoubleWrapper> TotalHeader
         {
             get { return _totalHeader; }
             set
@@ -65,10 +67,61 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
+        public ObservableCollection<DateWrapper> DateSummary
+        {
+            get { return _datesummary; }
+            set
+            {
+                _datesummary = value;
+                RaisePropertyChanged(nameof(DateSummary));
+            }
+        }
+
+        private string _monthYearString = "";
+        public string MonthYearString
+        {
+            get { return _monthYearString; }
+            set
+            {
+                _monthYearString = value;
+                RaisePropertyChanged(nameof(MonthYearString));
+            }
+        }
+
+        private string _dateString = "";
+        public string DateString
+        {
+            get { return _dateString; }
+            set
+            {
+                _dateString = value;
+                RaisePropertyChanged(nameof(DateString));
+            }
+        }
+
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
         public TimesheetVM()
         {
+            //get timesheet data from database
+            List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
+
+            //get current date
+            //DateTime current = DateTime.Now.Date;
+
+            //collect timesheet closest 
+
+
+            //set Row Data
+
+
+            //collect Project list from database
+
+
+
+
+
             //For demonstration purposes
             List<ProjectModel> pm = new List<ProjectModel>();
             pm.Add(new ProjectModel { ProjectName = "DSD1 Delivery Station", JobNum = 223501, Description = "", IsAdservice = false });
@@ -104,20 +157,11 @@ namespace SOCE.Library.UI.ViewModels
             this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
             SumTable();
-            Rowdata.CollectionChanged += ContentCollectionChanged;
-        }
-
-        public void ContentCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            Rowdata.CollectionChanged -= ContentCollectionChanged;
-            SumTable();
-            Rowdata.CollectionChanged += ContentCollectionChanged;
         }
 
         private void AddRowToCollection()
         {
-
-            Rowdata.Add(new TimesheetRowModel { Project = new ProjectModel { ProjectName = "" } });
+            Rowdata.Add(new TimesheetRowModel {Entries = AddNewBlankRow()});
         }
 
         private void RemoveRow(TimesheetRowModel trm)
@@ -127,7 +171,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void SubmitTimesheet()
         {
-
+            //create new blanktimesheet
         }
 
 
@@ -136,34 +180,47 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
+        private void CollectDates()
+        {
+            if (Rowdata.Count > 1)
+            {
+                TimesheetRowModel trmfirst = Rowdata[0];
+
+                List<DateWrapper> dates = new List<DateWrapper>();
+
+                foreach(TREntryModel dt in trmfirst.Entries)
+                {
+                    dates.Add(new DateWrapper(dt.Date));
+                }
+
+                DateSummary = new ObservableCollection<DateWrapper>(dates);
+
+                DateTime startdate = dates[0].Value;
+                MonthYearString = $"{startdate.ToString("MMMM")} {startdate.Year}";
+                DateString = $"{startdate.Day}";
+
+            }
+        }
+
         private void SumTable()
         {
-            double m = 0;
-            double tu = 0;
-            double w = 0;
-            double th = 0;
-            double f = 0;
-            double sat = 0;
-            double sun = 0;
-
-            for (int i = 0; i < Rowdata.Count; i++)
+            if (Rowdata.Count > 1)
             {
-                m += Rowdata[i].MondayTime;
-                tu += +Rowdata[i].TuesdayTime;
-                w += Rowdata[i].WednesdayTime;
-                th += Rowdata[i].ThursdayTime;
-                f += Rowdata[i].FridayTime;
-                sat += Rowdata[i].SaturdayTime;
-                sun += Rowdata[i].SundayTime;
-            }
+                TotalHeader.Clear();
+                int numofentries = Rowdata[0].Entries.Count();
 
-            TotalHeader.MondayTime = m;
-            TotalHeader.TuesdayTime = tu;
-            TotalHeader.WednesdayTime = w;
-            TotalHeader.ThursdayTime = th;
-            TotalHeader.FridayTime = f;
-            TotalHeader.SaturdayTime = sat;
-            TotalHeader.SundayTime = sun;
+                for (int i = 0; i < numofentries;i++)
+                {
+                    double total = 0;
+
+                    foreach (TimesheetRowModel trm in Rowdata)
+                    {
+                        total = trm.Entries[i].TimeEntry;
+                    }
+
+                    TotalHeader.Add(new DoubleWrapper(total));
+                }
+            } 
         }
 
         private ObservableCollection<TREntryModel> AddNewBlankRow()

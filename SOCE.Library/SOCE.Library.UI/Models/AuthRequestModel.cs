@@ -5,7 +5,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using SOCE.Library.Models.Accounts;
 
 namespace SOCE.Library.UI
 {
@@ -39,13 +38,13 @@ namespace SOCE.Library.UI
             }
         }
 
-        public AuthenticateRequest ConvertAPIModel()
-        {
-            return new AuthenticateRequest()
-            {
-                Email = Email,
-                Password = Password,
-            };
-        }
+        //public AuthenticateRequest ConvertAPIModel()
+        //{
+        //    return new AuthenticateRequest()
+        //    {
+        //        Email = Email,
+        //        Password = Password,
+        //    };
+        //}
     }
 }

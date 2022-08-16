@@ -1,0 +1,62 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.LoginView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SOCE.Library.UI.Views"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Height="350" Width="300" Background="Transparent">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Label Grid.Row="1" FontSize="30" FontFamily="ComicSans" FontWeight="Bold"  Content="Login" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+        <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="User" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+            <TextBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson" Text="{Binding LoginRequest.Email}"/>
+        </StackPanel>
+        <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
+            <materialDesign:PackIcon Kind="Lock" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+            <component:BindablePasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" Width="200" BorderBrush="Black" Password="{Binding LoginRequest.Password}"/>
+        </StackPanel>
+        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}" CommandParameter="{Binding LoginRequest}">
+            <Button.Content>
+                <materialDesign:PackIcon Kind="Login" Width="25" Height="25" Foreground="White"/>
+            </Button.Content>
+        </Button>
+        <Button Grid.Row="5" Height="16" HorizontalAlignment ="Center" Margin ="0 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" FontSize="12" FontWeight="Light" Content="Forgot Password?" Foreground="SlateGray" Command="{Binding GoToNewViewCommand}" CommandParameter="ForgotPassword"/>
+        <TextBlock Margin="0 50 0 10" Grid.Row="6" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding LoginMessage, NotifyOnTargetUpdated=True}">
+            <TextBlock.Triggers>
+                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </TextBlock.Triggers>
+        </TextBlock>
+        <StackPanel Grid.Row="7" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+            <Label FontSize="12" FontWeight="Light" Content="Dont have an account?" Foreground="SlateGray" VerticalAlignment="Center"/>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command = "{Binding GoToNewViewCommand}" CommandParameter="Signup">
+                <Button.Content>
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" FontSize="12"  Content="Sign Up" Foreground="{StaticResource SOCERed}" />
+                </Button.Content>
+            </Button>
+        </StackPanel>
+    </Grid>
+</UserControl>

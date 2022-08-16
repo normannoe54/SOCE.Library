@@ -54,12 +54,12 @@
 
                         <!--Menu Items-->
                         <TextBlock Text="Employee Portal" Style="{StaticResource menuTitle}"/>
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Home" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
-                        </Button>
+                        </Button>-->
 
                         <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet">
                             <StackPanel Orientation="Horizontal">
@@ -68,19 +68,19 @@
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Resources">
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Resources">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ClipboardFileOutline" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Resources" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
-                        </Button>
+                        </Button>-->
 
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="LicenseManager">
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="LicenseManager">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ProgressCheck" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="License Manager" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
-                        </Button>
+                        </Button>-->
                         
                         <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee">
                             <StackPanel Orientation="Horizontal">

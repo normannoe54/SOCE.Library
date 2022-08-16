@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SOCE.Library.Models.Accounts;
 
 namespace SOCE.Library.UI
 {
@@ -21,12 +20,12 @@ namespace SOCE.Library.UI
             }
         }
 
-        public ForgotPasswordRequest ConvertAPIModel()
-        {
-            return new ForgotPasswordRequest()
-            {
-                Email = Email,
-            };
-        }
+        //public ForgotPasswordRequest ConvertAPIModel()
+        //{
+        //    return new ForgotPasswordRequest()
+        //    {
+        //        Email = Email,
+        //    };
+        //}
     }
 }

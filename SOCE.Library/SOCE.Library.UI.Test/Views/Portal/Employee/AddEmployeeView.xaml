@@ -1,0 +1,63 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.AddEmployeeView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="Transparent" Width="400" >
+
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Text="New Employee" Grid.Row="0"/>
+        <Grid Grid.Row="1" Margin="0 8 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox materialDesign:HintAssist.Hint="First Name" Text="{Binding FirstName}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Grid.Column="0" FontSize="16"/>
+            <TextBox materialDesign:HintAssist.Hint="Last Name" Text="{Binding LastName}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Grid.Column="1" Margin="20 0 0 0" FontSize="16" DockPanel.Dock="Right"/>
+        </Grid>
+        <TextBox materialDesign:HintAssist.Hint="Title" Text="{Binding Title}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="3"/>
+        <TextBox materialDesign:HintAssist.Hint="Email" Text="{Binding Email}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
+
+        <Grid Grid.Row="5">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Extension" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding Extension}" Margin="0 8 0 0" FontSize="16"/>
+            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Phone Number" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding PhoneNumber}" Margin="0 8 0 0" FontSize="16" />
+        </Grid>
+        <!--<ComboBox ItemsSource="{Binding Source={local:Enumeration {x:Type my:Status}}}"-->
+        <ComboBox Grid.Row="6" FontSize="16" Height="50" Margin="0 10 0 10" materialDesign:HintAssist.Hint="Authorization" 
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:AuthEnum}}}" 
+                  DisplayMemberPath="Description" 
+                  SelectedValue="{Binding SelectedAuthorization}"  
+                  SelectedValuePath="Value"/>
+        
+        <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0 16 0 0">
+            <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddEmployeeCommand}">
+                <TextBlock Text="ACCEPT"/>
+            </Button>
+            <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+                <TextBlock Text="CANCEL"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

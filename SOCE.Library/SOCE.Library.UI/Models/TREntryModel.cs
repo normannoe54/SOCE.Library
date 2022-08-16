@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Text;
 
 namespace SOCE.Library.UI
@@ -34,5 +35,6 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(TimeEntry));
             }
         }
+
     }
 }

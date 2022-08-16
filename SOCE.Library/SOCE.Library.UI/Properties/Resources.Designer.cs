@@ -61,22 +61,22 @@ namespace SOCE.Library.UI.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static byte[] AMZPicture {
+        internal static System.Drawing.Bitmap AMZPicture {
             get {
                 object obj = ResourceManager.GetObject("AMZPicture", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
         
         /// <summary>
-        ///   Looks up a localized resource of type System.Byte[].
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
-        internal static byte[] SOCEIcon {
+        internal static System.Drawing.Bitmap SOCEIcon {
             get {
                 object obj = ResourceManager.GetObject("SOCEIcon", resourceCulture);
-                return ((byte[])(obj));
+                return ((System.Drawing.Bitmap)(obj));
             }
         }
     }

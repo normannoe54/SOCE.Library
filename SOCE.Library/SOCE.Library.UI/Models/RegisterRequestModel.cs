@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SOCE.Library.Models.Accounts;
 
 namespace SOCE.Library.UI
 {
@@ -63,15 +62,15 @@ namespace SOCE.Library.UI
             }
         }
 
-        public RegisterRequest ConvertAPIModel()
-        {
-            return new RegisterRequest()
-            {
-                AcceptTerms = AcceptTerms,
-                Email = Email,
-                Password = Password,
-                ConfirmPassword = ConfirmPassword
-            };
-        }
+        //public RegisterRequest ConvertAPIModel()
+        //{
+        //    return new RegisterRequest()
+        //    {
+        //        AcceptTerms = AcceptTerms,
+        //        Email = Email,
+        //        Password = Password,
+        //        ConfirmPassword = ConfirmPassword
+        //    };
+        //}
     }
 }

@@ -4,6 +4,7 @@ using System.Text;
 using System.Windows.Media;
 using System.Linq;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 
 namespace SOCE.Library.UI
 {
@@ -20,7 +21,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ProjectModel _project;
+        private ProjectModel _project = new ProjectModel { ProjectName = "" };
         public ProjectModel Project
         {
             get
@@ -34,8 +35,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ObservableCollection<TREntryModel> _entries;
-        public ObservableCollection<TREntryModel> Entries
+        private ObservableCollection<TREntryModel> _entries = new ObservableCollection<TREntryModel>();
+        public ObservableCollection<TREntryModel> Entries 
         {
             get
             {
@@ -48,112 +49,7 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(Entries));
             }
         }
-
-
-        private double _mondayTime;
-        public double MondayTime
-        {
-            get
-            {
-                return _mondayTime;
-            }
-            set
-            {
-                _mondayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(MondayTime));
-            }
-        }
-
-        private double _tuesdayTime;
-        public double TuesdayTime
-        {
-            get
-            {
-                return _tuesdayTime;
-            }
-            set
-            {
-                _tuesdayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(TuesdayTime));
-            }
-        }
-
-        private double _wednesdayTime;
-        public double WednesdayTime
-        {
-            get
-            {
-                return _wednesdayTime;
-            }
-            set
-            {
-                _wednesdayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(WednesdayTime));
-            }
-        }
-
-        private double _thursdayTime;
-        public double ThursdayTime
-        {
-            get
-            {
-                return _thursdayTime;
-            }
-            set
-            {
-                _thursdayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(ThursdayTime));
-            }
-        }
-
-        private double _fridayTime;
-        public double FridayTime
-        {
-            get
-            {
-                return _fridayTime;
-            }
-            set
-            {
-                _fridayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(FridayTime));
-            }
-        }
-
-        private double _saturdayTime;
-        public double SaturdayTime
-        {
-            get
-            {
-                return _saturdayTime;
-            }
-            set
-            {
-                _saturdayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(SaturdayTime));
-            }
-        }
-
-        private double _sundayTime;
-        public double SundayTime
-        {
-            get
-            {
-                return _sundayTime;
-            }
-            set
-            {
-                _sundayTime = value;
-                SetTotal();
-                RaisePropertyChanged(nameof(SundayTime));
-            }
-        }
+       
 
         private double _total;
         public double Total
@@ -162,22 +58,17 @@ namespace SOCE.Library.UI
             {
                 return _total;
             }
-            private set
+            set
             {
                 _total = value;
                 RaisePropertyChanged(nameof(Total));
             }
         }
 
-        private void SetTotal()
-        {
-            Total = MondayTime + TuesdayTime + WednesdayTime + ThursdayTime + FridayTime + SaturdayTime + SundayTime;
-        }
-
         private void SetTotalNew()
         {
             Total = Entries.Sum(i => i.TimeEntry);
-            //Total = MondayTime + TuesdayTime + WednesdayTime + ThursdayTime + FridayTime + SaturdayTime + SundayTime;
         }
+
     }
 }

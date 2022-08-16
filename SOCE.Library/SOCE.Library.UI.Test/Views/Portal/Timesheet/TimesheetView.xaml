@@ -1,0 +1,305 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.TimesheetView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Grid.Column="1" Margin="30 20 20 20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Page Title-->
+        <TextBlock Text="Timesheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Margin="0 20 0 0" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
+
+        <!--Seprator-->
+        <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
+
+        <!--Counter Title-->
+        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+            <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
+            <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
+        </StackPanel>
+
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Gray"/>
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Previous"  Foreground="Gray"/>
+                </StackPanel>
+            </Button>
+            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Current" Margin="0 0 10 0"  Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Gray"/>
+                </StackPanel>
+            </Button>
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+                <StackPanel Orientation="Horizontal">
+                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Gray"/>
+                </StackPanel>
+            </Button>
+        </StackPanel>
+
+        <Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                <TextBlock Text="Work Report"/>
+            </StackPanel>
+        </Button>
+        
+        <ScrollViewer Grid.Row="3">
+            <StackPanel>
+                <Grid Background="Transparent">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
+                            <TextBlock Text="Add Project"/>
+                        </StackPanel>
+                    </Button>
+
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Height="40">
+                        <ItemsControl.Resources>
+                            <local:DatetoStringConverter x:Key="DatetoString"/>
+                        </ItemsControl.Resources>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Value, Converter={StaticResource DatetoString}}"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center" 
+                                               FontWeight="SemiBold" 
+                                               Foreground="Gray">
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+
+                    <TextBlock Grid.Column="2"
+                             Text="Total" 
+                             TextAlignment="Center"
+                             VerticalAlignment="Center" 
+                             HorizontalAlignment="Stretch" 
+                             FontSize="14" FontWeight="SemiBold" 
+                             Foreground="Gray"/>
+
+                </Grid>
+
+                <Grid Background="LightGray">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="60"/>
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Text="Total:" 
+                               Padding="10"
+                               TextAlignment="Left"
+                               VerticalAlignment="Center" 
+                               HorizontalAlignment="Stretch" 
+                               FontSize="14" FontWeight="SemiBold" 
+                               Foreground="Gray"/>
+
+                    <ItemsControl Grid.Column="1" ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="{Binding Value, StringFormat= ' {0} h'}" 
+                                             TextAlignment="Center"
+                                             VerticalAlignment="Center" 
+                                             FontWeight="SemiBold" 
+                                             Foreground="Gray">
+                                    </TextBlock>
+                                </Grid>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid Rows="1"/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                    
+                    <TextBlock Grid.Column="2"
+                             Text="{Binding Total, StringFormat= ' {0} h'}" 
+                             TextAlignment="Center"
+                             VerticalAlignment="Stretch" 
+                             HorizontalAlignment="Stretch" 
+                             FontSize="14" FontWeight="SemiBold" 
+                             Foreground="Gray"/>
+                    
+                </Grid>
+
+                <!-- Bind Rows using the default StackPanel for the ItemsPanel -->
+                <ListView Background="Transparent" 
+                          SelectionMode="Single" 
+                          ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}">
+                    <ListView.Resources>
+                        <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
+                        <local:TableColorConverter x:Key="valueconverter"/>
+
+                    </ListView.Resources>
+                    <ListView.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListViewItem}">
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                        <ContentPresenter />
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </ListView.ItemContainerStyle>
+                    <!-- Set the Template for each row to a TextBlock and another ItemsControl -->
+                    <ListView.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="60"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Column="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <ComboBox Grid.Column="1" materialDesign:HintAssist.Hint="Search"  
+                                                  Margin="10 0 0 0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  Foreground="Black"
+                                                  Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  IsTextSearchEnabled="True" IsEditable="False" 
+                                                  StaysOpenOnEdit="True"
+                                                  materialDesign:HintAssist.HintOpacity=".26"
+                                                  SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedIndex="{Binding Path= SelectedItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"
+                                                  TextSearch.TextPath="ProjectName"
+                                                  MaxDropDownHeight="250">
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="ProjectModel">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                                                </StackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                    <materialDesign:PackIcon 
+                                            Grid.Column="2" 
+                                            Padding ="0" 
+                                            Margin="10 0 0 0"
+                                            VerticalAlignment="Center" 
+                                            HorizontalAlignment="Right" 
+                                            Kind="StarAddOutline" 
+                                            Foreground="DarkGoldenrod"
+                                            Visibility="{Binding Project.IsAdservice, Converter={StaticResource BoolToVis}}"/>
+                                </Grid>
+
+                                <!--Need to set Width of name TextBlock so items line up correctly-->
+                                <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->
+                                <TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>
+                                <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Background="Transparent" Grid.Column="2">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <TextBox 
+                                                    Text="{Binding TimeEntry, StringFormat= ' {0} h',  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    TextAlignment="Center"
+                                                    Padding="0"
+                                                    VerticalContentAlignment="Center"
+                                                    VerticalAlignment="Stretch" 
+                                                    FontWeight="SemiBold" 
+                                                    BorderBrush="LightGray" 
+                                                    BorderThickness="1"
+                                                    Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter}}">
+                                                    <TextBox.Style>
+                                                        <Style TargetType="TextBox">
+                                                            <Style.Triggers>
+                                                                <Trigger Property="IsMouseOver" Value="True">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                                </Trigger>
+                                                                <Trigger Property="IsFocused" Value="True">
+                                                                    <Setter Property="Background" Value="Transparent" />
+                                                                    <Setter Property="Foreground" Value="Black" />
+                                                                    <Setter Property="BorderBrush" Value="Transparent" />
+                                                                </Trigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </TextBox.Style>
+                                                </TextBox>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <!--<WrapPanel Orientation="Horizontal"/>-->
+                                            <UniformGrid Rows="1"/>
+                                            <!--<StackPanel Orientation="Horizontal"/>-->
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>
+                                </ItemsControl>
+                                <TextBlock Grid.Column="3"
+                                           Text="{Binding Total, StringFormat= ' {0} h'}" 
+                                           TextAlignment="Center"
+                                           VerticalAlignment="Stretch" 
+                                           HorizontalAlignment="Stretch" 
+                                            FontSize="14" FontWeight="SemiBold" 
+                                           Background="LightGray" Foreground="Gray"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+                </ListView>
+            </StackPanel>
+        </ScrollViewer>
+
+        <Button Grid.Row="4" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                <TextBlock Text="Submit"/>
+            </StackPanel>
+        </Button>
+    </Grid>
+</UserControl>

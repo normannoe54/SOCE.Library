@@ -1,0 +1,123 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.ShellPortalView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:SOCE.Library.UI.Views"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+         >
+
+    <!--<Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
+    </Window.Resources>-->
+    <Border Padding="20" Background="#F7F6F4">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Border CornerRadius="25" >
+                <Border.Background>
+                    <LinearGradientBrush>
+                        <GradientStop Color="#bb6262" Offset="0"/>
+                        <GradientStop Color="#9d3434" Offset="0.8"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0">
+                        <!--Logo-->
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 30 0 10">
+
+                            <Grid>
+                                <Border Background="#ffffff" CornerRadius="50" Width="45" Height="45"/>
+
+                                <Border Width="45" Height="45" BorderThickness="3" BorderBrush="#ffffff" CornerRadius="50">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
+                                    </Border.Effect>
+                                    <Image  Source="/SOCE.Library.UI;component/Resources/SOCEIcon.png" />
+                                </Border>
+                            </Grid>
+
+                            <TextBlock Text="SOCE" Foreground="#ffffff" FontSize="30" Margin="10 0 0 3">
+                                <TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
+                                </TextBlock.Effect>
+                            </TextBlock>
+                        </StackPanel>
+
+                        <!--Menu Items-->
+                        <TextBlock Text="Employee Portal" Style="{StaticResource menuTitle}"/>
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Home" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>-->
+
+                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ClipboardTextPlayOutline" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Timesheet" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>
+
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Resources">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ClipboardFileOutline" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Resources" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>-->
+
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="LicenseManager">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ProgressCheck" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="License Manager" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>-->
+                        
+                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Person" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Employees" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>
+                        
+                        <TextBlock Text="Administration" Style="{StaticResource menuTitle}"/>
+
+                        
+
+                        <Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="ChartBellCurve" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Project Data" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="EmployeeData">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="PersonSettings" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Employee Data" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+
+                    <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Logout" Style="{StaticResource menuButtonIcon}"/>
+                            <TextBlock Text="Logout" Style="{StaticResource menuButtonText}"/>
+                        </StackPanel>
+                    </Button>
+                </Grid>
+            </Border>
+            <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        </Grid>
+    </Border>
+
+</UserControl>

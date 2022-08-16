@@ -10,6 +10,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class PortalAI : BaseAI, IPortalAI
     {
+
         public ICommand GoToNewViewCommand { get; set; }
 
         public ICommand GoToLoginCommand { get; set; }
