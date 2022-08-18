@@ -7,8 +7,8 @@ namespace SOCE.Library.UI
 {
     public enum AuthEnum
     {
-        [Description("Other")]
-        Other = 0,
+        [Description("Standard")]
+        Standard = 0,
 
         [Description("Administrator")]
         Admin = 1,
@@ -18,7 +18,5 @@ namespace SOCE.Library.UI
 
         [Description("Project Manager")]
         PM = 3,
-
-        
     }
 }

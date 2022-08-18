@@ -21,8 +21,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ProjectModel _project = new ProjectModel { ProjectName = "" };
-        public ProjectModel Project
+        private ProjectUIModel _project = new ProjectUIModel { ProjectName = "" };
+        public ProjectUIModel Project
         {
             get
             {      

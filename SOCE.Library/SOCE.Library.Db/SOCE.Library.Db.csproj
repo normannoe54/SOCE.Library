@@ -51,6 +51,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Models\EmployeeDbModel.cs" />
+    <Compile Include="Models\ProjectDbModel.cs" />
+    <Compile Include="Models\SubProjectDbModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SQLAccess.cs" />
   </ItemGroup>

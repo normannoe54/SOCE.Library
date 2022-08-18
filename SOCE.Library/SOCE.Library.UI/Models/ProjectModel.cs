@@ -5,7 +5,7 @@ using System.Windows.Media;
 
 namespace SOCE.Library.UI
 {
-    public class ProjectModel : PropertyChangedBase
+    public class ProjectUIModel : PropertyChangedBase
     {
         private string _projectName;
         public string ProjectName

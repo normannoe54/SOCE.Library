@@ -47,6 +47,9 @@ namespace SOCE.Library.UI.ViewModels
                 case PortalPage.LicenseManager:
                     CurrentPage = new LicenseManagerVM();
                     break;
+                case PortalPage.Projects:
+                    CurrentPage = new ProjectVM();
+                    break;
             }
         }
 

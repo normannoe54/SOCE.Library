@@ -91,7 +91,12 @@
                         
                         <TextBlock Text="Administration" Style="{StaticResource menuTitle}"/>
 
-                        
+                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Library" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Projects" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>
 
                         <Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData">
                             <StackPanel Orientation="Horizontal">

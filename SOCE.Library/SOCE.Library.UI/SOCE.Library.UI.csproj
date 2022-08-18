@@ -76,6 +76,9 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Models\Projects\PhaseEnum.cs" />
+    <Compile Include="Models\Projects\ProjectModel.cs" />
+    <Compile Include="Models\Projects\SubProjectModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -102,6 +105,8 @@
     <Compile Include="ViewModels\Pages\Portal\HomeViewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectDataVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetVM.cs" />
     <Compile Include="Views\Login\ForgotPasswordView.xaml.cs">
@@ -130,6 +135,12 @@
     </Compile>
     <Compile Include="Views\Portal\ProjectDataView.xaml.cs">
       <DependentUpon>ProjectDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\AddProjectView.xaml.cs">
+      <DependentUpon>AddProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\ProjectView.xaml.cs">
+      <DependentUpon>ProjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\ResourcesView.xaml.cs">
       <DependentUpon>ResourcesView.xaml</DependentUpon>
@@ -210,6 +221,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\Project\AddProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\ProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Portal\ResourcesView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -271,7 +290,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\Components\" />
-    <Folder Include="ViewModels\Pages\Portal\Projects\" />
     <Folder Include="ViewModels\Pages\Portal\Timesheet\" />
   </ItemGroup>
   <ItemGroup>

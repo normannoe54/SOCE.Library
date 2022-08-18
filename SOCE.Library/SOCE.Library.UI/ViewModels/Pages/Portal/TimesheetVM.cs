@@ -34,8 +34,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<ProjectModel> _projectList;
-        public ObservableCollection<ProjectModel> ProjectList
+        private ObservableCollection<ProjectUIModel> _projectList;
+        public ObservableCollection<ProjectUIModel> ProjectList
         {
             get { return _projectList; }
             set
@@ -123,16 +123,16 @@ namespace SOCE.Library.UI.ViewModels
 
 
             //For demonstration purposes
-            List<ProjectModel> pm = new List<ProjectModel>();
-            pm.Add(new ProjectModel { ProjectName = "DSD1 Delivery Station", JobNum = 223501, Description = "", IsAdservice = false });
-            pm.Add(new ProjectModel { ProjectName = "East 55th St.", JobNum = 228103, Description = "", IsAdservice = false });
-            pm.Add(new ProjectModel { ProjectName = "Byers Subaru", JobNum = 220103, Description = "", IsAdservice = false });
-            pm.Add(new ProjectModel { ProjectName = "CMH086", JobNum = 211116, Description = "", IsAdservice = false });
-            pm.Add(new ProjectModel { ProjectName = "John Hinderer", JobNum = 210109.2, Description = "", IsAdservice = true });
-            pm.Add(new ProjectModel { ProjectName = "Germain Ford", JobNum = 210118, Description = "", IsAdservice = false });
-            pm.Add(new ProjectModel { ProjectName = "Germain Ford", JobNum = 210118.3, Description = "", IsAdservice = true });
-            pm.Add(new ProjectModel { ProjectName = "ABQ TNS", JobNum = 211125.6, Description = "", IsAdservice = true });
-            ProjectList = new ObservableCollection<ProjectModel>(pm);
+            List<ProjectUIModel> pm = new List<ProjectUIModel>();
+            pm.Add(new ProjectUIModel { ProjectName = "DSD1 Delivery Station", JobNum = 223501, Description = "", IsAdservice = false });
+            pm.Add(new ProjectUIModel { ProjectName = "East 55th St.", JobNum = 228103, Description = "", IsAdservice = false });
+            pm.Add(new ProjectUIModel { ProjectName = "Byers Subaru", JobNum = 220103, Description = "", IsAdservice = false });
+            pm.Add(new ProjectUIModel { ProjectName = "CMH086", JobNum = 211116, Description = "", IsAdservice = false });
+            pm.Add(new ProjectUIModel { ProjectName = "John Hinderer", JobNum = 210109.2, Description = "", IsAdservice = true });
+            pm.Add(new ProjectUIModel { ProjectName = "Germain Ford", JobNum = 210118, Description = "", IsAdservice = false });
+            pm.Add(new ProjectUIModel { ProjectName = "Germain Ford", JobNum = 210118.3, Description = "", IsAdservice = true });
+            pm.Add(new ProjectUIModel { ProjectName = "ABQ TNS", JobNum = 211125.6, Description = "", IsAdservice = true });
+            ProjectList = new ObservableCollection<ProjectUIModel>(pm);
 
             //get current date
             DateTime current = DateTime.Now.Date;
