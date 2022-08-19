@@ -11,7 +11,5 @@ namespace SOCE.Library.Db
         public int PointNumber { get; set; }
         public string Description { get; set; }
         public double Fee { get; set; }
-
-
     }
 }

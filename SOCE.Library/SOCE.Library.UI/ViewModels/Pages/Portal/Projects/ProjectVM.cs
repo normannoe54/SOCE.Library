@@ -25,6 +25,32 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ObservableCollection<SubProjectModel> _subprojects;
+        public ObservableCollection<SubProjectModel> SubProjects
+        {
+            get { return _subprojects; }
+            set
+            {
+                _subprojects = value;
+                RaisePropertyChanged(nameof(SubProjects));
+            }
+        }
+
+        private ProjectModel _selectedProject;
+
+        public ProjectModel SelectedProject
+        {
+            get { return _selectedProject; }
+            set
+            {
+                _selectedProject = value;
+
+                //collect subprojects
+                CollectSubProjects();
+                RaisePropertyChanged(nameof(SelectedProject));
+            }
+        }
+
         private string _textProjects = "0 Total";
         public string TextProjects
         {
@@ -72,6 +98,22 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             Projects = members;
+        }
+
+        private void CollectSubProjects()
+        {
+            int id = SelectedProject.Id;
+
+            List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjects(id);
+
+            ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();
+
+            foreach (SubProjectDbModel sdb in subdbprojects)
+            {
+                members.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = SelectedProject.ProjectNumber, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
+            }
+
+            SubProjects = members;
         }
     }
 }

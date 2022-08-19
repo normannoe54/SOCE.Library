@@ -50,5 +50,23 @@ namespace SOCE.Library.Db
                     "VALUES (@ProjectName, @ProjectNumber, @Client, @Fee)", project);
             }
         }
+
+        public static List<SubProjectDbModel> LoadSubProjects(int projectId)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<SubProjectDbModel>("SELECT * FROM SubProjects WHERE Id = @projectId", new DynamicParameters());
+                return output.ToList();
+            }
+        }
+
+        public static void AddSubProject(SubProjectDbModel subproject)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("INSERT INTO SubProjects (ProjectId, PointNumber ,Description, Fee)" +
+                    "VALUES (@ProjectId, @ProjectNumber, @Description, @Fee)", subproject);
+            }
+        }
     }
 }
