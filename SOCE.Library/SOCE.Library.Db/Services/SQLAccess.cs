@@ -55,7 +55,7 @@ namespace SOCE.Library.Db
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<SubProjectDbModel>("SELECT * FROM SubProjects WHERE Id = @projectId", new DynamicParameters());
+                var output = cnn.Query<SubProjectDbModel>("SELECT * FROM SubProjects WHERE ProjectId = @projectId", new { projectId});
                 return output.ToList();
             }
         }
@@ -64,8 +64,19 @@ namespace SOCE.Library.Db
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT INTO SubProjects (ProjectId, PointNumber ,Description, Fee)" +
-                    "VALUES (@ProjectId, @ProjectNumber, @Description, @Fee)", subproject);
+                //cnn.Open();
+                //using (var command = cnn.CreateCommand())
+                //{
+                //    command.CommandText = "INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee)" +
+                //                         "VALUES (@ProjectId, @PointNumber, @Description, @Fee)";
+                //    command.Parameters.Add(new SQLiteParameter("@ProjectId", subproject.ProjectId));
+                //    command.Parameters.Add(new SQLiteParameter("@PointNumber", subproject.PointNumber));
+                //    command.Parameters.Add(new SQLiteParameter("@Description", subproject.Description));
+                //    command.Parameters.Add(new SQLiteParameter("@Fee", subproject.Fee));
+                //    command.ExecuteNonQuery();
+                //}
+                cnn.Execute("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee)" +
+                    "VALUES (@ProjectId, @PointNumber, @Description, @Fee)", subproject);
             }
         }
     }

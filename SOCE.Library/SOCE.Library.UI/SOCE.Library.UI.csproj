@@ -106,9 +106,11 @@
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectDataVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
-    <Compile Include="ViewModels\Pages\Portal\TimesheetVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Timesheet\TimesheetVM.cs" />
     <Compile Include="Views\Login\ForgotPasswordView.xaml.cs">
       <DependentUpon>ForgotPasswordView.xaml</DependentUpon>
     </Compile>
@@ -138,6 +140,9 @@
     </Compile>
     <Compile Include="Views\Portal\Project\AddProjectView.xaml.cs">
       <DependentUpon>AddProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\AddSubProjectView.xaml.cs">
+      <DependentUpon>AddSubProjectView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\ProjectView.xaml.cs">
       <DependentUpon>ProjectView.xaml</DependentUpon>
@@ -225,6 +230,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Portal\Project\AddSubProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Portal\Project\ProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -259,10 +268,10 @@
     <Compile Include="Models\ForgotPassRequestModel.cs" />
     <Compile Include="Models\PortalDataModel.cs" />
     <Compile Include="Models\ProjectModel.cs" />
-    <Compile Include="Models\RegisteredTimesheetDataModel.cs" />
+    <Compile Include="Models\Timesheet\RegisteredTimesheetDataModel.cs" />
     <Compile Include="Models\RegisterRequestModel.cs" />
-    <Compile Include="Models\TimesheetRowModel.cs" />
-    <Compile Include="Models\TREntryModel.cs" />
+    <Compile Include="Models\Timesheet\TimesheetRowModel.cs" />
+    <Compile Include="Models\Timesheet\TREntryModel.cs" />
     <Compile Include="Models\TrulyObservableCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -290,7 +299,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ViewModels\Components\" />
-    <Folder Include="ViewModels\Pages\Portal\Timesheet\" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\AMZPicture.png" />

@@ -12,6 +12,7 @@ namespace SOCE.Library.UI.ViewModels
     public class ProjectVM : BaseVM
     {
         public ICommand GoToAddProject { get; set; }
+        public ICommand GoToAddSubProject { get; set; }
 
         private ObservableCollection<ProjectModel> _projects;
         public ObservableCollection<ProjectModel> Projects
@@ -46,8 +47,20 @@ namespace SOCE.Library.UI.ViewModels
                 _selectedProject = value;
 
                 //collect subprojects
+                NavigationStore.ProjectVM = this;
                 CollectSubProjects();
                 RaisePropertyChanged(nameof(SelectedProject));
+            }
+        }
+
+        private int _selectedIndex;
+        public int SelectedIndex
+        {
+            get { return _selectedIndex; }
+            set
+            {
+                _selectedIndex = value;
+                RaisePropertyChanged(nameof(SelectedIndex));
             }
         }
 
@@ -65,7 +78,7 @@ namespace SOCE.Library.UI.ViewModels
         public ProjectVM()
         {
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunDialog);
-
+            this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunSubDialog);
 
             LoadProjects();
         }
@@ -73,10 +86,21 @@ namespace SOCE.Library.UI.ViewModels
         private async void ExecuteRunDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new AddProjectView();
+            AddProjectView view = new AddProjectView();
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+
+        }
+
+        private async void ExecuteRunSubDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            AddSubProjectView view = new AddSubProjectView();
+            view.DataContext = new AddSubProjectVM();
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingSubEventHandler);
 
         }
 
@@ -84,6 +108,13 @@ namespace SOCE.Library.UI.ViewModels
         {
             //load list here
             LoadProjects();
+        }
+
+        private void ClosingSubEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        {
+            //load list here
+            CollectSubProjects();
+           
         }
 
         private void LoadProjects()
@@ -102,6 +133,11 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CollectSubProjects()
         {
+            if (SelectedProject == null)
+            {
+                return;
+            }
+
             int id = SelectedProject.Id;
 
             List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjects(id);

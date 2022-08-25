@@ -14,6 +14,18 @@ namespace SOCE.Library.UI
         public string Description { get; set; }
         public double Fee { get; set; }
 
+        public string PointNumStr
+        {
+            get
+            {
+                string jobnumstr = "";
+                //if (ProjectNumber != null)
+                //{
+                jobnumstr = $"[.{PointNumber.ToString()}]";
+                //}
+                return jobnumstr;
+            }
+        }
 
         public SubProjectModel()
         { }

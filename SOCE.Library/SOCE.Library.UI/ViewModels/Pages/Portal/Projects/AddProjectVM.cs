@@ -21,8 +21,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _projectNumberInp;
-        public double ProjectNumberInp
+        private int _projectNumberInp;
+        public int ProjectNumberInp
         {
             get { return _projectNumberInp; }
             set

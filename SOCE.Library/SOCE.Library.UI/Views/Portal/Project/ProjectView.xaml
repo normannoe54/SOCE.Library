@@ -79,46 +79,46 @@
                         </Grid>
                     </materialDesign:ColorZone>
                 </Grid>
-                <Grid Grid.Row="1">
+                <Grid Grid.Row="1" Margin="0 10 0 10">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="180"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0" Text="Id"/>
-                    <TextBlock Grid.Column="1" Text="Project Name"/>
-                    <TextBlock Grid.Column="2" Text="Project Number"/>
-                    <TextBlock Grid.Column="3" Text="Client"/>
-                    <TextBlock Grid.Column="4" Text="Total Fee"/>
+                    <TextBlock Grid.Column="0" Text="Id" FontWeight="DemiBold" FontSize="14"/>
+                    <TextBlock Grid.Column="1" Text="Project Name" FontWeight="DemiBold" FontSize="14"/>
+                    <TextBlock Grid.Column="2" Text="Project Number" FontWeight="DemiBold" FontSize="14"/>
+                    <TextBlock Grid.Column="3" Text="Client" FontWeight="DemiBold" FontSize="14"/>
+                    <TextBlock Grid.Column="4" Text="Total Fee" FontWeight="DemiBold"  FontSize="14"/>
                 </Grid>
 
-                    <ListBox Grid.Row="3" ItemsSource="{Binding Projects}"
+                <ListBox Grid.Row="3" ItemsSource="{Binding Projects}"
                      SelectedItem="{Binding SelectedProject}"
                      SelectedIndex="{Binding SelectIndex}"
                      SelectionMode="Single">
-                    <ListBox.ItemContainerStyle>
+                    <!--<ListBox.ItemContainerStyle>
                         <Style TargetType="{x:Type ListBoxItem}">
                             <Setter Property="IsSelected" Value="{Binding SelectedCurr, Mode=TwoWay}" />
                         </Style>
-                    </ListBox.ItemContainerStyle>
+                    </ListBox.ItemContainerStyle>-->
                     <ListBox.ItemTemplate>
                         <DataTemplate DataType="local:ProjectModel">
                             <Grid>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="180"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <TextBlock Grid.Column="0" Text="{Binding Id}"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding ProjectName}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding ProjectName}" />
                                     <TextBlock Grid.Column="2" Text="{Binding ProjectNumber}"/>
-                                    <TextBlock Grid.Column="3" Text="{Binding Client}"/>
-                                    <TextBlock Grid.Column="4" Text="{Binding TotalFee}"/>
+                                    <TextBlock Grid.Column="3" Text="{Binding Client}" />
+                                    <TextBlock Grid.Column="4" Text="{Binding Fee}"/>
                                     <!--<materialDesign:PackIcon Grid.Column="0" Kind="{Binding PackIconStr}"  Height="30" Width="30" Margin="10 0 10 0 " ToolTip="{Binding Username}" ToolTipService.Placement="Top"/>
                                     <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
                                     <materialDesign:PackIcon Grid.Column="2"
@@ -161,14 +161,13 @@
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
                     <!--Counter Title-->
                     <TextBlock Grid.Column="0" Text="{Binding SelectedProject.ProjectNumber}" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <TextBlock Grid.Column="1" Text="{Binding SelectedProject.ProjectName}" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-                    <Button Grid.Column="2"  Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" Background="{StaticResource SOCERed}" Command="{Binding GoToAddProject}" HorizontalAlignment="Right">
+                    <TextBlock Grid.Column="1" Text="{Binding SelectedProject.ProjectName}" Margin="20 0 20 0" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                    <Button Grid.Column="2"  Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" Background="{StaticResource SOCERed}" Command="{Binding GoToAddSubProject}" HorizontalAlignment="Right">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                             <TextBlock Text="Add Point Number"/>
@@ -179,10 +178,10 @@
                 <!--Members Data Grid-->
                 <DataGrid Grid.Row="3" ItemsSource="{Binding SubProjects}" CanUserAddRows="False" AutoGenerateColumns="False">
                     <DataGrid.Columns>
-                        <DataGridTextColumn Header="#" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding Id}"/>
-                        <DataGridTextColumn Header="Project Number" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding ProjectName}"/>
-                        <DataGridTextColumn Header="Description" Binding="{Binding ProjectNumber}" IsReadOnly="True" Width="*"/>
-                        <DataGridTextColumn Header="Fee" Binding="{Binding TotalFee}" IsReadOnly="True" Width="*"/>
+                        <!--<DataGridTextColumn Header="#" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding Id}"/>-->
+                        <DataGridTextColumn Header="Point Number" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding PointNumber}"/>
+                        <DataGridTextColumn Header="Description" Binding="{Binding Description}" IsReadOnly="True" Width="*"/>
+                        <DataGridTextColumn Header="Fee" Binding="{Binding Fee}" IsReadOnly="True" Width="*"/>
                     </DataGrid.Columns>
                 </DataGrid>
             </Grid>

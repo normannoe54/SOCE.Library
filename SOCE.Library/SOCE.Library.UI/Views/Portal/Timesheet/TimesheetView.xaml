@@ -222,7 +222,8 @@
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
-                                    <materialDesign:PackIcon 
+                                    <!--SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
+                                    <!--<materialDesign:PackIcon 
                                             Grid.Column="2" 
                                             Padding ="0" 
                                             Margin="10 0 0 0"
@@ -230,12 +231,36 @@
                                             HorizontalAlignment="Right" 
                                             Kind="StarAddOutline" 
                                             Foreground="DarkGoldenrod"
-                                            Visibility="{Binding Project.IsAdservice, Converter={StaticResource BoolToVis}}"/>
+                                            Visibility="{Binding Project.IsAdservice, Converter={StaticResource BoolToVis}}"/>-->
                                 </Grid>
-
+                                <!--ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"-->
                                 <!--Need to set Width of name TextBlock so items line up correctly-->
+                                <ComboBox Grid.Column="1" materialDesign:HintAssist.Hint="Search"  
+                                                  Margin="10 0 0 0"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  Foreground="Black"
+                                                  Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  IsTextSearchEnabled="True" IsEditable="False"
+                                                  StaysOpenOnEdit="True"
+                                                  materialDesign:HintAssist.HintOpacity=".26"
+                                                  SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  SelectedIndex="{Binding Path= SelectedSubItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  TextSearch.TextPath="Description"
+                                                  MaxDropDownHeight="250">
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="SubProjectModel">
+                                            <StackPanel Orientation="Horizontal">
+                                                <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                                <TextBlock Text="{Binding Description}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                                
                                 <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->
-                                <TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>
+                                <!--<TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>-->
                                 <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Background="Transparent" Grid.Column="2">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>

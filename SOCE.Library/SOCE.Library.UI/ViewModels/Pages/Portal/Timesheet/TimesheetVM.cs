@@ -10,6 +10,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using SOCE.Library.Db;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -29,13 +30,13 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _rowdata = value;
                 SumTable();
-                CollectDates();
+                //CollectDates();
                 RaisePropertyChanged(nameof(Rowdata));
             }
         }
 
-        private ObservableCollection<ProjectUIModel> _projectList;
-        public ObservableCollection<ProjectUIModel> ProjectList
+        private ObservableCollection<ProjectModel> _projectList;
+        public ObservableCollection<ProjectModel> ProjectList
         {
             get { return _projectList; }
             set
@@ -108,33 +109,6 @@ namespace SOCE.Library.UI.ViewModels
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
 
             //get current date
-            //DateTime current = DateTime.Now.Date;
-
-            //collect timesheet closest 
-
-
-            //set Row Data
-
-
-            //collect Project list from database
-
-
-
-
-
-            //For demonstration purposes
-            List<ProjectUIModel> pm = new List<ProjectUIModel>();
-            pm.Add(new ProjectUIModel { ProjectName = "DSD1 Delivery Station", JobNum = 223501, Description = "", IsAdservice = false });
-            pm.Add(new ProjectUIModel { ProjectName = "East 55th St.", JobNum = 228103, Description = "", IsAdservice = false });
-            pm.Add(new ProjectUIModel { ProjectName = "Byers Subaru", JobNum = 220103, Description = "", IsAdservice = false });
-            pm.Add(new ProjectUIModel { ProjectName = "CMH086", JobNum = 211116, Description = "", IsAdservice = false });
-            pm.Add(new ProjectUIModel { ProjectName = "John Hinderer", JobNum = 210109.2, Description = "", IsAdservice = true });
-            pm.Add(new ProjectUIModel { ProjectName = "Germain Ford", JobNum = 210118, Description = "", IsAdservice = false });
-            pm.Add(new ProjectUIModel { ProjectName = "Germain Ford", JobNum = 210118.3, Description = "", IsAdservice = true });
-            pm.Add(new ProjectUIModel { ProjectName = "ABQ TNS", JobNum = 211125.6, Description = "", IsAdservice = true });
-            ProjectList = new ObservableCollection<ProjectUIModel>(pm);
-
-            //get current date
             DateTime current = DateTime.Now.Date;
             DateTime final = current.AddDays(16);
 
@@ -147,11 +121,9 @@ namespace SOCE.Library.UI.ViewModels
                 BlankEntry.Add(new TREntryModel{ Date = current.AddDays(i)});
             }
 
-            TrulyObservableCollection<TimesheetRowModel> members = new TrulyObservableCollection<TimesheetRowModel>();
-            members.Add(new TimesheetRowModel { Project = pm[0], Entries = AddNewBlankRow()});
-            members.Add(new TimesheetRowModel { Project = pm[1], Entries = AddNewBlankRow()});
-            Rowdata = members;
-
+            SetDates();
+            LoadProjects();
+            
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
@@ -160,8 +132,9 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         private void AddRowToCollection()
-        {
+        {   
             Rowdata.Add(new TimesheetRowModel {Entries = AddNewBlankRow()});
+            //CollectDates();
         }
 
         private void RemoveRow(TimesheetRowModel trm)
@@ -180,26 +153,18 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-        private void CollectDates()
+        private void SetDates()
         {
-            if (Rowdata.Count > 1)
+            List<DateWrapper> dates = new List<DateWrapper>();
+            foreach (TREntryModel dt in BlankEntry)
             {
-                TimesheetRowModel trmfirst = Rowdata[0];
-
-                List<DateWrapper> dates = new List<DateWrapper>();
-
-                foreach(TREntryModel dt in trmfirst.Entries)
-                {
-                    dates.Add(new DateWrapper(dt.Date));
-                }
-
-                DateSummary = new ObservableCollection<DateWrapper>(dates);
-
-                DateTime startdate = dates[0].Value;
-                MonthYearString = $"{startdate.ToString("MMMM")} {startdate.Year}";
-                DateString = $"{startdate.Day}";
-
+                dates.Add(new DateWrapper(dt.Date));
             }
+
+            DateSummary = new ObservableCollection<DateWrapper>(dates);
+            DateTime startdate = dates[0].Value;
+            MonthYearString = $"{startdate.ToString("MMMM")} {startdate.Year}";
+            DateString = $"{startdate.Day}";
         }
 
         private void SumTable()
@@ -234,5 +199,20 @@ namespace SOCE.Library.UI.ViewModels
             return newblank;
         }
 
+        private void LoadProjects()
+        {
+            List<ProjectDbModel> dbprojects = SQLAccess.LoadProjects();
+
+            ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
+
+            foreach (ProjectDbModel pdb in dbprojects)
+            {
+                members.Add(new ProjectModel(pdb));
+            }
+
+            ProjectList = members;
+        }
+
+        
     }
 }
