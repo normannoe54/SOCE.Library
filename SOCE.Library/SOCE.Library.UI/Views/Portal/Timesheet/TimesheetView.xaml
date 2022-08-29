@@ -54,7 +54,7 @@
                 <TextBlock Text="Work Report"/>
             </StackPanel>
         </Button>
-        
+
         <ScrollViewer Grid.Row="3">
             <StackPanel>
                 <Grid Background="Transparent">
@@ -145,7 +145,7 @@
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                     </ItemsControl>
-                    
+
                     <TextBlock Grid.Column="2"
                              Text="{Binding Total, StringFormat= ' {0} h'}" 
                              TextAlignment="Center"
@@ -153,7 +153,7 @@
                              HorizontalAlignment="Stretch" 
                              FontSize="14" FontWeight="SemiBold" 
                              Foreground="Gray"/>
-                    
+
                 </Grid>
 
                 <!-- Bind Rows using the default StackPanel for the ItemsPanel -->
@@ -209,7 +209,6 @@
                                                   StaysOpenOnEdit="True"
                                                   materialDesign:HintAssist.HintOpacity=".26"
                                                   SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  SelectedIndex="{Binding Path= SelectedItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"
                                                   TextSearch.TextPath="ProjectName"
                                                   MaxDropDownHeight="250">
@@ -245,7 +244,6 @@
                                                   StaysOpenOnEdit="True"
                                                   materialDesign:HintAssist.HintOpacity=".26"
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                  SelectedIndex="{Binding Path= SelectedSubItemIndex, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"
                                                   MaxDropDownHeight="250">
@@ -258,7 +256,7 @@
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>
-                                
+
                                 <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->
                                 <!--<TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>-->
                                 <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Background="Transparent" Grid.Column="2">
@@ -320,11 +318,24 @@
             </StackPanel>
         </ScrollViewer>
 
-        <Button Grid.Row="4" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                <TextBlock Text="Submit"/>
+        <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
+
+            <Button Width="100" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                    <TextBlock Text="Save"/>
+                </StackPanel>
+            </Button>
+
+            <Button Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                        <TextBlock Text="Submit"/>
+                    </StackPanel>
+                </Button>
+                
             </StackPanel>
-        </Button>
+
+            
     </Grid>
 </UserControl>

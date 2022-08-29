@@ -38,5 +38,10 @@ namespace SOCE.Library.UI
             Fee = pm.Fee;
         }
 
+        public object Clone()
+        {
+            return new ProjectModel() { Id = this.Id, ProjectName = this.ProjectName, ProjectNumber = this.ProjectNumber, Client = this.Client, Fee = this.Fee };
+        }
+
     }
 }

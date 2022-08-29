@@ -11,6 +11,7 @@ using System.Threading;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using SOCE.Library.Db;
+using System.Globalization;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -20,7 +21,10 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand AddRowCommand { get; set; }
         public ICommand WorkReportCommand { get; set; }
         public ICommand SubmitTimeSheetCommand { get; set; }
+        public ICommand SaveTimesheetCommand { get; set; }
         public ICommand RemoveRowCommand { get; set; }
+
+        public List<TimesheetRowModel> CopiedTimesheetData { get; set; } = new List<TimesheetRowModel>();
 
         private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
         public ObservableCollection<TimesheetRowModel> Rowdata
@@ -116,24 +120,25 @@ namespace SOCE.Library.UI.ViewModels
 
             List<TREntryModel> trentrymodels = new List<TREntryModel>();
 
-            for(int i = 0; i < diff;i++)
+            for (int i = 0; i < diff; i++)
             {
-                BlankEntry.Add(new TREntryModel{ Date = current.AddDays(i)});
+                BlankEntry.Add(new TREntryModel { Date = current.AddDays(i) });
             }
 
             SetDates();
             LoadProjects();
-            
+            LoadTimesheetData();
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
+            this.SaveTimesheetCommand = new RelayCommand(SaveCommand);
             SumTable();
         }
 
         private void AddRowToCollection()
-        {   
-            Rowdata.Add(new TimesheetRowModel {Entries = AddNewBlankRow()});
+        {
+            Rowdata.Add(new TimesheetRowModel { Entries = AddNewBlankRow() });
             //CollectDates();
         }
 
@@ -174,7 +179,7 @@ namespace SOCE.Library.UI.ViewModels
                 TotalHeader.Clear();
                 int numofentries = Rowdata[0].Entries.Count();
 
-                for (int i = 0; i < numofentries;i++)
+                for (int i = 0; i < numofentries; i++)
                 {
                     double total = 0;
 
@@ -185,14 +190,14 @@ namespace SOCE.Library.UI.ViewModels
 
                     TotalHeader.Add(new DoubleWrapper(total));
                 }
-            } 
+            }
         }
 
         private ObservableCollection<TREntryModel> AddNewBlankRow()
         {
             ObservableCollection<TREntryModel> newblank = new ObservableCollection<TREntryModel>();
 
-            foreach(TREntryModel tr in BlankEntry)
+            foreach (TREntryModel tr in BlankEntry)
             {
                 newblank.Add(new TREntryModel() { Date = tr.Date, TimeEntry = tr.TimeEntry });
             }
@@ -213,6 +218,139 @@ namespace SOCE.Library.UI.ViewModels
             ProjectList = members;
         }
 
-        
+        private void LoadTimesheetData()
+        {
+            DateTime datestart = DateSummary.First().Value;
+            DateTime dateend = DateSummary.Last().Value;
+
+            //update employee Id
+            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, 0);
+
+            ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
+
+            var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
+
+            foreach (var item in groupedlist)
+            {
+                TimesheetRowDbModel subitem = item.First();
+                SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
+                ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
+
+                ProjectModel pm = new ProjectModel(pdb);
+                SubProjectModel spm = new SubProjectModel(spdb);
+
+                ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
+
+                TimesheetRowModel trm = new TimesheetRowModel()
+                {
+                    Project = pmnew
+                };
+
+                SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+
+                trm.SelectedSubproject = subpmnew;
+
+                foreach (TimesheetRowDbModel trdm in item)
+                {
+                    DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                    trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry });
+                }
+
+                DateTime dateinc = datestart;
+
+                while (dateinc <= dateend)
+                {
+                    if (!trm.Entries.Any(x => x.Date == dateinc))
+                    {
+                        //add
+                        trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0 });
+                    }
+                    dateinc = dateinc.AddDays(1);
+                }
+                trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
+                members.Add(trm);
+            }
+
+            Rowdata = members;
+
+            foreach(TimesheetRowModel trm in Rowdata)
+            {
+                CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
+            }
+
+        }
+
+        private void SaveCommand()
+        {
+            //need to include employee Id in here
+
+            //adding and modifying
+            foreach (TimesheetRowModel trm in Rowdata)
+            {
+                //adding or modifying an existing submission
+                foreach (TREntryModel trentry in trm.Entries)
+                {
+                    if (trentry.TimeEntry > 0)
+                    {
+                        TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
+                        {
+                            EmployeeId = 0,
+                            SubProjectId = trm.SelectedSubproject.Id,
+                            Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
+                            Submitted = 0,
+                            Approved = 0,
+                            TimeEntry = trentry.TimeEntry
+                        };
+
+                        SQLAccess.AddTimesheetData(dbmodel);
+                        //get data that needs to be removed
+                    }
+                }
+            }
+
+            //deleting
+            foreach (TimesheetRowModel ctrm in CopiedTimesheetData)
+            {
+                int index = Rowdata.ToList().FindIndex(x => x.SelectedSubproject.Id == ctrm.SelectedSubproject.Id);
+
+                //it exists
+                if (index != -1)
+                {
+                    TimesheetRowModel trmfound = Rowdata[index];
+
+                    foreach (TREntryModel trentry in ctrm.Entries)
+                    {
+                        //think about this expression
+                        if (!trmfound.Entries.Any(x=>x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
+                        {
+                            if (trentry.TimeEntry > 0)
+                            {
+                                //delete
+                                TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(0, ctrm.SelectedSubproject.Id, trentry.Date);
+                                SQLAccess.DeleteTimesheetData(trdbm.Id);
+                            }  
+                        }
+                    }
+
+                }
+                else
+                {
+                    //delete all
+                    foreach(TREntryModel trentry in ctrm.Entries)
+                    {
+                        if (trentry.TimeEntry > 0)
+                        {
+                            TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(0, ctrm.SelectedSubproject.Id, trentry.Date);
+                            SQLAccess.DeleteTimesheetData(trdbm.Id);
+                        }
+                            
+                    }
+                }        
+            }
+
+            CopiedTimesheetData = Rowdata.ToList();
+
+        }
+
     }
 }

@@ -140,7 +140,7 @@ namespace SOCE.Library.UI.ViewModels
 
             int id = SelectedProject.Id;
 
-            List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjects(id);
+            List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(id);
 
             ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();
 

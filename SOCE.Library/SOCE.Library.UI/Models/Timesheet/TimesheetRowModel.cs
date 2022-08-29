@@ -6,32 +6,13 @@ using System.Linq;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using SOCE.Library.Db;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 
 namespace SOCE.Library.UI
 {
-    public class TimesheetRowModel : PropertyChangedBase
+    public class TimesheetRowModel : PropertyChangedBase, ICloneable
     {
-        private int _selectedItemIndex = -1;
-        public int SelectedItemIndex
-        {
-            get { return _selectedItemIndex; }
-            set
-            {
-                _selectedItemIndex = value;
-                RaisePropertyChanged(nameof(SelectedItemIndex));
-            }
-        }
-
-        private int _selectedsubItemIndex = -1;
-        public int SelectedSubItemIndex
-        {
-            get { return _selectedsubItemIndex; }
-            set
-            {
-                _selectedsubItemIndex = value;
-                RaisePropertyChanged(nameof(SelectedSubItemIndex));
-            }
-        }
 
         private ProjectModel _project = new ProjectModel { ProjectName = "" };
         public ProjectModel Project
@@ -43,6 +24,8 @@ namespace SOCE.Library.UI
             set
             {
                 _project = value;
+                //set selected item
+
                 CollectSubProjects();
                 RaisePropertyChanged(nameof(Project));
             }
@@ -69,6 +52,7 @@ namespace SOCE.Library.UI
             set
             {
                 _selectedSubproject = value;
+
                 RaisePropertyChanged(nameof(SelectedSubproject));
             }
         }
@@ -118,16 +102,38 @@ namespace SOCE.Library.UI
 
             int id = Project.Id;
 
-            List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjects(id);
+            List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(id);
 
             ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();
 
             foreach (SubProjectDbModel sdb in subdbprojects)
             {
-                members.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = Project.ProjectNumber, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
+                members.Add(new SubProjectModel(sdb));
             }
 
             SubProjects = members;
+        }
+
+
+        public object Clone()
+        {
+            ObservableCollection<SubProjectModel> spms = new ObservableCollection<SubProjectModel>();
+            foreach(SubProjectModel spm in SubProjects)
+            {
+                spms.Add((SubProjectModel)spm.Clone());
+            }
+
+            ObservableCollection<TREntryModel> trs = new ObservableCollection<TREntryModel>();
+            foreach (TREntryModel tr in Entries)
+            {
+                trs.Add((TREntryModel)tr.Clone());
+            }
+
+
+            return new TimesheetRowModel() { Project = (ProjectModel)this.Project.Clone(),
+                SelectedSubproject = (SubProjectModel)this.SelectedSubproject.Clone(),
+                SubProjects = spms,
+                Entries = trs };
         }
 
     }

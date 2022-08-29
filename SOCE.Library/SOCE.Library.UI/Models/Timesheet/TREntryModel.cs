@@ -5,7 +5,7 @@ using System.Text;
 
 namespace SOCE.Library.UI
 {
-    public class TREntryModel : PropertyChangedBase
+    public class TREntryModel : PropertyChangedBase, ICloneable
     {
         private DateTime _date;
         public DateTime Date
@@ -34,6 +34,11 @@ namespace SOCE.Library.UI
                 //SetTotal();
                 RaisePropertyChanged(nameof(TimeEntry));
             }
+        }
+
+        public object Clone()
+        {
+            return new TREntryModel() { Date = this.Date, TimeEntry = this.TimeEntry};
         }
 
     }

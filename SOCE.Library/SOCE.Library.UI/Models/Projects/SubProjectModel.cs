@@ -6,7 +6,7 @@ using SOCE.Library.Db;
 
 namespace SOCE.Library.UI
 {
-    public class SubProjectModel
+    public class SubProjectModel : ICloneable
     {
         public int Id { get; set; }
         public int ProjectNumber { get; set; }
@@ -30,14 +30,18 @@ namespace SOCE.Library.UI
         public SubProjectModel()
         { }
 
-        //public SubProjectDbModel(SubProjectDbModel spm)
-        //{
-        //    Id = spm.Id;
+        public SubProjectModel(SubProjectDbModel spm)
+        {
+            Id = spm.Id;
+            ProjectNumber = spm.ProjectId;
+            PointNumber = spm.PointNumber;
+            Description = spm.Description;
+            Fee = spm.Fee;
+        }
 
-            //ProjectNumber = pm.ProjectNumber;
-            //Client = pm.Client;
-            //TotalFee = pm.TotalFee;
-        //}
-
+        public object Clone()
+        {
+            return new SubProjectModel() { Id = this.Id, ProjectNumber = this.ProjectNumber, PointNumber = this.PointNumber, Description = this.Description, Fee = this.Fee };
+        }
     }
 }
