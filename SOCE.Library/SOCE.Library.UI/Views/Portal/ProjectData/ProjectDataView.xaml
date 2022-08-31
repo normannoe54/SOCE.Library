@@ -1,0 +1,236 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.ProjectDataView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Grid.Column="1" Margin="30 20 20 20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Page Title-->
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <TextBlock Text="Project Data" FontSize="32" FontWeight="SemiBold" Margin="0 20 0 0" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
+
+            <ComboBox materialDesign:HintAssist.Hint="Search"  
+                      Width="200"
+                      Margin="50 0 0 0"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                      Foreground="Black"
+                      Style="{StaticResource MaterialDesignComboBox}"
+                      IsTextSearchEnabled="True" IsEditable="False" 
+                      StaysOpenOnEdit="True"
+                      FontSize="20"
+                      SelectedItem="{Binding ProjectofInterest, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      TextSearch.TextPath="ProjectName"
+                      MaxDropDownHeight="250">
+                <ComboBox.ItemTemplate>
+                    <DataTemplate DataType="ProjectModel">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                            <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ComboBox.ItemTemplate>
+            </ComboBox>
+        </StackPanel>
+
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <Grid Grid.Row="0" Margin="0 10 0 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="180"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="180"/>
+                    </Grid.ColumnDefinitions>
+                    <ComboBox Grid.Row="0" materialDesign:HintAssist.Hint="Display Data"
+                      VerticalAlignment="Bottom"
+                      HorizontalAlignment="Stretch"
+                      DisplayMemberPath="Description" 
+                      SelectedValuePath="Value"
+                      Foreground="Black"
+                      Style="{StaticResource MaterialDesignComboBox}"
+                      IsEditable="False" 
+                      FontSize="16"                         
+                      SelectedValue="{Binding SelectedDataType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource= "{Binding Source={local:Enumeration {x:Type local:DataTypeEnum}}}"
+                      MaxDropDownHeight="250">
+                    </ComboBox>
+
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1">
+                        <Button Margin="0 0 10 0" Style="{StaticResource MaterialDesignIconButton}" ToolTip="Pie Chart" Width="30" Height="30" Padding="0">
+                            <materialDesign:PackIcon Kind="Lock" Width="20"/>
+                        </Button>
+                        <ComboBox materialDesign:HintAssist.Hint="Phase"  
+                                                    Width="150"
+                                                  Margin="10 0 0 0"
+                                                   FontSize="16"
+                                                  VerticalAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  Foreground="Black"
+                                                  Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  IsEditable="False"
+                                                  StaysOpenOnEdit="True"
+                                                  SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  MaxDropDownHeight="250">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="SubProjectModel">
+                                    <StackPanel Orientation="Horizontal">
+                                        <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                        <TextBlock Text="{Binding Description}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
+                        </ComboBox>
+                    </StackPanel>
+
+                    <ComboBox Grid.Column="2" materialDesign:HintAssist.Hint="Time Span"  
+                      VerticalAlignment="Bottom"
+                      DisplayMemberPath="Description" 
+                      SelectedValuePath="Value"
+                      FontSize="16"
+                      HorizontalAlignment="Right"
+                      Foreground="Black"
+                      Style="{StaticResource MaterialDesignComboBox}"
+                      IsEditable="False" 
+                      SelectedValue="{Binding SelectedTimeSpan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      ItemsSource="{Binding Source={local:Enumeration {x:Type local:TimeOptionEnum}}}"
+                      MaxDropDownHeight="250">
+                    </ComboBox>
+
+                </Grid>
+
+                <lvc:CartesianChart Grid.Row="1" Series="{Binding OverallData}" LegendLocation="None" >
+                    <lvc:CartesianChart.AxisY>
+                        <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisY>
+                    <lvc:CartesianChart.AxisX>
+                        <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+                    </lvc:CartesianChart.AxisX>
+                </lvc:CartesianChart>
+
+                <Grid Grid.Row="2">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <materialDesign:Card Grid.Column="0">
+                        <Grid Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Hours Spent"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalHourSpent, Mode=OneWay, StringFormat=' {0} hr.'}"/>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="2">
+                        <Grid Grid.Column="0" Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Budget Spent"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalBudgetSpent, Mode=OneWay, StringFormat='$ {0}'}"/>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="4">
+                        <Grid Grid.Column="0" Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Total Budget"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalBudget, Mode=OneWay, StringFormat='$ {0}'}"/>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="6">
+                        <Grid Grid.Column="0" Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Budget Left"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding BudgetLeft, Mode=OneWay, StringFormat='$ {0}'}"/>
+                        </Grid>
+                    </materialDesign:Card>
+
+                    <materialDesign:Card Grid.Column="8">
+                        <Grid Grid.Column="0" Margin="20">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Hours Left"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding EstimatedHoursLeft, Mode=OneWay, StringFormat=' {0} hr.'}"/>
+                        </Grid>
+                    </materialDesign:Card>
+                </Grid>
+                
+            </Grid>
+
+            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
+                <ListBox ItemsSource="{Binding RelevantEmployees}"
+                     SelectionMode="Multiple">
+                    <ListBox.ItemContainerStyle>
+                        <Style TargetType="{x:Type ListBoxItem}">
+                            <Setter Property="IsSelected" Value="{Binding SelectedCurr, Mode=TwoWay}" />
+                        </Style>
+                    </ListBox.ItemContainerStyle>
+                    <ListBox.ItemTemplate>
+                        <DataTemplate DataType="local:EmployeeVisualModel">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <materialDesign:PackIcon Grid.Column="0" Kind="{Binding PackIconStr}"  Height="30" Width="30" Margin="10 0 10 0 " ToolTip="{Binding Username}" ToolTipService.Placement="Top"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
+                                </Grid>
+                                <TextBlock Grid.Row="1" Text="{Binding FileLocationRead}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontWeight="Thin" FontStyle="Italic" FontSize="11" Foreground="BlueViolet"/>
+                                <TextBlock Grid.Row="2" Text="{Binding Description}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="10" Foreground="Gray"/>
+                            </Grid>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

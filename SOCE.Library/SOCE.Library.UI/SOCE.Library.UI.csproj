@@ -43,6 +43,12 @@
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
+    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
+    </Reference>
+    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
+      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    </Reference>
     <Reference Include="MaterialDesignColors, Version=2.0.1.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignColors.2.0.1\lib\net452\MaterialDesignColors.dll</HintPath>
     </Reference>
@@ -76,6 +82,9 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Helpers\EnumHelper.cs" />
+    <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
+    <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
+    <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
     <Compile Include="Models\Projects\PhaseEnum.cs" />
     <Compile Include="Models\Projects\ProjectModel.cs" />
     <Compile Include="Models\Projects\SubProjectModel.cs" />
@@ -104,7 +113,7 @@
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\HomeViewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
-    <Compile Include="ViewModels\Pages\Portal\ProjectDataVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectData\ProjectDataVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
@@ -135,7 +144,7 @@
     <Compile Include="Views\Portal\LicenseManagerView.xaml.cs">
       <DependentUpon>LicenseManagerView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Portal\ProjectDataView.xaml.cs">
+    <Compile Include="Views\Portal\ProjectData\ProjectDataView.xaml.cs">
       <DependentUpon>ProjectDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\AddProjectView.xaml.cs">
@@ -222,7 +231,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Portal\ProjectDataView.xaml">
+    <Page Include="Views\Portal\ProjectData\ProjectDataView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -267,7 +276,6 @@
     <Compile Include="Models\Employee\EmployeeModel.cs" />
     <Compile Include="Models\ForgotPassRequestModel.cs" />
     <Compile Include="Models\PortalDataModel.cs" />
-    <Compile Include="Models\ProjectModel.cs" />
     <Compile Include="Models\Timesheet\RegisteredTimesheetDataModel.cs" />
     <Compile Include="Models\RegisterRequestModel.cs" />
     <Compile Include="Models\Timesheet\TimesheetRowModel.cs" />

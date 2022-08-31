@@ -52,7 +52,6 @@ namespace SOCE.Library.UI
             set
             {
                 _selectedSubproject = value;
-
                 RaisePropertyChanged(nameof(SelectedSubproject));
             }
         }

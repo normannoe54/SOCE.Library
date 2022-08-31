@@ -6,7 +6,7 @@ using SOCE.Library.Db;
 
 namespace SOCE.Library.UI
 {
-    public class EmployeeModel 
+    public class EmployeeModel : PropertyChangedBase
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -14,6 +14,17 @@ namespace SOCE.Library.UI
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Extension { get; set; }
+
+        private bool _selectedCurr;
+        public bool SelectedCurr
+        {
+            get { return _selectedCurr; }
+            set
+            {
+                _selectedCurr = value;
+                RaisePropertyChanged(nameof(SelectedCurr));
+            }
+        }
 
         public EmployeeModel()
         { }
