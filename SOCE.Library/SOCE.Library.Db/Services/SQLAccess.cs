@@ -24,6 +24,15 @@ namespace SOCE.Library.Db
             }
         }
 
+        public static EmployeeDbModel LoadEmployeeById(int employeeId)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Id = @employeeId", new { employeeId });
+                return output.FirstOrDefault();
+            }
+        }
+
         public static void AddEmployee(EmployeeDbModel employee)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -160,6 +169,17 @@ namespace SOCE.Library.Db
                     , new { employeeId, subprojectId, dateint });
 
                 return output.FirstOrDefault();
+            }
+        }
+
+        public static List<TimesheetRowDbModel> LoadTimeSheetDatabySubId(int subprojectId)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<TimesheetRowDbModel>("SELECT * FROM Timesheets WHERE SubProjectId = @subprojectId"
+                    , new { subprojectId});
+
+                return output.ToList();
             }
         }
     }

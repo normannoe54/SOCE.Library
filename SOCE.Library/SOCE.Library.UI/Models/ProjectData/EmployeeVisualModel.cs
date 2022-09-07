@@ -19,8 +19,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private Color _visualColor;
-        public Color VisualColor
+        private Brush _visualColor;
+        public Brush VisualColor
         {
             get { return _visualColor; }
             set
@@ -65,6 +65,11 @@ namespace SOCE.Library.UI
 
         public EmployeeVisualModel()
         { }
+
+        public EmployeeVisualModel(EmployeeDbModel employeedbmodel)
+        {
+            Name = employeedbmodel.FullName;
+        }
 
     }
 }

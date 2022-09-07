@@ -46,7 +46,7 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="250"/>
             </Grid.ColumnDefinitions>
 
             <Grid Grid.Column="0">
@@ -77,9 +77,10 @@
                     </ComboBox>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1">
-                        <Button Margin="0 0 10 0" Style="{StaticResource MaterialDesignIconButton}" ToolTip="Pie Chart" Width="30" Height="30" Padding="0">
-                            <materialDesign:PackIcon Kind="Lock" Width="20"/>
-                        </Button>
+                        <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"
+                                      Content="{materialDesign:PackIcon Kind=Lock}"
+                                      IsChecked="{Binding UnLockedSubs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Unlocked}" />
                         <ComboBox materialDesign:HintAssist.Hint="Phase"  
                                                     Width="150"
                                                   Margin="10 0 0 0"
@@ -89,6 +90,7 @@
                                                   Foreground="Black"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
                                                   IsEditable="False"
+                                                  IsEnabled="{Binding UnLockedSubs}"
                                                   StaysOpenOnEdit="True"
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -109,6 +111,7 @@
                       DisplayMemberPath="Description" 
                       SelectedValuePath="Value"
                       FontSize="16"
+                      Margin="0 0 30 0"
                       HorizontalAlignment="Right"
                       Foreground="Black"
                       Style="{StaticResource MaterialDesignComboBox}"
@@ -122,10 +125,10 @@
 
                 <lvc:CartesianChart Grid.Row="1" Series="{Binding OverallData}" LegendLocation="None" >
                     <lvc:CartesianChart.AxisY>
-                        <lvc:Axis Title="Sales" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
+                        <lvc:Axis Title="Hours" LabelFormatter="{Binding YFormatter}"></lvc:Axis>
                     </lvc:CartesianChart.AxisY>
                     <lvc:CartesianChart.AxisX>
-                        <lvc:Axis Title="Month" Labels="{Binding Labels}"></lvc:Axis>
+                        <lvc:Axis Title="Date" LabelFormatter="{Binding XFormatter}"></lvc:Axis>
                     </lvc:CartesianChart.AxisX>
                 </lvc:CartesianChart>
 
@@ -196,41 +199,45 @@
                         </Grid>
                     </materialDesign:Card>
                 </Grid>
-                
+
             </Grid>
 
-            <Border Grid.Column="1" BorderBrush="Gray" BorderThickness="1" CornerRadius="5">
-                <ListBox ItemsSource="{Binding RelevantEmployees}"
+            <ListBox Margin="10 0 10 0" Grid.Column="1" ItemsSource="{Binding RelevantEmployees}"
                      SelectionMode="Multiple">
-                    <ListBox.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListBoxItem}">
-                            <Setter Property="IsSelected" Value="{Binding SelectedCurr, Mode=TwoWay}" />
-                        </Style>
-                    </ListBox.ItemContainerStyle>
-                    <ListBox.ItemTemplate>
-                        <DataTemplate DataType="local:EmployeeVisualModel">
-                            <Grid>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                    <RowDefinition Height="Auto"/>
-                                </Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <materialDesign:PackIcon Grid.Column="0" Kind="{Binding PackIconStr}"  Height="30" Width="30" Margin="10 0 10 0 " ToolTip="{Binding Username}" ToolTipService.Placement="Top"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
-                                </Grid>
-                                <TextBlock Grid.Row="1" Text="{Binding FileLocationRead}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontWeight="Thin" FontStyle="Italic" FontSize="11" Foreground="BlueViolet"/>
-                                <TextBlock Grid.Row="2" Text="{Binding Description}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="10" Foreground="Gray"/>
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignListBoxItem}">
+                        <!--<Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Foreground" Value="{Binding VisualColor}"/>
+                            </Trigger>
+                        </Style.Triggers>-->
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="IsSelected" Value="{Binding SelectedCurr, Mode=TwoWay}" />
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:EmployeeVisualModel">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Grid.Column="0" Width="15" Height="15" RadiusX="5" RadiusY="5" Fill="{Binding VisualColor}"/>
+                                <TextBlock Grid.Column="1" Margin="10 0 0 0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="{Binding SumHours,StringFormat =' {0} hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Thin" FontStyle="Italic" FontSize="14"/>
                             </Grid>
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </Border>
+                            <TextBlock Grid.Row="2" Text="{Binding Rate,StringFormat='${0}/hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="10" Foreground="Gray"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
         </Grid>
     </Grid>
 </UserControl>
