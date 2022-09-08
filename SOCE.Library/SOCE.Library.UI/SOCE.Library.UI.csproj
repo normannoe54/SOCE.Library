@@ -84,6 +84,7 @@
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
+    <Compile Include="Models\ProjectData\SeriesDataModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
     <Compile Include="Models\Projects\PhaseEnum.cs" />
     <Compile Include="Models\Projects\ProjectModel.cs" />

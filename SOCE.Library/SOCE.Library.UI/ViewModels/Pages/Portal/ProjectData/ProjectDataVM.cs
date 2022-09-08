@@ -15,6 +15,8 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class ProjectDataVM : BaseVM
     {
+        private List<SeriesDataModel> SeriesData = new List<SeriesDataModel>();
+
         private SeriesCollection _overallData = new SeriesCollection();
         public SeriesCollection OverallData
         {
@@ -26,7 +28,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public Func<double, string> XFormatter { get; set; }
+        public Func<double, string> Formatter { get; set; }
 
         private ObservableCollection<ProjectModel> _projectList;
         public ObservableCollection<ProjectModel> ProjectList
@@ -189,6 +191,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedTimeSpan = value;
+                FormatData();
                 RaisePropertyChanged(nameof(SelectedTimeSpan));
             }
         }
@@ -203,7 +206,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedDataType = value;
-
+                FormatData();
                 RaisePropertyChanged(nameof(SelectedDataType));
             }
         }
@@ -228,6 +231,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public ProjectDataVM()
         {
+            Formatter = value => new DateTime((long)value).ToString("yyyy-MM-dd");
             LoadProjects();
 
             //List<EmployeeVisualModel> evm = new List<EmployeeVisualModel>();
@@ -295,7 +299,8 @@ namespace SOCE.Library.UI.ViewModels
         private void LoadGraphData() //get approved only data
         {
             RelevantEmployees.Clear();
-            OverallData.Clear();
+            SeriesData.Clear();
+
             List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
             if (ProjectofInterest != null)
             {
@@ -340,47 +345,66 @@ namespace SOCE.Library.UI.ViewModels
                         //order by date
                         List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
-                        
-
-                        double sum = 0;
-                        foreach (TimesheetRowDbModel data in employeetimesheetdata)
-                        {
-                            DateTime dt = DateTime.ParseExact(data.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                            values.Add(new DateTimePoint(dt, data.TimeEntry));
-                            sum = +data.TimeEntry;
-                        }
-
-                        //get employee by Id
                         EmployeeVisualModel evm = new EmployeeVisualModel(employee);
                         evm.Rate = 250;
-                        evm.SumHours = sum;
-
+                        evm.SumHours = employeetimesheetdata.Sum(x => x.TimeEntry);
                         Brush b = RandomColorGenerator();
                         evm.VisualColor = b;
 
+                        SeriesData.Add(new SeriesDataModel(evm, employeetimesheetdata));
                         RelevantEmployees.Add(evm);
-
-                        LineSeries ls = new LineSeries
-                        {
-                            Title = evm.Name,
-                            Values = values,
-                            PointGeometrySize = 1,
-                            
-                        };
-
-                        XFormatter = value => new System.DateTime((long)(value * TimeSpan.FromDays(1).Ticks)).ToString("t");
-                        OverallData.Add(ls);
                     }
-
-
-
                 }
 
-                //do stuff
+                FormatData();
             }
-
         }
 
+
+        private void FormatData()
+        {
+            TotalHourSpent = 0;
+            TotalBudgetSpent = 0;
+            TotalBudget = 0;
+            BudgetLeft = 0;
+            EstimatedHoursLeft = 0;
+            OverallData.Clear();
+
+            double averagerate = 0;
+
+            foreach (SeriesDataModel sdm in SeriesData)
+            {
+                LineSeries ls = sdm.CreateLineSeries(SelectedTimeSpan, SelectedDataType);
+                OverallData.Add(ls);
+                TotalHourSpent += sdm.EmployeeVis.SumHours;
+                TotalBudgetSpent += sdm.EmployeeVis.SumHours * sdm.EmployeeVis.Rate;
+                averagerate += sdm.EmployeeVis.Rate;
+            }
+
+            if (ProjectofInterest != null)
+            {
+                if (SelectedSubproject == null)
+                {
+                    TotalBudget = ProjectofInterest.Fee;
+                    BudgetLeft = ProjectofInterest.Fee - TotalBudgetSpent;
+                }
+                else
+                {
+                    TotalBudget = SelectedSubproject.Fee;
+                    BudgetLeft = SelectedSubproject.Fee - TotalBudgetSpent;
+                }
+            }
+            
+
+
+
+            EstimatedHoursLeft = Math.Max(0, BudgetLeft / (averagerate / SeriesData.Count));
+        }
+
+        /// <summary>
+        /// Create Color
+        /// </summary>
+        /// <returns></returns>
         private Brush RandomColorGenerator()
         {
             Random rnd = new Random();
