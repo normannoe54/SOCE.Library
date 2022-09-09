@@ -113,18 +113,18 @@ namespace SOCE.Library.UI.ViewModels
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
 
             //get current date
-            DateTime current = DateTime.Now.Date;
-            DateTime final = current.AddDays(16);
+            //DateTime current = DateTime.Now.Date;
+            //DateTime final = current.AddDays(16);
 
-            int diff = (final - current).Days;
+            //int diff = (final - current).Days;
 
-            List<TREntryModel> trentrymodels = new List<TREntryModel>();
+            //List<TREntryModel> trentrymodels = new List<TREntryModel>();
 
-            for (int i = 0; i < diff; i++)
-            {
-                BlankEntry.Add(new TREntryModel { Date = current.AddDays(i) });
-            }
-
+            //for (int i = 0; i < diff; i++)
+            //{
+            //    BlankEntry.Add(new TREntryModel { Date = current.AddDays(i) });
+            //}
+            LoadCurrentTimesheet(DateTime.Now);
             SetDates();
             LoadProjects();
             LoadTimesheetData();
@@ -168,8 +168,9 @@ namespace SOCE.Library.UI.ViewModels
 
             DateSummary = new ObservableCollection<DateWrapper>(dates);
             DateTime startdate = dates[0].Value;
+            DateTime lastdate = dates.Last().Value;
             MonthYearString = $"{startdate.ToString("MMMM")} {startdate.Year}";
-            DateString = $"{startdate.Day}";
+            DateString = $"[{startdate.Day} - {lastdate.Day}]";
         }
 
         private void SumTable()
@@ -349,8 +350,34 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             CopiedTimesheetData = Rowdata.ToList();
-
         }
 
+
+        private void LoadCurrentTimesheet(DateTime currdate)
+        {
+            DateTime firstdate;
+            DateTime lastdate;
+            if (currdate.Day > 16)
+            {
+                //second tier
+                firstdate = new DateTime(currdate.Year, currdate.Month, 17);
+                lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
+            }
+            else
+            {
+                //first tier
+                firstdate = new DateTime(currdate.Year, currdate.Month, 1);
+                lastdate = new DateTime(currdate.Year, currdate.Month, 16);    
+            }
+
+            int diff = (lastdate - firstdate).Days;
+
+            List<TREntryModel> trentrymodels = new List<TREntryModel>();
+
+            for (int i = 0; i < diff; i++)
+            {
+                BlankEntry.Add(new TREntryModel { Date = firstdate.AddDays(i) });
+            }
+        }
     }
 }
