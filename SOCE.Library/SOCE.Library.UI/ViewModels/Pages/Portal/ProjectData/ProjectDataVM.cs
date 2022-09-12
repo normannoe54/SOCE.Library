@@ -28,6 +28,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _isChartVisible = false;
+        public bool IsChartVisible
+        {
+            get { return _isChartVisible; }
+            set
+            {
+                _isChartVisible = value;
+                RaisePropertyChanged(nameof(IsChartVisible));
+            }
+        }
+
         public Func<double, string> Formatter { get; set; }
 
         private ObservableCollection<ProjectModel> _projectList;
@@ -394,11 +405,13 @@ namespace SOCE.Library.UI.ViewModels
                     BudgetLeft = SelectedSubproject.Fee - TotalBudgetSpent;
                 }
             }
-            
-
-
 
             EstimatedHoursLeft = Math.Max(0, BudgetLeft / (averagerate / SeriesData.Count));
+
+            if (OverallData.Count > 0)
+            {
+                IsChartVisible = true;
+            }
         }
 
         /// <summary>

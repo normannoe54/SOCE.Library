@@ -8,6 +8,9 @@
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Grid Grid.Column="1" Margin="30 20 20 20">
+        <Grid.Resources>
+            <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
@@ -123,8 +126,9 @@
 
                 </Grid>
 
-                <lvc:CartesianChart Grid.Row="1" Series="{Binding OverallData}" LegendLocation="None">
+                <lvc:CartesianChart Grid.Row="1" Series="{Binding OverallData}" Visibility="{Binding IsChartVisible, Converter = {StaticResource BooleanToVisibilityConverter}}" LegendLocation="None">
                     <lvc:CartesianChart.Resources>
+                        
                         <Style TargetType="lvc:LineSeries">
                             <Setter Property="PointGeometrySize" Value="1"/>
                             <Setter Property="LineSmoothness" Value="0"/>

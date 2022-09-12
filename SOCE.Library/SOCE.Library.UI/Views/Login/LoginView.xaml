@@ -50,13 +50,13 @@
                 </EventTrigger>
             </TextBlock.Triggers>
         </TextBlock>
-        <StackPanel Grid.Row="7" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
+        <!--<StackPanel Grid.Row="7" VerticalAlignment="Bottom" Orientation="Horizontal" HorizontalAlignment="Center">
             <Label FontSize="12" FontWeight="Light" Content="Dont have an account?" Foreground="SlateGray" VerticalAlignment="Center"/>
             <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command = "{Binding GoToNewViewCommand}" CommandParameter="Signup">
                 <Button.Content>
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" FontSize="12"  Content="Sign Up" Foreground="{StaticResource SOCERed}" />
                 </Button.Content>
             </Button>
-        </StackPanel>
+        </StackPanel>-->
     </Grid>
 </UserControl>
