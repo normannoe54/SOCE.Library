@@ -24,6 +24,11 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand SaveTimesheetCommand { get; set; }
         public ICommand RemoveRowCommand { get; set; }
 
+        public ICommand PreviousCommand { get; set; }
+
+        public ICommand NextCommand { get; set; }
+        public ICommand CurrentCommand { get; set; }
+
         public List<TimesheetRowModel> CopiedTimesheetData { get; set; } = new List<TimesheetRowModel>();
 
         private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
@@ -105,34 +110,36 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private double _baseHours = 0;
+        public double BaseHours
+        {
+            get { return _baseHours; }
+            set
+            {
+                _baseHours = value;
+                RaisePropertyChanged(nameof(BaseHours));
+            }
+        }
+
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
         public TimesheetVM()
         {
             //get timesheet data from database
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
-
-            //get current date
-            //DateTime current = DateTime.Now.Date;
-            //DateTime final = current.AddDays(16);
-
-            //int diff = (final - current).Days;
-
-            //List<TREntryModel> trentrymodels = new List<TREntryModel>();
-
-            //for (int i = 0; i < diff; i++)
-            //{
-            //    BlankEntry.Add(new TREntryModel { Date = current.AddDays(i) });
-            //}
-            LoadCurrentTimesheet(DateTime.Now);
-            SetDates();
             LoadProjects();
-            LoadTimesheetData();
+            LoadCurrentTimesheet(DateTime.Now);
+            
+            //LoadTimesheetData();
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
             this.SaveTimesheetCommand = new RelayCommand(SaveCommand);
+
+            this.PreviousCommand = new RelayCommand(PreviousTimesheet);
+            this.NextCommand = new RelayCommand(NextTimesheet); 
+            this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             SumTable();
         }
 
@@ -158,21 +165,9 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-        private void SetDates()
-        {
-            List<DateWrapper> dates = new List<DateWrapper>();
-            foreach (TREntryModel dt in BlankEntry)
-            {
-                dates.Add(new DateWrapper(dt.Date));
-            }
-
-            DateSummary = new ObservableCollection<DateWrapper>(dates);
-            DateTime startdate = dates[0].Value;
-            DateTime lastdate = dates.Last().Value;
-            MonthYearString = $"{startdate.ToString("MMMM")} {startdate.Year}";
-            DateString = $"[{startdate.Day} - {lastdate.Day}]";
-        }
-
+        /// <summary>
+        /// Sum Table
+        /// </summary>
         private void SumTable()
         {
             if (Rowdata.Count > 1)
@@ -194,6 +189,10 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        /// <summary>
+        /// Add blank row
+        /// </summary>
+        /// <returns></returns>
         private ObservableCollection<TREntryModel> AddNewBlankRow()
         {
             ObservableCollection<TREntryModel> newblank = new ObservableCollection<TREntryModel>();
@@ -205,6 +204,9 @@ namespace SOCE.Library.UI.ViewModels
             return newblank;
         }
 
+        /// <summary>
+        /// Load Projects from DB
+        /// </summary>
         private void LoadProjects()
         {
             List<ProjectDbModel> dbprojects = SQLAccess.LoadProjects();
@@ -219,6 +221,33 @@ namespace SOCE.Library.UI.ViewModels
             ProjectList = members;
         }
 
+        /// <summary>
+        /// Button Press
+        /// </summary>
+        private void PreviousTimesheet()
+        {
+            LoadCurrentTimesheet(DateSummary.First().Value.AddDays(-1));
+        }
+
+        /// <summary>
+        /// Button Press
+        /// </summary>
+        private void NextTimesheet()
+        {
+            LoadCurrentTimesheet(DateSummary.Last().Value.AddDays(1));
+        }
+
+        /// <summary>
+        /// Button Press
+        /// </summary>
+        private void CurrentTimesheet()
+        {
+            LoadCurrentTimesheet(DateTime.Now);
+        }
+
+        /// <summary>
+        /// Load DB
+        /// </summary>
         private void LoadTimesheetData()
         {
             DateTime datestart = DateSummary.First().Value;
@@ -281,6 +310,9 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
+        /// <summary>
+        /// Save to DB
+        /// </summary>
         private void SaveCommand()
         {
             //need to include employee Id in here
@@ -353,6 +385,10 @@ namespace SOCE.Library.UI.ViewModels
         }
 
 
+        /// <summary>
+        /// Load Date of Timesheet
+        /// </summary>
+        /// <param name="currdate"></param>
         private void LoadCurrentTimesheet(DateTime currdate)
         {
             DateTime firstdate;
@@ -371,13 +407,26 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             int diff = (lastdate - firstdate).Days;
-
-            List<TREntryModel> trentrymodels = new List<TREntryModel>();
-
-            for (int i = 0; i < diff; i++)
+            List<DateWrapper> dates = new List<DateWrapper>();
+            int workdays = 0;
+            for (int i = 0; i <= diff; i++)
             {
-                BlankEntry.Add(new TREntryModel { Date = firstdate.AddDays(i) });
+                DateTime dt = firstdate.AddDays(i);
+                BlankEntry.Add(new TREntryModel { Date = dt });
+                dates.Add(new DateWrapper(dt.Date));
+
+                if (!(dt.DayOfWeek == DayOfWeek.Saturday) && !(dt.DayOfWeek == DayOfWeek.Sunday))
+                {
+                    workdays++;
+                }
             }
+
+            DateSummary = new ObservableCollection<DateWrapper>(dates);
+            MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
+            DateString = $"[{firstdate.Day} - {lastdate.Day}]";
+            BaseHours = workdays * 9;
+
+            LoadTimesheetData();
         }
     }
 }

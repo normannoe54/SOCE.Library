@@ -28,19 +28,19 @@
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Gray"/>
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Previous"  Foreground="Gray"/>
                 </StackPanel>
             </Button>
-            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Current" Margin="0 0 10 0"  Foreground="Gray"/>
                     <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Gray"/>
                 </StackPanel>
             </Button>
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}">
                 <StackPanel Orientation="Horizontal">
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Gray"/>
                     <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Gray"/>
@@ -48,12 +48,13 @@
             </Button>
         </StackPanel>
 
-        <Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+        <TextBlock Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" Grid.Row="2" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+        <!--<Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal">
                 <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                 <TextBlock Text="Work Report"/>
             </StackPanel>
-        </Button>
+        </Button>-->
 
         <ScrollViewer Grid.Row="3">
             <StackPanel>
@@ -259,7 +260,7 @@
 
                                 <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->
                                 <!--<TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>-->
-                                <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Background="Transparent" Grid.Column="2">
+                                <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="2">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Grid>
@@ -274,6 +275,7 @@
                                                     VerticalAlignment="Stretch" 
                                                     FontWeight="SemiBold" 
                                                     BorderBrush="LightGray" 
+                                                    Background="{Binding CellColor}"
                                                     BorderThickness="1"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter}}">
                                                     <TextBox.Style>

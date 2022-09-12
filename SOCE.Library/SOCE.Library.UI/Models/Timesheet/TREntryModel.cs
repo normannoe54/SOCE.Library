@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using System.Windows.Media;
 
 namespace SOCE.Library.UI
 {
@@ -17,6 +18,14 @@ namespace SOCE.Library.UI
             set
             {
                 _date = value;
+                if (_date.DayOfWeek == DayOfWeek.Saturday || _date.DayOfWeek == DayOfWeek.Sunday)
+                {
+                    CellColor = Brushes.LightGray;
+                }
+                else
+                {
+                    CellColor = Brushes.White;
+                }
                 RaisePropertyChanged(nameof(Date));
             }
         }
@@ -35,6 +44,36 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(TimeEntry));
             }
         }
+
+        private Brush _cellColor;
+        public Brush CellColor
+        {
+            get
+            {
+                return _cellColor;
+            }
+            set
+            {
+                _cellColor = value;
+                //SetTotal();
+                RaisePropertyChanged(nameof(CellColor));
+            }
+        }
+
+        //private Brush _cellColor;
+        //public Brush CellColor
+        //{
+        //    get
+        //    {
+        //        return _cellColor;
+        //    }
+        //    set
+        //    {
+        //        _cellColor = value;
+        //        //SetTotal();
+        //        RaisePropertyChanged(nameof(CellColor));
+        //    }
+        //}
 
         public object Clone()
         {

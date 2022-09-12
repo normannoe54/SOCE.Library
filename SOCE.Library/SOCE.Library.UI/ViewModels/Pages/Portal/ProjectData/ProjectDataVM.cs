@@ -356,8 +356,9 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                FormatData();
+                
             }
+            FormatData();
         }
 
 
