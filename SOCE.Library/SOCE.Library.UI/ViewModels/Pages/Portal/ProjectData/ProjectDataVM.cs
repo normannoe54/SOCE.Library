@@ -10,6 +10,8 @@ using System.Windows.Media;
 using System.Linq;
 using LiveCharts.Defaults;
 using System.Globalization;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -25,6 +27,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _overallData = value;
                 RaisePropertyChanged(nameof(OverallData));
+            }
+        }
+
+        private bool _isChartVisible = false;
+        public bool IsChartVisible
+        {
+            get { return _isChartVisible; }
+            set
+            {
+                _isChartVisible = value;
+                RaisePropertyChanged(nameof(IsChartVisible));
             }
         }
 
@@ -234,6 +247,7 @@ namespace SOCE.Library.UI.ViewModels
             Formatter = value => new DateTime((long)value).ToString("yyyy-MM-dd");
             LoadProjects();
 
+            RelevantEmployees.CollectionChanged += this.EmployeesChanged;
             //List<EmployeeVisualModel> evm = new List<EmployeeVisualModel>();
 
             //evm.Add(new EmployeeVisualModel() { Name = "Norm Noe", Rate = 150, SumHours = 100, VisualColor = Brushes.Red });
@@ -259,6 +273,66 @@ namespace SOCE.Library.UI.ViewModels
             //        Values = new ChartValues<double> { 4,2,7,2,7 },
             //    }
             //};
+        }
+
+        //private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    //Get the sender observable collection
+        //    ObservableCollection<EmployeeVisualModel> evms = sender as ObservableCollection<EmployeeVisualModel>;
+
+            
+
+        //    //get selected evms
+
+
+
+
+
+        //    //NotifyCollectionChangedAction action = e.Action;
+
+        //    //if (action == NotifyCollectionChangedAction.Add)
+        //    //    lblStatus.Content = "New person added";
+        //    //if (action == NotifyCollectionChangedAction.Remove)
+        //    //    lblStatus.Content = "Person deleted";
+        //}
+
+        private void EmployeesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (INotifyPropertyChanged added in e?.NewItems)
+                {
+                        added.PropertyChanged += ItemModificationOnPropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (INotifyPropertyChanged added in e?.OldItems)
+                {
+                    added.PropertyChanged -= ItemModificationOnPropertyChanged;
+                }
+            }
+        }
+
+        private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            EmployeeVisualModel evm = sender as EmployeeVisualModel;
+            foreach(LineSeries ls in OverallData)
+            {
+                if (ls.Title == evm.Name )
+                {
+                    if (evm.SelectedCurr)
+                    {
+                        ls.Visibility = System.Windows.Visibility.Visible;
+                    }
+                    else
+                    {
+                        ls.Visibility = System.Windows.Visibility.Hidden;
+                    }
+                    break;
+                }
+            }
         }
 
         private void LoadProjects()
@@ -314,8 +388,7 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
                         total.AddRange(tmdata);
-                    }
-                    
+                    }                
                 }
                 else
                 {
@@ -395,11 +468,13 @@ namespace SOCE.Library.UI.ViewModels
                     BudgetLeft = SelectedSubproject.Fee - TotalBudgetSpent;
                 }
             }
-            
-
-
 
             EstimatedHoursLeft = Math.Max(0, BudgetLeft / (averagerate / SeriesData.Count));
+
+            if (OverallData.Count > 0)
+            {
+                IsChartVisible = true;
+            }
         }
 
         /// <summary>

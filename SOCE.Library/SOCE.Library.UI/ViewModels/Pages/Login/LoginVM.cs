@@ -57,16 +57,21 @@ namespace SOCE.Library.UI.ViewModels
         /// <param name="loginrequest"></param>
         public void LoginCom(AuthRequestModel loginrequest)
         {
-            IoCCore.Application.CurrentPage = IoCPortal.Application as BaseAI;
+            
+            //IoCCore.Application.CurrentPage = IoCPortal.Application as BaseAI;
 
             //check email
-            //string emailcheck = loginrequest.Email.Substring(loginrequest.Email.LastIndexOf('@') + 1);
+            string emailcheck = loginrequest.Email.Substring(loginrequest.Email.LastIndexOf('@') + 1);
 
-            //if (emailcheck != "email.com")
-            //{
-            //    LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
-            //    return;
-            //}
+            if (emailcheck != "email.com")
+            {
+                LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
+                return;
+            }
+
+            CoreAI globalwindow = (CoreAI)IoCCore.Application;
+            globalwindow.WindowType = WindowState.Maximized;
+            globalwindow.GoToPage(CorePage.Portal);
 
             //AuthenticateRequest convertedinput = loginrequest.ConvertAPIModel();
 

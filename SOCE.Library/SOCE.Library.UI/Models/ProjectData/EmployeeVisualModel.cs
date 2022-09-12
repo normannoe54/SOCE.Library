@@ -52,7 +52,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _selectedCurr;
+        private bool _selectedCurr = true;
         public bool SelectedCurr
         {
             get { return _selectedCurr; }

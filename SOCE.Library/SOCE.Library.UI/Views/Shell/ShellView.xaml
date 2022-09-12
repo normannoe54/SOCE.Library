@@ -6,23 +6,26 @@
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Height="900" Width="1800" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency ="True" Background="Transparent">
+        Height="700" Width="1000" WindowState="{Binding WindowType}" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency ="True" Background="Transparent">
     <materialDesign:DialogHost
         Identifier="RootDialog"
         DialogTheme="Dark">
         <Grid>
             <Border  BorderThickness="0">
                 <Grid>
-                    <Grid>
-                        <!--<Grid.RowDefinitions>
-                        <RowDefinition Height="30" />
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>-->
-                        <Button Panel.ZIndex="2" VerticalAlignment="Top"  HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Close"  Command="{Binding CloseCommand}">
-                            <materialDesign:PackIcon Kind="Close" Foreground="{StaticResource SOCERed}"/>
+                    <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right">
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
+                            <materialDesign:PackIcon Kind="WindowMinimize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
                         </Button>
-                        <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                    </Grid>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Maximize" Command="{Binding MaximizeCommand}">
+                            <materialDesign:PackIcon Kind="WindowMaximize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="0 0 5 0" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
+                            <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                        </Button>
+                    </StackPanel>
+                    
+                    <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>
 
             </Border>
