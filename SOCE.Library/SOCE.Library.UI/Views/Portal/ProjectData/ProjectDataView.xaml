@@ -128,7 +128,7 @@
 
                 <lvc:CartesianChart Grid.Row="1" Series="{Binding OverallData}" Visibility="{Binding IsChartVisible, Converter = {StaticResource BooleanToVisibilityConverter}}" LegendLocation="None">
                     <lvc:CartesianChart.Resources>
-                        
+
                         <Style TargetType="lvc:LineSeries">
                             <Setter Property="PointGeometrySize" Value="1"/>
                             <Setter Property="LineSmoothness" Value="0"/>
