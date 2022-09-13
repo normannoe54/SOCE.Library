@@ -76,8 +76,18 @@
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0">
-                    
+                <StackPanel Grid.Column="0" Orientation="Vertical">
+                    <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0">
+                        <Button.Content>
+                            <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
+                        </Button.Content>
+                    </Button>
+                    <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0">
+                            <Button.Content>
+                                <materialDesign:PackIcon Foreground="Green" Kind="Edit" VerticalAlignment="Center" Height="10" Width="10"/>
+                            </Button.Content>
+                    </Button>
+
                 </StackPanel>
                 
             </Grid>
@@ -87,7 +97,7 @@
 
 
         <!--Members Data Grid-->
-        <DataGrid Grid.Row="3" ItemsSource="{Binding Employees}" CanUserAddRows="False" AutoGenerateColumns="False">
+        <!--<DataGrid Grid.Row="3" ItemsSource="{Binding Employees}" CanUserAddRows="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="#" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding Id}"/>
                 <DataGridTextColumn Header="Name" IsReadOnly="True" CanUserResize="False" Width="auto" Binding="{Binding Name}"/>
@@ -97,6 +107,6 @@
                 <DataGridTextColumn Header="Ext." Binding="{Binding Extension}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Ext." Binding="{Binding Extension}" IsReadOnly="True" Width="*"/>
             </DataGrid.Columns>
-        </DataGrid>
+        </DataGrid>-->
     </Grid>
 </UserControl>
