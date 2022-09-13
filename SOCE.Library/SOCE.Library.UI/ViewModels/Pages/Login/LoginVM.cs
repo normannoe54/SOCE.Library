@@ -63,7 +63,7 @@ namespace SOCE.Library.UI.ViewModels
             //check email
             string emailcheck = loginrequest.Email.Substring(loginrequest.Email.LastIndexOf('@') + 1);
 
-            if (emailcheck != "email.com")
+            if (emailcheck != "shirkodonovan.com")
             {
                 LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
                 return;

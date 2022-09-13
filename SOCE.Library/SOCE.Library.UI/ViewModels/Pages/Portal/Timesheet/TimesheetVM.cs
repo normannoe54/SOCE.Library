@@ -391,6 +391,7 @@ namespace SOCE.Library.UI.ViewModels
         /// <param name="currdate"></param>
         private void LoadCurrentTimesheet(DateTime currdate)
         {
+            BlankEntry.Clear();
             DateTime firstdate;
             DateTime lastdate;
             if (currdate.Day > 16)

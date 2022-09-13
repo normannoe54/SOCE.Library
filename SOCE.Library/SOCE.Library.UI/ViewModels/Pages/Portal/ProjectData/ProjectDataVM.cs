@@ -102,7 +102,7 @@ namespace SOCE.Library.UI.ViewModels
                 }
                 else
                 {
-                    if (SubProjects.Count>0)
+                    if (SubProjects.Count > 0)
                     {
                         SelectedSubproject = SubProjects[0];
                     }
@@ -124,7 +124,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _totalHourSpent = 50;
+        private double _totalHourSpent = 0;
         public double TotalHourSpent
         {
             get
@@ -138,7 +138,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _totalBudgetSpent = 50;
+        private double _totalBudgetSpent = 0;
         public double TotalBudgetSpent
         {
             get
@@ -152,7 +152,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _budgetLeft = 20;
+        private double _budgetLeft = 0;
         public double BudgetLeft
         {
             get
@@ -166,7 +166,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _totalbudget = 100;
+        private double _totalbudget = 0;
         public double TotalBudget
         {
             get
@@ -180,7 +180,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _estimatedhoursleft = 15;
+        private double _estimatedhoursleft = 0;
         public double EstimatedHoursLeft
         {
             get
@@ -248,53 +248,8 @@ namespace SOCE.Library.UI.ViewModels
             LoadProjects();
 
             RelevantEmployees.CollectionChanged += this.EmployeesChanged;
-            //List<EmployeeVisualModel> evm = new List<EmployeeVisualModel>();
 
-            //evm.Add(new EmployeeVisualModel() { Name = "Norm Noe", Rate = 150, SumHours = 100, VisualColor = Brushes.Red });
-            //evm.Add(new EmployeeVisualModel() { Name = "Guy Mazzotta", Rate = 250, SumHours = 50, VisualColor = Brushes.Blue });
-            //evm.Add(new EmployeeVisualModel() { Name = "Ben Schieber", Rate = 120, SumHours = 150, VisualColor = Brushes.Purple });
-            //RelevantEmployees = new ObservableCollection<EmployeeVisualModel>(evm);
-
-            //OverallData = new SeriesCollection
-            //{
-            //    new LineSeries
-            //    {
-            //        Title = "Series 1",
-            //        Values = new ChartValues<double> { 4, 6, 5, 2 ,4 }
-            //    },
-            //    new LineSeries
-            //    {
-            //        Title = "Series 2",
-            //        Values = new ChartValues<double> { 6, 7, 3, 4 ,6 },
-            //    },
-            //    new LineSeries
-            //    {
-            //        Title = "Series 3",
-            //        Values = new ChartValues<double> { 4,2,7,2,7 },
-            //    }
-            //};
         }
-
-        //private void OnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    //Get the sender observable collection
-        //    ObservableCollection<EmployeeVisualModel> evms = sender as ObservableCollection<EmployeeVisualModel>;
-
-            
-
-        //    //get selected evms
-
-
-
-
-
-        //    //NotifyCollectionChangedAction action = e.Action;
-
-        //    //if (action == NotifyCollectionChangedAction.Add)
-        //    //    lblStatus.Content = "New person added";
-        //    //if (action == NotifyCollectionChangedAction.Remove)
-        //    //    lblStatus.Content = "Person deleted";
-        //}
 
         private void EmployeesChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -302,7 +257,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 foreach (INotifyPropertyChanged added in e?.NewItems)
                 {
-                        added.PropertyChanged += ItemModificationOnPropertyChanged;
+                    added.PropertyChanged += ItemModificationOnPropertyChanged;
                 }
             }
 
@@ -318,9 +273,9 @@ namespace SOCE.Library.UI.ViewModels
         private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             EmployeeVisualModel evm = sender as EmployeeVisualModel;
-            foreach(LineSeries ls in OverallData)
+            foreach (LineSeries ls in OverallData)
             {
-                if (ls.Title == evm.Name )
+                if (ls.Title == evm.Name)
                 {
                     if (evm.SelectedCurr)
                     {
@@ -384,11 +339,11 @@ namespace SOCE.Library.UI.ViewModels
                     //get all subprojectIds associated with projectId
                     List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(ProjectofInterest.Id);
 
-                    foreach(SubProjectDbModel spdm in subdbmodels)
+                    foreach (SubProjectDbModel spdm in subdbmodels)
                     {
                         List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
                         total.AddRange(tmdata);
-                    }                
+                    }
                 }
                 else
                 {
@@ -398,19 +353,19 @@ namespace SOCE.Library.UI.ViewModels
                 }
             }
 
-            if (total.Count>0)
+            if (total.Count > 0)
             {
                 //filter by employee Id
                 var grouped = total.OrderBy(x => x.EmployeeId)
                    .GroupBy(x => x.EmployeeId);
                 //order by date
 
-                foreach(var item in grouped)
+                foreach (var item in grouped)
                 {
                     //lookup employee
                     EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
 
-                    if (employee !=null)
+                    if (employee != null)
                     {
                         //List<TimesheetRowDbModel> employeetimesheetdata = new List<TimesheetRowDbModel>();
                         ChartValues<DateTimePoint> values = new ChartValues<DateTimePoint>();
@@ -429,7 +384,8 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                
+
+
             }
             FormatData();
         }
@@ -455,6 +411,8 @@ namespace SOCE.Library.UI.ViewModels
                 averagerate += sdm.EmployeeVis.Rate;
             }
 
+            //CreateTotalLine();
+
             if (ProjectofInterest != null)
             {
                 if (SelectedSubproject == null)
@@ -477,15 +435,79 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private void CreateTotalLine()
+        {
+            List<DateTimePoint> values = new List<DateTimePoint>();
+
+            foreach (LineSeries ls in OverallData)
+            {
+                foreach (DateTimePoint dtp in ls.Values)
+                {
+                    values.Add(dtp);
+                }
+            }
+
+            List<DateTimePoint> mergedList = values.GroupBy(x => x.DateTime).Select(g => new DateTimePoint
+            {
+                DateTime = g.Key,
+                Value = g.Sum(r => r.Value)
+            }).OrderBy(x => x.DateTime).ToList();
+
+            //List<TimesheetRowDbModel> employeetimesheetdata = values.OrderBy(x => x.Date).ToList();
+
+            //Add total
+            EmployeeVisualModel evm = new EmployeeVisualModel();
+            evm.Name = "Total";
+            evm.Rate = 0;
+            evm.VisualColor = Brushes.Black;
+            evm.SelectedCurr = false;
+
+            if (RelevantEmployees.Any(x => x.Name == "Total"))
+            {
+                RelevantEmployees[0] = evm;
+            }
+            else
+            {
+                RelevantEmployees.Insert(0, evm);
+            }
+
+            ChartValues<DateTimePoint> dtpts = new ChartValues<DateTimePoint>();
+
+            double sumvalue = 0;
+            foreach (DateTimePoint dtp in mergedList)
+            {
+                //if ()
+                sumvalue += dtp.Value;
+                DateTimePoint dtpnew = new DateTimePoint() { DateTime = dtp.DateTime };
+                dtpnew.Value = sumvalue;
+                dtpts.Add(dtpnew);
+            }
+
+            LineSeries lstot = new LineSeries
+            {
+                Title = evm.Name,
+                Values = dtpts,
+                PointGeometrySize = 10,
+                Stroke = Brushes.Black,
+                Fill = new SolidColorBrush() { Opacity = 0, Color = Brushes.White.Color },
+                StrokeDashArray = new DoubleCollection { 2 },
+            };
+
+            OverallData.Add(lstot);
+
+            ItemModificationOnPropertyChanged(evm, null);
+
+        }
+
+        private Random r = new Random();
         /// <summary>
         /// Create Color
         /// </summary>
         /// <returns></returns>
         private Brush RandomColorGenerator()
         {
-            Random rnd = new Random();
             Byte[] b = new Byte[3];
-            rnd.NextBytes(b);
+            r.NextBytes(b);
             Color color = Color.FromRgb(b[0], b[1], b[2]);
             SolidColorBrush brush = new SolidColorBrush(color);
             return brush;

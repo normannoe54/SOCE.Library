@@ -66,6 +66,26 @@
             </Grid>
         </materialDesign:ColorZone>
 
+        <ItemsControl ItemsSource="{Binding Employees}" HorizontalAlignment="Stretch" Grid.Row="3">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <StackPanel Grid.Column="0">
+                    
+                </StackPanel>
+                
+            </Grid>
+            
+        </ItemsControl>
+
+
+
         <!--Members Data Grid-->
         <DataGrid Grid.Row="3" ItemsSource="{Binding Employees}" CanUserAddRows="False" AutoGenerateColumns="False">
             <DataGrid.Columns>
@@ -74,6 +94,7 @@
                 <DataGridTextColumn Header="Position" Binding="{Binding Title}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Email Address" Binding="{Binding Email}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Phone Number" Binding="{Binding PhoneNumber}" IsReadOnly="True" Width="*"/>
+                <DataGridTextColumn Header="Ext." Binding="{Binding Extension}" IsReadOnly="True" Width="*"/>
                 <DataGridTextColumn Header="Ext." Binding="{Binding Extension}" IsReadOnly="True" Width="*"/>
             </DataGrid.Columns>
         </DataGrid>
