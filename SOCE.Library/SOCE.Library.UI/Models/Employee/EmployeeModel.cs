@@ -10,7 +10,7 @@ namespace SOCE.Library.UI
     {
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Title { get; set; }
+        public AuthEnum Title { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public string Extension { get; set; }
@@ -33,7 +33,7 @@ namespace SOCE.Library.UI
         {
             Id = emdb.Id;
             Name = emdb.FullName;
-            Title = EnumHelper.GetEnumDescription((AuthEnum)emdb.AuthId);
+            Title = ((AuthEnum)emdb.AuthId);
             Email = emdb.Email;
             PhoneNumber = emdb.PhoneNumber;
             Extension = emdb.Extension;

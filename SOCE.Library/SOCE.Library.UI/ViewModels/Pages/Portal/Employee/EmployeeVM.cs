@@ -13,7 +13,7 @@ namespace SOCE.Library.UI.ViewModels
     {
         public ICommand GoToAddEmployee { get; set; }
 
-        private ObservableCollection<EmployeeModel> _employees;
+        private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
         public ObservableCollection<EmployeeModel> Employees
         {
             get { return _employees; }
