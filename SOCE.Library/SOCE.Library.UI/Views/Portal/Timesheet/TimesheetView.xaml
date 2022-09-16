@@ -25,6 +25,8 @@
         <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
             <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
             <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
+            <materialDesign:PackIcon Margin="5 0 0 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" VerticalAlignment="Center"/>
+
         </StackPanel>
 
         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
@@ -65,7 +67,7 @@
                         <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
+                    <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
                         <StackPanel Orientation="Horizontal">
                             <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
                             <TextBlock Text="Add Project"/>
@@ -124,7 +126,7 @@
                                FontSize="14" FontWeight="SemiBold" 
                                Foreground="Gray"/>
 
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40">
+                    <ItemsControl Grid.Column="1"  ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Grid>
@@ -160,6 +162,7 @@
                 <!-- Bind Rows using the default StackPanel for the ItemsPanel -->
                 <ListView Background="Transparent" 
                           SelectionMode="Single" 
+                          IsEnabled="{Binding IsSubEditable}"
                           ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                           SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}">
                     <ListView.Resources>
@@ -322,14 +325,14 @@
 
         <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
 
-            <Button Width="100" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                     <TextBlock Text="Save"/>
                 </StackPanel>
             </Button>
 
-            <Button Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <Button IsEnabled="{Binding IsSubEditable}" Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubmitTimeSheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                         <TextBlock Text="Submit"/>

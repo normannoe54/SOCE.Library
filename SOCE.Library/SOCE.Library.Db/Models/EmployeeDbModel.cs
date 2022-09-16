@@ -15,6 +15,8 @@ namespace SOCE.Library.Db
         public string PhoneNumber { get; set; }
         public string Extension { get; set; }
 
+        public double Rate { get; set; }
+
         public string FullName
         {
             get

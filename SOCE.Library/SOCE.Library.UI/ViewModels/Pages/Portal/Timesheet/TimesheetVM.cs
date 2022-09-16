@@ -12,6 +12,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
 using SOCE.Library.Db;
 using System.Globalization;
+using MaterialDesignThemes.Wpf;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -52,6 +53,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _projectList = value;
                 RaisePropertyChanged(nameof(ProjectList));
+            }
+        }
+
+        private bool _isSubEditable = false;
+        public bool IsSubEditable
+        {
+            get { return _isSubEditable; }
+            set
+            {
+                _isSubEditable = value;
+                RaisePropertyChanged(nameof(IsSubEditable));
             }
         }
 
@@ -110,6 +122,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private int DateTimesheet;
+
         private double _baseHours = 0;
         public double BaseHours
         {
@@ -121,6 +135,29 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private PackIconKind _icon;
+        public PackIconKind Icon
+        {
+            get { return _icon; }
+            set
+            {
+                _icon = value;
+                RaisePropertyChanged(nameof(Icon));
+            }
+        }
+
+
+        private Brush _iconcolor;
+        public Brush Iconcolor
+        {
+            get { return _iconcolor; }
+            set
+            {
+                _iconcolor = value;
+                RaisePropertyChanged(nameof(Iconcolor));
+            }
+        }
+
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
         public TimesheetVM()
@@ -129,16 +166,16 @@ namespace SOCE.Library.UI.ViewModels
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
             LoadProjects();
             LoadCurrentTimesheet(DateTime.Now);
-            
+            //determine if it has been submitted
+
             //LoadTimesheetData();
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
-            this.SubmitTimeSheetCommand = new RelayCommand(ExportWorkReport);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
             this.SaveTimesheetCommand = new RelayCommand(SaveCommand);
 
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
-            this.NextCommand = new RelayCommand(NextTimesheet); 
+            this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             SumTable();
         }
@@ -154,10 +191,7 @@ namespace SOCE.Library.UI.ViewModels
             Rowdata.Remove(trm);
         }
 
-        private void SubmitTimesheet()
-        {
-            //create new blanktimesheet
-        }
+
 
 
         private void ExportWorkReport()
@@ -245,6 +279,27 @@ namespace SOCE.Library.UI.ViewModels
             LoadCurrentTimesheet(DateTime.Now);
         }
 
+        private void LoadTimesheetSubmissionData()
+        {
+            TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, 0);
+
+
+            IsSubEditable = (tsdbm == null) ? true : false;
+
+            Icon = (tsdbm == null) ? MaterialDesignThemes.Wpf.PackIconKind.DotsHorizontalCircleOutline : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
+            Iconcolor = (tsdbm == null) ? Brushes.SlateBlue : Brushes.Green;
+            //if (tsdbm == null)
+
+            //{
+            //    //has not been submitted - is editable
+            //}
+            //else
+            //{
+
+            //}
+
+        }
+
         /// <summary>
         /// Load DB
         /// </summary>
@@ -303,11 +358,64 @@ namespace SOCE.Library.UI.ViewModels
 
             Rowdata = members;
 
-            foreach(TimesheetRowModel trm in Rowdata)
+            foreach (TimesheetRowModel trm in Rowdata)
             {
                 CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
             }
 
+        }
+
+        private void SubmitTimesheet()
+        {
+            //create new blanktimesheet
+            SaveCommand();
+            double pto = 0;
+            double ot = 0;
+            double sick = 0;
+            double holiday = 0;
+            double sum = 0;
+            foreach (TimesheetRowModel trm in Rowdata)
+            {
+                //adding or modifying an existing submission
+                foreach (TREntryModel trentry in trm.Entries)
+                {
+                    if (trentry.TimeEntry > 0)
+                    {
+                        sum += trentry.TimeEntry;
+
+                        if (trm.Project.ProjectName == "PTO")
+                        {
+                            pto += trentry.TimeEntry;
+                        }
+                        else if (trm.Project.ProjectName == "OT")
+                        {
+                            ot += trentry.TimeEntry;
+                        }
+                        else if (trm.Project.ProjectName == "SICK")
+                        {
+                            sick += trentry.TimeEntry;
+                        }
+                        else if (trm.Project.ProjectName == "HOLIDAY")
+                        {
+                            holiday += trentry.TimeEntry;
+                        }
+                    }
+                }
+            }
+
+            TimesheetSubmissionDbModel timesheetsubdbmodel = new TimesheetSubmissionDbModel()
+            {
+                EmployeeId = 0,
+                Date = DateTimesheet,
+                TotalHours = sum,
+                PTOHours = pto,
+                OTHours = ot,
+                SickHours = sick,
+                HolidayHours = holiday,
+                Approved = 0, //not approved yet
+            };
+
+            SQLAccess.AddTimesheetSubmissionData(timesheetsubdbmodel);
         }
 
         /// <summary>
@@ -354,14 +462,14 @@ namespace SOCE.Library.UI.ViewModels
                     foreach (TREntryModel trentry in ctrm.Entries)
                     {
                         //think about this expression
-                        if (!trmfound.Entries.Any(x=>x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
+                        if (!trmfound.Entries.Any(x => x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
                         {
                             if (trentry.TimeEntry > 0)
                             {
                                 //delete
                                 TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(0, ctrm.SelectedSubproject.Id, trentry.Date);
                                 SQLAccess.DeleteTimesheetData(trdbm.Id);
-                            }  
+                            }
                         }
                     }
 
@@ -369,16 +477,16 @@ namespace SOCE.Library.UI.ViewModels
                 else
                 {
                     //delete all
-                    foreach(TREntryModel trentry in ctrm.Entries)
+                    foreach (TREntryModel trentry in ctrm.Entries)
                     {
                         if (trentry.TimeEntry > 0)
                         {
                             TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(0, ctrm.SelectedSubproject.Id, trentry.Date);
                             SQLAccess.DeleteTimesheetData(trdbm.Id);
                         }
-                            
+
                     }
-                }        
+                }
             }
 
             CopiedTimesheetData = Rowdata.ToList();
@@ -404,7 +512,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 //first tier
                 firstdate = new DateTime(currdate.Year, currdate.Month, 1);
-                lastdate = new DateTime(currdate.Year, currdate.Month, 16);    
+                lastdate = new DateTime(currdate.Year, currdate.Month, 16);
             }
 
             int diff = (lastdate - firstdate).Days;
@@ -426,8 +534,9 @@ namespace SOCE.Library.UI.ViewModels
             MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
             BaseHours = workdays * 9;
-
+            DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
             LoadTimesheetData();
+            LoadTimesheetSubmissionData();
         }
     }
 }

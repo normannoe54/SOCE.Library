@@ -54,6 +54,7 @@
     <Compile Include="Models\ProjectDbModel.cs" />
     <Compile Include="Models\SubProjectDbModel.cs" />
     <Compile Include="Models\TimesheetRowDbModel.cs" />
+    <Compile Include="Models\TimesheetSubmissionDbModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\SQLAccess.cs" />
   </ItemGroup>

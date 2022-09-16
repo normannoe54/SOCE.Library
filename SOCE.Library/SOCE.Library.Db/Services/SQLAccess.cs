@@ -15,6 +15,7 @@ namespace SOCE.Library.Db
             return ConfigurationManager.ConnectionStrings[id].ConnectionString;
         }
 
+        #region Employees
         public static List<EmployeeDbModel> LoadEmployees()
         {
             using(IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -42,6 +43,9 @@ namespace SOCE.Library.Db
             }
         }
 
+        #endregion
+
+        #region Projects
         public static List<ProjectDbModel> LoadProjects()
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -68,7 +72,9 @@ namespace SOCE.Library.Db
                     "VALUES (@ProjectName, @ProjectNumber, @Client, @Fee)", project);
             }
         }
+        #endregion
 
+        #region Subprojects
         public static List<SubProjectDbModel> LoadSubProjectsByProject(int projectId)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -106,8 +112,31 @@ namespace SOCE.Library.Db
                     "VALUES (@ProjectId, @PointNumber, @Description, @Fee)", subproject);
             }
         }
+        #endregion
 
+        #region TimesheetSubmission
+        public static void AddTimesheetSubmissionData(TimesheetSubmissionDbModel timesheetsubmission)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("INSERT INTO SubmittedTimesheets (EmployeeId, Date, TotalHours, PTOHours, OTHours, SickHours, HolidayHours, Approved)" +
+                    "VALUES (@EmployeeId, @Date, @TotalHours, @PTOHours, @OTHours, @SickHours, @HolidayHours, @Approved)", timesheetsubmission);
+            }
+        }
 
+        public static TimesheetSubmissionDbModel LoadTimeSheetSubmissionData(int startdate, int employeeId)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<TimesheetSubmissionDbModel>("SELECT * FROM SubmittedTimesheets WHERE EmployeeId = @employeeId AND Date = @startdate"
+                    , new { employeeId, startdate});
+
+                return output.FirstOrDefault();
+            }
+        }
+        #endregion
+
+        #region Timesheet
         public static void AddTimesheetData(TimesheetRowDbModel timesheetrow)
         {
             //check if date and subproject already exist
@@ -182,5 +211,6 @@ namespace SOCE.Library.Db
                 return output.ToList();
             }
         }
+        #endregion
     }
 }
