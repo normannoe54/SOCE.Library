@@ -416,6 +416,8 @@ namespace SOCE.Library.UI.ViewModels
             };
 
             SQLAccess.AddTimesheetSubmissionData(timesheetsubdbmodel);
+            LoadTimesheetSubmissionData();
+
         }
 
         /// <summary>

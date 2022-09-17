@@ -9,16 +9,16 @@ namespace SOCE.Library.UI
 {
     public class EmployeeModel : PropertyChangedBase
     {
-        //private ObservableCollection<TimesheetSubmission> _timesheetSubmitted
-        //public ObservableCollection<TimesheetSubmission> TimesheetSubmitted
-        //{
-        //    get { return _selectedCurr; }
-        //    set
-        //    {
-        //        _selectedCurr = value;
-        //        RaisePropertyChanged(nameof(SelectedCurr));
-        //    }
-        //}
+        private ObservableCollection<TimesheetSubmissionModel> _timesheetSubmissions;
+        public ObservableCollection<TimesheetSubmissionModel> TimesheetSubmissions
+        {
+            get { return _timesheetSubmissions; }
+            set
+            {
+                _timesheetSubmissions = value;
+                RaisePropertyChanged(nameof(TimesheetSubmissions));
+            }
+        }
 
         public int Id { get; set; }
         public string Name { get; set; }
@@ -55,6 +55,16 @@ namespace SOCE.Library.UI
             PhoneNumber = emdb.PhoneNumber;
             Extension = emdb.Extension;
             Rate = emdb.Rate;
+
+            //load timesheet submissions
+            List<TimesheetSubmissionModel> tsm = new List<TimesheetSubmissionModel>();
+
+            List<TimesheetSubmissionDbModel> dbdata = SQLAccess.LoadTimesheetSubmissionByEmployee(Id);
+            foreach(TimesheetSubmissionDbModel tsmdb in dbdata)
+            {
+                tsm.Add(new TimesheetSubmissionModel(tsmdb));
+            }
+            TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
         }
 
     }

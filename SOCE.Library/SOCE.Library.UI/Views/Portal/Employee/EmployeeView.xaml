@@ -128,9 +128,31 @@
                                 </StackPanel>
                             </Grid>
                         </Expander.Header>
-                        <StackPanel Orientation="Vertical" TextBlock.Foreground="{DynamicResource MaterialDesignBody}" Margin="24,8,24,16">
-                            <TextBlock Text="Your Content" />
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            
+                            <ItemsControl Grid.Column="0" ItemsSource="{Binding TimesheetSubmissions}" HorizontalAlignment="Stretch" Grid.Row="3">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <materialDesign:PackIcon Grid.Column="0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}"/>
+                                            <TextBlock Grid.Column="1" Text="{Binding Date}" FontSize="16" FontWeight="Bold"/>
+                                            <TextBlock Grid.Column="2" Text="{Binding TotalHours}"/>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                        
+                        
                     </Expander>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>

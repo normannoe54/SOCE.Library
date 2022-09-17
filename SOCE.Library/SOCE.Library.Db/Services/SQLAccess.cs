@@ -134,6 +134,17 @@ namespace SOCE.Library.Db
                 return output.FirstOrDefault();
             }
         }
+
+        public static List<TimesheetSubmissionDbModel> LoadTimesheetSubmissionByEmployee(int employeeId)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<TimesheetSubmissionDbModel>("SELECT * FROM SubmittedTimesheets WHERE EmployeeId = @employeeId"
+                    , new { employeeId });
+
+                return output.ToList();
+            }
+        }
         #endregion
 
         #region Timesheet
