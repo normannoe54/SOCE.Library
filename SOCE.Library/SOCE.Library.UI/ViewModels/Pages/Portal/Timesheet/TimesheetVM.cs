@@ -172,7 +172,7 @@ namespace SOCE.Library.UI.ViewModels
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
-            this.SaveTimesheetCommand = new RelayCommand(SaveCommand);
+            this.SaveTimesheetCommand = new RelayCommand<int>(SaveCommand);
 
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
             this.NextCommand = new RelayCommand(NextTimesheet);
@@ -281,23 +281,13 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadTimesheetSubmissionData()
         {
-            TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, 0);
+            TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, 1);
 
 
             IsSubEditable = (tsdbm == null) ? true : false;
 
             Icon = (tsdbm == null) ? MaterialDesignThemes.Wpf.PackIconKind.DotsHorizontalCircleOutline : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
             Iconcolor = (tsdbm == null) ? Brushes.SlateBlue : Brushes.Green;
-            //if (tsdbm == null)
-
-            //{
-            //    //has not been submitted - is editable
-            //}
-            //else
-            //{
-
-            //}
-
         }
 
         /// <summary>
@@ -305,11 +295,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void LoadTimesheetData()
         {
+            CopiedTimesheetData.Clear();
             DateTime datestart = DateSummary.First().Value;
             DateTime dateend = DateSummary.Last().Value;
 
             //update employee Id
-            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, 0);
+            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, 1);
 
             ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
 
@@ -368,7 +359,7 @@ namespace SOCE.Library.UI.ViewModels
         private void SubmitTimesheet()
         {
             //create new blanktimesheet
-            SaveCommand();
+            SaveCommand(1);
             double pto = 0;
             double ot = 0;
             double sick = 0;
@@ -423,7 +414,7 @@ namespace SOCE.Library.UI.ViewModels
         /// <summary>
         /// Save to DB
         /// </summary>
-        private void SaveCommand()
+        private void SaveCommand(int submit)
         {
             //need to include employee Id in here
 
@@ -437,10 +428,10 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
                         {
-                            EmployeeId = 0,
+                            EmployeeId = 1,
                             SubProjectId = trm.SelectedSubproject.Id,
                             Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
-                            Submitted = 0,
+                            Submitted = submit,
                             Approved = 0,
                             TimeEntry = trentry.TimeEntry
                         };
@@ -469,7 +460,7 @@ namespace SOCE.Library.UI.ViewModels
                             if (trentry.TimeEntry > 0)
                             {
                                 //delete
-                                TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(0, ctrm.SelectedSubproject.Id, trentry.Date);
+                                TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(1, ctrm.SelectedSubproject.Id, trentry.Date);
                                 SQLAccess.DeleteTimesheetData(trdbm.Id);
                             }
                         }
@@ -483,7 +474,7 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         if (trentry.TimeEntry > 0)
                         {
-                            TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(0, ctrm.SelectedSubproject.Id, trentry.Date);
+                            TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(1, ctrm.SelectedSubproject.Id, trentry.Date);
                             SQLAccess.DeleteTimesheetData(trdbm.Id);
                         }
 

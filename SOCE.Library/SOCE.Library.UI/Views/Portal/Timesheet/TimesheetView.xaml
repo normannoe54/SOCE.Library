@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Grid Grid.Column="1" Margin="30 20 20 20">
@@ -324,8 +325,11 @@
         </ScrollViewer>
 
         <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
-
+            
             <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <Button.CommandParameter>
+                    <s:Int32>0</s:Int32>
+                </Button.CommandParameter>
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                     <TextBlock Text="Save"/>

@@ -81,6 +81,7 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
@@ -188,7 +189,7 @@
       <DependentUpon>BindablePasswordBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\CustomBoolToVisibilityConverter.cs" />
-    <Compile Include="Converters\DatetoStringConverter.cs" />
+    <Compile Include="Converters\Date\DatetoStringConverter.cs" />
     <Compile Include="Converters\MarkupExtensions\EnumerationExtension.cs" />
     <Compile Include="Converters\TableColorConverter.cs" />
     <Compile Include="DateTime\DateEnum.cs" />

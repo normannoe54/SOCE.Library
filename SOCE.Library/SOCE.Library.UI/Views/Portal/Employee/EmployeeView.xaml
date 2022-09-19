@@ -128,28 +128,52 @@
                                 </StackPanel>
                             </Grid>
                         </Expander.Header>
-                        <Grid>
+                        <Grid Margin="15" MinHeight="200">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="30"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
                             <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="350"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Row="0" Grid.Column="1" FontSize="16" FontWeight="SemiBold" Text="Submitted Timesheets" HorizontalAlignment ="Center" VerticalAlignment="Center"/>
+                            <Border Grid.Row="1" Grid.Column="1" BorderThickness="1" BorderBrush="Gray" CornerRadius="5">
+                                <ItemsControl ItemsSource="{Binding TimesheetSubmissions}" HorizontalAlignment="Stretch" >
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid Margin="10">
+                                                <Grid.Resources>
+                                                    <local:DatetoStringFullConverter x:Key="DatetoStringFull"/>
+                                                </Grid.Resources>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                    <ColumnDefinition Width="Auto"/>
+                                                </Grid.ColumnDefinitions>
+
+                                                <Button  Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" VerticalAlignment="Center" Background="ForestGreen" ToolTip="Open" Width="30" Padding="0">
+                                                    <Button.Content>
+                                                        <materialDesign:PackIcon Foreground="White" Kind="OpenInApp" VerticalAlignment="Center"/>
+                                                    </Button.Content>
+                                                </Button>
+                                                <TextBlock Grid.Column="1" Text="{Binding Date, Converter= {StaticResource DatetoStringFull}}" FontSize="16" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Column="2">
+                                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="Hours:" />
+                                                    <TextBlock FontSize="16" FontWeight="SemiBold" Text="{Binding TotalHours}"/>
+                                                </StackPanel>
+                                                <materialDesign:PackIcon Grid.Column="3" VerticalAlignment="Center" Margin="0 0 10 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}"/>
+
+
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </Border>
                             
-                            <ItemsControl Grid.Column="0" ItemsSource="{Binding TimesheetSubmissions}" HorizontalAlignment="Stretch" Grid.Row="3">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid>
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <materialDesign:PackIcon Grid.Column="0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}"/>
-                                            <TextBlock Grid.Column="1" Text="{Binding Date}" FontSize="16" FontWeight="Bold"/>
-                                            <TextBlock Grid.Column="2" Text="{Binding TotalHours}"/>
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
                         </Grid>
                         
                         

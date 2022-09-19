@@ -39,8 +39,8 @@ namespace SOCE.Library.UI
             {
                 _approved = value;
 
-                Icon = _approved ? MaterialDesignThemes.Wpf.PackIconKind.DotsHorizontalCircleOutline : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
-                Iconcolor = _approved ? Brushes.SlateBlue : Brushes.Green;
+                Icon = _approved ? MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline: MaterialDesignThemes.Wpf.PackIconKind.AlertOctagonOutline;
+                Iconcolor = _approved ? Brushes.Green : Brushes.Orange;
 
                 RaisePropertyChanged(nameof(Approved));
             }
