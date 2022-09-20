@@ -13,10 +13,11 @@ namespace SOCE.Library.Db
         public string Title { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string Extension { get; set; }
-
+        public string Extension { get; set; }      
+        public double PTOHours { get; set; }
+        public double SickHours { get; set; }
+        public double HolidayHours { get; set; }
         public double Rate { get; set; }
-
         public string FullName
         {
             get

@@ -11,7 +11,42 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class EmployeeVM : BaseVM
     {
+        private EmployeeModel _currentEmployee;
+        public EmployeeModel CurrentEmployee
+        {
+            get
+            {
+                return _currentEmployee;
+            }
+            set
+            {
+                _currentEmployee = value;
+
+                if (_currentEmployee.Status == AuthEnum.Admin)
+                {
+                    CanAddEmployee = true;
+                }
+
+                RaisePropertyChanged(nameof(CurrentEmployee));
+            }
+        }
         public ICommand GoToAddEmployee { get; set; }
+
+        public ICommand DeleteEmployee { get; set; }
+
+        private bool _canAddEmployee = false;
+        public bool CanAddEmployee
+        {
+            get
+            {
+                return _canAddEmployee;
+            }
+            set
+            {
+                _canAddEmployee = value;
+                RaisePropertyChanged(nameof(CanAddEmployee));
+            }
+        }
 
         private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
         public ObservableCollection<EmployeeModel> Employees
@@ -36,18 +71,29 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        
+
         public EmployeeVM()
         {
-            this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunDialog);
-
-
+            this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
+            this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             LoadEmployees();
         }
 
-        private async void ExecuteRunDialog(object o)
+        private async void ExecuteRunAddDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddEmployeeView();
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+
+        }
+
+        private async void ExecuteRunDeleteDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AreYouSureView();
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
@@ -62,16 +108,25 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadEmployees()
         {
+
             List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
 
             ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
 
+            CurrentEmployee = new EmployeeModel(dbemployees[3]);
+
             foreach (EmployeeDbModel emdb in dbemployees)
             {
-                members.Add(new EmployeeModel(emdb));
+                EmployeeModel em = new EmployeeModel(emdb);
+
+                //be able to see your own stuff
+                em.SetEmployeeModelfromUser(CurrentEmployee);
+
+                members.Add(em);
             }
 
             Employees = members;
         }
+
     }
 }

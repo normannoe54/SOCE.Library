@@ -113,6 +113,7 @@
     <Compile Include="ViewModels\Pages\Login\SignupVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\EmployeeDataVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\AddEmployeeVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Employee\AreYouSureVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\HomeViewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
@@ -137,6 +138,9 @@
     </Compile>
     <Compile Include="Views\Portal\Employee\AddEmployeeView.xaml.cs">
       <DependentUpon>AddEmployeeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Employee\AreYouSureView.xaml.cs">
+      <DependentUpon>AreYouSureView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Employee\EmployeeView.xaml.cs">
       <DependentUpon>EmployeeView.xaml</DependentUpon>
@@ -221,6 +225,10 @@
     <Page Include="Views\Portal\Employee\AddEmployeeView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Employee\AreYouSureView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Employee\EmployeeView.xaml">
       <Generator>MSBuild:Compile</Generator>

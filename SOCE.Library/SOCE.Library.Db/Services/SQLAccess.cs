@@ -43,6 +43,29 @@ namespace SOCE.Library.Db
             }
         }
 
+        public static void UpdateEmployee(EmployeeDbModel employee)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                //cnn.Execute("UPDATE Employees SET FirstName = @FirstName, " +
+                //    "LastName = @LastName, " +
+                //    "AuthId = @AuthId," +
+                //    "Title = @Title," +
+                //    "Email = @Email," +
+                //    "PhoneNumber = @PhoneNumber," +
+                //    "Extension = @Extension," +
+                //    "Rate = @Rate" +
+                //    "WHERE Id = @Id",
+                //        new { employee.FirstName, employee.LastName, employee.AuthId, employee.Title, employee.Email, employee.PhoneNumber, employee.Extension, employee.Rate, employee.Id });
+
+                //cnn.Execute("UPDATE Employees SET FirstName = @FirstName, LastName = @LastName, WHERE Id = @Id",
+                //        new { employee.FirstName, employee.LastName, employee.Id });
+
+                cnn.Execute("UPDATE Employees SET FirstName = @FirstName, LastName = @LastName, AuthId = @AuthId, Email = @Email, PhoneNumber = @PhoneNumber, Extension = @Extension, Rate = @Rate WHERE Id = @Id",
+                        new { employee.FirstName, employee.LastName, employee.AuthId, employee.Email, employee.PhoneNumber, employee.Extension, employee.Rate, employee.Id, });
+            }
+        }
         #endregion
 
         #region Projects

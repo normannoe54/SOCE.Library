@@ -41,10 +41,18 @@ namespace SOCE.Library.UI
 
                 Icon = _approved ? MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline: MaterialDesignThemes.Wpf.PackIconKind.AlertOctagonOutline;
                 Iconcolor = _approved ? Brushes.Green : Brushes.Orange;
-
+                StatusTooltip = _approved ? "Approved" : "In Progress";
                 RaisePropertyChanged(nameof(Approved));
             }
         }
+
+        public double OTHours { get; set; }
+
+        public double PTOHours { get; set; }
+
+        public double HolidayHours { get; set; }
+
+        public double SickHours { get; set; }
 
         private double _totalHours { get; set; }
         public double TotalHours
@@ -83,6 +91,17 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _statusTooltip;
+        public string StatusTooltip
+        {
+            get { return _statusTooltip; }
+            set
+            {
+                _statusTooltip = value;
+                RaisePropertyChanged(nameof(StatusTooltip));
+            }
+        }
+
         private bool _selectedCurr;
         public bool SelectedCurr
         {
@@ -102,6 +121,9 @@ namespace SOCE.Library.UI
             Id = emdb.Id;
             Date = DateTime.ParseExact(emdb.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
             TotalHours = emdb.TotalHours;
+            PTOHours = emdb.PTOHours;
+            SickHours = emdb.SickHours;
+            HolidayHours = emdb.HolidayHours;
             Approved = Convert.ToBoolean(emdb.Approved);
         }
     }

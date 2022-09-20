@@ -378,10 +378,6 @@ namespace SOCE.Library.UI.ViewModels
                         {
                             pto += trentry.TimeEntry;
                         }
-                        else if (trm.Project.ProjectName == "OT")
-                        {
-                            ot += trentry.TimeEntry;
-                        }
                         else if (trm.Project.ProjectName == "SICK")
                         {
                             sick += trentry.TimeEntry;
@@ -393,10 +389,11 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
             }
+            ot = Math.Max(sum - BaseHours,0);
 
             TimesheetSubmissionDbModel timesheetsubdbmodel = new TimesheetSubmissionDbModel()
             {
-                EmployeeId = 0,
+                EmployeeId = 1,
                 Date = DateTimesheet,
                 TotalHours = sum,
                 PTOHours = pto,
