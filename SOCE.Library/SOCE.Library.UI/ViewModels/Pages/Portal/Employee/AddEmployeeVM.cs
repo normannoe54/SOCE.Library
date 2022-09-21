@@ -76,6 +76,50 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private double _billableRate;
+        public double BillableRate
+        {
+            get { return _billableRate; }
+            set
+            {
+                _billableRate = value;
+                RaisePropertyChanged("BillableRate");
+            }
+        }
+
+        private double _yearlyPTO;
+        public double YearlyPTO
+        {
+            get { return _yearlyPTO; }
+            set
+            {
+                _yearlyPTO = value;
+                RaisePropertyChanged("YearlyPTO");
+            }
+        }
+
+        private double _sickLeave;
+        public double SickLeave
+        {
+            get { return _sickLeave; }
+            set
+            {
+                _sickLeave = value;
+                RaisePropertyChanged("SickLeave");
+            }
+        }
+
+        private double _holidayHours;
+        public double HolidayHours
+        {
+            get { return _holidayHours; }
+            set
+            {
+                _holidayHours = value;
+                RaisePropertyChanged("HolidayHours");
+            }
+        }
+
         private AuthEnum _selectedAuthorization;
         public AuthEnum SelectedAuthorization
         {
@@ -99,7 +143,17 @@ namespace SOCE.Library.UI.ViewModels
         public void AddEmployee()
         {
             EmployeeDbModel employee = new EmployeeDbModel()
-            { FirstName = FirstNameInp, LastName = LastNameInp, AuthId = (int)SelectedAuthorization, Email = EmailInp, PhoneNumber = PhoneNumberInp, Extension = ExtensionInp };
+            {   FirstName = FirstNameInp, 
+                LastName = LastNameInp, 
+                Title = TitleInp, 
+                AuthId = (int)SelectedAuthorization, 
+                Email = EmailInp + "@shirkodonovan.com", 
+                PhoneNumber = PhoneNumberInp, 
+                Extension = ExtensionInp,
+                Rate = BillableRate,
+                PTOHours = YearlyPTO,
+                SickHours = SickLeave,
+                HolidayHours = HolidayHours};
 
             SQLAccess.AddEmployee(employee);
 

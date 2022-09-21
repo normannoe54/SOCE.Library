@@ -21,6 +21,7 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="New Employee" Grid.Row="0"/>
         <Grid Grid.Row="1" Margin="0 8 0 0">
@@ -32,7 +33,14 @@
             <TextBox materialDesign:HintAssist.Hint="Last Name" Text="{Binding LastNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Grid.Column="1" Margin="20 0 0 0" FontSize="16" DockPanel.Dock="Right"/>
         </Grid>
         <TextBox materialDesign:HintAssist.Hint="Title" Text="{Binding TitleInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="3"/>
-        <TextBox materialDesign:HintAssist.Hint="Email" Text="{Binding EmailInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
+        <Grid Margin="0 8 0 0" Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Email" Text="{Binding EmailInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="16"/>
+            <TextBlock Grid.Column="1" Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Bottom"/>
+        </Grid>
 
         <Grid Grid.Row="5">
             <Grid.ColumnDefinitions>
@@ -49,8 +57,20 @@
                   DisplayMemberPath="Description" 
                   SelectedValue="{Binding SelectedAuthorization}"  
                   SelectedValuePath="Value"/>
-        
-        <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0 16 0 0">
+
+        <TextBox Grid.Row="7" materialDesign:HintAssist.Hint="Billable Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding BillableRate,StringFormat = '$ {0} \ hr.'}" Margin="0 8 0 0" FontSize="16"/>
+        <Grid Grid.Row="8">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="PTO" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding YearlyPTO,StringFormat = ' {0} hr./year'}" Margin="0 8 0 0" FontSize="16"/>
+            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Sick Leave" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding SickLeave,StringFormat = ' {0} hr./year'}" Margin="0 8 0 0" FontSize="16"/>
+            <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="Holiday Leave" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding HolidayHours,StringFormat = ' {0} hr./year'}" Margin="0 8 0 0" FontSize="16"/>
+
+        </Grid>
+        <StackPanel Orientation="Horizontal" Grid.Row="9" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddEmployeeCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>

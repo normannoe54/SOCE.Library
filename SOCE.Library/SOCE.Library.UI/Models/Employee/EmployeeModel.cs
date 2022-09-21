@@ -263,6 +263,18 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _canEditPTO = true;
+        public bool CanEditPTO
+        {
+            get { return _canEditPTO; }
+            set
+            {
+                _canEditPTO = value;
+                RaisePropertyChanged(nameof(CanEditPTO));
+            }
+        }
+
+
         private bool _rateVisible = true;
         public bool RateVisible
         {
@@ -286,7 +298,32 @@ namespace SOCE.Library.UI
                 }
                 _editFieldState = value;
                 ComboFieldState = !_editFieldState;
+
+                if (!_editFieldState && CanEditPTO)
+                {
+                    EditPTOState = false;
+                }
+                else
+                {
+                    EditPTOState = true;
+                }
+
                 RaisePropertyChanged(nameof(EditFieldState));
+            }
+        }
+
+        private bool _editPTOState = true;
+        public bool EditPTOState
+        {
+            get { return _editPTOState; }
+            set
+            {
+                if (!_editPTOState && value)
+                {
+                    UpdateEmployee();
+                }
+                _editPTOState = value;
+                RaisePropertyChanged(nameof(EditPTOState));
             }
         }
 
@@ -402,19 +439,21 @@ namespace SOCE.Library.UI
                     EnabledforView = true;
                     CanEditorDelete = true;
                     CanEditRate = true;
+                    CanEditPTO = true;
                     break;
                 case AuthEnum.Principal:
                     RateVisible = true;
                     EnabledforView = true;
                     CanEditorDelete = false;
                     CanEditRate = true;
-
+                    CanEditPTO = false;
                     break;
                 case AuthEnum.PM:
                     RateVisible = true;
                     EnabledforView = false;
                     CanEditorDelete = false;
                     CanEditRate = false;
+                    CanEditPTO = false;
 
                     break;
                 case AuthEnum.Standard:
@@ -422,6 +461,7 @@ namespace SOCE.Library.UI
                     EnabledforView = false;
                     CanEditorDelete = false;
                     CanEditRate = false;
+                    CanEditPTO = false;
 
                     break;
                 default:
@@ -429,6 +469,7 @@ namespace SOCE.Library.UI
                     EnabledforView = false;
                     CanEditorDelete = false;
                     CanEditRate = false;
+                    CanEditPTO = false;
 
                     break;
             }
@@ -450,7 +491,10 @@ namespace SOCE.Library.UI
                 Email = Email,
                 PhoneNumber = PhoneNumber, 
                 Extension = Extension,
-                Rate= Rate};
+                Rate= Rate,
+                PTOHours = PTOBalance,
+                HolidayHours = HolidayBalance,
+                SickHours = SickBalance};
 
             SQLAccess.UpdateEmployee(employee);
         }

@@ -52,11 +52,14 @@
             <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
                 <views:ForgotPasswordView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:ProjectVM}">
-                <views:ProjectView/>
+            <DataTemplate DataType="{x:Type viewmodels:ProjectVMv2}">
+                <views:ProjectViewv2/>
             </DataTemplate>
 
             <SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>
+            <SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>
+            <SolidColorBrush x:Key="SOCELightRed" Color="#e36d6d"/>
+
 
             <!--<Style x:Key="DataGridCellStyle1" TargetType="{x:Type DataGridCell}">
                 <Setter Property="Background" Value="Transparent"/>

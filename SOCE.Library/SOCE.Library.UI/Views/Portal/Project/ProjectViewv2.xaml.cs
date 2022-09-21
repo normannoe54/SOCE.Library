@@ -12,18 +12,18 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
-using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for AreYouSure.xaml
+    /// Interaction logic for ProjectViewv2.xaml
     /// </summary>
-    public partial class AreYouSureView : UserControl
+    public partial class ProjectViewv2 : UserControl
     {
-        public AreYouSureView()
+        public ProjectViewv2()
         {
             InitializeComponent();
+            
         }
     }
 }

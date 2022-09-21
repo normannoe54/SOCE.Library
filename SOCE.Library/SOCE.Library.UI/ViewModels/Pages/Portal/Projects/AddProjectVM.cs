@@ -65,8 +65,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddProject()
         {
-            ProjectDbModel project = new ProjectDbModel()
-            { ProjectName = ProjectNameInp, ProjectNumber = ProjectNumberInp, Client = ClientInp, Fee = TotalFeeInp };
+            ProjectDbModel project = new ProjectDbModel();
+            //{ ProjectName = ProjectNameInp, ProjectNumber = ProjectNumberInp, Client = ClientInp, Fee = TotalFeeInp };
 
             SQLAccess.AddProject(project);
 

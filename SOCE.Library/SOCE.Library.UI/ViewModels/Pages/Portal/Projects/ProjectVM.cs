@@ -125,6 +125,7 @@ namespace SOCE.Library.UI.ViewModels
 
             foreach (ProjectDbModel pdb in dbprojects)
             {
+
                 members.Add(new ProjectModel(pdb));
             }
 

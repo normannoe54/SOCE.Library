@@ -10,18 +10,29 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class AreYouSureVM : BaseVM
     {
+        public bool Result { get; set; }
+        public string EmployeeFullName { get; set; }
         public ICommand YesCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
-        public AreYouSureVM()
+        public AreYouSureVM(EmployeeModel em)
         {
+            Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
-            this.CloseCommand = new RelayCommand(this.CloseWindow);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+            EmployeeFullName = em.FirstName + " " + em.LastName;
         }
 
         public void YesDoTheAction()
         {
-   
+            Result = true;
+            //do stuff
+            CloseWindow();
+        }
+
+        private void CancelCommand()
+        {
+            Result = false;
             //do stuff
             CloseWindow();
         }

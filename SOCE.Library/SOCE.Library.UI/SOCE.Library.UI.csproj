@@ -88,6 +88,8 @@
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\SeriesDataModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="Models\Projects\ClientModel.cs" />
+    <Compile Include="Models\Projects\MarketModel.cs" />
     <Compile Include="Models\Projects\PhaseEnum.cs" />
     <Compile Include="Models\Projects\ProjectModel.cs" />
     <Compile Include="Models\Projects\SubProjectModel.cs" />
@@ -121,6 +123,7 @@
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVMv2.cs" />
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />
     <Compile Include="ViewModels\Pages\Portal\Timesheet\TimesheetVM.cs" />
@@ -162,6 +165,9 @@
     </Compile>
     <Compile Include="Views\Portal\Project\ProjectView.xaml.cs">
       <DependentUpon>ProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\ProjectViewv2.xaml.cs">
+      <DependentUpon>ProjectViewv2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\ResourcesView.xaml.cs">
       <DependentUpon>ResourcesView.xaml</DependentUpon>
@@ -255,6 +261,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Project\ProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\ProjectViewv2.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

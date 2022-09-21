@@ -92,12 +92,22 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
+            EmployeeModel em = o as EmployeeModel;
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new AreYouSureView();
+            AreYouSureView view = new AreYouSureView();
+            AreYouSureVM aysvm = new AreYouSureVM(em);
+
+            view.DataContext = aysvm;
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
 
+            aysvm = view.DataContext as AreYouSureVM;
+
+            if (aysvm.Result)
+            {
+                SQLAccess.DeleteEmployee(em.Id);
+            }
         }
 
         private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
@@ -113,7 +123,7 @@ namespace SOCE.Library.UI.ViewModels
 
             ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
 
-            CurrentEmployee = new EmployeeModel(dbemployees[3]);
+            CurrentEmployee = new EmployeeModel(dbemployees[1]);
 
             foreach (EmployeeDbModel emdb in dbemployees)
             {
