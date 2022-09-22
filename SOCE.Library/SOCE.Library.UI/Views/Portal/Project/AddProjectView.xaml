@@ -24,9 +24,29 @@
         </Grid.RowDefinitions>
         <TextBlock Text="New Project" Grid.Row="0"/>
         <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
-        <TextBox materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="3"/>
-        <TextBox materialDesign:HintAssist.Hint="Client" Text="{Binding ClientInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
-        <TextBox materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
+        <TextBox  Grid.Row="2" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+        <TextBox  Grid.Row="3" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp, StringFormat='$ {0}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+        <ComboBox Grid.Row="4" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                                             materialDesign:HintAssist.Hint="Select Client"        
+                                              ItemsSource="{Binding ClientsAvailable}" 
+                                              DisplayMemberPath="ClientName" 
+                                              SelectedValue="{Binding ClientInp}"  
+                                              SelectedValuePath="Value"/>
+        <ComboBox Grid.Row="5" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  materialDesign:HintAssist.Hint="Select Market"
+                                              ItemsSource="{Binding MarketsAvailable}" 
+                                              DisplayMemberPath="MarketName" 
+                                              SelectedValue="{Binding MarketInp}"  
+                                              SelectedValuePath="Value"/>
+        <ComboBox Grid.Row="6" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  materialDesign:HintAssist.Hint="Select Project Manager"
+                                              ItemsSource="{Binding PMsAvailable}" 
+                                              DisplayMemberPath="EmployeeName" 
+                                              SelectedValue="{Binding PMInp}"  
+                                              SelectedValuePath="Value"/>
 
         <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProjectCommand}">

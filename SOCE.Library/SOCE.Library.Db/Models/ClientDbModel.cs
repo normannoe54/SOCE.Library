@@ -9,7 +9,6 @@ namespace SOCE.Library.Db
     public class ClientDbModel
     {
         public int Id { get; set; }
-        public int ClientNumber { get; set; }
         public string ClientName { get; set; }
     }
 }

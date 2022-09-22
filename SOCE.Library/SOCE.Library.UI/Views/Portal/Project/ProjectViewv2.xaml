@@ -103,7 +103,7 @@
                             <ColumnDefinition Width="*"/>
                         </Grid.ColumnDefinitions>
                         <TextBlock Text="Markets:" FontSize="24" FontWeight="SemiBold"  Foreground="{StaticResource SOCELightRed}" HorizontalAlignment="Left"/>
-                        <Button Grid.Column="1" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" Background="ForestGreen" Command="{Binding GoToAddClient}" HorizontalAlignment="Right">
+                        <Button Grid.Column="1" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" Background="ForestGreen" Command="{Binding GoToAddMarket}" HorizontalAlignment="Right">
                             <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0" ToolTip="Add Client"/>
                         </Button>
                     </Grid>

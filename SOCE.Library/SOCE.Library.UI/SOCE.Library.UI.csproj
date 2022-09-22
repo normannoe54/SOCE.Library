@@ -120,6 +120,8 @@
     <Compile Include="ViewModels\Pages\Portal\HomeViewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectData\ProjectDataVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddClientVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddMarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
@@ -156,6 +158,12 @@
     </Compile>
     <Compile Include="Views\Portal\ProjectData\ProjectDataView.xaml.cs">
       <DependentUpon>ProjectDataView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\AddClientView.xaml.cs">
+      <DependentUpon>AddClientView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\AddMarketView.xaml.cs">
+      <DependentUpon>AddMarketView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\AddProjectView.xaml.cs">
       <DependentUpon>AddProjectView.xaml</DependentUpon>
@@ -251,6 +259,14 @@
     <Page Include="Views\Portal\ProjectData\ProjectDataView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Project\AddClientView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\AddMarketView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Project\AddProjectView.xaml">
       <SubType>Designer</SubType>

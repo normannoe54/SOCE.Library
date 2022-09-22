@@ -10,9 +10,22 @@ namespace SOCE.Library.UI
     public class MarketModel : PropertyChangedBase
     {
         public int Id { get; set; }
-        public string MarketName { get; set; }
 
-        private bool _editFieldState = true;
+        private string _marketName { get; set; }
+        public string MarketName
+        {
+            get
+            {
+                return _marketName;
+            }
+            set
+            {
+                _marketName = value;
+                RaisePropertyChanged(nameof(MarketName));
+            }
+        }
+
+        private bool _editFieldMarketState = true;
         public bool EditFieldMarketState
         {
             get { return _editFieldMarketState; }
@@ -24,7 +37,7 @@ namespace SOCE.Library.UI
                 }
                 _editFieldMarketState = value;
 
-                RaisePropertyChanged(nameof(EditFieldState));
+                RaisePropertyChanged(nameof(EditFieldMarketState));
             }
         }
 
@@ -33,11 +46,8 @@ namespace SOCE.Library.UI
 
         public MarketModel(MarketDbModel mdbm)
         {
-            Id = pm.Id;
-            ProjectName = pm.ProjectName;
-            ProjectNumber = pm.ProjectNumber;
-            ClientName = "";
-            Fee = pm.Fee;
+            Id = mdbm.Id;
+            MarketName = mdbm.MarketName;
         }
 
         public void UpdateMarket()

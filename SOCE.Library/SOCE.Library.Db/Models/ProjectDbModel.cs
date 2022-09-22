@@ -21,5 +21,10 @@ namespace SOCE.Library.Db
         public int IsActive { get; set; }
 
         public double PercentComplete { get; set; }
+
+        public string Projectfolder { get; set; }
+        public string Drawingsfolder { get; set; }
+        public string Architectfolder { get; set; }
+        public string Plotfolder { get; set; }
     }
 }

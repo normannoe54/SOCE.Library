@@ -31,10 +31,11 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
         public ICommand GoToAddProject { get; set; }
-
+        public ICommand GoToAddClient { get; set; }
+        public ICommand GoToAddMarket { get; set; }
         public ICommand DeleteProject { get; set; }
 
-        private bool _canAddProject = false;
+        private bool _canAddProject = true;
         public bool CanAddProject
         {
             get
@@ -71,7 +72,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _isEditable = false;
+        private bool _isEditable = true;
         public bool IsEditable
         {
             get { return _isEditable; }
@@ -87,18 +88,37 @@ namespace SOCE.Library.UI.ViewModels
         public ProjectVMv2()
         {
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
-            this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
+            this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
+            this.DeleteProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             LoadProjects();
         }
 
         private async void ExecuteRunAddDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new AddEmployeeView();
+            var view = new AddProjectView();
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+        }
 
+        private async void ExecuteRunAddClientDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddClientView();
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+        }
+
+        private async void ExecuteRunAddMarketDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddMarketView();
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
         }
 
         private async void ExecuteRunDeleteDialog(object o)
