@@ -44,7 +44,7 @@
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Project Manager"
                                               ItemsSource="{Binding PMsAvailable}" 
-                                              DisplayMemberPath="EmployeeName" 
+                                              DisplayMemberPath="FullName" 
                                               SelectedValue="{Binding PMInp}"  
                                               SelectedValuePath="Value"/>
 

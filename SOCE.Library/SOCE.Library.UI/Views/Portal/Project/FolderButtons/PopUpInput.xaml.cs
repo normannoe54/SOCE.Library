@@ -12,18 +12,19 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for ProjectViewv2.xaml
+    /// Interaction logic for PopUpInput.xaml
     /// </summary>
-    public partial class ProjectViewv2 : UserControl
+    public partial class PopUpInput : UserControl
     {
-        public ProjectViewv2()
+        public PopUpInput()
         {
             InitializeComponent();
-            
+            DataContext = new PopUpInputVM();
         }
     }
 }

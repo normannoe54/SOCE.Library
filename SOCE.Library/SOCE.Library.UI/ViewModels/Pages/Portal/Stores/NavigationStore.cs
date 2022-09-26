@@ -8,7 +8,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public static class NavigationStore
     {
-        public static ProjectVM ProjectVM;
+        //public static ProjectVM ProjectVM;
  
         //public event Action CurrentViewModelChanged;
 

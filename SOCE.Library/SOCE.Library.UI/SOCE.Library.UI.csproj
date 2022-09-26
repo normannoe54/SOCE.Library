@@ -55,6 +55,21 @@
     <Reference Include="MaterialDesignThemes.Wpf, Version=4.1.0.2556, Culture=neutral, PublicKeyToken=df2a72020bd7962a, processorArchitecture=MSIL">
       <HintPath>..\packages\MaterialDesignThemes.4.1.0\lib\net452\MaterialDesignThemes.Wpf.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack.1.1.3\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.ExtendedLinguisticServices, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack.1.1.3\lib\Microsoft.WindowsAPICodePack.ExtendedLinguisticServices.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Sensors, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack.1.1.3\lib\Microsoft.WindowsAPICodePack.Sensors.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack.1.1.3\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.ShellExtensions, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack.1.1.3\lib\Microsoft.WindowsAPICodePack.ShellExtensions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
@@ -124,8 +139,9 @@
     <Compile Include="ViewModels\Pages\Portal\Projects\AddMarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\FolderButtons\ButtonwithPopUpVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\FolderButtons\PopUpInputVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
-    <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVMv2.cs" />
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />
     <Compile Include="ViewModels\Pages\Portal\Timesheet\TimesheetVM.cs" />
@@ -171,11 +187,14 @@
     <Compile Include="Views\Portal\Project\AddSubProjectView.xaml.cs">
       <DependentUpon>AddSubProjectView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\Project\FolderButtons\ButtonwithPopUp.xaml.cs">
+      <DependentUpon>ButtonwithPopUp.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\FolderButtons\PopUpInput.xaml.cs">
+      <DependentUpon>PopUpInput.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\Project\ProjectView.xaml.cs">
       <DependentUpon>ProjectView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Portal\Project\ProjectViewv2.xaml.cs">
-      <DependentUpon>ProjectViewv2.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\ResourcesView.xaml.cs">
       <DependentUpon>ResourcesView.xaml</DependentUpon>
@@ -276,11 +295,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Portal\Project\ProjectView.xaml">
+    <Page Include="Views\Portal\Project\FolderButtons\ButtonwithPopUp.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\Portal\Project\ProjectViewv2.xaml">
+    <Page Include="Views\Portal\Project\FolderButtons\PopUpInput.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\ProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -326,6 +349,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="license.txt" />
+    <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

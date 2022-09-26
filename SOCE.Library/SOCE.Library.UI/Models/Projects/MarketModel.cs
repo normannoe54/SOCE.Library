@@ -40,7 +40,6 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(EditFieldMarketState));
             }
         }
-
         public MarketModel()
         { }
 
@@ -59,6 +58,30 @@ namespace SOCE.Library.UI
             };
 
             SQLAccess.UpdateMarket(market);
+        }
+
+        public override bool Equals(object obj)
+        {
+            MarketModel em = (MarketModel)obj;
+
+            if (em == null)
+            {
+                return false;
+            }
+
+            return em != null && Id == em.Id && MarketName == em.MarketName;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + Id.GetHashCode();
+                hash = hash * 23 + MarketName.GetHashCode();
+                return hash;
+            }
         }
 
     }

@@ -375,6 +375,17 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _fullName;
+        public string FullName
+        {
+            get { return _fullName; }
+            set
+            {
+                _fullName = value;
+                RaisePropertyChanged(nameof(FullName));
+            }
+        }
+
         public EmployeeModel()
         { }
 
@@ -383,6 +394,7 @@ namespace SOCE.Library.UI
             Id = emdb.Id;
             FirstName = emdb.FirstName;
             LastName = emdb.LastName;
+            FullName = FirstName + " " + LastName;
             
             Status = ((AuthEnum)emdb.AuthId);
             Title = emdb.Title;
@@ -497,6 +509,31 @@ namespace SOCE.Library.UI
                 SickHours = SickBalance};
 
             SQLAccess.UpdateEmployee(employee);
+        }
+
+        public override bool Equals(object obj)
+        {
+            EmployeeModel em = (EmployeeModel)obj;
+
+            if (em == null)
+            {
+                return false;
+            }
+
+            return em != null && Id == em.Id && FirstName == em.FirstName && LastName == em.LastName;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + Id.GetHashCode();
+                hash = hash * 23 + FirstName.GetHashCode();
+                hash = hash * 23 + LastName.GetHashCode();
+                return hash;
+            }
         }
 
     }

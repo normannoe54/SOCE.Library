@@ -52,8 +52,8 @@
             <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
                 <views:ForgotPasswordView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:ProjectVMv2}">
-                <views:ProjectViewv2/>
+            <DataTemplate DataType="{x:Type viewmodels:ProjectVM}">
+                <views:ProjectView/>
             </DataTemplate>
 
             <SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>

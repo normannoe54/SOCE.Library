@@ -1,13 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Text;
+using System.Windows;
+using System.Windows.Input;
 using System.Windows.Media;
+using Microsoft.WindowsAPICodePack.Dialogs;
 using SOCE.Library.Db;
+using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI
 {
-    public class ProjectModel: PropertyChangedBase
+    public class ProjectModel: BaseVM
     {
         private ObservableCollection<SubProjectModel> _subProjects;
         public ObservableCollection<SubProjectModel> SubProjects
@@ -108,6 +113,8 @@ namespace SOCE.Library.UI
             }
         }
 
+        public Brush PercentCompleteColor { get; set; }
+
         private bool _isActive;
         public bool IsActive
         {
@@ -115,11 +122,10 @@ namespace SOCE.Library.UI
             set
             {
                 _isActive = value;
-
+                PercentCompleteColor = _isActive ? Brushes.Green : Brushes.Red;
                 RaisePropertyChanged(nameof(IsActive));
             }
         }
-
 
         private double _percentComplete;
         public double PercentComplete
@@ -133,46 +139,50 @@ namespace SOCE.Library.UI
             }
         }
 
-        private string _projectfolder;
+        private string _projectfolder="";
         public string Projectfolder
         {
             get { return _projectfolder; }
             set
             {
                 _projectfolder = value;
+                UpdateProject();
                 RaisePropertyChanged(nameof(Projectfolder));
             }
         }
 
-        private string _drawingsfolder;
+        private string _drawingsfolder = "";
         public string Drawingsfolder
         {
             get { return _drawingsfolder; }
             set
             {
                 _drawingsfolder = value;
+                UpdateProject();
                 RaisePropertyChanged(nameof(Drawingsfolder));
             }
         }
 
-        private string _architectfolder;
+        private string _architectfolder = "";
         public string Architectfolder
         {
             get { return _architectfolder; }
             set
             {
                 _architectfolder = value;
+                UpdateProject();
                 RaisePropertyChanged(nameof(Architectfolder));
             }
         }
 
-        private string _plotfolder;
+        private string _plotfolder = "";
         public string Plotfolder
         {
             get { return _plotfolder; }
             set
             {
                 _plotfolder = value;
+                UpdateProject();
                 RaisePropertyChanged(nameof(Plotfolder));
             }
         }
@@ -205,21 +215,73 @@ namespace SOCE.Library.UI
             }
         }
 
+        #region project
+        public ICommand CopyProjectFolderCommand { get; set; }
+        public ICommand SelectProjectFolderCommand { get; set; }
+        public ICommand OpenProjectFolderCommand { get; set; }
+        #endregion
+
+        #region arch
+        public ICommand CopyArchitectFolderCommand { get; set; }
+        public ICommand SelectArchitectFolderCommand { get; set; }
+        public ICommand OpenArchitectFolderCommand { get; set; }
+        #endregion
+
+        #region drawings
+        public ICommand CopyDrawingsFolderCommand { get; set; }
+        public ICommand SelectDrawingsFolderCommand { get; set; }
+        public ICommand OpenDrawingsFolderCommand { get; set; }
+        #endregion
+
+        #region plot
+        public ICommand CopyPlotFolderCommand { get; set; }
+        public ICommand SelectPlotFolderCommand { get; set; }
+        public ICommand OpenPlotFolderCommand { get; set; }
+        #endregion
+
         public ProjectModel()
-        { }
+        {
+            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
+            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
+            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
+
+            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
+            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
+            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
+
+            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
+            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
+            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
+
+            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
+            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
+            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+        }
     
         public ProjectModel(ProjectDbModel pm)
         {
+            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
+            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
+            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
+
+            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
+            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
+            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
+
+            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
+            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
+            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
+
+            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
+            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
+            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+
             Id = pm.Id;
             ProjectName = pm.ProjectName;
             ProjectNumber = pm.ProjectNumber;
             Fee = pm.Fee;
             IsActive = Convert.ToBoolean(pm.IsActive);
             PercentComplete = pm.PercentComplete;
-            Projectfolder = pm.Projectfolder;
-            Drawingsfolder = pm.Drawingsfolder;
-            Architectfolder = pm.Architectfolder;
-            Plotfolder = pm.Plotfolder;
 
             EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
             EmployeeModel em = new EmployeeModel(emdbm);
@@ -233,7 +295,132 @@ namespace SOCE.Library.UI
             MarketModel mm = new MarketModel(mdbm);
             Market = mm;
 
+            Projectfolder = pm.Projectfolder;
+            Drawingsfolder = pm.Drawingsfolder;
+            Architectfolder = pm.Architectfolder;
+            Plotfolder = pm.Plotfolder;
+
         }
+
+        #region project folder
+        public void SelectProjectFolder()
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
+
+            // Process open file dialog box results
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //save file
+                Projectfolder = dialog.FileName;
+            }
+        }
+
+        public void CopyProjectFolder()
+        {
+            Clipboard.SetText(Projectfolder);
+        }
+
+        public void OpenProjectFolder()
+        {
+            try
+            {
+                Process.Start(Projectfolder);
+            }
+            catch { }
+        }
+        #endregion
+
+        #region arch folder
+        public void SelectArchFolder()
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
+
+            // Process open file dialog box results
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //save file
+                Architectfolder = dialog.FileName;
+            }
+        }
+
+        public void CopyArchFolder()
+        {
+            Clipboard.SetText(Architectfolder);
+        }
+
+        public void OpenArchFolder()
+        {
+            try
+            {
+                Process.Start(Architectfolder);
+            }
+            catch { }
+        }
+        #endregion
+
+        #region drawing folder
+        public void SelectDrawingsFolder()
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
+
+            // Process open file dialog box results
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //save file
+                Drawingsfolder = dialog.FileName;
+            }
+        }
+
+        public void CopyDrawingsFolder()
+        {
+            Clipboard.SetText(Drawingsfolder);
+        }
+
+        public void OpenDrawingsFolder()
+        {
+            try
+            {
+                Process.Start(Drawingsfolder);
+            }
+            catch { }
+        }
+        #endregion
+
+        #region plot folder
+        public void SelectPlotFolder()
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
+
+            // Process open file dialog box results
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //save file
+                Plotfolder = dialog.FileName;
+            }
+        }
+
+        public void CopyPlotFolder()
+        {
+            Clipboard.SetText(Plotfolder);
+        }
+
+        public void OpenPlotFolder()
+        {
+            try
+            {
+                Process.Start(Plotfolder);
+            }
+            catch { }
+        }
+        #endregion
 
         public void UpdateProject()
         {

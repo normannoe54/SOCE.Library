@@ -16,13 +16,14 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for ProjectView.xaml
+    /// Interaction logic for ProjectViewv2.xaml
     /// </summary>
     public partial class ProjectView : UserControl
     {
         public ProjectView()
         {
             InitializeComponent();
+            
         }
     }
 }

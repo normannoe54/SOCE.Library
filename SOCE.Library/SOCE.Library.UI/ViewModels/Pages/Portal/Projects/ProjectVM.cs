@@ -11,10 +11,45 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class ProjectVM : BaseVM
     {
-        public ICommand GoToAddProject { get; set; }
-        public ICommand GoToAddSubProject { get; set; }
+        private EmployeeModel _currentEmployee;
+        public EmployeeModel CurrentEmployee
+        {
+            get
+            {
+                return _currentEmployee;
+            }
+            set
+            {
+                _currentEmployee = value;
 
-        private ObservableCollection<ProjectModel> _projects;
+                if (_currentEmployee.Status == AuthEnum.Admin)
+                {
+                    CanAddProject = true;
+                }
+
+                RaisePropertyChanged(nameof(CurrentEmployee));
+            }
+        }
+        public ICommand GoToAddProject { get; set; }
+        public ICommand GoToAddClient { get; set; }
+        public ICommand GoToAddMarket { get; set; }
+        public ICommand DeleteProject { get; set; }
+
+        private bool _canAddProject = true;
+        public bool CanAddProject
+        {
+            get
+            {
+                return _canAddProject;
+            }
+            set
+            {
+                _canAddProject = value;
+                RaisePropertyChanged(nameof(CanAddProject));
+            }
+        }
+
+        private ObservableCollection<ProjectModel> _projects = new ObservableCollection<ProjectModel>();
         public ObservableCollection<ProjectModel> Projects
         {
             get { return _projects; }
@@ -26,45 +61,40 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<SubProjectModel> _subprojects;
-        public ObservableCollection<SubProjectModel> SubProjects
+        private ObservableCollection<ClientModel> _clients = new ObservableCollection<ClientModel>();
+        public ObservableCollection<ClientModel> Clients
         {
-            get { return _subprojects; }
+            get { return _clients; }
             set
             {
-                _subprojects = value;
-                RaisePropertyChanged(nameof(SubProjects));
+                _clients = value;
+                RaisePropertyChanged(nameof(Clients));
             }
         }
 
-        private ProjectModel _selectedProject;
-
-        public ProjectModel SelectedProject
+        private ObservableCollection<MarketModel> _markets = new ObservableCollection<MarketModel>();
+        public ObservableCollection<MarketModel> Markets
         {
-            get { return _selectedProject; }
+            get { return _markets; }
             set
             {
-                _selectedProject = value;
-
-                //collect subprojects
-                NavigationStore.ProjectVM = this;
-                CollectSubProjects();
-                RaisePropertyChanged(nameof(SelectedProject));
+                _markets = value;
+                RaisePropertyChanged(nameof(Markets));
             }
         }
 
-        private int _selectedIndex;
-        public int SelectedIndex
+        private ObservableCollection<EmployeeModel> _projectManagers = new ObservableCollection<EmployeeModel>();
+        public ObservableCollection<EmployeeModel> ProjectManagers
         {
-            get { return _selectedIndex; }
+            get { return _projectManagers; }
             set
             {
-                _selectedIndex = value;
-                RaisePropertyChanged(nameof(SelectedIndex));
+                _projectManagers = value;
+                RaisePropertyChanged(nameof(ProjectManagers));
             }
         }
 
-        private string _textProjects = "0 Total";
+        private string _textProjects;
         public string TextProjects
         {
             get { return _textProjects; }
@@ -75,46 +105,92 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _isEditable = true;
+        public bool IsEditable
+        {
+            get { return _isEditable; }
+            set
+            {
+                _isEditable = value;
+                RaisePropertyChanged(nameof(IsEditable));
+            }
+        }
+
+
+
         public ProjectVM()
         {
-            this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunDialog);
-            this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunSubDialog);
-
+            this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
+            this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
+            this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
+            this.DeleteProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             LoadProjects();
+            LoadClients();
+            LoadMarkets();
+            LoadProjectManagers();
         }
 
-        private async void ExecuteRunDialog(object o)
+        private async void ExecuteRunAddDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            AddProjectView view = new AddProjectView();
+            var view = new AddProjectView();
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
-
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
         }
 
-        private async void ExecuteRunSubDialog(object o)
+        private async void ExecuteRunAddClientDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            AddSubProjectView view = new AddSubProjectView();
-            view.DataContext = new AddSubProjectVM();
+            var view = new AddClientView();
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingSubEventHandler);
-
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerClients);
         }
 
-        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        private async void ExecuteRunAddMarketDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddMarketView();
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerMarkets);
+        }
+
+        private async void ExecuteRunDeleteDialog(object o)
+        {
+            EmployeeModel em = o as EmployeeModel;
+            AreYouSureView view = new AreYouSureView();
+            AreYouSureVM aysvm = new AreYouSureVM(em);
+
+            view.DataContext = aysvm;
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+
+            aysvm = view.DataContext as AreYouSureVM;
+
+            if (aysvm.Result)
+            {
+                SQLAccess.DeleteEmployee(em.Id);
+            }
+        }
+
+        private void ClosingEventHandlerProjects(object sender, DialogClosingEventArgs eventArgs)
         {
             //load list here
             LoadProjects();
         }
-
-        private void ClosingSubEventHandler(object sender, DialogClosingEventArgs eventArgs)
+        private void ClosingEventHandlerClients(object sender, DialogClosingEventArgs eventArgs)
         {
             //load list here
-            CollectSubProjects();
-           
+            LoadClients();
+        }
+
+        private void ClosingEventHandlerMarkets(object sender, DialogClosingEventArgs eventArgs)
+        {
+            //load list here
+            LoadMarkets();
         }
 
         private void LoadProjects()
@@ -125,32 +201,64 @@ namespace SOCE.Library.UI.ViewModels
 
             foreach (ProjectDbModel pdb in dbprojects)
             {
+                List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(pdb.Id);
 
+                ObservableCollection<SubProjectModel> submembers = new ObservableCollection<SubProjectModel>();
+
+                foreach (SubProjectDbModel sdb in subdbprojects)
+                {
+                    submembers.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = pdb.ProjectNumber, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
+                }
+
+                ProjectModel pm = new ProjectModel(pdb);
+                pm.SubProjects = submembers;
                 members.Add(new ProjectModel(pdb));
             }
 
             Projects = members;
         }
 
-        private void CollectSubProjects()
+        private void LoadClients()
         {
-            if (SelectedProject == null)
+            List<ClientDbModel> dbclients = SQLAccess.LoadClients();
+
+            ObservableCollection<ClientModel> members = new ObservableCollection<ClientModel>();
+
+            foreach (ClientDbModel cdbm in dbclients)
             {
-                return;
+                members.Add(new ClientModel(cdbm));
             }
 
-            int id = SelectedProject.Id;
+            Clients = members;
+        }
 
-            List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(id);
+        private void LoadMarkets()
+        {
+            List<MarketDbModel> dbmarkets = SQLAccess.LoadMarkets();
 
-            ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();
+            ObservableCollection<MarketModel> members = new ObservableCollection<MarketModel>();
 
-            foreach (SubProjectDbModel sdb in subdbprojects)
+            foreach (MarketDbModel mdbm in dbmarkets)
             {
-                members.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = SelectedProject.ProjectNumber, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
+                members.Add(new MarketModel(mdbm));
             }
 
-            SubProjects = members;
+            Markets = members;
+        }
+
+
+        private void LoadProjectManagers()
+        {
+            List<EmployeeDbModel> PMs = SQLAccess.LoadProjectManagers();
+
+            ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
+
+            foreach (EmployeeDbModel edbm in PMs)
+            {
+                members.Add(new EmployeeModel(edbm));
+            }
+
+            ProjectManagers = members;
         }
     }
 }

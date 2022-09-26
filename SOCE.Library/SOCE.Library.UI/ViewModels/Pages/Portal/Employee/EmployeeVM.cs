@@ -123,7 +123,7 @@ namespace SOCE.Library.UI.ViewModels
 
             ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
 
-            CurrentEmployee = new EmployeeModel(dbemployees[1]);
+            CurrentEmployee = new EmployeeModel(dbemployees[2]);
 
             foreach (EmployeeDbModel emdb in dbemployees)
             {

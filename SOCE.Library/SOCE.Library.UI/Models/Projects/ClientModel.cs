@@ -25,19 +25,19 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _editFieldClientState = true;
-        public bool EditFieldClientState
+        private bool _editFieldClientsState = true;
+        public bool EditFieldClientsState
         {
-            get { return _editFieldClientState; }
+            get { return _editFieldClientsState; }
             set
             {
-                if (!_editFieldClientState && value)
+                if (!_editFieldClientsState && value)
                 {
                     UpdateClient();
                 }
-                _editFieldClientState = value;
+                _editFieldClientsState = value;
 
-                RaisePropertyChanged(nameof(EditFieldClientState));
+                RaisePropertyChanged(nameof(EditFieldClientsState));
             }
         }
 
@@ -60,6 +60,30 @@ namespace SOCE.Library.UI
             };
 
             SQLAccess.UpdateClient(client);
+        }
+
+        public override bool Equals(object obj)
+        {
+            ClientModel cm = (ClientModel)obj;
+
+            if (cm== null)
+            {
+                return false;
+            }
+
+            return cm != null && Id == cm.Id && ClientName == cm.ClientName;
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked // Overflow is fine, just wrap
+            {
+                int hash = 17;
+                // Suitable nullity checks etc, of course :)
+                hash = hash * 23 + Id.GetHashCode();
+                hash = hash * 23 + ClientName.GetHashCode();
+                return hash;
+            }
         }
     }
 }
