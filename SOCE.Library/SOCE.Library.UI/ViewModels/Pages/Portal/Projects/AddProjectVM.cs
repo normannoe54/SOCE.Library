@@ -88,8 +88,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private MarketModel _pMInp;
-        public MarketModel PMInp
+        private EmployeeModel _pMInp;
+        public EmployeeModel PMInp
         {
             get { return _pMInp; }
             set
@@ -151,8 +151,22 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddProject()
         {
-            ProjectDbModel project = new ProjectDbModel();
-            //{ ProjectName = ProjectNameInp, ProjectNumber = ProjectNumberInp, Client = ClientInp, Fee = TotalFeeInp };
+            ProjectDbModel project = new ProjectDbModel
+            {
+                ProjectName = ProjectNameInp,
+                ProjectNumber = ProjectNumberInp,
+                ClientId = ClientInp.Id,
+                MarketId = MarketInp.Id,
+                ManagerId = PMInp.Id,
+                Fee = TotalFeeInp,
+                PercentComplete = 0,
+                IsActive = 1,
+                Projectfolder = "",
+                Drawingsfolder = "",
+                Architectfolder = "",
+                Plotfolder = "",
+
+            };
 
             SQLAccess.AddProject(project);
 

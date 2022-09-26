@@ -134,11 +134,12 @@
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*" />
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Value, StringFormat= ' {0} h'}" 
-                                             TextAlignment="Center"
-                                             VerticalAlignment="Center" 
-                                             FontWeight="SemiBold" 
-                                             Foreground="Gray">
+                                    <TextBlock Text="{Binding Value}" 
+                                               materialDesign:TextFieldAssist.SuffixText=" h"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center" 
+                                               FontWeight="SemiBold" 
+                                               Foreground="Gray">
                                     </TextBlock>
                                 </Grid>
                             </DataTemplate>
@@ -151,12 +152,13 @@
                     </ItemsControl>
 
                     <TextBlock Grid.Column="2"
-                             Text="{Binding Total, StringFormat= ' {0} h'}" 
-                             TextAlignment="Center"
-                             VerticalAlignment="Stretch" 
-                             HorizontalAlignment="Stretch" 
-                             FontSize="14" FontWeight="SemiBold" 
-                             Foreground="Gray"/>
+                               Text="{Binding Total}" 
+                               materialDesign:TextFieldAssist.SuffixText=" h"
+                               TextAlignment="Center"
+                               VerticalAlignment="Stretch" 
+                               HorizontalAlignment="Stretch" 
+                               FontSize="14" FontWeight="SemiBold" 
+                               Foreground="Gray"/>
 
                 </Grid>
 
@@ -272,9 +274,9 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <TextBox 
-                                                    Text="{Binding TimeEntry, StringFormat= ' {0} h',  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    Text="{Binding TimeEntry,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    materialDesign:TextFieldAssist.SuffixText="hr"
                                                     TextAlignment="Center"
-                                                    Padding="0"
                                                     VerticalContentAlignment="Center"
                                                     VerticalAlignment="Stretch" 
                                                     FontWeight="SemiBold" 
@@ -282,7 +284,7 @@
                                                     Background="{Binding CellColor}"
                                                     BorderThickness="1"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter}}">
-                                                    <TextBox.Style>
+                                                    <TextBox.Style >
                                                         <Style TargetType="TextBox">
                                                             <Style.Triggers>
                                                                 <Trigger Property="IsMouseOver" Value="True">
@@ -311,7 +313,8 @@
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                                 <TextBlock Grid.Column="3"
-                                           Text="{Binding Total, StringFormat= ' {0} h'}" 
+                                           materialDesign:TextFieldAssist.SuffixText=" h"
+                                           Text="{Binding Total}" 
                                            TextAlignment="Center"
                                            VerticalAlignment="Stretch" 
                                            HorizontalAlignment="Stretch" 

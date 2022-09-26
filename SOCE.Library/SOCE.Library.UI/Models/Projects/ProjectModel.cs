@@ -239,6 +239,7 @@ namespace SOCE.Library.UI
         public ICommand OpenPlotFolderCommand { get; set; }
         #endregion
 
+        #region constructors
         public ProjectModel()
         {
             this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
@@ -301,6 +302,7 @@ namespace SOCE.Library.UI
             Plotfolder = pm.Plotfolder;
 
         }
+        #endregion
 
         #region project folder
         public void SelectProjectFolder()

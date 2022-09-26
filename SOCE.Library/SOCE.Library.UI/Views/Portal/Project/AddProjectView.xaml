@@ -25,28 +25,25 @@
         <TextBlock Text="New Project" Grid.Row="0"/>
         <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
         <TextBox  Grid.Row="2" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
-        <TextBox  Grid.Row="3" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp, StringFormat='$ {0}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+        <TextBox  Grid.Row="3" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp}" materialDesign:TextFieldAssist.PrefixText="$" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
         <ComboBox Grid.Row="4" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
-                                             materialDesign:HintAssist.Hint="Select Client"        
-                                              ItemsSource="{Binding ClientsAvailable}" 
-                                              DisplayMemberPath="ClientName" 
-                                              SelectedValue="{Binding ClientInp}"  
-                                              SelectedValuePath="Value"/>
+                  materialDesign:HintAssist.Hint="Select Client"        
+                  ItemsSource="{Binding ClientsAvailable}" 
+                  DisplayMemberPath="ClientName" 
+                  SelectedItem="{Binding Path= ClientInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
         <ComboBox Grid.Row="5" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Market"
-                                              ItemsSource="{Binding MarketsAvailable}" 
-                                              DisplayMemberPath="MarketName" 
-                                              SelectedValue="{Binding MarketInp}"  
-                                              SelectedValuePath="Value"/>
+                  ItemsSource="{Binding MarketsAvailable}" 
+                  DisplayMemberPath="MarketName" 
+                  SelectedItem="{Binding Path= MarketInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
         <ComboBox Grid.Row="6" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Project Manager"
-                                              ItemsSource="{Binding PMsAvailable}" 
-                                              DisplayMemberPath="FullName" 
-                                              SelectedValue="{Binding PMInp}"  
-                                              SelectedValuePath="Value"/>
+                  ItemsSource="{Binding PMsAvailable}" 
+                  DisplayMemberPath="FullName" 
+                  SelectedItem="{Binding Path= PMInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
 
         <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProjectCommand}">
