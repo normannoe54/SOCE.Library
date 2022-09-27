@@ -30,6 +30,7 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand NextCommand { get; set; }
         public ICommand CurrentCommand { get; set; }
 
+        public ICommand CopyPreviousCommand { get; set; }
         public List<TimesheetRowModel> CopiedTimesheetData { get; set; } = new List<TimesheetRowModel>();
 
         private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
@@ -177,6 +178,7 @@ namespace SOCE.Library.UI.ViewModels
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
+            this.CopyPreviousCommand = new RelayCommand(CopyPrevious);
             SumTable();
         }
 
@@ -190,9 +192,6 @@ namespace SOCE.Library.UI.ViewModels
         {
             Rowdata.Remove(trm);
         }
-
-
-
 
         private void ExportWorkReport()
         {
@@ -489,6 +488,104 @@ namespace SOCE.Library.UI.ViewModels
         /// <param name="currdate"></param>
         private void LoadCurrentTimesheet(DateTime currdate)
         {
+            UpdateDateSummary(currdate);
+            LoadTimesheetSubmissionData();
+            LoadTimesheetData();
+            
+        }
+
+        /// <summary>
+        /// Load Date of Timesheet
+        /// </summary>
+        /// <param name="currdate"></param>
+        private void CopyPrevious()
+        {
+            DateTime currdate = DateSummary.First().Value.AddDays(-1);
+            //UpdateDateSummary(currdate);
+            LoadTimesheetSubmissionData();
+            LoadTimesheetDataforCopyPrevious();
+        }
+
+        private void LoadTimesheetDataforCopyPrevious()
+        {
+            CopiedTimesheetData.Clear();
+            Rowdata.Clear();
+            DateTime currdate = DateSummary.First().Value.AddDays(-1);
+            DateTime firstdate;
+            DateTime lastdate;
+            if (currdate.Day > 16)
+            {
+                //second tier
+                firstdate = new DateTime(currdate.Year, currdate.Month, 17);
+                lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
+            }
+            else
+            {
+                //first tier
+                firstdate = new DateTime(currdate.Year, currdate.Month, 1);
+                lastdate = new DateTime(currdate.Year, currdate.Month, 16);
+            }
+
+            //update employee Id
+            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, 1);
+
+            ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
+
+            var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
+
+            foreach (var item in groupedlist)
+            {
+                TimesheetRowDbModel subitem = item.First();
+                SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
+                ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
+
+                ProjectModel pm = new ProjectModel(pdb);
+                SubProjectModel spm = new SubProjectModel(spdb);
+
+                ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
+
+                TimesheetRowModel trm = new TimesheetRowModel()
+                {
+                    Project = pmnew
+                };
+
+                SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+
+                trm.SelectedSubproject = subpmnew;
+
+                trm.Entries = BlankEntry;
+                //foreach (TimesheetRowDbModel trdm in item)
+                //{
+                //    DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                //    trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = 0 });
+                //}
+
+                //DateTime dateinc = datestart;
+
+                //while (dateinc <= dateend)
+                //{
+                //    if (!trm.Entries.Any(x => x.Date == dateinc))
+                //    {
+                //        //add
+                //        trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0 });
+                //    }
+                //    dateinc = dateinc.AddDays(1);
+                //}
+                //trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
+                members.Add(trm);
+            }
+
+            Rowdata = members;
+
+            foreach (TimesheetRowModel trm in Rowdata)
+            {
+                CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
+            }
+
+        }
+
+        private void UpdateDateSummary(DateTime currdate)
+        {
             BlankEntry.Clear();
             DateTime firstdate;
             DateTime lastdate;
@@ -525,8 +622,6 @@ namespace SOCE.Library.UI.ViewModels
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
             BaseHours = workdays * 9;
             DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
-            LoadTimesheetData();
-            LoadTimesheetSubmissionData();
         }
     }
 }

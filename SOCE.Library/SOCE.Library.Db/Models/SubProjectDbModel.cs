@@ -10,6 +10,11 @@ namespace SOCE.Library.Db
         public int ProjectId { get; set; }
         public string PointNumber { get; set; }
         public string Description { get; set; }
-        public int Fee { get; set; }
+        public double Fee { get; set; }
+        public int IsActive { get; set; }
+
+        public double PercentComplete { get; set; }
+        public double PercentBudget { get; set; }
+        public int IsInvoiced { get; set; }
     }
 }

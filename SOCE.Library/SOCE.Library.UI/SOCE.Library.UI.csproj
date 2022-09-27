@@ -97,6 +97,7 @@
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
+    <Compile Include="Converters\InvoicedColorConverter.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />

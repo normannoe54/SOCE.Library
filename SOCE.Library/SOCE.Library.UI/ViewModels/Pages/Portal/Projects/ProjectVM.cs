@@ -33,7 +33,13 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToAddProject { get; set; }
         public ICommand GoToAddClient { get; set; }
         public ICommand GoToAddMarket { get; set; }
+
+        public ICommand GoToAddSubProject { get; set; }
         public ICommand DeleteProject { get; set; }
+        public ICommand DeleteMarket { get; set; }
+        public ICommand DeleteClient { get; set; }
+
+        public ICommand DeleteSubProject { get; set; }
 
         private bool _canAddProject = true;
         public bool CanAddProject
@@ -116,14 +122,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-
-
         public ProjectVM()
         {
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
+
             this.DeleteProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.DeleteClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.DeleteMarket = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.DeleteSubProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+
             LoadProjects();
             LoadClients();
             LoadMarkets();
@@ -131,6 +140,15 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         private async void ExecuteRunAddDialog(object o)
+        {
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new AddProjectView();
+
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+        }
+
+        private async void ExecuteRunAddSubProjectDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddProjectView();
@@ -159,20 +177,60 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
-            EmployeeModel em = o as EmployeeModel;
             AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM(em);
+            AreYouSureVM aysvm = new AreYouSureVM() ;
+            switch (o)
+            {
+                case ProjectModel pm:
+                    aysvm = new AreYouSureVM(pm);
+                    break;
+                case ClientModel cm:
+                    aysvm = new AreYouSureVM(cm);
+                    break;
+                case MarketModel mm:
+                    aysvm = new AreYouSureVM(mm);
+                    break;
+                case SubProjectModel spm:
+                    aysvm = new AreYouSureVM(spm);
+                    break;
+                default:
+                    return;
+                    // code block
+                    break;
+            }
 
             view.DataContext = aysvm;
+            var result = await DialogHost.Show(view, "RootDialog");
 
-            //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+            ////show the dialog
+
 
             aysvm = view.DataContext as AreYouSureVM;
 
             if (aysvm.Result)
             {
-                SQLAccess.DeleteEmployee(em.Id);
+                switch (o)
+                {
+                    case ProjectModel pm:
+                        SQLAccess.DeleteProject(pm.Id);
+                        LoadProjects();
+                        break;
+                    case ClientModel cm:
+                        SQLAccess.DeleteClient(cm.Id);
+                        LoadClients();
+                        break;
+                    case MarketModel mm:
+                        SQLAccess.DeleteMarket(mm.Id);
+                        LoadMarkets();
+                        break;
+                    case SubProjectModel spm:
+                        SQLAccess.DeleteSubProject(spm.Id);
+                        LoadProjects();
+                        break;
+                    default:
+                        // code block
+                        break;
+                }
             }
         }
 
@@ -207,12 +265,13 @@ namespace SOCE.Library.UI.ViewModels
 
                 foreach (SubProjectDbModel sdb in subdbprojects)
                 {
-                    submembers.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = pdb.ProjectNumber, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
+                    submembers.Add(new SubProjectModel(sdb));
+                //submembers.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = pdb.Id, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
                 }
 
                 ProjectModel pm = new ProjectModel(pdb);
                 pm.SubProjects = submembers;
-                members.Add(new ProjectModel(pdb));
+                members.Add(pm);
             }
 
             Projects = members;

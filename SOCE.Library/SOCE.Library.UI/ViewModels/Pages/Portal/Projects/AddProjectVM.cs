@@ -110,6 +110,48 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _cDPhase = true;
+        public bool CDPhase
+        {
+            get { return _cDPhase; }
+            set
+            {
+                if (value || (!value && (CAPhase || PPhase)))
+                {
+                    _cDPhase = value;
+                    RaisePropertyChanged("CDPhase");
+                }
+            }
+        }
+
+        private bool _cAPhase = true;
+        public bool CAPhase
+        {
+            get { return _cAPhase; }
+            set
+            {
+                if (value || (!value && (CDPhase || PPhase)))
+                {
+                    _cAPhase = value;
+                    RaisePropertyChanged("CAPhase");
+                }
+            }
+        }
+
+        private bool _pPhase = false;
+        public bool PPhase
+        {
+            get { return _pPhase; }
+            set
+            {
+                if (value || (!value && (CDPhase || CAPhase)))
+                {
+                    _pPhase = value;
+                    RaisePropertyChanged("PPhase");
+                }
+            }
+        }
+
         public ICommand AddProjectCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
@@ -168,7 +210,56 @@ namespace SOCE.Library.UI.ViewModels
 
             };
 
-            SQLAccess.AddProject(project);
+            int id = SQLAccess.AddProject(project);
+
+            if (CDPhase && id !=0)
+            {
+                SubProjectDbModel cdproj = new SubProjectDbModel
+                {
+                    ProjectId = id,
+                    PointNumber = "CD",
+                    Description = "Construction Document Phase",
+                    Fee = 0,
+                    IsActive = 1,
+                    IsInvoiced = 0,
+                    PercentComplete = 0,
+                    PercentBudget = 0,
+                };
+                SQLAccess.AddSubProject(cdproj);
+            }
+
+            if (CAPhase && id != 0)
+            {
+                SubProjectDbModel caproj = new SubProjectDbModel
+                {
+                    ProjectId = id,
+                    PointNumber = "CA",
+                    Description = "Construction Administration Phase",
+                    Fee = 0,
+                    IsActive = 1,
+                    IsInvoiced = 0,
+                    PercentComplete = 0,
+                    PercentBudget = 0,
+                };
+                SQLAccess.AddSubProject(caproj);
+            }
+
+            if (PPhase && id != 0)
+            {
+                SubProjectDbModel pproj = new SubProjectDbModel
+                {
+                    ProjectId = id,
+                    PointNumber = "Pre",
+                    Description = "Preposal Phase",
+                    Fee = 0,
+                    IsActive = 1,
+                    IsInvoiced = 0,
+                    PercentComplete = 0,
+                    PercentBudget = 0,
+                };
+                SQLAccess.AddSubProject(pproj);
+            }
+
 
             //do stuff
             CloseWindow();

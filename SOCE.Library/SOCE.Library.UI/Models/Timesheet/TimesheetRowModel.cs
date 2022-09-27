@@ -101,6 +101,7 @@ namespace SOCE.Library.UI
 
             int id = Project.Id;
 
+            //1 = active subprojects - doesnt work cuz of saved or submitted previous phases
             List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(id);
 
             ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();

@@ -15,7 +15,7 @@
         </Grid.RowDefinitions>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Orientation="Vertical">
             <TextBlock  FontSize="24" HorizontalAlignment="Center" Text="Are you sure you want to delete:" />
-            <TextBlock Margin="0 10 0 10" FontSize="24" HorizontalAlignment="Center"  Text="{Binding EmployeeFullName}" />
+            <TextBlock Margin="0 10 0 10" FontSize="24" HorizontalAlignment="Center"  Text="{Binding TexttoDisplay}" />
         </StackPanel>
         <Grid VerticalAlignment="Center" Grid.Row="1" Height="50">
             <Grid.ColumnDefinitions>

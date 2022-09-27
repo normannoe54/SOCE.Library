@@ -74,6 +74,7 @@ namespace SOCE.Library.UI
             set
             {
                 _percentBudget = value;
+                EstimatedFee = PercentBudget * Fee * 0.01;
                 RaisePropertyChanged(nameof(PercentBudget));
             }
         }
@@ -144,6 +145,7 @@ namespace SOCE.Library.UI
             set
             {
                 _fee = value;
+                EstimatedFee = PercentBudget * Fee * 0.01;
                 RaisePropertyChanged(nameof(Fee));
             }
         }
@@ -176,6 +178,34 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _editSubFieldState = true;
+        public bool EditSubFieldState
+        {
+            get { return _editSubFieldState; }
+            set
+            {
+                if (!_editSubFieldState && value)
+                {
+                    UpdateSubProject();
+                }
+                _editSubFieldState = value;
+                ComboSubFieldState = !_editSubFieldState;
+
+                RaisePropertyChanged(nameof(EditSubFieldState));
+            }
+        }
+
+        private bool _comboSubFieldState;
+        public bool ComboSubFieldState
+        {
+            get { return _comboSubFieldState; }
+            set
+            {
+                _comboSubFieldState = value;
+                RaisePropertyChanged(nameof(ComboSubFieldState));
+            }
+        }
+
         public string PointNumStr
         {
             get
@@ -198,11 +228,41 @@ namespace SOCE.Library.UI
             PointNumber = spm.PointNumber;
             Description = spm.Description;
             Fee = spm.Fee;
+            IsActive = Convert.ToBoolean(spm.IsActive);
+            IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
+            PercentComplete = spm.PercentComplete;
+            PercentBudget = spm.PercentBudget;
+        }
+
+        public void UpdateSubProject()
+        {
+            SubProjectDbModel subproject = new SubProjectDbModel()
+            {
+                Id = Id,
+                ProjectId = ProjectNumber,
+                PointNumber = PointNumber,
+                Description = Description,
+                Fee = Fee,
+                IsActive = IsActive ? 1 : 0,
+                IsInvoiced = IsActive ? 1 : 0,
+                PercentComplete = PercentComplete,
+                PercentBudget = PercentBudget,
+            };
+
+            SQLAccess.UpdateSubProject(subproject);
         }
 
         public object Clone()
         {
-            return new SubProjectModel() { Id = this.Id, ProjectNumber = this.ProjectNumber, PointNumber = this.PointNumber, Description = this.Description, Fee = this.Fee };
+            return new SubProjectModel() 
+            { Id = this.Id, 
+                ProjectNumber = this.ProjectNumber, 
+                PointNumber = this.PointNumber, 
+                Description = this.Description, 
+                IsActive = this.IsActive,
+                IsInvoiced = this.IsInvoiced,
+                Fee = this.Fee
+            };
         }
     }
 }

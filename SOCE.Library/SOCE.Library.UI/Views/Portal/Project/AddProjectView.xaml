@@ -44,8 +44,41 @@
                   ItemsSource="{Binding PMsAvailable}" 
                   DisplayMemberPath="FullName" 
                   SelectedItem="{Binding Path= PMInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+        <ComboBox Grid.Row="6" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  materialDesign:HintAssist.Hint="Select Project Manager"
+                  ItemsSource="{Binding PMsAvailable}" 
+                  DisplayMemberPath="FullName" 
+                  SelectedItem="{Binding Path= PMInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
+        <Grid Grid.Row="7">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="0 10 0 0" Orientation="Horizontal">
+                <TextBlock Text="Default Project Phases" Margin="0 8 0 0" FontSize="14"/>
+                <TextBlock Text="(must select at least 1)" FontStyle="Italic" Margin="10 8 0 0" FontSize="14"/>
+            </StackPanel>
+            <StackPanel Grid.Row="1" Margin="0 10 0 0">
+                <CheckBox IsChecked="{Binding PPhase}">
+                    <CheckBox.Content>
+                        <TextBlock Text="Preposal Phase [P]"/>
+                    </CheckBox.Content>
+                </CheckBox>
+                <CheckBox IsChecked="{Binding CDPhase}" Margin="0 10 0 0">
+                    <CheckBox.Content>
+                        <TextBlock Text="Construction Documents [CD]"/>
+                    </CheckBox.Content>
+                </CheckBox>
+                <CheckBox IsChecked="{Binding CAPhase}" Margin="0 10 0 10">
+                    <CheckBox.Content>
+                        <TextBlock Text="Construction Administration [CA]"/>
+                    </CheckBox.Content>
+                </CheckBox>
+            </StackPanel>
+        </Grid>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0 16 0 0">
+        <StackPanel Orientation="Horizontal" Grid.Row="8" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProjectCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>

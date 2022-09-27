@@ -24,6 +24,7 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(SubProjects));
             }
         }
+
         private int _id { get; set; }
         public int Id
         {

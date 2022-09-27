@@ -327,26 +327,39 @@
             </StackPanel>
         </ScrollViewer>
 
-        <StackPanel Grid.Row="4" HorizontalAlignment="Right" Orientation="Horizontal">
-            
-            <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
-                <Button.CommandParameter>
-                    <s:Int32>0</s:Int32>
-                </Button.CommandParameter>
+        <Grid Grid.Row="4" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding CopyPreviousCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                    <TextBlock Text="Save"/>
+                    <materialDesign:PackIcon Kind="ContentCopy" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                    <TextBlock Text="Copy from Previous"/>
                 </StackPanel>
             </Button>
 
-            <Button IsEnabled="{Binding IsSubEditable}" Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubmitTimeSheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <StackPanel Orientation="Horizontal" Grid.Column="2">
+                <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                    <Button.CommandParameter>
+                        <s:Int32>0</s:Int32>
+                    </Button.CommandParameter>
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                        <TextBlock Text="Save"/>
+                    </StackPanel>
+                </Button>
+
+                <Button IsEnabled="{Binding IsSubEditable}" Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubmitTimeSheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                         <TextBlock Text="Submit"/>
                     </StackPanel>
                 </Button>
-                
             </StackPanel>
+        </Grid>
 
             
     </Grid>

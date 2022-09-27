@@ -7,13 +7,13 @@
              xmlns:views="clr-namespace:SOCE.Library.UI.Views"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             mc:Ignorable="d">
+             mc:Ignorable="d" x:Name="MainWindow">
     <Grid Grid.Column="1" Margin="30 40 20 20">
         <Grid.Resources>
             <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
         </Grid.Resources>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition Width="5*"/>
             <ColumnDefinition Width="*"/>
         </Grid.ColumnDefinitions>
 
@@ -57,27 +57,20 @@
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
-
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding Path=DataContext.DeleteClient, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="5">
+                                            <Button HorizontalAlignment="Left" Height="20" Width="20" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding Path=DataContext.DeleteClient, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
                                                 <Button.Content>
-                                                    <Border CornerRadius="3" Background="{StaticResource SOCERed}" Height="27" Width="27" >
-                                                        <materialDesign:PackIcon Foreground="White" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                    <materialDesign:PackIcon Foreground="Black" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Button.Content>
                                             </Button>
-                                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Foreground="White" IsChecked="{Binding EditFieldClientsState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Foreground="Black" IsChecked="{Binding EditFieldClientsState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                 <ToggleButton.Content>
-                                                    <Border CornerRadius="8" Background="ForestGreen" Height="27" Width="27" ToolTip="Save">
-                                                        <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
                                                 </ToggleButton.Content>
                                                 <materialDesign:ToggleButtonAssist.OnContent>
-                                                    <Border Background="Orange" Height="27" Width="27" ToolTip="Edit">
-                                                        <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                        <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Edit"/>
                                                 </materialDesign:ToggleButtonAssist.OnContent>
                                             </ToggleButton>
                                         </StackPanel>
@@ -113,31 +106,25 @@
                                     <Grid Background="Transparent" IsEnabled="{Binding Path=DataContext.IsEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Margin="0 5 0 0">
                                         <Grid.ColumnDefinitions>
                                             <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <StackPanel Orientation="Horizontal" Margin="10">
-                                            <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding Path=DataContext.DeleteClient, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="5">
+                                            <Button HorizontalAlignment="Left" Height="20" Width="20" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding Path=DataContext.DeleteMarket, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
                                                 <Button.Content>
-                                                    <Border CornerRadius="3" Background="{StaticResource SOCERed}" Height="27" Width="27" >
-                                                        <materialDesign:PackIcon Foreground="White" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                    <materialDesign:PackIcon Foreground="Black" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Button.Content>
                                             </Button>
-                                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Foreground="White" IsChecked="{Binding EditFieldMarketState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Foreground="Black" IsChecked="{Binding EditFieldMarketState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                 <ToggleButton.Content>
-                                                    <Border CornerRadius="8" Background="ForestGreen" Height="27" Width="27" ToolTip="Save">
-                                                        <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
                                                 </ToggleButton.Content>
                                                 <materialDesign:ToggleButtonAssist.OnContent>
-                                                    <Border Background="Orange" Height="27" Width="27" ToolTip="Edit">
-                                                        <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                    </Border>
+                                                    <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Edit"/>
                                                 </materialDesign:ToggleButtonAssist.OnContent>
                                             </ToggleButton>
                                         </StackPanel>
+                                        
                                         <TextBox Grid.Column="1" MinWidth="125" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldMarketState}" HorizontalAlignment="Left" Text="{Binding MarketName}" TextAlignment="Left" FontSize="14" FontWeight="Regular" VerticalAlignment="Center"/>
                                     </Grid>
                                 </DataTemplate>
@@ -174,6 +161,9 @@
             </Button>
 
             <ScrollViewer Grid.Row="3" Margin="5 20 5 5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ScrollViewer.Resources>
+                    <local:InvoicedColorConverter x:Key="valueconverter"/>
+                </ScrollViewer.Resources>
                 <ItemsControl ItemsSource="{Binding Projects}" >
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
@@ -479,53 +469,82 @@
 
                                         <Grid Grid.Row="1">
                                             <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
                                                 <ColumnDefinition Width="75"/>
                                                 <ColumnDefinition Width="250"/>
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="100"/>
-                                                <ColumnDefinition Width="100"/>
+                                                <ColumnDefinition Width="75"/>
+                                                <ColumnDefinition Width="75"/>
                                             </Grid.ColumnDefinitions>
-                                            <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="Phase" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" Text="Description" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                            <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Budget"/>
-                                            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Complete"/>
-                                            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Est. Fee"/>
-                                            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Live"/>
-                                            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced"/>
+                                            <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Phase" />
+                                            <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Description" />
+                                            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Fee" />
+                                            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Budget"/>
+                                            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Est. Fee"/>
+                                            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Complete"/>
+                                            <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Active?"/>
+                                            <TextBlock Grid.Column="8" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced?"/>
+
+
+                                            <!--<TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Live"/>
+                                            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced"/>-->
                                         </Grid>
 
                                         <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                             <ItemsControl ItemsSource="{Binding SubProjects}">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>
-                                                        <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5">
+                                                        
+                                                        <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="{Binding IsInvoiced, Converter={StaticResource valueconverter}}">
                                                             <Grid Margin="0 5 0 5">
-                                                                <!--<Grid.Resources>
-                                                                    <local:DatetoStringFullConverter x:Key="DatetoStringFull"/>
-                                                                </Grid.Resources>-->
                                                                 <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition Width="50"/>
                                                                     <ColumnDefinition Width="75"/>
                                                                     <ColumnDefinition Width="250"/>
                                                                     <ColumnDefinition Width="100"/>
                                                                     <ColumnDefinition Width="100"/>
                                                                     <ColumnDefinition Width="100"/>
                                                                     <ColumnDefinition Width="100"/>
-                                                                    <ColumnDefinition Width="100"/>
-                                                                </Grid.ColumnDefinitions>
-                                                                <TextBlock Grid.Column="0"  Text="{Binding PointNumber}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                                <TextBlock Grid.Column="1" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Description}"/>
-                                                                <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Description}"/>
-                                                                <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Description}"/>
-                                                                <TextBlock Grid.Column="4" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Description}"/>
+                                                                    <ColumnDefinition Width="75"/>
+                                                                    <ColumnDefinition Width="75"/>
 
-                                                                <TextBlock Grid.Column="2"  FontSize="14" FontWeight="Regular" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}"/>
+                                                                </Grid.ColumnDefinitions>
+                                                                <!--#region Edit Delete Buttons-->
+                                                                <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0">
+                                                                    <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent"  Foreground="Black" Height="20" Width="20" Command="{Binding Path=DataContext.DeleteSubProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                                                        <Button.Content>
+                                                                            <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                                        </Button.Content>
+                                                                    </Button>
+                                                                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Background="Transparent" Foreground="Black" Height="20" Width="20" IsChecked="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                                        <ToggleButton.Content>
+                                                                            <materialDesign:PackIcon Height="15" Width="15" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
+                                                                        </ToggleButton.Content>
+                                                                        <materialDesign:ToggleButtonAssist.OnContent>
+                                                                            <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                                        </materialDesign:ToggleButtonAssist.OnContent>
+                                                                    </ToggleButton>
+                                                                </StackPanel>
+                                                                <!--#endregion-->
+                                                                <TextBox Grid.Column="1" IsReadOnly="{Binding EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PointNumber}"/>
+                                                                <TextBox Grid.Column="2" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Description}" />
+                                                                <TextBox Grid.Column="3" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Fee}" materialDesign:TextFieldAssist.PrefixText="$"/>
+                                                                <TextBox Grid.Column="4" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentBudget}" materialDesign:TextFieldAssist.PrefixText="%"/>
+                                                                <TextBox Grid.Column="5" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding EstimatedFee}" materialDesign:TextFieldAssist.PrefixText="$"/>
+                                                                <TextBox Grid.Column="6" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete}" materialDesign:TextFieldAssist.PrefixText="%"/>
+                                                                <CheckBox Grid.Column="7" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive}" HorizontalAlignment="Center" Background="DarkGray" />
+                                                                <CheckBox Grid.Column="8" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced}" HorizontalAlignment="Center" Background="DarkGray"/>
+                                                                <!--<TextBlock Grid.Column="6" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding EstimatedFee}"/>-->
+                                                                
+                                                                <!--<TextBlock Grid.Column="2"  FontSize="14" FontWeight="Regular" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}"/>
                                                                 <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}"/>
                                                                 <TextBlock Grid.Column="4" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}"/>
                                                                 <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}"/>
                                                                 <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HolidayHours, StringFormat = ' {0} hr.'}"/>
-                                                                <materialDesign:PackIcon Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 10 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" ToolTip="{Binding StatusTooltip}"/>
+                                                                <materialDesign:PackIcon Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 10 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" ToolTip="{Binding StatusTooltip}"/>-->
                                                             </Grid>
                                                         </Border>
                                                     </DataTemplate>
