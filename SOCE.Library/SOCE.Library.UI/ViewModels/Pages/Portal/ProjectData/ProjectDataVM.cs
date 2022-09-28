@@ -374,7 +374,6 @@ namespace SOCE.Library.UI.ViewModels
                         List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
                         EmployeeVisualModel evm = new EmployeeVisualModel(employee);
-                        evm.Rate = 250;
                         evm.SumHours = employeetimesheetdata.Sum(x => x.TimeEntry);
                         Brush b = RandomColorGenerator();
                         evm.VisualColor = b;

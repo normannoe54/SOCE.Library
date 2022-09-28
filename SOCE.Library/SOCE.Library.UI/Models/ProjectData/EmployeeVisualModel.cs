@@ -69,6 +69,7 @@ namespace SOCE.Library.UI
         public EmployeeVisualModel(EmployeeDbModel employeedbmodel)
         {
             Name = employeedbmodel.FullName;
+            Rate = employeedbmodel.Rate;
         }
 
     }

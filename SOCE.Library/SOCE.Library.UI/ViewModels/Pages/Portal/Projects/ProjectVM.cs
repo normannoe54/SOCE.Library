@@ -33,8 +33,9 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToAddProject { get; set; }
         public ICommand GoToAddClient { get; set; }
         public ICommand GoToAddMarket { get; set; }
-
         public ICommand GoToAddSubProject { get; set; }
+
+
         public ICommand DeleteProject { get; set; }
         public ICommand DeleteMarket { get; set; }
         public ICommand DeleteClient { get; set; }
@@ -127,6 +128,7 @@ namespace SOCE.Library.UI.ViewModels
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
+            this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunAddSubProjectDialog);
 
             this.DeleteProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.DeleteClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
@@ -151,7 +153,7 @@ namespace SOCE.Library.UI.ViewModels
         private async void ExecuteRunAddSubProjectDialog(object o)
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new AddProjectView();
+            var view = new AddSubProjectView();
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);

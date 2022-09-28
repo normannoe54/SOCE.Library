@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Input;
@@ -12,7 +13,7 @@ using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI
 {
-    public class ProjectModel: BaseVM
+    public class ProjectModel : BaseVM
     {
         private ObservableCollection<SubProjectModel> _subProjects;
         public ObservableCollection<SubProjectModel> SubProjects
@@ -140,7 +141,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private string _projectfolder="";
+        private string _projectfolder = "";
         public string Projectfolder
         {
             get { return _projectfolder; }
@@ -216,6 +217,62 @@ namespace SOCE.Library.UI
             }
         }
 
+
+        private double _totalBudget = 0;
+        public double TotalBudget
+        {
+            get { return _totalBudget; }
+            set
+            {
+                _totalBudget = value;
+                RaisePropertyChanged(nameof(TotalBudget));
+            }
+        }
+
+        private double _budgetSpent = 0;
+        public double BudgetSpent
+        {
+            get { return _budgetSpent; }
+            set
+            {
+                _budgetSpent = value;
+                RaisePropertyChanged(nameof(BudgetSpent));
+            }
+        }
+
+        private double _budgetLeft = 0;
+        public double BudgetLeft
+        {
+            get { return _budgetLeft; }
+            set
+            {
+                _budgetLeft = value;
+                RaisePropertyChanged(nameof(BudgetLeft));
+            }
+        }
+
+        private double _hoursSpent = 0;
+        public double HoursSpent
+        {
+            get { return _hoursSpent; }
+            set
+            {
+                _hoursSpent = value;
+                RaisePropertyChanged(nameof(HoursSpent));
+            }
+        }
+
+        private double _hoursLeft = 0;
+        public double HoursLeft
+        {
+            get { return _hoursLeft; }
+            set
+            {
+                _hoursLeft = value;
+                RaisePropertyChanged(nameof(HoursLeft));
+            }
+        }
+
         #region project
         public ICommand CopyProjectFolderCommand { get; set; }
         public ICommand SelectProjectFolderCommand { get; set; }
@@ -259,7 +316,7 @@ namespace SOCE.Library.UI
             this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
             this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
         }
-    
+
         public ProjectModel(ProjectDbModel pm)
         {
             this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
@@ -301,9 +358,63 @@ namespace SOCE.Library.UI
             Drawingsfolder = pm.Drawingsfolder;
             Architectfolder = pm.Architectfolder;
             Plotfolder = pm.Plotfolder;
-
+            FormatData();
         }
         #endregion
+
+        public void FormatData()
+        {
+            List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
+
+            //total
+            //get all subprojectIds associated with projectId
+            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(Id);
+
+            foreach (SubProjectDbModel spdm in subdbmodels)
+            {
+                List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
+                total.AddRange(tmdata);
+            }
+
+            if (total.Count == 0)
+            {
+                return;
+            }
+
+            var grouped = total.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
+
+            double averagerate = 0;
+            double hourstotal = 0;
+            double budgetspent = 0;
+
+            int count = 0;
+            foreach (var item in grouped)
+            {
+                EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
+
+                if (employee != null)
+                {
+                    //order by date
+                    List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
+
+                    double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
+                    hourstotal += hours;
+
+                    double budgetperemployee = hours * employee.Rate;
+                    budgetspent += budgetperemployee;
+                    averagerate += employee.Rate;
+                    count++;
+                }
+            }
+
+            TotalBudget = Fee;
+            HoursSpent = hourstotal;
+            BudgetSpent = budgetspent;
+            BudgetLeft = TotalBudget - BudgetSpent;
+
+            HoursLeft = Math.Max(0, BudgetLeft / (averagerate / count));
+
+        }
 
         #region project folder
         public void SelectProjectFolder()
@@ -436,24 +547,25 @@ namespace SOCE.Library.UI
                 MarketId = Market.Id,
                 ManagerId = ProjectManager.Id,
                 Fee = Fee,
-                IsActive = IsActive?1:0,
+                IsActive = IsActive ? 1 : 0,
                 PercentComplete = PercentComplete,
                 Projectfolder = Projectfolder,
                 Drawingsfolder = Drawingsfolder,
                 Architectfolder = Architectfolder,
                 Plotfolder = Plotfolder,
-        };
+            };
 
             SQLAccess.UpdateProjects(project);
         }
 
         public object Clone()
         {
-            return new ProjectModel() 
-            { Id = this.Id,
-                ProjectName = this.ProjectName, 
-                ProjectNumber = this.ProjectNumber, 
-                Client = this.Client, 
+            return new ProjectModel()
+            {
+                Id = this.Id,
+                ProjectName = this.ProjectName,
+                ProjectNumber = this.ProjectNumber,
+                Client = this.Client,
                 Fee = this.Fee,
                 Market = this.Market,
                 ProjectManager = this.ProjectManager,
