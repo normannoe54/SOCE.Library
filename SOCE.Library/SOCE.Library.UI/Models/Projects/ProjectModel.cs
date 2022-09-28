@@ -7,6 +7,7 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SOCE.Library.Db;
 using SOCE.Library.UI.ViewModels;
@@ -136,7 +137,7 @@ namespace SOCE.Library.UI
             set
             {
                 _percentComplete = value;
-
+                FormatData();
                 RaisePropertyChanged(nameof(PercentComplete));
             }
         }
@@ -270,6 +271,31 @@ namespace SOCE.Library.UI
             {
                 _hoursLeft = value;
                 RaisePropertyChanged(nameof(HoursLeft));
+            }
+        }
+
+        private double _percentBudgetSpent = 0;
+        public double PercentBudgetSpent
+        {
+            get { return _percentBudgetSpent; }
+            set
+            {
+                _percentBudgetSpent = value;
+                RaisePropertyChanged(nameof(PercentBudgetSpent));
+            }
+        }
+
+        private PackIconKind _iconforBudgetSummary = PackIconKind.CheckboxMarkedOutline;
+        public PackIconKind IconforBudgetSummary
+        {
+            get
+            {
+                return _iconforBudgetSummary;
+            }
+            set
+            {
+                _iconforBudgetSummary = value;
+                RaisePropertyChanged(nameof(IconforBudgetSummary));
             }
         }
 
@@ -411,8 +437,9 @@ namespace SOCE.Library.UI
             HoursSpent = hourstotal;
             BudgetSpent = budgetspent;
             BudgetLeft = TotalBudget - BudgetSpent;
-
+            PercentBudgetSpent = Math.Min(Math.Ceiling((BudgetSpent / TotalBudget) * 100), 100);
             HoursLeft = Math.Max(0, BudgetLeft / (averagerate / count));
+            IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
 
         }
 

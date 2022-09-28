@@ -123,6 +123,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+
         public ProjectVM()
         {
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
