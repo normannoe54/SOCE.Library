@@ -28,15 +28,66 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp, Mode=TwoWay}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" IsEnabled="False"/>
-            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp, Mode=TwoWay}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" IsEnabled="False"/>
+            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="Project Name" Text="{Binding BaseProject.ProjectName}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" IsEnabled="False"/>
+            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding BaseProject.ProjectNumber}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" IsEnabled="False"/>
         </Grid>
-        <TextBox materialDesign:HintAssist.Hint="Point Number" Text="{Binding PointNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="3"/>
-        <TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding DescriptionInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
-        <TextBox materialDesign:HintAssist.Hint="Estimated Fee" Text="{Binding FeeInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="7" Margin="0 16 0 0">
-            <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProjectCommand}">
+        <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}" Grid.Row="2" Background="Transparent" Margin="0 10 0 0">
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding PhaseSelected}" >
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Typical"/>
+                        <TextBlock Text="Project"/>
+                        <TextBlock Text="Phases"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <StackPanel Grid.Row="1" Margin="10">
+                    <CheckBox IsChecked="{Binding PPhase}" IsEnabled="{Binding PEnabled}">
+                        <CheckBox.Content>
+                            <TextBlock Text="Preposal Phase [P]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding CDPhase}"  IsEnabled="{Binding CDEnabled}" Margin="0 10 0 0">
+                        <CheckBox.Content>
+                            <TextBlock Text="Construction Documents [CD]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding CAPhase}" IsEnabled="{Binding CAEnabled}" Margin="0 10 0 10">
+                        <CheckBox.Content>
+                            <TextBlock Text="Construction Administration [CA]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsChecked="{Binding MISCPhase}" IsEnabled="{Binding MISCEnabled}" Margin="0 10 0 10">
+                        <CheckBox.Content>
+                            <TextBlock Text="Miscellaneous [MISC]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                </StackPanel>
+            </TabItem>
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding AdSelected}">
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Adservice"/>
+                    </StackPanel>
+                </TabItem.Header>
+                <StackPanel Orientation="Vertical" Margin="10 20 0 0">
+                    <TextBlock Text="Subsequent Adservice point number:" />
+                    <TextBox IsReadOnly="True" Width="75" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding LatestAdServiceNumber}"/>
+                    <TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding Description}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
+                </StackPanel>
+            </TabItem>
+            <!--<TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" >
+                <TabItem.Header>
+                    <StackPanel Orientation="Vertical">
+                        <TextBlock Text="Custom"/>
+                    </StackPanel>
+                </TabItem.Header>
+            </TabItem>-->
+        </TabControl>
+        <TextBox materialDesign:HintAssist.Hint="Percent Budget" Text="{Binding PercentBudget}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="%" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0">
+            <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddSubProjectCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>
             <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">

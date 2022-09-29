@@ -26,10 +26,9 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     CanAddEmployee = true;
                 }
-
-                RaisePropertyChanged(nameof(CurrentEmployee));
             }
         }
+
         public ICommand GoToAddEmployee { get; set; }
 
         public ICommand DeleteEmployee { get; set; }
@@ -73,8 +72,9 @@ namespace SOCE.Library.UI.ViewModels
 
         
 
-        public EmployeeVM()
+        public EmployeeVM(EmployeeModel loggedinEmployee)
         {
+            CurrentEmployee = loggedinEmployee;
             this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             LoadEmployees();
@@ -122,8 +122,6 @@ namespace SOCE.Library.UI.ViewModels
             List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
 
             ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
-
-            CurrentEmployee = new EmployeeModel(dbemployees[2]);
 
             foreach (EmployeeDbModel emdb in dbemployees)
             {

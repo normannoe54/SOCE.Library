@@ -82,19 +82,19 @@ namespace SOCE.Library.UI.ViewModels
             DetermineIcon();
         }
 
-        public void GoToPage(CorePage page)
+
+        public void GoToLogin()
         {
-            switch (page)
-            {
-                case CorePage.Login:
-                    CurrentPage = IoCLogin.Application as BaseAI;
-                    WindowType = WindowState.Normal;
-                    break;
-                case CorePage.Portal:
-                    CurrentPage = IoCPortal.Application as BaseAI;
-                    WindowType = WindowState.Maximized;
-                    break;
-            }
+            CurrentPage = IoCLogin.Application as BaseAI;
+            WindowType = WindowState.Normal;
+        }
+
+        public void GoToPortal(EmployeeModel employee)
+        {
+            CurrentPage = IoCPortal.Application as BaseAI;
+            PortalAI portAI = (PortalAI)CurrentPage;
+            portAI.LoggedInEmployee = employee;
+            WindowType = WindowState.Maximized;
         }
 
         public void CloseWindow()

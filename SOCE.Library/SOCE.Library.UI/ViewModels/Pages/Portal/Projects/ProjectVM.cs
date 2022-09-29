@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
@@ -22,9 +23,14 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _currentEmployee = value;
 
-                if (_currentEmployee.Status == AuthEnum.Admin)
+                if (_currentEmployee.Status == AuthEnum.Admin || _currentEmployee.Status == AuthEnum.Principal)
                 {
                     CanAddProject = true;
+                }
+
+                if (!(_currentEmployee.Status == AuthEnum.Standard))
+                {
+                    IsEditable = true;
                 }
 
                 RaisePropertyChanged(nameof(CurrentEmployee));
@@ -42,7 +48,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand DeleteSubProject { get; set; }
 
-        private bool _canAddProject = true;
+        private bool _canAddProject = false;
         public bool CanAddProject
         {
             get
@@ -53,6 +59,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _canAddProject = value;
                 RaisePropertyChanged(nameof(CanAddProject));
+            }
+        }
+
+        private int _numProjects = 0;
+        public int NumProjects
+        {
+            get { return _numProjects; }
+            set
+            {
+                _numProjects = value;
+                RaisePropertyChanged("NumProjects");
             }
         }
 
@@ -112,7 +129,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _isEditable = true;
+        private bool _isEditable = false;
         public bool IsEditable
         {
             get { return _isEditable; }
@@ -124,8 +141,9 @@ namespace SOCE.Library.UI.ViewModels
         }
 
 
-        public ProjectVM()
+        public ProjectVM(EmployeeModel loggedinEmployee)
         {
+            CurrentEmployee = loggedinEmployee;
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
@@ -153,11 +171,18 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunAddSubProjectDialog(object o)
         {
-            //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new AddSubProjectView();
+            ProjectModel pm = (ProjectModel)o;
 
-            //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+            if (pm!=null)
+            {
+                AddSubProjectVM aspvm = new AddSubProjectVM(pm);
+                var view = new AddSubProjectView();
+                view.DataContext = aspvm;
+
+                //show the dialog
+                var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+            }
+ 
         }
 
         private async void ExecuteRunAddClientDialog(object o)
@@ -278,6 +303,9 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             Projects = members;
+
+            List<ProjectModel> activeprojects = Projects.Where(x => x.IsActive == true).ToList();
+            NumProjects = activeprojects.Count;
         }
 
         private void LoadClients()

@@ -17,6 +17,19 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class ProjectDataVM : BaseVM
     {
+        private EmployeeModel _currentEmployee;
+        public EmployeeModel CurrentEmployee
+        {
+            get
+            {
+                return _currentEmployee;
+            }
+            set
+            {
+                _currentEmployee = value;
+            }
+        }
+
         private List<SeriesDataModel> SeriesData = new List<SeriesDataModel>();
 
         private SeriesCollection _overallData = new SeriesCollection();
@@ -242,8 +255,10 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public ProjectDataVM()
+        public ProjectDataVM(EmployeeModel loggedinEmployee)
         {
+            CurrentEmployee = loggedinEmployee;
+
             Formatter = value => new DateTime((long)value).ToString("yyyy-MM-dd");
             LoadProjects();
 

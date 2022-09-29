@@ -10,6 +10,10 @@ namespace SOCE.Library.UI.ViewModels
     public interface ICoreAI
     {
         BaseAI CurrentPage { get; set; }
-        void GoToPage(CorePage page);
+        //void GoToPage(CorePage page);
+
+        void GoToPortal(EmployeeModel employee);
+
+        void GoToLogin();
     }
 }

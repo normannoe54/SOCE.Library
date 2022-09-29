@@ -10,6 +10,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class PortalAI : BaseAI, IPortalAI
     {
+        public EmployeeModel LoggedInEmployee { get; set; }
 
         public ICommand GoToNewViewCommand { get; set; }
 
@@ -26,29 +27,26 @@ namespace SOCE.Library.UI.ViewModels
         {
             switch (page)
             {
-                case PortalPage.Home:
-                    CurrentPage = new HomeViewVM();
-                    break;
+                //case PortalPage.Home:
+                //    CurrentPage = new HomeViewVM(LoggedInEmployee);
+                //    break;
                 case PortalPage.Employee:
-                    CurrentPage = new EmployeeVM();
-                    break;
-                case PortalPage.EmployeeData:
-                    CurrentPage = new EmployeeDataVM();
+                    CurrentPage = new EmployeeVM(LoggedInEmployee);
                     break;
                 case PortalPage.Timesheet:
-                    CurrentPage = new TimesheetVM();
+                    CurrentPage = new TimesheetVM(LoggedInEmployee);
                     break;
-                case PortalPage.Resources:
-                    CurrentPage = new ResourcesVM();
-                    break;
+                //case PortalPage.Resources:
+                //    CurrentPage = new ResourcesVM(LoggedInEmployee);
+                //    break;
                 case PortalPage.ProjectData:
-                    CurrentPage = new ProjectDataVM();
+                    CurrentPage = new ProjectDataVM(LoggedInEmployee);
                     break;
-                case PortalPage.LicenseManager:
-                    CurrentPage = new LicenseManagerVM();
-                    break;
+                //case PortalPage.LicenseManager:
+                //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);
+                //    break;
                 case PortalPage.Projects:
-                    CurrentPage = new ProjectVM();
+                    CurrentPage = new ProjectVM(LoggedInEmployee);
                     break;
             }
         }

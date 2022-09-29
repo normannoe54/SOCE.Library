@@ -18,6 +18,19 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class TimesheetVM : BaseVM
     {
+        private EmployeeModel _currentEmployee;
+        public EmployeeModel CurrentEmployee
+        {
+            get
+            {
+                return _currentEmployee;
+            }
+            set
+            {
+                _currentEmployee = value;
+            }
+        }
+
         public List<RegisteredTimesheetDataModel> TimesheetData;
         public ICommand AddRowCommand { get; set; }
         public ICommand WorkReportCommand { get; set; }
@@ -161,8 +174,9 @@ namespace SOCE.Library.UI.ViewModels
 
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
-        public TimesheetVM()
+        public TimesheetVM(EmployeeModel loggedinEmployee)
         {
+            CurrentEmployee = loggedinEmployee;
             //get timesheet data from database
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
             LoadProjects();
@@ -248,7 +262,11 @@ namespace SOCE.Library.UI.ViewModels
 
             foreach (ProjectDbModel pdb in dbprojects)
             {
-                members.Add(new ProjectModel(pdb));
+                ProjectModel pm = new ProjectModel(pdb);
+                if (pm.SubProjects.Count > 0)
+                {
+                    members.Add(pm);
+                }
             }
 
             ProjectList = members;
@@ -280,7 +298,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadTimesheetSubmissionData()
         {
-            TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, 1);
+            TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, CurrentEmployee.Id);
 
 
             IsSubEditable = (tsdbm == null) ? true : false;
@@ -299,7 +317,7 @@ namespace SOCE.Library.UI.ViewModels
             DateTime dateend = DateSummary.Last().Value;
 
             //update employee Id
-            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, 1);
+            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, CurrentEmployee.Id);
 
             ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
 
@@ -392,7 +410,7 @@ namespace SOCE.Library.UI.ViewModels
 
             TimesheetSubmissionDbModel timesheetsubdbmodel = new TimesheetSubmissionDbModel()
             {
-                EmployeeId = 1,
+                EmployeeId = CurrentEmployee.Id,
                 Date = DateTimesheet,
                 TotalHours = sum,
                 PTOHours = pto,
@@ -424,7 +442,7 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
                         {
-                            EmployeeId = 1,
+                            EmployeeId = CurrentEmployee.Id,
                             SubProjectId = trm.SelectedSubproject.Id,
                             Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
                             Submitted = submit,
@@ -527,7 +545,7 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             //update employee Id
-            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, 1);
+            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, CurrentEmployee.Id);
 
             ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
 

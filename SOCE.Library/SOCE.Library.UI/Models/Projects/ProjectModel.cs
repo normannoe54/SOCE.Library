@@ -16,7 +16,7 @@ namespace SOCE.Library.UI
 {
     public class ProjectModel : BaseVM
     {
-        private ObservableCollection<SubProjectModel> _subProjects;
+        private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
         public ObservableCollection<SubProjectModel> SubProjects
         {
             get { return _subProjects; }
@@ -390,6 +390,8 @@ namespace SOCE.Library.UI
 
         public void FormatData()
         {
+            TotalBudget = Fee;
+
             List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
 
             //total
@@ -402,38 +404,36 @@ namespace SOCE.Library.UI
                 total.AddRange(tmdata);
             }
 
-            if (total.Count == 0)
-            {
-                return;
-            }
-
-            var grouped = total.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
-
-            double averagerate = 0;
+            double averagerate = 250;
             double hourstotal = 0;
             double budgetspent = 0;
+            int count = 1;
 
-            int count = 0;
-            foreach (var item in grouped)
+            if (total.Count != 0)
             {
-                EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
+                var grouped = total.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
 
-                if (employee != null)
+                count = 0;
+                foreach (var item in grouped)
                 {
-                    //order by date
-                    List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
+                    EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
 
-                    double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
-                    hourstotal += hours;
+                    if (employee != null)
+                    {
+                        //order by date
+                        List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
-                    double budgetperemployee = hours * employee.Rate;
-                    budgetspent += budgetperemployee;
-                    averagerate += employee.Rate;
-                    count++;
+                        double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
+                        hourstotal += hours;
+
+                        double budgetperemployee = hours * employee.Rate;
+                        budgetspent += budgetperemployee;
+                        averagerate += employee.Rate;
+                        count++;
+                    }
                 }
             }
 
-            TotalBudget = Fee;
             HoursSpent = hourstotal;
             BudgetSpent = budgetspent;
             BudgetLeft = TotalBudget - BudgetSpent;

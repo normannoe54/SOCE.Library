@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows;
+using SOCE.Library.Db;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -69,9 +70,14 @@ namespace SOCE.Library.UI.ViewModels
                 return;
             }
 
+            //tbd
+            EmployeeDbModel em = SQLAccess.LoadEmployeeById(3);
+
+
+            EmployeeModel employee = new EmployeeModel(em);
             CoreAI globalwindow = (CoreAI)IoCCore.Application;
             globalwindow.WindowType = WindowState.Maximized;
-            globalwindow.GoToPage(CorePage.Portal);
+            globalwindow.GoToPortal(employee);
 
             //AuthenticateRequest convertedinput = loginrequest.ConvertAPIModel();
 
