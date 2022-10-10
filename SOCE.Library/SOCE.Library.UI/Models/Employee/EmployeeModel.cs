@@ -386,6 +386,25 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool IsEditable;
+
+        private bool _canExpand = false;
+        public bool CanExpand
+        {
+            get
+            {
+                return _canExpand;
+            }
+            set
+            {
+                if (IsEditable)
+                {
+                    _canExpand = value;
+                    RaisePropertyChanged(nameof(CanExpand));
+                }
+            }
+        }
+
         public EmployeeModel()
         { }
 
@@ -448,21 +467,21 @@ namespace SOCE.Library.UI
             {
                 case AuthEnum.Admin:
                     RateVisible = true;
-                    EnabledforView = true;
+                    IsEditable = true;
                     CanEditorDelete = true;
                     CanEditRate = true;
                     CanEditPTO = true;
                     break;
                 case AuthEnum.Principal:
                     RateVisible = true;
-                    EnabledforView = true;
+                    IsEditable = true;
                     CanEditorDelete = false;
                     CanEditRate = true;
                     CanEditPTO = false;
                     break;
                 case AuthEnum.PM:
                     RateVisible = true;
-                    EnabledforView = false;
+                    IsEditable = false;
                     CanEditorDelete = false;
                     CanEditRate = false;
                     CanEditPTO = false;
@@ -470,7 +489,7 @@ namespace SOCE.Library.UI
                     break;
                 case AuthEnum.Standard:
                     RateVisible = false;
-                    EnabledforView = false;
+                    IsEditable = false;
                     CanEditorDelete = false;
                     CanEditRate = false;
                     CanEditPTO = false;
@@ -478,7 +497,7 @@ namespace SOCE.Library.UI
                     break;
                 default:
                     RateVisible = false;
-                    EnabledforView = false;
+                    IsEditable = false;
                     CanEditorDelete = false;
                     CanEditRate = false;
                     CanEditPTO = false;
@@ -488,7 +507,7 @@ namespace SOCE.Library.UI
 
             if (Id == currentuser.Id)
             {
-                EnabledforView = true;
+                IsEditable = true;
             }
         }
 

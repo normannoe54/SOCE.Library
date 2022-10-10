@@ -299,6 +299,25 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool IsEditable;
+
+        private bool _canExpand = false;
+        public bool CanExpand
+        {
+            get
+            {
+                return _canExpand;
+            }
+            set
+            {
+                if (IsEditable)
+                {
+                    _canExpand = value;
+                    RaisePropertyChanged(nameof(CanExpand));
+                }
+            }
+        }
+
         #region project
         public ICommand CopyProjectFolderCommand { get; set; }
         public ICommand SelectProjectFolderCommand { get; set; }
@@ -342,9 +361,10 @@ namespace SOCE.Library.UI
             this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
             this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
         }
-
-        public ProjectModel(ProjectDbModel pm)
+        
+        public ProjectModel(ProjectDbModel pm, bool iseditable = true)
         {
+            IsEditable = iseditable;
             this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
             this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
             this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
@@ -400,6 +420,7 @@ namespace SOCE.Library.UI
 
             foreach (SubProjectDbModel spdm in subdbmodels)
             {
+                SubProjects.Add(new SubProjectModel(spdm));
                 List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
                 total.AddRange(tmdata);
             }
@@ -432,7 +453,7 @@ namespace SOCE.Library.UI
                         count++;
                     }
                 }
-            }
+            }     
 
             HoursSpent = hourstotal;
             BudgetSpent = budgetspent;

@@ -8,6 +8,7 @@ namespace SOCE.Library.UI.ViewModels
     {
         Login = 1,
         ForgotPassword = 2,
-        Signup = 3,
+        //InsertCode = 3,
+        //ResetPassword = 4
     }
 }

@@ -27,7 +27,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public BaseAI()
         {
-            CurrentPage = new LoginVM();
+            //CurrentPage = new LoginVM();
         }
     }
 }

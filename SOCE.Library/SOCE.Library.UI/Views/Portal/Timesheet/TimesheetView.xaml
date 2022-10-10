@@ -22,15 +22,7 @@
         <!--Seprator-->
         <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
 
-        <!--Counter Title-->
-        <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-            <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
-            <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
-            <materialDesign:PackIcon Margin="5 0 0 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" VerticalAlignment="Center"/>
-
-        </StackPanel>
-
-        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="2">
+        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2">
             <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Gray"/>
@@ -51,15 +43,59 @@
             </Button>
         </StackPanel>
 
-        <TextBlock Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" Grid.Row="2" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-        <!--<Button Grid.Row="2" Style="{StaticResource MaterialDesignRaisedButton}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
-            <StackPanel Orientation="Horizontal">
-                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                <TextBlock Text="Work Report"/>
-            </StackPanel>
-        </Button>-->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="375"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
 
-        <ScrollViewer Grid.Row="3">
+            <!--Counter Title-->
+            <StackPanel Grid.Column="0" Orientation="Vertical">
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
+                        <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
+                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <Border Grid.Column="1" Width="110" CornerRadius="3" BorderThickness="1" BorderBrush="Black" Margin="20 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="2">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Due in:" FontSize="14" FontWeight="Regular" FontStyle="Italic"/>
+                            <TextBlock Text="{Binding DueDateValue}" FontSize="14" FontWeight="SemiBold" Margin="7 0 0 0"/>
+                            <TextBlock Text=" days" FontSize="14" FontWeight="Regular" FontStyle="Italic"/>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+                
+                
+                <StackPanel Orientation="Vertical"  VerticalAlignment="Bottom" Margin="0 10 0 0">
+                    <Grid>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Foreground="Green" BorderThickness="1" BorderBrush="LightGray"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="Percent Complete: %" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding PercentComplete}" FontSize="10" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Grid>
+                    <Grid>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                            <TextBlock Text="Expected Progress: %" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding ExpectedProgress}" FontSize="10" FontWeight="SemiBold"/>
+                        </StackPanel>
+                    </Grid>
+                </StackPanel>
+            </StackPanel>
+            <TextBlock Grid.Column="2" Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        </Grid>
+        
+        
+        <ScrollViewer Grid.Row="3" Margin="0 5 0 0">
             <StackPanel>
                 <Grid Background="Transparent">
                     <Grid.ColumnDefinitions>
@@ -155,7 +191,7 @@
                                Text="{Binding Total}" 
                                materialDesign:TextFieldAssist.SuffixText=" h"
                                TextAlignment="Center"
-                               VerticalAlignment="Stretch" 
+                               VerticalAlignment="Center" 
                                HorizontalAlignment="Stretch" 
                                FontSize="14" FontWeight="SemiBold" 
                                Foreground="Gray"/>
@@ -241,6 +277,8 @@
                                 </Grid>
                                 <!--ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"-->
                                 <!--Need to set Width of name TextBlock so items line up correctly-->
+
+
                                 <ComboBox Grid.Column="1" materialDesign:HintAssist.Hint="Search"  
                                                   Margin="10 0 0 0"
                                                   VerticalAlignment="Center"
@@ -253,15 +291,8 @@
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"
+                                                  DisplayMemberPath="PointNumStr"   
                                                   MaxDropDownHeight="250">
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate DataType="SubProjectModel">
-                                            <StackPanel Orientation="Horizontal">
-                                                <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
-                                                <TextBlock Text="{Binding Description}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
                                 </ComboBox>
 
                                 <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->

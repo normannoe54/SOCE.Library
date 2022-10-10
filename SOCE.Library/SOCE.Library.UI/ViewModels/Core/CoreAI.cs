@@ -76,6 +76,9 @@ namespace SOCE.Library.UI.ViewModels
         public CoreAI()
         {
             CurrentPage = IoCLogin.Application as BaseAI;
+            LoginAI login = (LoginAI)CurrentPage;
+            login.GoToLogin();
+
             CloseCommand = new RelayCommand(CloseWindow);
             MaximizeWindowCommand = new RelayCommand(MaximizeWindowCom);
             MinusCommand = new RelayCommand(MinusWindow);
@@ -94,6 +97,7 @@ namespace SOCE.Library.UI.ViewModels
             CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
             portAI.LoggedInEmployee = employee;
+            portAI.CurrentPage = new TimesheetVM(employee);
             WindowType = WindowState.Maximized;
         }
 

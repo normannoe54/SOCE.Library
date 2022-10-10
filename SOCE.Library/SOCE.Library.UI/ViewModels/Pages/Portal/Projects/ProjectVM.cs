@@ -48,6 +48,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand DeleteSubProject { get; set; }
 
+        public ICommand ClearComboBox { get; set; }
+
         private bool _canAddProject = false;
         public bool CanAddProject
         {
@@ -140,6 +142,170 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ObservableCollection<object> _objectsToSelect = new ObservableCollection<object>();
+        public ObservableCollection<object> ObjectsToSelect
+        {
+            get { return _objectsToSelect; }
+            set
+            {
+                _objectsToSelect = value;
+                RaisePropertyChanged(nameof(ObjectsToSelect));
+            }
+        }
+
+        private object _objectofInterest { get; set; }
+        public object ObjectofInterest
+        {
+            get { return _objectofInterest; }
+            set
+            {
+                _objectofInterest = value;
+                RaisePropertyChanged(nameof(ObjectofInterest));
+                FilterComboBox(SearchableText, ObjectofInterest, ShowActiveProjects);
+
+                //if (_objectofInterest !=null)
+                //{
+                //    CloseButtonVisible = true;
+                //    switch (_selectedIndexofSearch)
+                //    {
+                //        case (0):
+                //            {
+                //                //project managers
+                //                EmployeeModel em = (EmployeeModel)_objectofInterest;
+                //                LoadProjects();
+                //                Projects = new ObservableCollection<ProjectModel> (Projects.Where(x => x.ProjectManager.Id == em.Id).ToList());
+                //                break;
+                //            }
+                //        case (1):
+                //            {
+                //                ClientModel cm = (ClientModel)_objectofInterest;
+                //                LoadProjects();
+                //                Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.Client.Id == cm.Id).ToList());
+
+                //                break;
+                //            }
+                //        case (2):
+                //            {
+                //                MarketModel mm = (MarketModel)_objectofInterest;
+                //                LoadProjects();
+                //                Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.Market.Id == mm.Id).ToList());
+
+                //                break;
+                //            }
+                //        default:
+                //            break;
+                //    }
+                //}
+                //else
+                //{
+                //    CloseButtonVisible = false;
+                //    SearchableText = "";
+                //    //LoadProjects();
+                //}
+            }
+        }
+
+        private int _selectedIndexofSearch { get; set; }
+        public int SelectedIndexofSearch
+        {
+            get { return _selectedIndexofSearch; }
+            set
+            {
+                ObjectofInterest = null;
+                _selectedIndexofSearch = value;
+
+                switch(_selectedIndexofSearch)
+                {
+                    case (0):
+                        {
+                            ObjectsToSelect = new ObservableCollection<object>(ProjectManagers);
+                            TextSearchPath = "FullName";
+                            break;
+                        }
+                    case (1):
+                        {
+                            ObjectsToSelect = new ObservableCollection<object>(Clients);
+                            TextSearchPath = "ClientName";
+                            break;
+                        }
+                    case (2):
+                        {
+                            ObjectsToSelect = new ObservableCollection<object>(Markets);
+                            TextSearchPath = "MarketName";
+                            break;
+                        }
+                    default:
+                        break;
+                }
+
+                RaisePropertyChanged(nameof(SelectedIndexofSearch));
+            }
+        }
+        
+        private string _textSearchPath { get; set; }
+        public string TextSearchPath
+        {
+            get { return _textSearchPath; }
+            set
+            {
+                _textSearchPath = value;
+                RaisePropertyChanged(nameof(TextSearchPath));
+            }
+        }
+
+        private bool _closeButtonVisible { get; set; } = false;
+        public bool CloseButtonVisible
+        {
+            get { return _closeButtonVisible; }
+            set
+            {
+                _closeButtonVisible = value;
+                RaisePropertyChanged(nameof(CloseButtonVisible));
+            }
+        }
+
+        private bool _showActiveProjects { get; set; } = false; 
+        public bool ShowActiveProjects
+        {
+            get { return _showActiveProjects; }
+            set
+            {
+                _showActiveProjects = value;
+
+                //if (_showActiveProjects)
+                //{
+                //    Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.IsActive = _showActiveProjects).ToList());
+                //}
+                //else
+                //{
+                //    LoadProjects();
+                //}
+
+                RaisePropertyChanged(nameof(ShowActiveProjects));
+                FilterComboBox(SearchableText, ObjectofInterest, ShowActiveProjects);
+
+            }
+        }
+
+        private string _searchableText { get; set; }
+        public string SearchableText
+        {
+            get { return _searchableText; }
+            set
+            {
+                _searchableText = value;
+                RaisePropertyChanged(nameof(SearchableText));
+                FilterComboBox(SearchableText, ObjectofInterest, ShowActiveProjects);
+                //if (String.IsNullOrEmpty(_searchableText))
+                //{
+                //    LoadProjects();
+                //}
+                //else
+                //{
+                //    Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList());
+                //}
+            }
+        }
 
         public ProjectVM(EmployeeModel loggedinEmployee)
         {
@@ -154,10 +320,69 @@ namespace SOCE.Library.UI.ViewModels
             this.DeleteMarket = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.DeleteSubProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
 
+            this.ClearComboBox = new RelayCommand(this.ClearSearchableComboBox);
+
+
             LoadProjects();
             LoadClients();
             LoadMarkets();
             LoadProjectManagers();
+            SelectedIndexofSearch = 0;
+        }
+
+        private void ClearSearchableComboBox()
+        {
+            ObjectofInterest = null;
+        }
+
+        private void FilterComboBox(string searchfilter, object objectfilter, bool activefilter)
+        {
+            LoadProjects();
+            if (activefilter)
+            {
+                Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.IsActive == _showActiveProjects).ToList());
+            }
+
+            if (_objectofInterest != null)
+            {
+                CloseButtonVisible = true;
+                switch (_selectedIndexofSearch)
+                {
+                    case (0):
+                        {
+                            //project managers
+                            EmployeeModel em = (EmployeeModel)_objectofInterest;
+                            Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.ProjectManager.Id == em.Id).ToList());
+                            break;
+                        }
+                    case (1):
+                        {
+                            ClientModel cm = (ClientModel)_objectofInterest;
+                            Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.Client.Id == cm.Id).ToList());
+
+                            break;
+                        }
+                    case (2):
+                        {
+                            MarketModel mm = (MarketModel)_objectofInterest;
+                            Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.Market.Id == mm.Id).ToList());
+                            break;
+                        }
+                    default:
+                        break;
+                }
+            }
+            else
+            {
+                CloseButtonVisible = false;
+                //SearchableText = "";
+            }
+
+            if (!String.IsNullOrEmpty(searchfilter))
+            {
+                Projects = new ObservableCollection<ProjectModel>(Projects.Where(x => x.ProjectName.ToUpper().Contains(searchfilter.ToUpper()) || x.ProjectNumber.ToString().Contains(searchfilter)).ToList());
+            }
+
         }
 
         private async void ExecuteRunAddDialog(object o)
@@ -297,7 +522,7 @@ namespace SOCE.Library.UI.ViewModels
                 //submembers.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = pdb.Id, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
                 }
 
-                ProjectModel pm = new ProjectModel(pdb);
+                ProjectModel pm = new ProjectModel(pdb, IsEditable);
                 pm.SubProjects = submembers;
                 members.Add(pm);
             }

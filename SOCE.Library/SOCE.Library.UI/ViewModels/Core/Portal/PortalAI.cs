@@ -10,7 +10,51 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class PortalAI : BaseAI, IPortalAI
     {
-        public EmployeeModel LoggedInEmployee { get; set; }
+        private bool _pMVisible { get; set; }
+        public bool PMVisible
+        {
+            get
+            {
+                return _pMVisible;
+            }
+            set
+            {
+                _pMVisible = value;
+                RaisePropertyChanged(nameof(PMVisible));
+            }
+        }
+
+        private bool _adminvisible { get; set; }
+        public bool AdminVisible
+        {
+            get
+            {
+                return _adminvisible;
+            }
+            set
+            {
+                _adminvisible = value;
+                RaisePropertyChanged(nameof(AdminVisible));
+            }
+        }
+
+        private EmployeeModel _loggedInEmployee { get; set; }
+        public EmployeeModel LoggedInEmployee
+        {
+            get
+            {
+                return _loggedInEmployee;
+            }
+            set
+            {
+                _loggedInEmployee = value;
+                RaisePropertyChanged(nameof(LoggedInEmployee));
+
+                PMVisible = LoggedInEmployee.Status != AuthEnum.Standard;
+                AdminVisible = LoggedInEmployee.Status == AuthEnum.Admin;
+
+            }
+        }
 
         public ICommand GoToNewViewCommand { get; set; }
 
@@ -18,7 +62,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public PortalAI()
         {
-            CurrentPage = new HomeViewVM();
+            //LoggedInEmployee = employee;
+            //CurrentPage = new TimesheetVM(employee);
             GoToNewViewCommand = new RelayCommand<PortalPage>(GoToPage);
             GoToLoginCommand = new RelayCommand(GoToLogin);
         }
@@ -28,7 +73,7 @@ namespace SOCE.Library.UI.ViewModels
             switch (page)
             {
                 //case PortalPage.Home:
-                //    CurrentPage = new HomeViewVM(LoggedInEmployee);
+                //    CurrentPage = new EmployeeVM(LoggedInEmployee);
                 //    break;
                 case PortalPage.Employee:
                     CurrentPage = new EmployeeVM(LoggedInEmployee);

@@ -22,18 +22,18 @@
         <Label Grid.Row="1" FontSize="30" FontFamily="ComicSans" FontWeight="Bold"  Content="Login" VerticalAlignment="Center" HorizontalAlignment="Center"/>
         <StackPanel Grid.Row="2" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
             <materialDesign:PackIcon Kind="User" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-            <TextBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson" Text="{Binding LoginRequest.Email}"/>
+            <TextBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" Width="200" BorderBrush="Black" SelectionBrush="Crimson" Text="{Binding Email}"/>
         </StackPanel>
         <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Center">
             <materialDesign:PackIcon Kind="Lock" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-            <component:BindablePasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" Width="200" BorderBrush="Black" Password="{Binding LoginRequest.Password}"/>
+            <component:BindablePasswordBox Margin="6 0 0 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" Width="200" BorderBrush="Black" Password="{Binding Password}"/>
         </StackPanel>
-        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}" CommandParameter="{Binding LoginRequest}">
+        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}">
             <Button.Content>
                 <materialDesign:PackIcon Kind="Login" Width="25" Height="25" Foreground="White"/>
             </Button.Content>
         </Button>
-        <Button Grid.Row="5" Height="16" HorizontalAlignment ="Center" Margin ="0 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" FontSize="12" FontWeight="Light" Content="Forgot Password?" Foreground="SlateGray" Command="{Binding GoToNewViewCommand}" CommandParameter="ForgotPassword"/>
+        <Button Grid.Row="5" Height="16" HorizontalAlignment ="Center" Margin ="0 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" FontSize="12" FontWeight="Light" Content="Forgot Password?" Foreground="SlateGray" Command="{Binding GoToForgotPassword}" CommandParameter="ForgotPassword"/>
         <TextBlock Margin="0 50 0 10" Grid.Row="6" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding LoginMessage, NotifyOnTargetUpdated=True}">
             <TextBlock.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">

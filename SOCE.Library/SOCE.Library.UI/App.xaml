@@ -14,24 +14,24 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
-            <DataTemplate DataType="{x:Type viewmodels:EmployeeDataVM}">
+            <!--<DataTemplate DataType="{x:Type viewmodels:EmployeeDataVM}">
                 <views:EmployeeDataView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate DataType="{x:Type viewmodels:EmployeeVM}">
                 <views:EmployeeView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:HomeViewVM}">
+            <!--<DataTemplate DataType="{x:Type viewmodels:HomeViewVM}">
                 <views:HomeView/>
-            </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
+            </DataTemplate>-->
+            <!--<DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
                 <views:LicenseManagerView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate DataType="{x:Type viewmodels:ProjectDataVM}">
                 <views:ProjectDataView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
+            <!--<DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
                 <views:ResourcesView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate DataType="{x:Type viewmodels:TimesheetVM}">
                 <views:TimesheetView/>
             </DataTemplate>
@@ -46,14 +46,20 @@
             <DataTemplate DataType="{x:Type viewmodels:LoginVM}">
                 <views:LoginView/>
             </DataTemplate>
-            <DataTemplate DataType="{x:Type viewmodels:SignupVM}">
+            <!--<DataTemplate DataType="{x:Type viewmodels:SignupVM}">
                 <views:SignupView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
                 <views:ForgotPasswordView/>
             </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:CodeInsertVM}">
+                <views:CodeInsertView/>
+            </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:ProjectVM}">
                 <views:ProjectView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:ResetPasswordVM}">
+                <views:ResetPasswordView/>
             </DataTemplate>
 
             <SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>

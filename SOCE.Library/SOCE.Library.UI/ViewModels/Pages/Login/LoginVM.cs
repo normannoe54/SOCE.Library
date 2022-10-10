@@ -12,21 +12,35 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class LoginVM : BaseVM
     {
-        private AuthRequestModel _loginRequest = new AuthRequestModel();
-        public AuthRequestModel LoginRequest
+        private string _email = "";
+        public string Email
         {
             get
             {
-                return _loginRequest;
+                return _email;
             }
             set
             {
-                _loginRequest = value;
-                RaisePropertyChanged(nameof(LoginRequest));
+                _email = value;
+                RaisePropertyChanged(nameof(Email));
             }
         }
 
-        public ICommand GoToNewViewCommand { get; set; }
+        private string _password = "";
+        public string Password
+        {
+            get
+            {
+                return _password;
+            }
+            set
+            {
+                _password = value;
+                RaisePropertyChanged(nameof(Password));
+            }
+        }
+
+        public ICommand GoToForgotPassword { get; set; }
 
         public ICommand LoginCommand { get; set; }
 
@@ -48,21 +62,21 @@ namespace SOCE.Library.UI.ViewModels
         {
             //LoginRequest.Password = "pass123";
             //LoginMessage = "";
-            this.GoToNewViewCommand = new RelayCommand<LoginPage>(GoToViewCommand.GoToPageWrapper);
-            this.LoginCommand = new RelayCommand<AuthRequestModel>(LoginCom);
+            this.GoToForgotPassword = new RelayCommand(IoCLogin.Application.ForgotPassword);
+            this.LoginCommand = new RelayCommand(LoginCom);
         }
 
         /// <summary>
         /// Login command
         /// </summary>
         /// <param name="loginrequest"></param>
-        public void LoginCom(AuthRequestModel loginrequest)
+        public void LoginCom()
         {
             
             //IoCCore.Application.CurrentPage = IoCPortal.Application as BaseAI;
 
             //check email
-            string emailcheck = loginrequest.Email.Substring(loginrequest.Email.LastIndexOf('@') + 1);
+            string emailcheck = Email.Substring(Email.LastIndexOf('@') + 1);
 
             if (emailcheck != "shirkodonovan.com")
             {
@@ -71,55 +85,20 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             //tbd
-            EmployeeDbModel em = SQLAccess.LoadEmployeeById(3);
+            EmployeeDbModel em = SQLAccess.LoadEmployeeByUserandPassword(Email,Password);
 
-
-            EmployeeModel employee = new EmployeeModel(em);
-            CoreAI globalwindow = (CoreAI)IoCCore.Application;
-            globalwindow.WindowType = WindowState.Maximized;
-            globalwindow.GoToPortal(employee);
-
-            //AuthenticateRequest convertedinput = loginrequest.ConvertAPIModel();
-
-            ////serialized input
-            //string sinput = JsonSerializer.Serialize(convertedinput);
-
-            //Task<HttpResponseMessage> loginresponse = APIHelper.ApiCall("Accounts/authenticate", HttpMethod.Post, sinput);
-
-            //try
-            //{
-            //    HttpResponseMessage response = loginresponse.Result;
-
-            //    if (response.StatusCode == System.Net.HttpStatusCode.OK)
-            //    {
-            //        AuthenticateResponse authresp = response.Content.ReadAsAsync<AuthenticateResponse>().Result;
-
-            //        if (authresp.IsVerified)
-            //        {
-            //            //User is authenticated
-
-
-            //            //close login window
-            //            Application.Current.MainWindow.Close();
-            //        }
-            //        else
-            //        {
-            //            LoginMessage = $"The account was registered {Environment.NewLine} but never verified";
-            //            //Resend verification email?
-            //        }
-            //    }
-            //    else
-            //    {
-            //        LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
-            //    }
-            //}
-            //catch
-            //{
-            //    LoginRequest.Email = "";
-            //    LoginRequest.Password = "";
-
-            //    LoginMessage = $"Review username and password {Environment.NewLine} account was not found";
-            //}
+            if (em != null)
+            {
+                EmployeeModel employee = new EmployeeModel(em);
+                CoreAI globalwindow = (CoreAI)IoCCore.Application;
+                globalwindow.WindowType = WindowState.Maximized;
+                globalwindow.GoToPortal(employee);
+            }
+            else
+            {
+                LoginMessage = $"Could not find username or password,{Environment.NewLine}please try again";
+                return;
+            }
 
         }
     }

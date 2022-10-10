@@ -69,4 +69,33 @@ namespace SOCE.Library.UI
             }
         }
     }
+
+    //public class RelayCommandWithReturn<T> : ICommand
+    //{
+    //    /// <summary>
+    //    /// The action to run
+    //    /// </summary>
+    //    private Action<T> mAction;
+
+    //    /// <summary>
+    //    /// The event fired when <see cref="CanExecute(object)"/> value is changed
+    //    /// </summary>
+    //    public event EventHandler CanExecuteChanged = (sender, e) => { };
+
+    //    public RelayCommandWithReturn(Func<object> action)
+    //    {
+    //        mAction = action;
+    //    }
+
+    //    public bool CanExecute(object parameter)
+    //    {
+    //        // A relay command can always execute
+    //        return true;
+    //    }
+
+    //    public object Execute(object parameter)
+    //    {
+    //        mAction((T)parameter);
+    //    }
+    //}
 }

@@ -60,7 +60,13 @@
                                 <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
-
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
+                            <StackPanel Orientation="Horizontal">
+                                <materialDesign:PackIcon Kind="Home" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
+                            </StackPanel>
+                        </Button>-->
+                        
                         <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ClipboardTextPlayOutline" Style="{StaticResource menuButtonIcon}"/>
@@ -95,24 +101,23 @@
                             </StackPanel>
                         </Button>
 
+                        <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                        <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible}"/>
-
-                        <Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible}">
+                        <Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ChartBellCurve" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Project Data" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>
 
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding PrincVisible}">
+                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding PrincVisible}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Dollar" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Invoicing" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
-                        </Button>
+                        </Button>-->
 
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding AdminVisible}">
+                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Magnify" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>

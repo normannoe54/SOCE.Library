@@ -76,6 +76,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _temporaryPassInp;
+        public string TemporaryPassInp
+        {
+            get { return _titleInp; }
+            set
+            {
+                _temporaryPassInp = value;
+                RaisePropertyChanged("TemporaryPassInp");
+            }
+        }
+
         private double _billableRate;
         public double BillableRate
         {
@@ -153,6 +164,7 @@ namespace SOCE.Library.UI.ViewModels
                 Rate = BillableRate,
                 PTOHours = YearlyPTO,
                 SickHours = SickLeave,
+                Password = TemporaryPassInp,
                 HolidayHours = HolidayHours};
 
             SQLAccess.AddEmployee(employee);

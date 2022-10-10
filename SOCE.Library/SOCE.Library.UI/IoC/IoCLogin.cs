@@ -10,7 +10,7 @@ namespace SOCE.Library.UI
     public static class IoCLogin
     {
         public static WindsorContainer Container { get; set; }
-        public static ILoginAI Application { get; set; }
+        public static ILoginAI Application { get; set; } 
         static IoCLogin()
         {
             Container = new WindsorContainer();

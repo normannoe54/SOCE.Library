@@ -118,6 +118,24 @@ namespace SOCE.Library.Db
             }
         }
 
+        public static EmployeeDbModel LoadEmployeeByUserandPassword(string email, string password)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Email = @email AND Password = @password", new { email, password });
+                return output.FirstOrDefault();
+            }
+        }
+
+        public static EmployeeDbModel LoadEmployeeByUser(string email)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Email = @email", new { email});
+                return output.FirstOrDefault();
+            }
+        }
+
         public static EmployeeDbModel LoadEmployeeById(int employeeId)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
@@ -163,6 +181,15 @@ namespace SOCE.Library.Db
             {
                 cnn.Execute("UPDATE Employees SET FirstName = @FirstName, LastName = @LastName, Title = @Title, AuthId = @AuthId, Email = @Email, PhoneNumber = @PhoneNumber, Extension = @Extension, Rate = @Rate, PTOHours = @PTOHours, HolidayHours = @HolidayHours, SickHours = @SickHours WHERE Id = @Id",
                         new { employee.FirstName, employee.LastName, employee.Title, employee.AuthId, employee.Email, employee.PhoneNumber, employee.Extension, employee.Rate,employee.PTOHours, employee.HolidayHours, employee.SickHours, employee.Id, });
+            }
+        }
+
+        public static void UpdatePassword(EmployeeDbModel employee)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("UPDATE Employees SET Password = @Password WHERE Id = @Id",new { employee.Password, employee.Id });
             }
         }
         #endregion

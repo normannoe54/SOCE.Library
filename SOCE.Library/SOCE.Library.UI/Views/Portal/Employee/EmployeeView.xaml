@@ -35,7 +35,7 @@
         <ItemsControl ItemsSource="{Binding Employees}" HorizontalAlignment="Stretch" Grid.Row="3" Margin="5 20 5 5">
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Expander Background="Transparent" IsEnabled="{Binding EnabledforView}">
+                    <Expander Background="Transparent" IsExpanded="{Binding CanExpand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <Expander.Header>
                             <Grid Margin="0 5 0 0">
                                 <Grid.ColumnDefinitions>

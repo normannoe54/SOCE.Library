@@ -85,9 +85,10 @@
                                       IsChecked="{Binding UnLockedSubs, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Unlocked}" />
                         <ComboBox materialDesign:HintAssist.Hint="Phase"  
-                                                    Width="150"
+                                                  MinWidth="150"
+                                                  MaxWidth="350"
                                                   Margin="10 0 0 0"
-                                                   FontSize="16"
+                                                  FontSize="16"
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Stretch"
                                                   Foreground="Black"
@@ -109,7 +110,7 @@
                         </ComboBox>
                     </StackPanel>
 
-                    <ComboBox Grid.Column="2" materialDesign:HintAssist.Hint="Time Span"  
+                    <!--<ComboBox Grid.Column="2" materialDesign:HintAssist.Hint="Time Span"  
                       VerticalAlignment="Bottom"
                       DisplayMemberPath="Description" 
                       SelectedValuePath="Value"
@@ -122,7 +123,7 @@
                       SelectedValue="{Binding SelectedTimeSpan, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       ItemsSource="{Binding Source={local:Enumeration {x:Type local:TimeOptionEnum}}}"
                       MaxDropDownHeight="250">
-                    </ComboBox>
+                    </ComboBox>-->
 
                 </Grid>
 

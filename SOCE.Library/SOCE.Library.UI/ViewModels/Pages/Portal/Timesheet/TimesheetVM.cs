@@ -53,7 +53,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _rowdata = value;
-                SumTable();
+                //SumTable();
                 //CollectDates();
                 RaisePropertyChanged(nameof(Rowdata));
             }
@@ -78,6 +78,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _isSubEditable = value;
                 RaisePropertyChanged(nameof(IsSubEditable));
+            }
+        }
+
+        private double _total;
+        public double Total
+        {
+            get { return _total; }
+            set
+            {
+                _total = value;
+                RaisePropertyChanged(nameof(Total));
             }
         }
 
@@ -172,11 +183,45 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private int _dueDateValue = 0;
+        public int DueDateValue
+        {
+            get { return _dueDateValue; }
+            set
+            {
+                _dueDateValue = value;
+                RaisePropertyChanged(nameof(DueDateValue));
+            }
+        }
+
+        private double _percentComplete = 0;
+        public double PercentComplete
+        {
+            get { return _percentComplete; }
+            set
+            {
+                _percentComplete = value;
+                RaisePropertyChanged(nameof(PercentComplete));
+            }
+        }
+
+        private double _expectedProgress = 0;
+        public double ExpectedProgress
+        {
+            get { return _expectedProgress; }
+            set
+            {
+                _expectedProgress = value;
+                RaisePropertyChanged(nameof(ExpectedProgress));
+            }
+        }
+
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
         public TimesheetVM(EmployeeModel loggedinEmployee)
         {
             CurrentEmployee = loggedinEmployee;
+            Rowdata.CollectionChanged += this.RowDataChanged;
             //get timesheet data from database
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
             LoadProjects();
@@ -217,7 +262,7 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void SumTable()
         {
-            if (Rowdata.Count > 1)
+            if (Rowdata.Count > 0)
             {
                 TotalHeader.Clear();
                 int numofentries = Rowdata[0].Entries.Count();
@@ -228,11 +273,19 @@ namespace SOCE.Library.UI.ViewModels
 
                     foreach (TimesheetRowModel trm in Rowdata)
                     {
-                        total = trm.Entries[i].TimeEntry;
+                        total += trm.Entries[i].TimeEntry;
                     }
 
                     TotalHeader.Add(new DoubleWrapper(total));
+
+                    //Last one
+                    //if (i == numofentries-1)
+                    //{
+                    //    PercentComplete = (total / BaseHours) * 100;
+                    //}
                 }
+                Total = TotalHeader.Sum(x => x.Value);
+                PercentComplete = Math.Min(Math.Round(Total / BaseHours * 100, 2), 100);
             }
         }
 
@@ -319,8 +372,6 @@ namespace SOCE.Library.UI.ViewModels
             //update employee Id
             List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, CurrentEmployee.Id);
 
-            ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
-
             var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
 
             foreach (var item in groupedlist)
@@ -361,10 +412,8 @@ namespace SOCE.Library.UI.ViewModels
                     dateinc = dateinc.AddDays(1);
                 }
                 trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
-                members.Add(trm);
+                Rowdata.Add(trm);
             }
-
-            Rowdata = members;
 
             foreach (TimesheetRowModel trm in Rowdata)
             {
@@ -547,7 +596,7 @@ namespace SOCE.Library.UI.ViewModels
             //update employee Id
             List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, CurrentEmployee.Id);
 
-            ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
+            //ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
 
             var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
 
@@ -571,29 +620,19 @@ namespace SOCE.Library.UI.ViewModels
 
                 trm.SelectedSubproject = subpmnew;
 
-                trm.Entries = BlankEntry;
-                //foreach (TimesheetRowDbModel trdm in item)
-                //{
-                //    DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                //    trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = 0 });
-                //}
+                ObservableCollection<TREntryModel> blanks = new ObservableCollection<TREntryModel>();
 
-                //DateTime dateinc = datestart;
+                foreach(TREntryModel trentry in BlankEntry)
+                {
+                    blanks.Add((TREntryModel)trentry.Clone());
+                }
 
-                //while (dateinc <= dateend)
-                //{
-                //    if (!trm.Entries.Any(x => x.Date == dateinc))
-                //    {
-                //        //add
-                //        trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0 });
-                //    }
-                //    dateinc = dateinc.AddDays(1);
-                //}
-                //trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
-                members.Add(trm);
+                trm.Entries = blanks;
+
+                Rowdata.Add(trm);
             }
 
-            Rowdata = members;
+            //Rowdata = members;
 
             foreach (TimesheetRowModel trm in Rowdata)
             {
@@ -623,6 +662,7 @@ namespace SOCE.Library.UI.ViewModels
             int diff = (lastdate - firstdate).Days;
             List<DateWrapper> dates = new List<DateWrapper>();
             int workdays = 0;
+
             for (int i = 0; i <= diff; i++)
             {
                 DateTime dt = firstdate.AddDays(i);
@@ -638,8 +678,52 @@ namespace SOCE.Library.UI.ViewModels
             DateSummary = new ObservableCollection<DateWrapper>(dates);
             MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
-            BaseHours = workdays * 9;
+            BaseHours = workdays * 9;   
             DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
+            DateTime enddate = DateSummary.Last().Value;
+            int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays,0));
+            DueDateValue = difference;
+            ExpectedProgress = Math.Round((Convert.ToDouble(DueDateValue) / Convert.ToDouble(diff))*100,2);
+
+        }
+
+        private void RowDataChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (INotifyPropertyChanged added in e?.NewItems)
+                {
+                    TimesheetRowModel trm = (TimesheetRowModel)added;
+
+                    foreach (TREntryModel trentry in trm.Entries)
+                    {
+                        trentry.PropertyChanged += ItemModificationOnPropertyChanged;
+                    }
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (INotifyPropertyChanged added in e?.OldItems)
+                {
+                    TimesheetRowModel trm = (TimesheetRowModel)added;
+
+                    foreach (TREntryModel trentry in trm.Entries)
+                    {
+                        trentry.PropertyChanged -= ItemModificationOnPropertyChanged;
+                    }
+                }
+            }
+        }
+
+        private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            SumTable();
+
+            foreach (TimesheetRowModel trm in Rowdata)
+            {
+                trm.Total = trm.Entries.Sum(x => x.TimeEntry);
+            }
         }
     }
 }
