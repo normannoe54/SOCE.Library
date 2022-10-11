@@ -7,7 +7,8 @@
              xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-    <Grid Grid.Column="1" Margin="30 20 20 20">
+    
+    <Grid Grid.Column="1" Margin="30 10 20 20">
         <Grid.Resources>
             <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
         </Grid.Resources>
@@ -19,7 +20,7 @@
 
         <!--Page Title-->
         <StackPanel Orientation="Horizontal" Grid.Row="0">
-            <TextBlock Text="Project Data" FontSize="32" FontWeight="SemiBold" Margin="0 20 0 0" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
+            <TextBlock Text="Project Data" FontSize="32" FontWeight="SemiBold"  Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
 
             <ComboBox materialDesign:HintAssist.Hint="Search"  
                       Width="200"

@@ -72,26 +72,27 @@ namespace SOCE.Library.UI.ViewModels
         /// <param name="loginrequest"></param>
         public void LoginCom()
         {
-            
+
             //IoCCore.Application.CurrentPage = IoCPortal.Application as BaseAI;
 
             //check email
-            string emailcheck = Email.Substring(Email.LastIndexOf('@') + 1);
+            //string emailcheck = Email.Substring(Email.LastIndexOf('@') + 1);
 
-            if (emailcheck != "shirkodonovan.com")
-            {
-                LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
-                return;
-            }
+            //if (emailcheck != "shirkodonovan.com")
+            //{
+            //    LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
+            //    return;
+            //}
+
+            string emailinput = Email + "@shirkodonovan.com";
 
             //tbd
-            EmployeeDbModel em = SQLAccess.LoadEmployeeByUserandPassword(Email,Password);
+            EmployeeDbModel em = SQLAccess.LoadEmployeeByUserandPassword(emailinput, Password);
 
             if (em != null)
             {
                 EmployeeModel employee = new EmployeeModel(em);
                 CoreAI globalwindow = (CoreAI)IoCCore.Application;
-                globalwindow.WindowType = WindowState.Maximized;
                 globalwindow.GoToPortal(employee);
             }
             else

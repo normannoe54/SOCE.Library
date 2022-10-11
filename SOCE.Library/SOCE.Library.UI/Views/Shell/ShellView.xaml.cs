@@ -20,6 +20,7 @@ namespace SOCE.Library.UI.Views
         public ShellView()
         {
             InitializeComponent();
+            this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             this.DataContext = IoCCore.Application;
             this.MouseDown += Window_MouseDown;
         }

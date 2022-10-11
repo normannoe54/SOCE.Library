@@ -134,7 +134,16 @@
                     </Button>
                 </Grid>
             </Border>
-            <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <Grid Grid.Column="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"  Foreground="{StaticResource SOCELightRed}" Text="SOCE PORTAL" FontWeight="Bold" FontSize="32" HorizontalAlignment="Center"/>
+                <TextBlock Grid.Row="1"  Foreground="Gray" Text="{Binding WelcomeMessage}" FontWeight="Bold" FontSize="20" FontStyle="Italic" HorizontalAlignment="Center"/>
+                <ContentControl Grid.Row="2" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            </Grid>
         </Grid>
     </Border>
 

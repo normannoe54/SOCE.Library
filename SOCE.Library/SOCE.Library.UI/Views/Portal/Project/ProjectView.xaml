@@ -8,7 +8,7 @@
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" x:Name="MainWindow">
-    <Grid Grid.Column="1" Margin="30 40 20 20">
+    <Grid Grid.Column="1" Margin="30 10 20 20">
         <Grid.Resources>
             <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
         </Grid.Resources>
@@ -244,14 +244,15 @@
                                 <Expander.Header>
                                     <Grid Margin="0 5 0 0">
                                         <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="200"/>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="125"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="75"/>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="50"/>
                                             <ColumnDefinition Width="*"/>
                                         </Grid.ColumnDefinitions>
 
@@ -324,7 +325,7 @@
 
                                         <TextBox Grid.Column="6"
                                                  materialDesign:TextFieldAssist.PrefixText="%"
-                                                 Margin="20 0 0 0" 
+                                                 Margin="10 0 0 0" 
                                                  IsReadOnly="{Binding EditFieldState}" 
                                                  HorizontalAlignment="Center" 
                                                  Text="{Binding PercentComplete}" 
@@ -337,7 +338,7 @@
                                         <TextBox Grid.Column="7"
                                                  MinWidth="100"
                                                  materialDesign:TextFieldAssist.PrefixText="$"
-                                                 Margin="30 0 0 0" 
+                                                 Margin="20 0 0 0" 
                                                  Visibility="{Binding Path=DataContext.IsEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}},Converter={StaticResource BooleanToVisibilityConverter}}"
                                                  IsReadOnly="{Binding EditFieldState}" 
                                                  HorizontalAlignment="Center" 
@@ -347,10 +348,19 @@
                                                  FontSize="16" 
                                                  FontWeight="Regular" 
                                                  VerticalAlignment="Center"/>
+                                        
+                                        <CheckBox Grid.Column="8"
+                                                  materialDesign:TextFieldAssist.PrefixText="$"
+                                                  IsEnabled="{Binding ComboFieldState}"
+                                                  Visibility="{Binding Path=DataContext.IsEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}},Converter={StaticResource BooleanToVisibilityConverter}}"
+                                                  Style="{StaticResource MaterialDesignCheckBox}" 
+                                                  IsChecked="{Binding IsActive}"
+                                                  HorizontalAlignment="Center" 
+                                                  Background="DarkGray" />
 
 
                                         <!--#region Folder Buttons-->
-                                        <Grid Grid.Column="8" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                        <Grid Grid.Column="9" HorizontalAlignment="Right" VerticalAlignment="Center">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*"/>
                                                 <ColumnDefinition Width="*"/>
@@ -573,7 +583,6 @@
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="100"/>
-                                                <ColumnDefinition Width="100"/>
                                                 <ColumnDefinition Width="75"/>
                                                 <ColumnDefinition Width="75"/>
                                             </Grid.ColumnDefinitions>
@@ -581,10 +590,9 @@
                                             <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Description" />
                                             <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Fee" />
                                             <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Budget"/>
-                                            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Est. Fee"/>
-                                            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Complete"/>
-                                            <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Active?"/>
-                                            <TextBlock Grid.Column="8" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced?"/>
+                                            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Complete"/>
+                                            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Active?"/>
+                                            <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced?"/>
 
 
                                             <!--<TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Live"/>
@@ -602,7 +610,6 @@
                                                                     <ColumnDefinition Width="50"/>
                                                                     <ColumnDefinition Width="75"/>
                                                                     <ColumnDefinition Width="250"/>
-                                                                    <ColumnDefinition Width="100"/>
                                                                     <ColumnDefinition Width="100"/>
                                                                     <ColumnDefinition Width="100"/>
                                                                     <ColumnDefinition Width="100"/>
@@ -627,14 +634,13 @@
                                                                     </ToggleButton>
                                                                 </StackPanel>
                                                                 <!--#endregion-->
-                                                                <TextBox Grid.Column="1" IsReadOnly="{Binding EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PointNumber}"/>
-                                                                <TextBox Grid.Column="2" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Description}" />
-                                                                <TextBox Grid.Column="3" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Fee}" materialDesign:TextFieldAssist.PrefixText="$"/>
-                                                                <TextBox Grid.Column="4" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentBudget}" materialDesign:TextFieldAssist.PrefixText="%"/>
-                                                                <TextBox Grid.Column="5" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding EstimatedFee}" materialDesign:TextFieldAssist.PrefixText="$"/>
-                                                                <TextBox Grid.Column="6" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete}" materialDesign:TextFieldAssist.PrefixText="%"/>
-                                                                <CheckBox Grid.Column="7" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive}" HorizontalAlignment="Center" Background="DarkGray" />
-                                                                <CheckBox Grid.Column="8" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced}" HorizontalAlignment="Center" Background="DarkGray"/>
+                                                                <TextBox Grid.Column="1" IsReadOnly="{Binding EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PointNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                                                <TextBox Grid.Column="2" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                                                <TextBox Grid.Column="3" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.PrefixText="$"/>
+                                                                <TextBox Grid.Column="4" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.PrefixText="%"/>
+                                                                <TextBox Grid.Column="5" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.PrefixText="%"/>
+                                                                <CheckBox Grid.Column="6" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray" />
+                                                                <CheckBox Grid.Column="7" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
                                                             </Grid>
                                                         </Border>
                                                     </DataTemplate>

@@ -11,7 +11,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class CoreAI : BaseVM, ICoreAI
     {
-        private WindowState _windowType { get; set; }
+        private WindowState _windowType { get; set; } = WindowState.Normal;
         public WindowState WindowType
         {
             get
@@ -53,42 +53,25 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private string _maxorRestoreTooltip;
-
-        public string MaxorRestoreTooltip
-        {
-            get
-            {
-                return _maxorRestoreTooltip;
-            }
-            set
-            {
-                _maxorRestoreTooltip = value;
-                RaisePropertyChanged(nameof(MaxorRestoreTooltip));
-            }
-        }
-
         public ICommand CloseCommand { get; set; }
-
-        public ICommand MaximizeWindowCommand { get; set; }
         public ICommand MinusCommand { get; set; }
 
         public CoreAI()
         {
+            GoToLogin();
             CurrentPage = IoCLogin.Application as BaseAI;
             LoginAI login = (LoginAI)CurrentPage;
             login.GoToLogin();
 
             CloseCommand = new RelayCommand(CloseWindow);
-            MaximizeWindowCommand = new RelayCommand(MaximizeWindowCom);
             MinusCommand = new RelayCommand(MinusWindow);
-            DetermineIcon();
         }
 
 
         public void GoToLogin()
         {
             CurrentPage = IoCLogin.Application as BaseAI;
+
             WindowType = WindowState.Normal;
         }
 
@@ -98,6 +81,7 @@ namespace SOCE.Library.UI.ViewModels
             PortalAI portAI = (PortalAI)CurrentPage;
             portAI.LoggedInEmployee = employee;
             portAI.CurrentPage = new TimesheetVM(employee);
+
             WindowType = WindowState.Maximized;
         }
 
@@ -106,37 +90,9 @@ namespace SOCE.Library.UI.ViewModels
             Application.Current.MainWindow.Close();
         }
 
-        public void MaximizeWindowCom()
-        {
-            if (WindowType == WindowState.Maximized)
-            {
-                WindowType = WindowState.Normal;
-            }
-            else
-            {
-                WindowType = WindowState.Maximized;
-            }
-
-            DetermineIcon();
-        }
-
         public void MinusWindow()
         {
             WindowType = WindowState.Minimized;
-        }
-
-        private void DetermineIcon()
-        {
-            if (WindowType == WindowState.Maximized)
-            {
-                MaxorRestoreTooltip = "Restore";
-                WindowButton = PackIconKind.WindowRestore;
-            }
-            else
-            {
-                MaxorRestoreTooltip = "Maximize";
-                WindowButton = PackIconKind.WindowMaximize;
-            }
         }
     }
 }

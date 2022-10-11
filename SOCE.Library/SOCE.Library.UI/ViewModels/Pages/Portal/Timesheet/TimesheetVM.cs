@@ -287,6 +287,18 @@ namespace SOCE.Library.UI.ViewModels
                 Total = TotalHeader.Sum(x => x.Value);
                 PercentComplete = Math.Min(Math.Round(Total / BaseHours * 100, 2), 100);
             }
+            else
+            {
+                //make 0s
+                TotalHeader.Clear();
+                foreach(DateWrapper date in DateSummary)
+                {
+                    TotalHeader.Add(new DoubleWrapper(0));
+                }
+
+                PercentComplete = 0;
+                Total = 0;
+            }
         }
 
         /// <summary>
@@ -316,7 +328,7 @@ namespace SOCE.Library.UI.ViewModels
             foreach (ProjectDbModel pdb in dbprojects)
             {
                 ProjectModel pm = new ProjectModel(pdb);
-                if (pm.SubProjects.Count > 0)
+                if (pm.SubProjects.Count > 0 && pm.IsActive)
                 {
                     members.Add(pm);
                 }
@@ -366,6 +378,7 @@ namespace SOCE.Library.UI.ViewModels
         private void LoadTimesheetData()
         {
             CopiedTimesheetData.Clear();
+            Rowdata.Clear();
             DateTime datestart = DateSummary.First().Value;
             DateTime dateend = DateSummary.Last().Value;
 
@@ -419,7 +432,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
             }
-
+            SumTable();
         }
 
         private void SubmitTimesheet()
@@ -479,15 +492,14 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void SaveCommand(int submit)
         {
-            //need to include employee Id in here
-
+           
             //adding and modifying
             foreach (TimesheetRowModel trm in Rowdata)
             {
                 //adding or modifying an existing submission
                 foreach (TREntryModel trentry in trm.Entries)
                 {
-                    if (trentry.TimeEntry > 0)
+                    if (trentry.TimeEntry > 0 && trm.SelectedSubproject != null)
                     {
                         TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
                         {
@@ -508,41 +520,44 @@ namespace SOCE.Library.UI.ViewModels
             //deleting
             foreach (TimesheetRowModel ctrm in CopiedTimesheetData)
             {
-                int index = Rowdata.ToList().FindIndex(x => x.SelectedSubproject.Id == ctrm.SelectedSubproject.Id);
-
-                //it exists
-                if (index != -1)
+                if (ctrm.SelectedSubproject != null)
                 {
-                    TimesheetRowModel trmfound = Rowdata[index];
+                    int index = Rowdata.ToList().FindIndex(x => x.SelectedSubproject.Id == ctrm.SelectedSubproject.Id);
 
-                    foreach (TREntryModel trentry in ctrm.Entries)
+                    //it exists
+                    if (index != -1)
                     {
-                        //think about this expression
-                        if (!trmfound.Entries.Any(x => x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
+                        TimesheetRowModel trmfound = Rowdata[index];
+
+                        foreach (TREntryModel trentry in ctrm.Entries)
+                        {
+                            //think about this expression
+                            if (!trmfound.Entries.Any(x => x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
+                            {
+                                if (trentry.TimeEntry > 0)
+                                {
+                                    //delete
+                                    TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(CurrentEmployee.Id, ctrm.SelectedSubproject.Id, trentry.Date);
+                                    SQLAccess.DeleteTimesheetData(trdbm.Id);
+                                }
+                            }
+                        }
+
+                    }
+                    else
+                    {
+                        //delete all
+                        foreach (TREntryModel trentry in ctrm.Entries)
                         {
                             if (trentry.TimeEntry > 0)
                             {
-                                //delete
-                                TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(1, ctrm.SelectedSubproject.Id, trentry.Date);
+                                TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(CurrentEmployee.Id, ctrm.SelectedSubproject.Id, trentry.Date);
                                 SQLAccess.DeleteTimesheetData(trdbm.Id);
                             }
+
                         }
                     }
-
-                }
-                else
-                {
-                    //delete all
-                    foreach (TREntryModel trentry in ctrm.Entries)
-                    {
-                        if (trentry.TimeEntry > 0)
-                        {
-                            TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(1, ctrm.SelectedSubproject.Id, trentry.Date);
-                            SQLAccess.DeleteTimesheetData(trdbm.Id);
-                        }
-
-                    }
-                }
+                } 
             }
 
             CopiedTimesheetData = Rowdata.ToList();
@@ -683,7 +698,7 @@ namespace SOCE.Library.UI.ViewModels
             DateTime enddate = DateSummary.Last().Value;
             int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays,0));
             DueDateValue = difference;
-            ExpectedProgress = Math.Round((Convert.ToDouble(DueDateValue) / Convert.ToDouble(diff))*100,2);
+            ExpectedProgress = 100-Math.Min(Math.Round((Convert.ToDouble(DueDateValue) / Convert.ToDouble(diff))*100,2),100);
 
         }
 

@@ -212,6 +212,13 @@ namespace SOCE.Library.UI.ViewModels
 
             int id = SQLAccess.AddProject(project);
 
+            double count = 0;
+
+            count += CDPhase ? 1 : 0;
+            count += CAPhase ? 1 : 0;
+            count += PPhase ? 1 : 0;
+
+
             if (CDPhase && id !=0)
             {
                 SubProjectDbModel cdproj = new SubProjectDbModel
@@ -219,11 +226,11 @@ namespace SOCE.Library.UI.ViewModels
                     ProjectId = id,
                     PointNumber = "CD",
                     Description = "Construction Document Phase",
-                    Fee = 0,
+                    Fee = (1/count) * TotalFeeInp,
                     IsActive = 1,
                     IsInvoiced = 0,
                     PercentComplete = 0,
-                    PercentBudget = 0,
+                    PercentBudget = (1 / count)*100,
                 };
                 SQLAccess.AddSubProject(cdproj);
             }
@@ -235,11 +242,11 @@ namespace SOCE.Library.UI.ViewModels
                     ProjectId = id,
                     PointNumber = "CA",
                     Description = "Construction Administration Phase",
-                    Fee = 0,
+                    Fee = (1 / count) * TotalFeeInp,
                     IsActive = 1,
                     IsInvoiced = 0,
                     PercentComplete = 0,
-                    PercentBudget = 0,
+                    PercentBudget = (1 / count) * 100,
                 };
                 SQLAccess.AddSubProject(caproj);
             }
@@ -251,11 +258,11 @@ namespace SOCE.Library.UI.ViewModels
                     ProjectId = id,
                     PointNumber = "Pre",
                     Description = "Preposal Phase",
-                    Fee = 0,
+                    Fee = (1 / count) * TotalFeeInp,
                     IsActive = 1,
                     IsInvoiced = 0,
                     PercentComplete = 0,
-                    PercentBudget = 0,
+                    PercentBudget = (1 / count) * 100,
                 };
                 SQLAccess.AddSubProject(pproj);
             }

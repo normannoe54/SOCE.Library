@@ -7,7 +7,7 @@
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-    <Grid Grid.Column="1" Margin="30 20 20 20">
+    <Grid Grid.Column="1" Margin="30 10 20 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
 
         <!--Page Title-->
-        <TextBlock Text="Timesheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Margin="0 20 0 0" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
+        <TextBlock Text="Timesheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
 
         <!--Seprator-->
         <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>

@@ -49,10 +49,24 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _loggedInEmployee = value;
                 RaisePropertyChanged(nameof(LoggedInEmployee));
-
+                WelcomeMessage = "Welcome " + _loggedInEmployee.FullName;
                 PMVisible = LoggedInEmployee.Status != AuthEnum.Standard;
                 AdminVisible = LoggedInEmployee.Status == AuthEnum.Admin;
 
+            }
+        }
+
+        private string _welcomeMessage { get; set; }
+        public string WelcomeMessage
+        {
+            get
+            {
+                return _welcomeMessage;
+            }
+            set
+            {
+                _welcomeMessage = value;
+                RaisePropertyChanged(nameof(WelcomeMessage));
             }
         }
 
@@ -98,7 +112,10 @@ namespace SOCE.Library.UI.ViewModels
 
         public void GoToLogin()
         {
-            IoCCore.Application.CurrentPage = IoCLogin.Application as BaseAI;          
+            CoreAI globalwindow = (CoreAI)IoCCore.Application;
+            globalwindow.GoToLogin();
+
+            //IoCCore.Application.CurrentPage = IoCLogin.Application as BaseAI;          
         }
     }
 }

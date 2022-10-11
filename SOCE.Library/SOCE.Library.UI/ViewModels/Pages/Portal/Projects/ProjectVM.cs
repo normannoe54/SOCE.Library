@@ -512,19 +512,12 @@ namespace SOCE.Library.UI.ViewModels
 
             foreach (ProjectDbModel pdb in dbprojects)
             {
-                List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(pdb.Id);
-
-                ObservableCollection<SubProjectModel> submembers = new ObservableCollection<SubProjectModel>();
-
-                foreach (SubProjectDbModel sdb in subdbprojects)
+                if (pdb.ProjectName != "PTO" && pdb.ProjectName != "ADMIN" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
                 {
-                    submembers.Add(new SubProjectModel(sdb));
-                //submembers.Add(new SubProjectModel() { Id = sdb.Id, ProjectNumber = pdb.Id, PointNumber = sdb.PointNumber, Description = sdb.Description, Fee = sdb.Fee });
-                }
-
-                ProjectModel pm = new ProjectModel(pdb, IsEditable);
-                pm.SubProjects = submembers;
-                members.Add(pm);
+                    ProjectModel pm = new ProjectModel(pdb, IsEditable);
+                    //pm.SubProjects = submembers;
+                    members.Add(pm);
+                }  
             }
 
             Projects = members;

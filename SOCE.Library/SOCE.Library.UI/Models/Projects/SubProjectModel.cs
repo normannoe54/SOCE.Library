@@ -74,24 +74,43 @@ namespace SOCE.Library.UI
             set
             {
                 _percentBudget = value;
-                EstimatedFee = PercentBudget * Fee * 0.01;
                 RaisePropertyChanged(nameof(PercentBudget));
+                UpdateFee();
             }
         }
+        private bool onstartup = true;
+        private bool canupdatepercentbudget = false;
+        private bool canupdatefee = false;
 
-        private double _estimatedFee { get; set; }
-        public double EstimatedFee
+
+        private double _totalFee;
+        public double TotalFee
         {
             get
             {
-                return _estimatedFee;
+                return _totalFee;
             }
             set
             {
-                _estimatedFee = value;
-                RaisePropertyChanged(nameof(EstimatedFee));
+                _totalFee = value;
+                PercentBudget = Math.Round(Fee / TotalFee * 100, 2);
+                RaisePropertyChanged(nameof(TotalFee));
             }
         }
+
+        //private double _estimatedFee { get; set; }
+        //public double EstimatedFee
+        //{
+        //    get
+        //    {
+        //        return _estimatedFee;
+        //    }
+        //    set
+        //    {
+        //        _estimatedFee = value;
+        //        RaisePropertyChanged(nameof(EstimatedFee));
+        //    }
+        //}
 
         private double _percentComplete { get; set; }
         public double PercentComplete
@@ -144,9 +163,9 @@ namespace SOCE.Library.UI
             }
             set
             {
-                _fee = value;
-                EstimatedFee = PercentBudget * Fee * 0.01;
+                _fee = value;  
                 RaisePropertyChanged(nameof(Fee));
+                UpdatePercentBudget();
             }
         }
 
@@ -219,9 +238,25 @@ namespace SOCE.Library.UI
         }
 
         public SubProjectModel()
-        { }
+        {
+            onstartup = false;
+            canupdatepercentbudget = true;
+            canupdatefee = true;
+        }
 
         public SubProjectModel(SubProjectDbModel spm)
+        {
+            Constructor(spm);
+        }
+
+        public SubProjectModel(SubProjectDbModel spm, double totalfee)
+        {
+            TotalFee = totalfee;
+            Constructor(spm);  
+        }
+
+
+        public void Constructor(SubProjectDbModel spm)
         {
             Id = spm.Id;
             ProjectNumber = spm.ProjectId;
@@ -232,6 +267,9 @@ namespace SOCE.Library.UI
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
             PercentComplete = spm.PercentComplete;
             PercentBudget = spm.PercentBudget;
+            onstartup = false;
+            canupdatepercentbudget = true;
+            canupdatefee = true;
         }
 
         public void UpdateSubProject()
@@ -251,6 +289,33 @@ namespace SOCE.Library.UI
 
             SQLAccess.UpdateSubProject(subproject);
         }
+
+        public void UpdatePercentBudget()
+        {
+            if (!onstartup)
+            {
+                if (canupdatefee)
+                {
+                    canupdatefee = false;
+                    PercentBudget = (Fee / TotalFee) * 100;
+                    canupdatepercentbudget = true;
+                }
+            }
+        }
+
+        public void UpdateFee()
+        {
+            if (!onstartup)
+            {
+                if (canupdatepercentbudget)
+                {
+                    canupdatepercentbudget = false;
+                    Fee = (_percentBudget / 100) * TotalFee;
+                    canupdatefee = true;
+                }
+            }
+        }
+
 
         public object Clone()
         {

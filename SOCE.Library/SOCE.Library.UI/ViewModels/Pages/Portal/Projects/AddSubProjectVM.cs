@@ -34,17 +34,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _percentBudget;
-        public double PercentBudget
+        private double _additionalServicesFee;
+        public double AdditionalServicesFee
         {
-            get { return _percentBudget; }
+            get { return _additionalServicesFee; }
             set
             {
-                _percentBudget = value;
-                RaisePropertyChanged("PercentBudget");
+                _additionalServicesFee = value;
+                RaisePropertyChanged("AdditionalServicesFee");
             }
         }
-
+        
         private bool _phaseSelected = true;
         public bool PhaseSelected
         {
@@ -240,17 +240,19 @@ namespace SOCE.Library.UI.ViewModels
             {
                 ProjectId = BaseProject.Id,
                 Description = Description,
-                Fee = BaseProject.Fee * PercentBudget* 0.01,
                 IsActive = 1,
                 IsInvoiced = 0,
                 PercentComplete = 0,
-                PercentBudget = PercentBudget,
+                PercentBudget = 0,
+                Fee = 0
             };
 
             if (PhaseSelected)
             {
+
                 if (CDPhase && CDEnabled)
                 {
+                    
                     subproject.PointNumber = "CA";
                     subproject.Description = "Construction Document Phase";
                     SQLAccess.AddSubProject(subproject);
@@ -276,12 +278,19 @@ namespace SOCE.Library.UI.ViewModels
                     subproject.Description = "Miscellaneous";
                     SQLAccess.AddSubProject(subproject);
                 }
+
             }
             else if (AdSelected)
             {
                 subproject.PointNumber = LatestAdServiceNumber.ToString();
-                subproject.Description = Description;
+                subproject.Fee = AdditionalServicesFee;
+                subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee+ AdditionalServicesFee) *100,2);
                 SQLAccess.AddSubProject(subproject);
+
+
+                //update project overall fee
+                BaseProject.Fee += AdditionalServicesFee;
+                SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee);
             }
             
             //do stuff

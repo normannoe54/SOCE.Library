@@ -74,6 +74,7 @@
                     <TextBlock Text="Subsequent Adservice point number:" />
                     <TextBox IsReadOnly="True" Width="75" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding LatestAdServiceNumber}"/>
                     <TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding Description}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
+                    <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Text="{Binding AdditionalServicesFee}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
                 </StackPanel>
             </TabItem>
             <!--<TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" >
@@ -84,7 +85,6 @@
                 </TabItem.Header>
             </TabItem>-->
         </TabControl>
-        <TextBox materialDesign:HintAssist.Hint="Percent Budget" Text="{Binding PercentBudget}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="%" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
 
         <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddSubProjectCommand}">

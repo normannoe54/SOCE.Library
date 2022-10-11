@@ -108,7 +108,10 @@ namespace SOCE.Library.UI
 
             foreach (SubProjectDbModel sdb in subdbprojects)
             {
-                members.Add(new SubProjectModel(sdb));
+                if (Convert.ToBoolean(sdb.IsActive))
+                {
+                    members.Add(new SubProjectModel(sdb));
+                }
             }
 
             SubProjects = members;

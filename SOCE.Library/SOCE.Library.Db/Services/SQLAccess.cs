@@ -207,6 +207,15 @@ namespace SOCE.Library.Db
             }
         }
 
+        public static void UpdateFee(int id, double fee)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("UPDATE Projects SET Fee = @fee WHERE Id = @id",new { fee, id });
+            }
+        }
+
         public static List<ProjectDbModel> LoadProjects()
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))

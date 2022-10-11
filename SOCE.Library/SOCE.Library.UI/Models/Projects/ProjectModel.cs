@@ -137,10 +137,11 @@ namespace SOCE.Library.UI
             set
             {
                 _percentComplete = value;
-                FormatData();
                 RaisePropertyChanged(nameof(PercentComplete));
             }
         }
+
+        private bool onstartup = false;
 
         private string _projectfolder = "";
         public string Projectfolder
@@ -149,10 +150,14 @@ namespace SOCE.Library.UI
             set
             {
                 _projectfolder = value;
-                UpdateProject();
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Projectfolder));
             }
         }
+
 
         private string _drawingsfolder = "";
         public string Drawingsfolder
@@ -161,7 +166,10 @@ namespace SOCE.Library.UI
             set
             {
                 _drawingsfolder = value;
-                UpdateProject();
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Drawingsfolder));
             }
         }
@@ -173,7 +181,10 @@ namespace SOCE.Library.UI
             set
             {
                 _architectfolder = value;
-                UpdateProject();
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Architectfolder));
             }
         }
@@ -185,7 +196,10 @@ namespace SOCE.Library.UI
             set
             {
                 _plotfolder = value;
-                UpdateProject();
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Plotfolder));
             }
         }
@@ -360,8 +374,9 @@ namespace SOCE.Library.UI
             this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
             this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
             this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+            onstartup = true;
         }
-        
+
         public ProjectModel(ProjectDbModel pm, bool iseditable = true)
         {
             IsEditable = iseditable;
@@ -405,6 +420,8 @@ namespace SOCE.Library.UI
             Architectfolder = pm.Architectfolder;
             Plotfolder = pm.Plotfolder;
             FormatData();
+            onstartup = true;
+
         }
         #endregion
 
@@ -420,7 +437,8 @@ namespace SOCE.Library.UI
 
             foreach (SubProjectDbModel spdm in subdbmodels)
             {
-                SubProjects.Add(new SubProjectModel(spdm));
+                SubProjectModel spm = new SubProjectModel(spdm, Fee);
+                SubProjects.Add(spm);
                 List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
                 total.AddRange(tmdata);
             }
@@ -459,9 +477,8 @@ namespace SOCE.Library.UI
             BudgetSpent = budgetspent;
             BudgetLeft = TotalBudget - BudgetSpent;
             PercentBudgetSpent = Math.Min(Math.Ceiling((BudgetSpent / TotalBudget) * 100), 100);
-            HoursLeft = Math.Max(0, BudgetLeft / (averagerate / count));
+            HoursLeft = Math.Round(Math.Max(0, BudgetLeft / (averagerate / count)),2);
             IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
-
         }
 
         #region project folder

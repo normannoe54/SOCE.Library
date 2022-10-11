@@ -6,29 +6,32 @@
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Height="700" Width="1000" WindowState="{Binding WindowType}" WindowStartupLocation="CenterScreen" WindowStyle="None" AllowsTransparency ="True" Background="Transparent">
-    <materialDesign:DialogHost
+        Height="700" 
+        Width="900" 
+        WindowState="{Binding WindowType}" 
+        WindowStartupLocation="CenterScreen" 
+        WindowStyle="None" 
+        AllowsTransparency ="True" 
+        Background="Transparent">
+    <Border  BorderThickness="5" CornerRadius="10">
+        <materialDesign:DialogHost
         Identifier="RootDialog"
         DialogTheme="Dark">
-        <Grid>
-            <Border  BorderThickness="0">
-                <Grid>
-                    <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right">
-                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
-                            <materialDesign:PackIcon Kind="WindowMinimize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="{Binding MaxorRestoreTooltip}" Command="{Binding MaximizeWindowCommand}">
+            <Grid>
+                <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right">
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
+                        <materialDesign:PackIcon Kind="WindowMinimize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                    </Button>
+                    <!--<Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="{Binding MaxorRestoreTooltip}" Command="{Binding MaximizeWindowCommand}">
                             <materialDesign:PackIcon Kind="{Binding WindowButton}" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-                        </Button>
-                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="0 0 5 0" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
-                            <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-                        </Button>
-                    </StackPanel>
-                    
-                    <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                </Grid>
+                        </Button>-->
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="0 0 5 0" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
+                        <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                    </Button>
+                </StackPanel>
 
-            </Border>
-        </Grid>
-    </materialDesign:DialogHost>
+                <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            </Grid>
+        </materialDesign:DialogHost>
+    </Border>
 </Window>
