@@ -192,6 +192,7 @@
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />
     <Compile Include="ViewModels\Pages\Portal\Timesheet\TimesheetVM.cs" />
+    <Compile Include="ViewModels\Pages\TimesheetReview\TimesheetReviewVM.cs" />
     <Compile Include="Views\Login\CodeInsertView.xaml.cs">
       <DependentUpon>CodeInsertView.xaml</DependentUpon>
     </Compile>
@@ -251,6 +252,9 @@
     </Compile>
     <Compile Include="Views\Portal\ResourcesView.xaml.cs">
       <DependentUpon>ResourcesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\TimesheetReview\TimesheetReviewView.xaml.cs">
+      <DependentUpon>TimesheetReviewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Timesheet\TimesheetView.xaml.cs">
       <DependentUpon>TimesheetView.xaml</DependentUpon>
@@ -368,6 +372,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\ResourcesView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\TimesheetReview\TimesheetReviewView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

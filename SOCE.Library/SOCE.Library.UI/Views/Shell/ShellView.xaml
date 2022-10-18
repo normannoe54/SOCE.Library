@@ -13,7 +13,7 @@
         WindowStyle="None" 
         AllowsTransparency ="True" 
         Background="Transparent">
-    <Border  BorderThickness="5" CornerRadius="10">
+    <Border BorderThickness="1" BorderBrush="Black">
         <materialDesign:DialogHost
         Identifier="RootDialog"
         DialogTheme="Dark">

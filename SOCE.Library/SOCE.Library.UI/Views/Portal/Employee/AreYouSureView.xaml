@@ -14,7 +14,10 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Orientation="Vertical">
-            <TextBlock  FontSize="24" HorizontalAlignment="Center" Text="Are you sure you want to delete:" />
+            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
+                <TextBlock  FontSize="24" Text="Are you sure you want to " />
+                <TextBlock FontSize="24" Text="{Binding WordNeeded}" />
+            </StackPanel>            
             <TextBlock Margin="0 10 0 10" FontSize="24" HorizontalAlignment="Center"  Text="{Binding TexttoDisplay}" />
         </StackPanel>
         <Grid VerticalAlignment="Center" Grid.Row="1" Height="50">
@@ -23,10 +26,10 @@
                 <ColumnDefinition Width="20"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Button Grid.Column="0" Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding YesCommand}">
+            <Button Grid.Column="0" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding YesCommand}">
                 <TextBlock Text="YES" FontSize="20"/>
             </Button>
-            <Button Grid.Column="2" Foreground="{StaticResource SOCERed}" IsCancel="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}" Margin="0,9">
+            <Button Grid.Column="2" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}" Margin="0,9">
                 <TextBlock Text="CANCEL" FontSize="20"/>
             </Button>
         </Grid>

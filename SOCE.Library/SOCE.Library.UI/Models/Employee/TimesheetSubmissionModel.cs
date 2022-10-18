@@ -14,6 +14,20 @@ namespace SOCE.Library.UI
     {
         public int Id { get; set; }
 
+        private EmployeeModel _employee;
+        public EmployeeModel Employee
+        {
+            get
+            {
+                return _employee;
+            }
+            set
+            {
+                _employee = value;
+                RaisePropertyChanged(nameof(Employee));
+            }
+        }
+
         private DateTime _date;
         public DateTime Date
         {
@@ -43,6 +57,23 @@ namespace SOCE.Library.UI
                 Iconcolor = _approved ? Brushes.Green : Brushes.Orange;
                 StatusTooltip = _approved ? "Approved" : "In Progress";
                 RaisePropertyChanged(nameof(Approved));
+            }
+        }
+
+        private bool _missing = false;
+        public bool Missing
+        {
+            get
+            {
+                return _missing;
+            }
+            set
+            {
+                _missing = value;
+                SubmittedIcon = _missing ? MaterialDesignThemes.Wpf.PackIconKind.QuestionMark : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
+                SubmittedIconcolor = _missing ? Brushes.Purple : Brushes.Green;
+                SubmittedStatusTooltip = _missing ? "Not Submitted" : "Submitted";
+                RaisePropertyChanged(nameof(Missing));
             }
         }
 
@@ -79,7 +110,6 @@ namespace SOCE.Library.UI
             }
         }
 
-
         private Brush _iconcolor;
         public Brush Iconcolor
         {
@@ -91,6 +121,29 @@ namespace SOCE.Library.UI
             }
         }
 
+        private Brush _submittedIconcolor;
+        public Brush SubmittedIconcolor
+        {
+            get { return _submittedIconcolor; }
+            set
+            {
+                _submittedIconcolor = value;
+                RaisePropertyChanged(nameof(SubmittedIconcolor));
+            }
+        }
+
+        private PackIconKind _submittedIcon;
+        public PackIconKind SubmittedIcon
+        {
+            get { return _submittedIcon; }
+            set
+            {
+                _submittedIcon = value;
+                RaisePropertyChanged(nameof(SubmittedIcon));
+            }
+        }
+
+
         private string _statusTooltip;
         public string StatusTooltip
         {
@@ -98,6 +151,17 @@ namespace SOCE.Library.UI
             set
             {
                 _statusTooltip = value;
+                RaisePropertyChanged(nameof(StatusTooltip));
+            }
+        }
+
+        private string _submittedStatusTooltip;
+        public string SubmittedStatusTooltip
+        {
+            get { return _submittedStatusTooltip; }
+            set
+            {
+                _submittedStatusTooltip = value;
                 RaisePropertyChanged(nameof(StatusTooltip));
             }
         }
@@ -113,18 +177,60 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _emailRemind;
+        public bool EmailRemind
+        {
+            get { return _emailRemind; }
+            set
+            {
+                _emailRemind = value;
+                RaisePropertyChanged(nameof(EmailRemind));
+            }
+        }
+
+        private bool _submittedEnabled;
+        public bool SubmittedEnabled
+        {
+            get { return _submittedEnabled; }
+            set
+            {
+                _submittedEnabled = value;
+                RaisePropertyChanged(nameof(SubmittedEnabled));
+            }
+        }
+
+
         public TimesheetSubmissionModel()
         { }
 
-        public TimesheetSubmissionModel(TimesheetSubmissionDbModel emdb)
+        public TimesheetSubmissionModel(TimesheetSubmissionDbModel emdb, EmployeeModel employee)
         {
             Id = emdb.Id;
+            Employee = employee;
             Date = DateTime.ParseExact(emdb.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
             TotalHours = emdb.TotalHours;
             PTOHours = emdb.PTOHours;
             SickHours = emdb.SickHours;
             HolidayHours = emdb.HolidayHours;
             Approved = Convert.ToBoolean(emdb.Approved);
+            Missing = false;
+            EmailRemind = false;
+            SubmittedEnabled = true;
+        }
+
+        public static TimesheetSubmissionModel Didnotsubmityet(EmployeeModel em)
+        {
+            TimesheetSubmissionModel tsm = new TimesheetSubmissionModel();
+            tsm.TotalHours = 0;
+            tsm.PTOHours = 0;
+            tsm.SickHours = 0;
+            tsm.Employee = em;
+            tsm.HolidayHours = 0;
+            tsm.Approved = false;
+            tsm.Missing = true;
+            tsm.EmailRemind = true;
+            tsm.SubmittedEnabled = false;
+            return tsm;
         }
     }
 }

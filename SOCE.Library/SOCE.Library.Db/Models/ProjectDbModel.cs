@@ -26,5 +26,11 @@ namespace SOCE.Library.Db
         public string Drawingsfolder { get; set; }
         public string Architectfolder { get; set; }
         public string Plotfolder { get; set; }
+
+        public int ProjectStart { get; set; }
+
+        public int ProjectEnd { get; set; }
+
+        public double FinalSpent { get; set; }
     }
 }

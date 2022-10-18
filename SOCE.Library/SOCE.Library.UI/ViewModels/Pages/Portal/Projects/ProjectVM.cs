@@ -264,7 +264,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _showActiveProjects { get; set; } = false; 
+        private bool _showActiveProjects { get; set; } = true; 
         public bool ShowActiveProjects
         {
             get { return _showActiveProjects; }

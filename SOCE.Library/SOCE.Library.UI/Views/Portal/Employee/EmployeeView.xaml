@@ -89,11 +89,12 @@
                                   SelectedValue="{Binding Status}"  
                                   SelectedValuePath="Value"/>
                                 <StackPanel Margin="50 0 0 0" Grid.Column="5" Orientation="Horizontal">
-                                    <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Background="Transparent" ToolTip="Email" Width="30" Margin="10 0 0 0" Padding="0">
+                                    <materialDesign:PackIcon  Margin="10 0 0 0" Background="Transparent" Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
+                                    <!--<Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Background="Transparent" ToolTip="Email" Width="30" Margin="10 0 0 0" Padding="0">
                                         <Button.Content>
-                                            <materialDesign:PackIcon Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
+                                            
                                         </Button.Content>
-                                    </Button>
+                                    </Button>-->
                                     <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding EmailForward}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
                                     <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
                                 </StackPanel>
@@ -105,7 +106,7 @@
                                 </StackPanel>
 
                                 <StackPanel Margin="20 0 0 0" Grid.Column="7" Orientation="Horizontal" Visibility="{Binding RateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"
+                                    <!--<ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"
                                       IsEnabled="{Binding CanEditRate}"
                                       IsChecked="{Binding EditRateState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ToggleButton.Content>
@@ -115,10 +116,10 @@
                                             <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Edit Rate"/>
                                         </materialDesign:ToggleButtonAssist.OnContent>
                                         
-                                    </ToggleButton>
+                                    </ToggleButton>-->
 
                                     <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="Rate:" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditRateState}"  HorizontalAlignment="Left" Text="{Binding Rate,StringFormat = '$ {0}'}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
+                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}"  HorizontalAlignment="Left" Text="{Binding Rate}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center" materialDesign:TextFieldAssist.PrefixText="$"/>
                                     <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text=" / hr." TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
 
                                 </StackPanel>
@@ -142,7 +143,6 @@
 
                                 <Grid Grid.Row="1">
                                     <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="75"/>
                                         <ColumnDefinition Width="200"/>
                                         <ColumnDefinition Width="100"/>
                                         <ColumnDefinition Width="100"/>
@@ -151,14 +151,13 @@
                                         <ColumnDefinition Width="100"/>
                                         <ColumnDefinition Width="75"/>
                                     </Grid.ColumnDefinitions>
-                                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="Open" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" Text="Date" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total"/>
-                                    <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="PTO"/>
-                                    <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT"/>
-                                    <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick"/>
-                                    <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Holiday"/>
-                                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status"/>
+                                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="Date" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                    <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total"/>
+                                    <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="PTO"/>
+                                    <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT"/>
+                                    <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick"/>
+                                    <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Holiday"/>
+                                    <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status"/>
                                 </Grid>
 
                                 <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -171,7 +170,7 @@
                                                             <local:DatetoStringFullConverter x:Key="DatetoStringFull"/>
                                                         </Grid.Resources>
                                                         <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="75"/>
+                                                            <!--<ColumnDefinition Width="75"/>-->
                                                             <ColumnDefinition Width="200"/>
                                                             <ColumnDefinition Width="100"/>
                                                             <ColumnDefinition Width="100"/>
@@ -180,18 +179,18 @@
                                                             <ColumnDefinition Width="100"/>
                                                             <ColumnDefinition Width="75"/>
                                                         </Grid.ColumnDefinitions>
-                                                        <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" VerticalAlignment="Center" Background="ForestGreen" ToolTip="Open" Width="30" Padding="0">
+                                                        <!--<Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" VerticalAlignment="Center" Background="ForestGreen" ToolTip="Open" Width="30" Padding="0">
                                                             <Button.Content>
                                                                 <materialDesign:PackIcon Foreground="White" Kind="OpenInApp" VerticalAlignment="Center"/>
                                                             </Button.Content>
-                                                        </Button>
-                                                        <TextBlock Grid.Column="1"  Text="{Binding Date, Converter= {StaticResource DatetoStringFull}}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-                                                        <TextBlock Grid.Column="2"  FontSize="14" FontWeight="Regular" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}"/>
-                                                        <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}"/>
-                                                        <TextBlock Grid.Column="4" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}"/>
-                                                        <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}"/>
-                                                        <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HolidayHours, StringFormat = ' {0} hr.'}"/>
-                                                        <materialDesign:PackIcon Grid.Column="7" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 10 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" ToolTip="{Binding StatusTooltip}"/>
+                                                        </Button>-->
+                                                        <TextBlock Grid.Column="0"  Text="{Binding Date, Converter= {StaticResource DatetoStringFull}}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                        <TextBlock Grid.Column="1"  FontSize="14" FontWeight="Regular" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}"/>
+                                                        <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}"/>
+                                                        <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}"/>
+                                                        <TextBlock Grid.Column="4" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}"/>
+                                                        <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HolidayHours, StringFormat = ' {0} hr.'}"/>
+                                                        <materialDesign:PackIcon Grid.Column="6" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 10 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" ToolTip="{Binding StatusTooltip}"/>
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>

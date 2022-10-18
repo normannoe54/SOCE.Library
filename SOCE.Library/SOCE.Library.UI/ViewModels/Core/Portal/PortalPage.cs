@@ -13,6 +13,7 @@ namespace SOCE.Library.UI.ViewModels
         LicenseManager = 5,
         Resources = 6,
         Timesheet = 7,
-        Projects = 8,
+        TimesheetReview = 8,
+        Projects = 9,
     }
 }

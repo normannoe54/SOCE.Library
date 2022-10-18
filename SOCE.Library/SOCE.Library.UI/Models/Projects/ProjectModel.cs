@@ -69,6 +69,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _searchText { get; set; }
+        public string SearchText
+        {
+            get
+            {
+                return _searchText;
+            }
+            set
+            {
+                _searchText = value;
+                RaisePropertyChanged(nameof(SearchText));
+            }
+        }
+
         private double _fee { get; set; }
         public double Fee
         {
@@ -116,16 +130,36 @@ namespace SOCE.Library.UI
             }
         }
 
-        public Brush PercentCompleteColor { get; set; }
+        private Brush _percentCompleteColor;
+        public Brush PercentCompleteColor
+        {
+            get { return _percentCompleteColor; }
+            set
+            {
+                _percentCompleteColor = value;
+                RaisePropertyChanged(nameof(PercentCompleteColor));
+            }
+        }
 
-        private bool _isActive;
+        private bool _isActive = false;
         public bool IsActive
         {
             get { return _isActive; }
             set
             {
+                if (_isActive && !value)
+                {
+                    ProjectEnd = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd"));
+                    FinalSpent = BudgetSpent;
+                }
+
+                if (!_isActive && value)
+                {
+                    ProjectEnd = 0;
+                    FinalSpent = 0;
+                }
+
                 _isActive = value;
-                PercentCompleteColor = _isActive ? Brushes.Green : Brushes.Red;
                 RaisePropertyChanged(nameof(IsActive));
             }
         }
@@ -137,6 +171,8 @@ namespace SOCE.Library.UI
             set
             {
                 _percentComplete = value;
+                IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
+                PercentCompleteColor = PercentBudgetSpent > PercentComplete ? Brushes.Red : Brushes.Green;
                 RaisePropertyChanged(nameof(PercentComplete));
             }
         }
@@ -295,6 +331,8 @@ namespace SOCE.Library.UI
             set
             {
                 _percentBudgetSpent = value;
+                IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
+                PercentCompleteColor = PercentBudgetSpent > PercentComplete ? Brushes.Red : Brushes.Green;
                 RaisePropertyChanged(nameof(PercentBudgetSpent));
             }
         }
@@ -331,6 +369,12 @@ namespace SOCE.Library.UI
                 }
             }
         }
+
+        public int ProjectStart;
+
+        public int ProjectEnd;
+
+        public double FinalSpent;
 
         #region project
         public ICommand CopyProjectFolderCommand { get; set; }
@@ -399,9 +443,13 @@ namespace SOCE.Library.UI
             Id = pm.Id;
             ProjectName = pm.ProjectName;
             ProjectNumber = pm.ProjectNumber;
+            SearchText = String.Format("{0} {1}", ProjectName, ProjectNumber.ToString());
             Fee = pm.Fee;
             IsActive = Convert.ToBoolean(pm.IsActive);
             PercentComplete = pm.PercentComplete;
+            ProjectStart = pm.ProjectStart;
+            ProjectEnd = pm.ProjectEnd;
+            FinalSpent = pm.FinalSpent;
 
             EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
             EmployeeModel em = new EmployeeModel(emdbm);
@@ -478,7 +526,8 @@ namespace SOCE.Library.UI
             BudgetLeft = TotalBudget - BudgetSpent;
             PercentBudgetSpent = Math.Min(Math.Ceiling((BudgetSpent / TotalBudget) * 100), 100);
             HoursLeft = Math.Round(Math.Max(0, BudgetLeft / (averagerate / count)),2);
-            IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
+            //IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
+            //PercentCompleteColor = PercentBudgetSpent > PercentComplete ? Brushes.Red : Brushes.Green;
         }
 
         #region project folder
@@ -618,6 +667,9 @@ namespace SOCE.Library.UI
                 Drawingsfolder = Drawingsfolder,
                 Architectfolder = Architectfolder,
                 Plotfolder = Plotfolder,
+                ProjectStart = ProjectStart,
+                ProjectEnd = ProjectEnd,
+                FinalSpent = FinalSpent
             };
 
             SQLAccess.UpdateProjects(project);

@@ -33,6 +33,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand DeleteEmployee { get; set; }
 
+        public ICommand OpenTimesheetCommand { get; set; }
+
         private bool _canAddEmployee = false;
         public bool CanAddEmployee
         {
@@ -54,7 +56,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _employees = value;
-                TextEmployees = Employees.Count + " Total";
+                TextEmployees = _employees.Count + " Total";
                 RaisePropertyChanged(nameof(Employees));
             }
         }
@@ -77,7 +79,17 @@ namespace SOCE.Library.UI.ViewModels
             CurrentEmployee = loggedinEmployee;
             this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.OpenTimesheetCommand = new RelayCommand<TimesheetSubmissionModel>(OpenTimesheets);
+
             LoadEmployees();
+        }
+
+
+        public void OpenTimesheets(TimesheetSubmissionModel timesheets)
+        {
+            //open timesheet
+            IoCPortal.Application.GoToPage(PortalPage.Timesheet);
+
         }
 
         private async void ExecuteRunAddDialog(object o)
@@ -118,22 +130,26 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadEmployees()
         {
-
+            Employees.Clear();
             List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
 
-            ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
+            //ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
 
             foreach (EmployeeDbModel emdb in dbemployees)
             {
                 EmployeeModel em = new EmployeeModel(emdb);
 
+                //load timesheet submissions?
+                em.CollectTimesheetSubmission();
+
                 //be able to see your own stuff
                 em.SetEmployeeModelfromUser(CurrentEmployee);
 
-                members.Add(em);
+                //members.Add(em);
+                Employees.Add(em);
             }
 
-            Employees = members;
+            //Employees = members;
         }
 
     }

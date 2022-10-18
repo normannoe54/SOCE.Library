@@ -52,17 +52,10 @@ namespace SOCE.Library.UI.ViewModels
 
         public async void SendForgotEmail()
         {
-
-            string emailcheck = Email.Substring(Email.LastIndexOf('@') + 1);
-
-            if (emailcheck != "shirkodonovan.com")
-            {
-                LoginMessage = $"Shirk & O'Donovan email must be {Environment.NewLine}included to login to the application";
-                return;
-            }
+            string emailinput = Email + "@shirkodonovan.com";
 
             //tbd
-            EmployeeDbModel em = SQLAccess.LoadEmployeeByUser(Email);
+            EmployeeDbModel em = SQLAccess.LoadEmployeeByUser(emailinput);
 
             if (em != null)
             {
@@ -71,7 +64,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 MimeMessage mailMessage = new MimeMessage();
                 mailMessage.From.Add(new MailboxAddress("Norm", "normnoe@shirkodonovan.com"));
-                mailMessage.To.Add(new MailboxAddress(em.FirstName, em.Email));
+                mailMessage.To.Add(new MailboxAddress(em.FirstName, emailinput));
                 mailMessage.Subject = "SOCE Portal Reset Password";
                 mailMessage.Body = new TextPart("plain")
                 {
@@ -113,7 +106,7 @@ namespace SOCE.Library.UI.ViewModels
         private  Random random = new Random();
         public string RandomString(int length)
         {
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            const string chars = "ABCDEFGHIJKLMNPQRSTUVWXYZ123456789";
             return new string(Enumerable.Repeat(chars, length)
                 .Select(s => s[random.Next(s.Length)]).ToArray());
         }

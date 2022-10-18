@@ -95,9 +95,9 @@ namespace SOCE.Library.UI.ViewModels
                 case PortalPage.Timesheet:
                     CurrentPage = new TimesheetVM(LoggedInEmployee);
                     break;
-                //case PortalPage.Resources:
-                //    CurrentPage = new ResourcesVM(LoggedInEmployee);
-                //    break;
+                case PortalPage.TimesheetReview:
+                    CurrentPage = new TimesheetReviewVM(LoggedInEmployee);
+                    break;
                 case PortalPage.ProjectData:
                     CurrentPage = new ProjectDataVM(LoggedInEmployee);
                     break;

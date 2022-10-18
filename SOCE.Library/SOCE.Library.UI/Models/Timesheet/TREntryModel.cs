@@ -8,6 +8,21 @@ namespace SOCE.Library.UI
 {
     public class TREntryModel : PropertyChangedBase, ICloneable
     {
+        private int _id = 0;
+        public int Id
+        {
+            get
+            {
+                return _id;
+            }
+            set
+            {
+                _id = value;
+                RaisePropertyChanged(nameof(Id));
+            }
+        }
+
+
         private DateTime _date;
         public DateTime Date
         {
@@ -77,7 +92,7 @@ namespace SOCE.Library.UI
 
         public object Clone()
         {
-            return new TREntryModel() { Date = this.Date, TimeEntry = this.TimeEntry};
+            return new TREntryModel() { Date = this.Date, TimeEntry = this.TimeEntry, Id = this.Id };
         }
 
     }

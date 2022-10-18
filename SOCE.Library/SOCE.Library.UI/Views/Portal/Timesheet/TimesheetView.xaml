@@ -147,7 +147,7 @@
 
                 </Grid>
 
-                <Grid Background="LightGray">
+                <Grid Background="Transparent" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="400"/>
                         <ColumnDefinition Width="*"/>
@@ -253,13 +253,13 @@
                                                   materialDesign:HintAssist.HintOpacity=".26"
                                                   SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"
-                                                  TextSearch.TextPath="ProjectName"
+                                                  TextSearch.TextPath="SearchText"
                                                   MaxDropDownHeight="250">
                                         <ComboBox.ItemTemplate>
                                             <DataTemplate DataType="ProjectModel">
                                                 <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding JobNumStr}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
-                                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0"/>
+                                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" />
+                                                    <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="5 0 0 0" />
                                                 </StackPanel>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
@@ -347,10 +347,10 @@
                                            materialDesign:TextFieldAssist.SuffixText=" h"
                                            Text="{Binding Total}" 
                                            TextAlignment="Center"
-                                           VerticalAlignment="Stretch" 
+                                           VerticalAlignment="Center" 
                                            HorizontalAlignment="Stretch" 
                                             FontSize="14" FontWeight="SemiBold" 
-                                           Background="LightGray" Foreground="Gray"/>
+                                           Background="Transparent" Foreground="Gray"/>
                             </Grid>
                         </DataTemplate>
                     </ListView.ItemTemplate>

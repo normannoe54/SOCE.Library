@@ -252,16 +252,16 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _canEditRate = true;
-        public bool CanEditRate
-        {
-            get { return _canEditRate; }
-            set
-            {
-                _canEditRate = value;
-                RaisePropertyChanged(nameof(CanEditRate));
-            }
-        }
+        //private bool _canEditRate = true;
+        //public bool CanEditRate
+        //{
+        //    get { return _canEditRate; }
+        //    set
+        //    {
+        //        _canEditRate = value;
+        //        RaisePropertyChanged(nameof(CanEditRate));
+        //    }
+        //}
 
         private bool _canEditPTO = true;
         public bool CanEditPTO
@@ -327,20 +327,20 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _editRateState = true;
-        public bool EditRateState
-        {
-            get { return _editRateState; }
-            set
-            {
-                if (!_editRateState && value)
-                {
-                    UpdateEmployee();
-                }
-                _editRateState = value;
-                RaisePropertyChanged(nameof(EditRateState));
-            }
-        }
+        //private bool _editRateState = true;
+        //public bool EditRateState
+        //{
+        //    get { return _editRateState; }
+        //    set
+        //    {
+        //        if (!_editRateState && value)
+        //        {
+        //            UpdateEmployee();
+        //        }
+        //        _editRateState = value;
+        //        RaisePropertyChanged(nameof(EditRateState));
+        //    }
+        //}
 
         private bool _enabledforView;
         public bool EnabledforView
@@ -432,6 +432,11 @@ namespace SOCE.Library.UI
             HolidayBalance = emdb.HolidayHours;
             SickBalance = emdb.SickHours;
 
+            
+        }
+
+        public void CollectTimesheetSubmission()
+        {
             double ptospent = 0;
             double otspent = 0;
             double sickspent = 0;
@@ -440,9 +445,9 @@ namespace SOCE.Library.UI
             List<TimesheetSubmissionModel> tsm = new List<TimesheetSubmissionModel>();
 
             List<TimesheetSubmissionDbModel> dbdata = SQLAccess.LoadTimesheetSubmissionByEmployee(Id);
-            foreach(TimesheetSubmissionDbModel tsmdb in dbdata)
+            foreach (TimesheetSubmissionDbModel tsmdb in dbdata)
             {
-                tsm.Add(new TimesheetSubmissionModel(tsmdb));
+                tsm.Add(new TimesheetSubmissionModel(tsmdb,this));
 
                 ptospent += tsmdb.PTOHours;
                 otspent += tsmdb.OTHours;
@@ -460,7 +465,6 @@ namespace SOCE.Library.UI
             HolidayLeft = HolidayBalance - TotalHoliday;
         }
 
-
         public void SetEmployeeModelfromUser(EmployeeModel currentuser)
         {
             switch (currentuser.Status)
@@ -469,21 +473,18 @@ namespace SOCE.Library.UI
                     RateVisible = true;
                     IsEditable = true;
                     CanEditorDelete = true;
-                    CanEditRate = true;
                     CanEditPTO = true;
                     break;
                 case AuthEnum.Principal:
                     RateVisible = true;
                     IsEditable = true;
                     CanEditorDelete = false;
-                    CanEditRate = true;
                     CanEditPTO = false;
                     break;
                 case AuthEnum.PM:
                     RateVisible = true;
                     IsEditable = false;
                     CanEditorDelete = false;
-                    CanEditRate = false;
                     CanEditPTO = false;
 
                     break;
@@ -491,7 +492,6 @@ namespace SOCE.Library.UI
                     RateVisible = false;
                     IsEditable = false;
                     CanEditorDelete = false;
-                    CanEditRate = false;
                     CanEditPTO = false;
 
                     break;
@@ -499,7 +499,6 @@ namespace SOCE.Library.UI
                     RateVisible = false;
                     IsEditable = false;
                     CanEditorDelete = false;
-                    CanEditRate = false;
                     CanEditPTO = false;
 
                     break;

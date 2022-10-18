@@ -117,7 +117,7 @@
                             </StackPanel>
                         </Button>-->
 
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="TimesheetReview" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Magnify" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>

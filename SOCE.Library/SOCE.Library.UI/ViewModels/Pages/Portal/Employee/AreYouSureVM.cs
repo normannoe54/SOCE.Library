@@ -11,13 +11,17 @@ namespace SOCE.Library.UI.ViewModels
     public class AreYouSureVM : BaseVM
     {
         public bool Result { get; set; }
+
+        public string WordNeeded { get; set; } = "delete: ";
         public string TexttoDisplay { get; set; }
         public ICommand YesCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
         public AreYouSureVM()
         {
-
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
         }
 
         public AreYouSureVM(EmployeeModel em)

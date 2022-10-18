@@ -36,6 +36,10 @@
                 <views:TimesheetView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewmodels:TimesheetReviewVM}">
+                <views:TimesheetReviewView/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">
                 <views:ShellPortalView/>
             </DataTemplate>

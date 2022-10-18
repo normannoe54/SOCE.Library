@@ -162,10 +162,10 @@ namespace SOCE.Library.UI.ViewModels
                 PhoneNumber = PhoneNumberInp, 
                 Extension = ExtensionInp,
                 Rate = BillableRate,
-                PTOHours = YearlyPTO,
-                SickHours = SickLeave,
+                PTORate = YearlyPTO,
+                SickRate = SickLeave,
                 Password = TemporaryPassInp,
-                HolidayHours = HolidayHours};
+                HolidayRate = HolidayHours};
 
             SQLAccess.AddEmployee(employee);
 

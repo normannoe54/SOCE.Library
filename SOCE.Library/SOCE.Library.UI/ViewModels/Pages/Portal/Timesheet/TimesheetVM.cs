@@ -13,6 +13,7 @@ using System.IO;
 using SOCE.Library.Db;
 using System.Globalization;
 using MaterialDesignThemes.Wpf;
+using SOCE.Library.UI.Views;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -31,7 +32,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public List<RegisteredTimesheetDataModel> TimesheetData;
+        //public List<RegisteredTimesheetDataModel> TimesheetData;
         public ICommand AddRowCommand { get; set; }
         public ICommand WorkReportCommand { get; set; }
         public ICommand SubmitTimeSheetCommand { get; set; }
@@ -224,7 +225,7 @@ namespace SOCE.Library.UI.ViewModels
             Rowdata.CollectionChanged += this.RowDataChanged;
             //get timesheet data from database
             List<RegisteredTimesheetDataModel> rtdm = new List<RegisteredTimesheetDataModel>();
-            LoadProjects();
+            //LoadProjects();
             LoadCurrentTimesheet(DateTime.Now);
             //determine if it has been submitted
 
@@ -247,8 +248,23 @@ namespace SOCE.Library.UI.ViewModels
             //CollectDates();
         }
 
-        private void RemoveRow(TimesheetRowModel trm)
+        private async void RemoveRow(TimesheetRowModel trm)
         {
+            if (trm.Entries.Any(x => x.TimeEntry > 0))
+            {
+                AreYouSureView view = new AreYouSureView();
+                AreYouSureVM aysvm = new AreYouSureVM();
+                aysvm.TexttoDisplay = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
+                view.DataContext = aysvm;
+                var result = await DialogHost.Show(view, "RootDialog");
+                aysvm = view.DataContext as AreYouSureVM;
+
+                if (!aysvm.Result)
+                {
+                    return;
+                }
+            }
+
             Rowdata.Remove(trm);
         }
 
@@ -319,7 +335,7 @@ namespace SOCE.Library.UI.ViewModels
         /// <summary>
         /// Load Projects from DB
         /// </summary>
-        private void LoadProjects()
+        private void LoadProjects(bool submitted)
         {
             List<ProjectDbModel> dbprojects = SQLAccess.LoadProjects();
 
@@ -328,7 +344,8 @@ namespace SOCE.Library.UI.ViewModels
             foreach (ProjectDbModel pdb in dbprojects)
             {
                 ProjectModel pm = new ProjectModel(pdb);
-                if (pm.SubProjects.Count > 0 && pm.IsActive)
+                bool activetest = submitted ? true : pm.IsActive;
+                if (pm.SubProjects.Count > 0 && activetest)
                 {
                     members.Add(pm);
                 }
@@ -361,7 +378,7 @@ namespace SOCE.Library.UI.ViewModels
             LoadCurrentTimesheet(DateTime.Now);
         }
 
-        private void LoadTimesheetSubmissionData()
+        private bool LoadTimesheetSubmissionData()
         {
             TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, CurrentEmployee.Id);
 
@@ -370,6 +387,7 @@ namespace SOCE.Library.UI.ViewModels
 
             Icon = (tsdbm == null) ? MaterialDesignThemes.Wpf.PackIconKind.DotsHorizontalCircleOutline : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
             Iconcolor = (tsdbm == null) ? Brushes.SlateBlue : Brushes.Green;
+            return !IsSubEditable;
         }
 
         /// <summary>
@@ -396,7 +414,18 @@ namespace SOCE.Library.UI.ViewModels
                 ProjectModel pm = new ProjectModel(pdb);
                 SubProjectModel spm = new SubProjectModel(spdb);
 
-                ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
+                ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.FirstOrDefault();
+
+                if (pmnew == null)
+                {
+                    //are you dumb?
+                    foreach (TimesheetRowDbModel trdm in item)
+                    {
+                        SQLAccess.DeleteTimesheetData(trdm.Id);
+                    }
+                    
+                    continue;
+                }
 
                 TimesheetRowModel trm = new TimesheetRowModel()
                 {
@@ -435,56 +464,65 @@ namespace SOCE.Library.UI.ViewModels
             SumTable();
         }
 
-        private void SubmitTimesheet()
+        private async void SubmitTimesheet()
         {
-            //create new blanktimesheet
-            SaveCommand(1);
-            double pto = 0;
-            double ot = 0;
-            double sick = 0;
-            double holiday = 0;
-            double sum = 0;
-            foreach (TimesheetRowModel trm in Rowdata)
-            {
-                //adding or modifying an existing submission
-                foreach (TREntryModel trentry in trm.Entries)
-                {
-                    if (trentry.TimeEntry > 0)
-                    {
-                        sum += trentry.TimeEntry;
+            AreYouSureView view = new AreYouSureView();
+            AreYouSureVM aysvm = new AreYouSureVM();
+            aysvm.TexttoDisplay = "submit timesheet?";
+            aysvm.WordNeeded = "";
+            view.DataContext = aysvm;
+            var result = await DialogHost.Show(view, "RootDialog");
+            aysvm = view.DataContext as AreYouSureVM;
 
-                        if (trm.Project.ProjectName == "PTO")
+            if (aysvm.Result)
+            {
+                SaveCommand(1);
+                double pto = 0;
+                double ot = 0;
+                double sick = 0;
+                double holiday = 0;
+                double sum = 0;
+                foreach (TimesheetRowModel trm in Rowdata)
+                {
+                    //adding or modifying an existing submission
+                    foreach (TREntryModel trentry in trm.Entries)
+                    {
+                        if (trentry.TimeEntry > 0)
                         {
-                            pto += trentry.TimeEntry;
-                        }
-                        else if (trm.Project.ProjectName == "SICK")
-                        {
-                            sick += trentry.TimeEntry;
-                        }
-                        else if (trm.Project.ProjectName == "HOLIDAY")
-                        {
-                            holiday += trentry.TimeEntry;
+                            sum += trentry.TimeEntry;
+
+                            if (trm.Project.ProjectName == "PTO")
+                            {
+                                pto += trentry.TimeEntry;
+                            }
+                            else if (trm.Project.ProjectName == "SICK")
+                            {
+                                sick += trentry.TimeEntry;
+                            }
+                            else if (trm.Project.ProjectName == "HOLIDAY")
+                            {
+                                holiday += trentry.TimeEntry;
+                            }
                         }
                     }
                 }
-            }
-            ot = Math.Max(sum - BaseHours,0);
+                ot = Math.Max(sum - BaseHours, 0);
 
-            TimesheetSubmissionDbModel timesheetsubdbmodel = new TimesheetSubmissionDbModel()
-            {
-                EmployeeId = CurrentEmployee.Id,
-                Date = DateTimesheet,
-                TotalHours = sum,
-                PTOHours = pto,
-                OTHours = ot,
-                SickHours = sick,
-                HolidayHours = holiday,
-                Approved = 0, //not approved yet
-            };
+                TimesheetSubmissionDbModel timesheetsubdbmodel = new TimesheetSubmissionDbModel()
+                {
+                    EmployeeId = CurrentEmployee.Id,
+                    Date = DateTimesheet,
+                    TotalHours = sum,
+                    PTOHours = pto,
+                    OTHours = ot,
+                    SickHours = sick,
+                    HolidayHours = holiday,
+                    Approved = 0, //not approved yet
+                };
 
-            SQLAccess.AddTimesheetSubmissionData(timesheetsubdbmodel);
-            LoadTimesheetSubmissionData();
-
+                SQLAccess.AddTimesheetSubmissionData(timesheetsubdbmodel);
+                LoadTimesheetSubmissionData();
+            }            
         }
 
         /// <summary>
@@ -571,7 +609,8 @@ namespace SOCE.Library.UI.ViewModels
         private void LoadCurrentTimesheet(DateTime currdate)
         {
             UpdateDateSummary(currdate);
-            LoadTimesheetSubmissionData();
+            bool issubmitted = LoadTimesheetSubmissionData();
+            LoadProjects(issubmitted);
             LoadTimesheetData();
             
         }
@@ -584,7 +623,8 @@ namespace SOCE.Library.UI.ViewModels
         {
             DateTime currdate = DateSummary.First().Value.AddDays(-1);
             //UpdateDateSummary(currdate);
-            LoadTimesheetSubmissionData();
+            bool issubmitted = LoadTimesheetSubmissionData();
+            LoadProjects(issubmitted);
             LoadTimesheetDataforCopyPrevious();
         }
 

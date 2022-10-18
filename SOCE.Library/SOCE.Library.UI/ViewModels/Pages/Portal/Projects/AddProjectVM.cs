@@ -207,7 +207,7 @@ namespace SOCE.Library.UI.ViewModels
                 Drawingsfolder = "",
                 Architectfolder = "",
                 Plotfolder = "",
-
+                ProjectStart = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd")),
             };
 
             int id = SQLAccess.AddProject(project);
