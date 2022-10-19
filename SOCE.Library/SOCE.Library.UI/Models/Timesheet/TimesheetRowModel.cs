@@ -132,11 +132,15 @@ namespace SOCE.Library.UI
                 trs.Add((TREntryModel)tr.Clone());
             }
 
-
-            return new TimesheetRowModel() { Project = (ProjectModel)this.Project.Clone(),
+            TimesheetRowModel trm = new TimesheetRowModel()
+            {
+                Project = (ProjectModel)this.Project.Clone(),
                 SelectedSubproject = (SubProjectModel)this.SelectedSubproject.Clone(),
                 SubProjects = spms,
-                Entries = trs };
+                Entries = trs
+            };
+
+            return trm;
         }
 
     }

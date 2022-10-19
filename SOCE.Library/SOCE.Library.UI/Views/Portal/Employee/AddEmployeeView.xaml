@@ -74,7 +74,7 @@
             </Grid.ColumnDefinitions>
             <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="PTO Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding YearlyPTO,StringFormat = ' {0} hr./month'}" Margin="0 8 0 0" FontSize="16"/>
             <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Sick Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding SickLeave,StringFormat = ' {0} hr./month'}" Margin="0 8 0 0" FontSize="16"/>
-            <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="Holiday Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding HolidayHours,StringFormat = ' {0} hr./month'}" Margin="0 8 0 0" FontSize="16"/>
+            <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="Holiday Hours" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding HolidayHours,StringFormat = ' {0} hr./yr.'}" Margin="0 8 0 0" FontSize="16"/>
         </Grid>
         <TextBox Grid.Row="9" materialDesign:HintAssist.Hint="Temporary Password" Text="{Binding TemporaryPassInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" />
         <StackPanel Orientation="Horizontal" Grid.Row="10" Margin="0 16 0 0">

@@ -611,7 +611,7 @@ namespace SOCE.Library.UI.ViewModels
         //}
 
 
-        private async void ReportTimesheet(bool approve)
+        private void ReportTimesheet(bool approve)
         {
             foreach (TimesheetRowModel trm in Rowdata)
             {
@@ -637,8 +637,38 @@ namespace SOCE.Library.UI.ViewModels
                 }
             }
 
+            //load timesheets
+
+
             if (!approve)
             {
+                //if (SubmittedTimesheet.Approved)
+                //{
+                //    EmployeeModel em = SubmittedTimesheet.Employee;
+
+                //    EmployeeDbModel employee = new EmployeeDbModel()
+                //    {
+                //        Id = em.Id,
+                //        FirstName = em.FirstName,
+                //        LastName = em.LastName,
+                //        AuthId = (int)em.Status,
+                //        Title = em.Title,
+                //        Email = em.Email,
+                //        PhoneNumber = em.PhoneNumber,
+                //        Extension = em.Extension,
+                //        Rate = em.Rate,
+                //        PTORate = em.PTORate,
+                //        PTOHours = em.PTOHours,
+                //        PTOCarryover = em.PTOCarryover,
+                //        HolidayHours = em.HolidayHours,
+                //        SickHours = em.SickHours,
+                //        SickRate = em.SickRate,
+                //        SickCarryover = em.SickCarryover
+                //    };
+                //    //delete the time
+                //    SQLAccess.UpdateEmployee()
+                //}
+
                 SQLAccess.DeleteTimesheetSubmission(SubmittedTimesheet.Id);
 
                 TextPart txt = new TextPart("plain")

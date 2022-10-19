@@ -149,8 +149,8 @@ namespace SOCE.Library.Db
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT INTO Employees (FirstName, LastName, AuthId, Title, Email, PhoneNumber, Extension, PTORate, PTOHours, SickRate, SickHours, HolidayRate, HolidayHours, Rate)" +
-                    "VALUES (@FirstName, @LastName, @AuthId, @Title, @Email, @PhoneNumber, @Extension, @PTORate, @PTOHours, @SickRate, @SickHours, @HolidayRate, @HolidayHours, @Rate)", employee);
+                cnn.Execute("INSERT INTO Employees (FirstName, LastName, AuthId, Title, Email, PhoneNumber, Extension, PTORate, PTOHours, PTOCarryover, SickRate, SickHours, SickCarryover, HolidayHours, Rate)" +
+                    "VALUES (@FirstName, @LastName, @AuthId, @Title, @Email, @PhoneNumber, @Extension, @PTORate, @PTOHours, @PTOCarryover, @SickRate, @SickHours, @SickCarryover, @HolidayHours, @Rate)", employee);
             }
         }
 
@@ -180,9 +180,9 @@ namespace SOCE.Library.Db
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE Employees SET FirstName = @FirstName, LastName = @LastName, Title = @Title, AuthId = @AuthId, Email = @Email, PhoneNumber = @PhoneNumber, Extension = @Extension, Rate = @Rate," +
-                    " PTORate = @PTORate, PTOHours = @PTOHours, HolidayRate = @HolidayRate, HolidayHours = @HolidayHours, SickRate = @SickRate, SickHours = @SickHours WHERE Id = @Id",
+                    " PTORate = @PTORate, PTOHours = @PTOHours, PTOCarryover = @PTOCarryover, HolidayHours = @HolidayHours, SickRate = @SickRate, SickHours = @SickHours, SickCarryover = @SickCarryover WHERE Id = @Id",
                         new { employee.FirstName, employee.LastName, employee.Title, employee.AuthId, employee.Email, employee.PhoneNumber, employee.Extension, employee.Rate,
-                            employee.PTORate, employee.PTOHours, employee.HolidayRate, employee.HolidayHours, employee.SickRate, employee.SickHours, employee.Id});
+                            employee.PTORate, employee.PTOHours, employee.PTOCarryover, employee.HolidayHours, employee.SickRate, employee.SickHours, employee.SickCarryover, employee.Id});
             }
         }
 
@@ -204,7 +204,7 @@ namespace SOCE.Library.Db
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE Projects SET ProjectName = @ProjectName, ProjectNumber = @ProjectNumber, ClientId = @ClientId, Fee = @Fee, MarketId = @MarketId,"
-                          + "ManagerId = @ManagerId, IsActive = @IsActive, PercentComplete = @PercentComplete, Projectfolder = @Projectfolder,Drawingsfolder = @Drawingsfolder,Architectfolder = @Architectfolder,Plotfolder = @Plotfolder," +
+                          + "ManagerId = @ManagerId, IsActive = @IsActive, PercentComplete = @PercentComplete, Projectfolder = @Projectfolder, Drawingsfolder = @Drawingsfolder,Architectfolder = @Architectfolder,Plotfolder = @Plotfolder," +
                           "ProjectStart = @ProjectStart, ProjectEnd = @ProjectEnd, FinalSpent = @FinalSpent WHERE Id = @Id",
                         new { project.ProjectName, project.ProjectNumber, project.ClientId, project.Fee, project.MarketId, project.ManagerId, project.IsActive, project.PercentComplete, project.Projectfolder,
                             project.Drawingsfolder, project.Architectfolder, project.Plotfolder, project.ProjectStart, project.ProjectEnd, project.FinalSpent, project.Id});
@@ -344,10 +344,13 @@ namespace SOCE.Library.Db
 
         public static List<TimesheetSubmissionDbModel> LoadTimesheetSubmissionByEmployee(int employeeId)
         {
+            int year = DateTime.Now.Year;
+            DateTime firstDay = new DateTime(year, 1, 1);
+            int stint = (int)long.Parse(firstDay.Date.ToString("yyyyMMdd"));
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<TimesheetSubmissionDbModel>("SELECT * FROM SubmittedTimesheets WHERE EmployeeId = @employeeId"
-                    , new { employeeId });
+                var output = cnn.Query<TimesheetSubmissionDbModel>("SELECT * FROM SubmittedTimesheets WHERE EmployeeId = @employeeId AND Date > @stint"
+                    , new { employeeId, stint});
 
                 return output.ToList();
             }

@@ -165,7 +165,7 @@ namespace SOCE.Library.UI.ViewModels
                 PTORate = YearlyPTO,
                 SickRate = SickLeave,
                 Password = TemporaryPassInp,
-                HolidayRate = HolidayHours};
+                HolidayHours = HolidayHours};
 
             SQLAccess.AddEmployee(employee);
 

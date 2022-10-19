@@ -132,91 +132,135 @@ namespace SOCE.Library.UI
             }
         }
 
-        private double _ptoBalance;
-        public double PTOBalance
+        private double _pTORate;
+        public double PTORate
         {
-            get { return _ptoBalance; }
+            get { return _pTORate; }
             set
             {
-                _ptoBalance = value;
-                RaisePropertyChanged(nameof(PTOBalance));
+                _pTORate = value;
+                RaisePropertyChanged(nameof(PTORate));
             }
         }
 
-        private double _totalPTO;
-        public double TotalPTO
+        private double _pTOUsed;
+        public double PTOUsed
         {
-            get { return _totalPTO; }
+            get { return _pTOUsed; }
             set
             {
-                _totalPTO = value;
-                RaisePropertyChanged(nameof(TotalPTO));
+                _pTOUsed = value;
+                RaisePropertyChanged(nameof(PTOUsed));
             }
         }
 
-        private double _ptoLeft;
-        public double PTOLeft
+        private double _pTOEarned;
+        public double PTOEarned
         {
-            get { return _ptoLeft; }
+            get { return _pTOEarned; }
             set
             {
-                _ptoLeft = value;
-                RaisePropertyChanged(nameof(PTOLeft));
+                _pTOEarned = value;
+                RaisePropertyChanged(nameof(PTOEarned));
             }
         }
 
-        private double _sickBalance;
-        public double SickBalance
+        private double _pTOCarryover;
+        public double PTOCarryover
         {
-            get { return _sickBalance; }
+            get { return _pTOCarryover; }
             set
             {
-                _sickBalance = value;
-                RaisePropertyChanged(nameof(SickBalance));
+                _pTOCarryover = value;
+                RaisePropertyChanged(nameof(PTOCarryover));
             }
         }
 
-        private double _totalSick;
-        public double TotalSick
+        private double _pTOHours;
+        public double PTOHours
         {
-            get { return _totalSick; }
+            get { return _pTOHours; }
             set
             {
-                _totalSick = value;
-                RaisePropertyChanged(nameof(TotalSick));
+                _pTOHours = value;
+                RaisePropertyChanged(nameof(PTOHours));
             }
         }
 
-        private double _sickLeft;
-        public double SickLeft
+        private double _sickRate;
+        public double SickRate
         {
-            get { return _sickLeft; }
+            get { return _sickRate; }
             set
             {
-                _sickLeft = value;
-                RaisePropertyChanged(nameof(SickLeft));
+                _sickRate = value;
+                RaisePropertyChanged(nameof(SickRate));
             }
         }
 
-        private double _holidayBalance;
-        public double HolidayBalance
+        private double _sickCarryover;
+        public double SickCarryover
         {
-            get { return _holidayBalance; }
+            get { return _sickCarryover; }
             set
             {
-                _holidayBalance = value;
-                RaisePropertyChanged(nameof(HolidayBalance));
+                _sickCarryover = value;
+                RaisePropertyChanged(nameof(SickCarryover));
             }
         }
 
-        private double _totalHoliday;
-        public double TotalHoliday
+        private double _sickUsed;
+        public double SickUsed
         {
-            get { return _totalHoliday; }
+            get { return _sickUsed; }
             set
             {
-                _totalHoliday = value;
-                RaisePropertyChanged(nameof(TotalHoliday));
+                _sickUsed = value;
+                RaisePropertyChanged(nameof(SickUsed));
+            }
+        }
+
+        private double _sickEarned;
+        public double SickEarned
+        {
+            get { return _sickEarned; }
+            set
+            {
+                _sickEarned = value;
+                RaisePropertyChanged(nameof(SickEarned));
+            }
+        }
+
+        private double _sickHours;
+        public double SickHours
+        {
+            get { return _sickHours; }
+            set
+            {
+                _sickHours = value;
+                RaisePropertyChanged(nameof(SickHours));
+            }
+        }
+
+        private double _holidayHours;
+        public double HolidayHours
+        {
+            get { return _holidayHours; }
+            set
+            {
+                _holidayHours = value;
+                RaisePropertyChanged(nameof(HolidayHours));
+            }
+        }
+
+        private double _holidayUsed;
+        public double HolidayUsed
+        {
+            get { return _holidayUsed; }
+            set
+            {
+                _holidayUsed = value;
+                RaisePropertyChanged(nameof(HolidayUsed));
             }
         }
 
@@ -428,11 +472,16 @@ namespace SOCE.Library.UI
             PhoneNumber = emdb.PhoneNumber;
             Extension = emdb.Extension;
             Rate = emdb.Rate;
-            PTOBalance = emdb.PTOHours;
-            HolidayBalance = emdb.HolidayHours;
-            SickBalance = emdb.SickHours;
 
-            
+            PTOHours = emdb.PTOHours;
+            PTOCarryover = emdb.PTOCarryover;
+            PTORate = emdb.PTORate;
+
+            SickHours = emdb.SickHours;
+            SickCarryover = emdb.SickCarryover;
+            SickRate = emdb.SickRate;
+
+            HolidayHours = emdb.HolidayHours;
         }
 
         public void CollectTimesheetSubmission()
@@ -444,25 +493,35 @@ namespace SOCE.Library.UI
             //load timesheet submissions
             List<TimesheetSubmissionModel> tsm = new List<TimesheetSubmissionModel>();
 
+            //years
+            int count = 0;
             List<TimesheetSubmissionDbModel> dbdata = SQLAccess.LoadTimesheetSubmissionByEmployee(Id);
             foreach (TimesheetSubmissionDbModel tsmdb in dbdata)
             {
-                tsm.Add(new TimesheetSubmissionModel(tsmdb,this));
-
-                ptospent += tsmdb.PTOHours;
-                otspent += tsmdb.OTHours;
-                sickspent += tsmdb.SickHours;
-                holidayspent += tsmdb.HolidayHours;
-
+                if (Convert.ToBoolean(tsmdb.Approved))
+                {
+                    count++;
+                    tsm.Add(new TimesheetSubmissionModel(tsmdb, this));
+                    ptospent += tsmdb.PTOHours;
+                    otspent += tsmdb.OTHours;
+                    sickspent += tsmdb.SickHours;
+                    holidayspent += tsmdb.HolidayHours;
+                }
+               
             }
-            TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
-            TotalPTO = ptospent;
-            TotalOT = otspent;
-            TotalSick = sickspent;
 
-            PTOLeft = PTOBalance - TotalPTO;
-            SickLeft = SickBalance - TotalSick;
-            HolidayLeft = HolidayBalance - TotalHoliday;
+
+
+
+            TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
+            PTOUsed = ptospent;
+            TotalOT = otspent;
+            SickUsed = sickspent;
+            PTOEarned = (PTORate * count) / 2;
+            SickEarned = (SickRate * count) / 2;
+            HolidayLeft = HolidayHours - HolidayUsed;
+            PTOHours = PTOCarryover + PTOEarned - PTOUsed;
+            SickHours = SickCarryover + SickEarned - SickUsed;
         }
 
         public void SetEmployeeModelfromUser(EmployeeModel currentuser)
@@ -522,11 +581,17 @@ namespace SOCE.Library.UI
                 PhoneNumber = PhoneNumber, 
                 Extension = Extension,
                 Rate= Rate,
-                PTOHours = PTOBalance,
-                HolidayHours = HolidayBalance,
-                SickHours = SickBalance};
+                PTORate = PTORate,
+                //PTOHours = PTOHours,
+                PTOCarryover = PTOCarryover,
+                HolidayHours = HolidayHours,
+                //SickHours = SickHours,
+                SickRate = SickRate,
+                SickCarryover = SickCarryover
+            };
 
             SQLAccess.UpdateEmployee(employee);
+            CollectTimesheetSubmission();
         }
 
         public override bool Equals(object obj)

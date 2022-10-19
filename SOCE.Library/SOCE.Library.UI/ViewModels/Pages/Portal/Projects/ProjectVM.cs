@@ -449,7 +449,6 @@ namespace SOCE.Library.UI.ViewModels
                 default:
                     return;
                     // code block
-                    break;
             }
 
             view.DataContext = aysvm;
