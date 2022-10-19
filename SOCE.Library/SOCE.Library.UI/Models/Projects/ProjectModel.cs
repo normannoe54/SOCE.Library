@@ -16,6 +16,18 @@ namespace SOCE.Library.UI
 {
     public class ProjectModel : BaseVM
     {
+
+        private ObservableCollection<RatePerProjectModel> _ratePerProject = new ObservableCollection<RatePerProjectModel>();
+        public ObservableCollection<RatePerProjectModel> RatePerProject
+        {
+            get { return _ratePerProject; }
+            set
+            {
+                _ratePerProject = value;
+                RaisePropertyChanged(nameof(RatePerProject));
+            }
+        }
+
         private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
         public ObservableCollection<SubProjectModel> SubProjects
         {
@@ -186,10 +198,10 @@ namespace SOCE.Library.UI
             set
             {
                 _projectfolder = value;
-                if (onstartup)
-                {
-                    UpdateProject();
-                }
+                //if (onstartup)
+                //{
+                //    UpdateProject();
+                //}
                 RaisePropertyChanged(nameof(Projectfolder));
             }
         }
@@ -202,10 +214,10 @@ namespace SOCE.Library.UI
             set
             {
                 _drawingsfolder = value;
-                if (onstartup)
-                {
-                    UpdateProject();
-                }
+                //if (onstartup)
+                //{
+                //    UpdateProject();
+                //}
                 RaisePropertyChanged(nameof(Drawingsfolder));
             }
         }
@@ -217,10 +229,10 @@ namespace SOCE.Library.UI
             set
             {
                 _architectfolder = value;
-                if (onstartup)
-                {
-                    UpdateProject();
-                }
+                //if (onstartup)
+                //{
+                //    UpdateProject();
+                //}
                 RaisePropertyChanged(nameof(Architectfolder));
             }
         }
@@ -232,10 +244,10 @@ namespace SOCE.Library.UI
             set
             {
                 _plotfolder = value;
-                if (onstartup)
-                {
-                    UpdateProject();
-                }
+                //if (onstartup)
+                //{
+                //    UpdateProject();
+                //}
                 RaisePropertyChanged(nameof(Plotfolder));
             }
         }
@@ -526,8 +538,25 @@ namespace SOCE.Library.UI
             BudgetLeft = TotalBudget - BudgetSpent;
             PercentBudgetSpent = Math.Min(Math.Ceiling((BudgetSpent / TotalBudget) * 100), 100);
             HoursLeft = Math.Round(Math.Max(0, BudgetLeft / (averagerate / count)),2);
+
             //IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
             //PercentCompleteColor = PercentBudgetSpent > PercentComplete ? Brushes.Red : Brushes.Green;
+
+            List<RatesPerProjectDbModel> ratesdbmodel = SQLAccess.LoadRatesPerProject(Id);
+
+            foreach (RatesPerProjectDbModel rpp in ratesdbmodel)
+            {
+                RatePerProjectModel rpm = new RatePerProjectModel(rpp, this, Fee);
+
+                //catch for strange shenanigans
+                if (rpm.TotalHours == 0)
+                {
+                    //remove
+                    SQLAccess.DeleteRatesPerProject(rpm.Id);
+                }
+
+                RatePerProject.Add(rpm);
+            }
         }
 
         #region project folder

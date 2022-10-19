@@ -6,8 +6,8 @@
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Height="700" 
-        Width="900" 
+        Height="{Binding HeightRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+        Width="{Binding WidthRef, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
         WindowState="{Binding WindowType}" 
         WindowStartupLocation="CenterScreen" 
         WindowStyle="None" 
@@ -22,9 +22,9 @@
                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
                         <materialDesign:PackIcon Kind="WindowMinimize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
                     </Button>
-                    <!--<Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="{Binding MaxorRestoreTooltip}" Command="{Binding MaximizeWindowCommand}">
+                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="{Binding MaxorRestoreTooltip}" Command="{Binding MaximizeWindowCommand}">
                             <materialDesign:PackIcon Kind="{Binding WindowButton}" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-                        </Button>-->
+                        </Button>
                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="0 0 5 0" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
                         <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
                     </Button>

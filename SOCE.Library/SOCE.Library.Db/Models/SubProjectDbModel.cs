@@ -16,5 +16,6 @@ namespace SOCE.Library.Db
         public double PercentComplete { get; set; }
         public double PercentBudget { get; set; }
         public int IsInvoiced { get; set; }
+        public int IsCurrActive { get; set; }
     }
 }

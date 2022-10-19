@@ -15,11 +15,13 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="New Client" Grid.Row="0"/>
-        <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Client Name" Text="{Binding ClientNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
+        <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Client Number" Text="{Binding ClientNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
+        <TextBox Grid.Row="2" materialDesign:HintAssist.Hint="Client Name" Text="{Binding ClientNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 16 0 0">
+        <StackPanel Orientation="Horizontal" Grid.Row="3" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddClientCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>

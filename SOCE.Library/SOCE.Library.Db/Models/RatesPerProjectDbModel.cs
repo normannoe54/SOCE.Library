@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 
 namespace SOCE.Library.Db
 {
-    public class MarketDbModel
+    public class RatesPerProjectDbModel
     {
         public int Id { get; set; }
-        public string MarketName { get; set; }
-        public int IsActive { get; set; }
+        public int EmployeeId { get; set; }
+        public int ProjectId { get; set; }
+        public double Rate { get; set; }
     }
 }

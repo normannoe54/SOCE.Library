@@ -33,7 +33,7 @@ namespace SOCE.Library.UI.ViewModels
         public void AddMarket()
         {
             MarketDbModel market = new MarketDbModel()
-            { MarketName = MarketNameInp};
+            { MarketName = MarketNameInp, IsActive = 1 };
 
             SQLAccess.AddMarket(market);
 

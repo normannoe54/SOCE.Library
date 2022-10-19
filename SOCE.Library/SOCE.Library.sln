@@ -7,10 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCE.Library.UI", "SOCE.Lib
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SOCE.Library.Db", "SOCE.Library.Db\SOCE.Library.Db.csproj", "{7F96F6CB-24AF-4DAD-9505-469F70377154}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOCE.Library.API", "SOCE.Library.API\SOCE.Library.API.csproj", "{992EFF67-665D-4B89-B767-F24F330E307A}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SOCE.Library.Models", "SOCE.Library.Models\SOCE.Library.Models.csproj", "{6F7C0480-A012-47B9-B2AE-AA24429EE960}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,14 +21,6 @@ Global
 		{7F96F6CB-24AF-4DAD-9505-469F70377154}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7F96F6CB-24AF-4DAD-9505-469F70377154}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{7F96F6CB-24AF-4DAD-9505-469F70377154}.Release|Any CPU.Build.0 = Release|Any CPU
-		{992EFF67-665D-4B89-B767-F24F330E307A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{992EFF67-665D-4B89-B767-F24F330E307A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{992EFF67-665D-4B89-B767-F24F330E307A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{992EFF67-665D-4B89-B767-F24F330E307A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6F7C0480-A012-47B9-B2AE-AA24429EE960}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6F7C0480-A012-47B9-B2AE-AA24429EE960}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6F7C0480-A012-47B9-B2AE-AA24429EE960}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6F7C0480-A012-47B9-B2AE-AA24429EE960}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

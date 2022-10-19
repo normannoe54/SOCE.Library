@@ -11,6 +11,35 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class CoreAI : BaseVM, ICoreAI
     {
+        private int _widthRef;
+        public int WidthRef
+        {
+            get
+            {
+                return _widthRef;
+            }
+            set
+            {
+                _widthRef = value;
+                RaisePropertyChanged(nameof(WidthRef));
+            }
+        }
+
+        private int _heightRef;
+        public int HeightRef
+        {
+            get
+            {
+                return _heightRef;
+            }
+            set
+            {
+                _heightRef = value;
+                RaisePropertyChanged(nameof(HeightRef));
+            }
+        }
+
+
         private WindowState _windowType { get; set; } = WindowState.Normal;
         public WindowState WindowType
         {
@@ -22,6 +51,21 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _windowType = value;
                 RaisePropertyChanged(nameof(WindowType));
+            }
+        }
+
+        private string _maxorRestoreTooltip;
+
+        public string MaxorRestoreTooltip
+        {
+            get
+            {
+                return _maxorRestoreTooltip;
+            }
+            set
+            {
+                _maxorRestoreTooltip = value;
+                RaisePropertyChanged(nameof(MaxorRestoreTooltip));
             }
         }
 
@@ -54,6 +98,8 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         public ICommand CloseCommand { get; set; }
+
+        public ICommand MaximizeWindowCommand { get; private set; }
         public ICommand MinusCommand { get; set; }
 
         public CoreAI()
@@ -64,25 +110,31 @@ namespace SOCE.Library.UI.ViewModels
             login.GoToLogin();
 
             CloseCommand = new RelayCommand(CloseWindow);
+            MaximizeWindowCommand = new RelayCommand(MaximizeWindowCom);
             MinusCommand = new RelayCommand(MinusWindow);
+            DetermineIcon();
         }
 
 
         public void GoToLogin()
         {
             CurrentPage = IoCLogin.Application as BaseAI;
-
             WindowType = WindowState.Normal;
+            DetermineIcon();
+            WidthRef = 900;
+            HeightRef = 700;
         }
 
         public void GoToPortal(EmployeeModel employee)
-        {
+        {           
             CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
             portAI.LoggedInEmployee = employee;
             portAI.CurrentPage = new TimesheetVM(employee);
-
             WindowType = WindowState.Maximized;
+            DetermineIcon();
+            WidthRef = 1900;
+            HeightRef = 1000;
         }
 
         public void CloseWindow()
@@ -93,6 +145,34 @@ namespace SOCE.Library.UI.ViewModels
         public void MinusWindow()
         {
             WindowType = WindowState.Minimized;
+        }
+
+        public void MaximizeWindowCom()
+        {
+            if (WindowType == WindowState.Maximized)
+            {
+                WindowType = WindowState.Normal;
+            }
+            else
+            {
+                WindowType = WindowState.Maximized;
+            }
+
+            DetermineIcon();
+        }
+
+        private void DetermineIcon()
+        {
+            if (WindowType == WindowState.Maximized)
+            {
+                MaxorRestoreTooltip = "Restore";
+                WindowButton = PackIconKind.WindowRestore;
+            }
+            else
+            {
+                MaxorRestoreTooltip = "Maximize";
+                WindowButton = PackIconKind.WindowMaximize;
+            }
         }
     }
 }

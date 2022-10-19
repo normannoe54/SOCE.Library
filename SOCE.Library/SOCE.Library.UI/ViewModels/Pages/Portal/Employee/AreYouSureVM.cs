@@ -29,6 +29,7 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
+            WordNeeded =  "archive:";
             TexttoDisplay = em.FirstName + " " + em.LastName;
         }
 

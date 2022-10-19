@@ -79,7 +79,7 @@ namespace SOCE.Library.UI.ViewModels
         private string _temporaryPassInp;
         public string TemporaryPassInp
         {
-            get { return _titleInp; }
+            get { return _temporaryPassInp; }
             set
             {
                 _temporaryPassInp = value;
@@ -165,7 +165,10 @@ namespace SOCE.Library.UI.ViewModels
                 PTORate = YearlyPTO,
                 SickRate = SickLeave,
                 Password = TemporaryPassInp,
-                HolidayHours = HolidayHours};
+                HolidayHours = HolidayHours,
+                IsActive = 1,
+                StartDate = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd"))
+            };
 
             SQLAccess.AddEmployee(employee);
 

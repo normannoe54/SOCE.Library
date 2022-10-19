@@ -152,6 +152,7 @@
     <Compile Include="Models\Projects\MarketModel.cs" />
     <Compile Include="Models\Projects\PhaseEnum.cs" />
     <Compile Include="Models\Projects\ProjectModel.cs" />
+    <Compile Include="Models\Projects\RatePerProjectModel.cs" />
     <Compile Include="Models\Projects\SubProjectModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

@@ -32,5 +32,7 @@ namespace SOCE.Library.Db
         public int ProjectEnd { get; set; }
 
         public double FinalSpent { get; set; }
+
+        public int IsCurrActive { get; set; }
     }
 }

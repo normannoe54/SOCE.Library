@@ -42,9 +42,9 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToAddSubProject { get; set; }
 
 
-        public ICommand DeleteProject { get; set; }
-        public ICommand DeleteMarket { get; set; }
-        public ICommand DeleteClient { get; set; }
+        public ICommand ArchiveProject { get; set; }
+        public ICommand ArchiveMarket { get; set; }
+        public ICommand ArchiveClient { get; set; }
 
         public ICommand DeleteSubProject { get; set; }
 
@@ -315,9 +315,9 @@ namespace SOCE.Library.UI.ViewModels
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
             this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunAddSubProjectDialog);
 
-            this.DeleteProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
-            this.DeleteClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
-            this.DeleteMarket = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.ArchiveProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.ArchiveClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            this.ArchiveMarket = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.DeleteSubProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
 
             this.ClearComboBox = new RelayCommand(this.ClearSearchableComboBox);
@@ -391,7 +391,9 @@ namespace SOCE.Library.UI.ViewModels
             var view = new AddProjectView();
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            LoadProjects();
         }
 
         private async void ExecuteRunAddSubProjectDialog(object o)
@@ -405,7 +407,9 @@ namespace SOCE.Library.UI.ViewModels
                 view.DataContext = aspvm;
 
                 //show the dialog
-                var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerProjects);
+                var result = await DialogHost.Show(view, "RootDialog");
+
+                LoadProjects();
             }
  
         }
@@ -416,7 +420,9 @@ namespace SOCE.Library.UI.ViewModels
             var view = new AddClientView();
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerClients);
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            LoadClients();
         }
 
         private async void ExecuteRunAddMarketDialog(object o)
@@ -425,7 +431,9 @@ namespace SOCE.Library.UI.ViewModels
             var view = new AddMarketView();
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandlerMarkets);
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            LoadMarkets();
         }
 
         private async void ExecuteRunDeleteDialog(object o)
@@ -464,19 +472,19 @@ namespace SOCE.Library.UI.ViewModels
                 switch (o)
                 {
                     case ProjectModel pm:
-                        SQLAccess.DeleteProject(pm.Id);
+                        SQLAccess.ArchiveProject(pm.Id);
                         LoadProjects();
                         break;
                     case ClientModel cm:
-                        SQLAccess.DeleteClient(cm.Id);
+                        SQLAccess.ArchiveClient(cm.Id);
                         LoadClients();
                         break;
                     case MarketModel mm:
-                        SQLAccess.DeleteMarket(mm.Id);
+                        SQLAccess.ArchiveMarket(mm.Id);
                         LoadMarkets();
                         break;
                     case SubProjectModel spm:
-                        SQLAccess.DeleteSubProject(spm.Id);
+                        SQLAccess.ArchiveSubProject(spm.Id);
                         LoadProjects();
                         break;
                     default:
@@ -486,22 +494,22 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private void ClosingEventHandlerProjects(object sender, DialogClosingEventArgs eventArgs)
-        {
-            //load list here
-            LoadProjects();
-        }
-        private void ClosingEventHandlerClients(object sender, DialogClosingEventArgs eventArgs)
-        {
-            //load list here
-            LoadClients();
-        }
+        //private void ClosingEventHandlerProjects(object sender, DialogClosingEventArgs eventArgs)
+        //{
+        //    //load list here
+        //    LoadProjects();
+        //}
+        //private void ClosingEventHandlerClients(object sender, DialogClosingEventArgs eventArgs)
+        //{
+        //    //load list here
+        //    LoadClients();
+        //}
 
-        private void ClosingEventHandlerMarkets(object sender, DialogClosingEventArgs eventArgs)
-        {
-            //load list here
-            LoadMarkets();
-        }
+        //private void ClosingEventHandlerMarkets(object sender, DialogClosingEventArgs eventArgs)
+        //{
+        //    //load list here
+        //    LoadMarkets();
+        //}
 
         private void LoadProjects()
         {

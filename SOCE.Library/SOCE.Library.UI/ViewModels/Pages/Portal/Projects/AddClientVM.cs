@@ -21,6 +21,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _clientNumberInp;
+        public string ClientNumberInp
+        {
+            get { return _clientNumberInp; }
+            set
+            {
+                _clientNumberInp = value;
+                RaisePropertyChanged("ClientNumberInp");
+            }
+        }
+
         public ICommand AddClientCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
@@ -33,7 +44,7 @@ namespace SOCE.Library.UI.ViewModels
         public void AddClient()
         {
             ClientDbModel client = new ClientDbModel()
-            { ClientName = ClientNameInp};
+            { ClientName = ClientNameInp, ClientNumber = ClientNumberInp, IsActive = 1};
 
             SQLAccess.AddClient(client);
 

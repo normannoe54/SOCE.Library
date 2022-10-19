@@ -33,8 +33,6 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand DeleteEmployee { get; set; }
 
-        public ICommand OpenTimesheetCommand { get; set; }
-
         private bool _canAddEmployee = false;
         public bool CanAddEmployee
         {
@@ -79,17 +77,8 @@ namespace SOCE.Library.UI.ViewModels
             CurrentEmployee = loggedinEmployee;
             this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
-            this.OpenTimesheetCommand = new RelayCommand<TimesheetSubmissionModel>(OpenTimesheets);
 
             LoadEmployees();
-        }
-
-
-        public void OpenTimesheets(TimesheetSubmissionModel timesheets)
-        {
-            //open timesheet
-            IoCPortal.Application.GoToPage(PortalPage.Timesheet);
-
         }
 
         private async void ExecuteRunAddDialog(object o)
@@ -98,8 +87,9 @@ namespace SOCE.Library.UI.ViewModels
             var view = new AddEmployeeView();
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+            var result = await DialogHost.Show(view, "RootDialog");
 
+            LoadEmployees();
         }
 
         private async void ExecuteRunDeleteDialog(object o)
@@ -112,20 +102,15 @@ namespace SOCE.Library.UI.ViewModels
             view.DataContext = aysvm;
 
             //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog", ClosingEventHandler);
+            var result = await DialogHost.Show(view, "RootDialog");
 
             aysvm = view.DataContext as AreYouSureVM;
 
             if (aysvm.Result)
             {
-                SQLAccess.DeleteEmployee(em.Id);
+                SQLAccess.ArchiveEmployee(em.Id);
+                LoadEmployees();
             }
-        }
-
-        private void ClosingEventHandler(object sender, DialogClosingEventArgs eventArgs)
-        {
-            //load list here
-            LoadEmployees();
         }
 
         private void LoadEmployees()

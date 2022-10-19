@@ -25,6 +25,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _clientNumber { get; set; }
+        public string ClientNumber
+        {
+            get
+            {
+                return _clientNumber;
+            }
+            set
+            {
+                _clientNumber = value;
+                RaisePropertyChanged(nameof(ClientNumber));
+            }
+        }
+
         private bool _editFieldClientsState = true;
         public bool EditFieldClientsState
         {
@@ -48,7 +62,7 @@ namespace SOCE.Library.UI
         {
             Id = cdbm.Id;
             ClientName = cdbm.ClientName;
-
+            ClientNumber = cdbm.ClientNumber;
         }
 
         public void UpdateClient()
@@ -57,6 +71,7 @@ namespace SOCE.Library.UI
             {
                 Id = Id,
                 ClientName = ClientName,
+                ClientNumber = ClientNumber
             };
 
             SQLAccess.UpdateClient(client);
@@ -71,7 +86,7 @@ namespace SOCE.Library.UI
                 return false;
             }
 
-            return cm != null && Id == cm.Id && ClientName == cm.ClientName;
+            return cm != null && Id == cm.Id && ClientName == cm.ClientName && ClientNumber == cm.ClientNumber;
         }
 
         public override int GetHashCode()
@@ -82,6 +97,7 @@ namespace SOCE.Library.UI
                 // Suitable nullity checks etc, of course :)
                 hash = hash * 23 + Id.GetHashCode();
                 hash = hash * 23 + ClientName.GetHashCode();
+                hash = hash * 23 + ClientNumber.GetHashCode();
                 return hash;
             }
         }

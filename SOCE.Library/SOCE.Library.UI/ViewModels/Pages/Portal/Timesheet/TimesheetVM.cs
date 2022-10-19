@@ -268,11 +268,6 @@ namespace SOCE.Library.UI.ViewModels
             Rowdata.Remove(trm);
         }
 
-        private void ExportWorkReport()
-        {
-
-        }
-
         /// <summary>
         /// Sum Table
         /// </summary>
@@ -553,6 +548,15 @@ namespace SOCE.Library.UI.ViewModels
                         //get data that needs to be removed
                     }
                 }
+
+                RatesPerProjectDbModel rpp = new RatesPerProjectDbModel()
+                {
+                    ProjectId = trm.Project.Id,
+                    EmployeeId = CurrentEmployee.Id,
+                    Rate = CurrentEmployee.Rate
+                };
+
+                SQLAccess.AddRatesPerProject(rpp);
             }
 
             //deleting

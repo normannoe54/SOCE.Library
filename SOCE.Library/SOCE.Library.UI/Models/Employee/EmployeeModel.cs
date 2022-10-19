@@ -473,11 +473,9 @@ namespace SOCE.Library.UI
             Extension = emdb.Extension;
             Rate = emdb.Rate;
 
-            PTOHours = emdb.PTOHours;
             PTOCarryover = emdb.PTOCarryover;
             PTORate = emdb.PTORate;
 
-            SickHours = emdb.SickHours;
             SickCarryover = emdb.SickCarryover;
             SickRate = emdb.SickRate;
 
@@ -509,9 +507,6 @@ namespace SOCE.Library.UI
                 }
                
             }
-
-
-
 
             TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
             PTOUsed = ptospent;
