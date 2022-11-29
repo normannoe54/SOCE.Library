@@ -21,8 +21,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private string _clientNumberInp;
-        public string ClientNumberInp
+        private int _clientNumberInp;
+        public int ClientNumberInp
         {
             get { return _clientNumberInp; }
             set

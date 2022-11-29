@@ -339,6 +339,7 @@ namespace SOCE.Library.UI.ViewModels
             foreach (ProjectDbModel pdb in dbprojects)
             {
                 ProjectModel pm = new ProjectModel(pdb);
+                pm.LoadSubProjects();
                 bool activetest = submitted ? true : pm.IsActive;
                 if (pm.SubProjects.Count > 0 && activetest)
                 {
@@ -427,7 +428,21 @@ namespace SOCE.Library.UI.ViewModels
                     Project = pmnew
                 };
 
-                SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+                SubProjectModel subpmnew;
+
+                try
+                {
+                    subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+                }
+                catch
+                {
+                    foreach (TimesheetRowDbModel trdm in item)
+                    {
+                        SQLAccess.DeleteTimesheetData(trdm.Id);
+                    }
+
+                    continue;
+                }
 
                 trm.SelectedSubproject = subpmnew;
 
@@ -783,6 +798,11 @@ namespace SOCE.Library.UI.ViewModels
             {
                 trm.Total = trm.Entries.Sum(x => x.TimeEntry);
             }
+            AutoSave();
+        }
+        private void AutoSave()
+        {
+            SaveCommand(0);
         }
     }
 }

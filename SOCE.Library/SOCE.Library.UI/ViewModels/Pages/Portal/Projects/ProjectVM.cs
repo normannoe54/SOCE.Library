@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using SOCE.Library.Db;
@@ -310,6 +311,7 @@ namespace SOCE.Library.UI.ViewModels
         public ProjectVM(EmployeeModel loggedinEmployee)
         {
             CurrentEmployee = loggedinEmployee;
+            
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
@@ -409,9 +411,10 @@ namespace SOCE.Library.UI.ViewModels
                 //show the dialog
                 var result = await DialogHost.Show(view, "RootDialog");
 
-                LoadProjects();
+                pm.LoadSubProjects();
+                pm.UpdateSubProjects();
+                //LoadProjects();
             }
- 
         }
 
         private async void ExecuteRunAddClientDialog(object o)
@@ -439,7 +442,7 @@ namespace SOCE.Library.UI.ViewModels
         private async void ExecuteRunDeleteDialog(object o)
         {
             AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM() ;
+            AreYouSureVM aysvm = new AreYouSureVM();
             switch (o)
             {
                 case ProjectModel pm:
@@ -462,8 +465,7 @@ namespace SOCE.Library.UI.ViewModels
             view.DataContext = aysvm;
             var result = await DialogHost.Show(view, "RootDialog");
 
-            ////show the dialog
-
+            //show the dialog
 
             aysvm = view.DataContext as AreYouSureVM;
 
@@ -485,7 +487,9 @@ namespace SOCE.Library.UI.ViewModels
                         break;
                     case SubProjectModel spm:
                         SQLAccess.ArchiveSubProject(spm.Id);
-                        LoadProjects();
+                        ProjectModel prj = Projects.Where(x => x.Id == spm.ProjectNumber).FirstOrDefault();
+                        prj.LoadSubProjects();
+                        prj.UpdateSubProjects();
                         break;
                     default:
                         // code block
@@ -517,17 +521,24 @@ namespace SOCE.Library.UI.ViewModels
 
             ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
 
-            foreach (ProjectDbModel pdb in dbprojects)
+            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
+
+            //Do not include the last layer
+            Parallel.For(0, dbprojects.Count, i =>
             {
-                if (pdb.ProjectName != "PTO" && pdb.ProjectName != "ADMIN" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
+                ProjectDbModel pdb = dbprojects[i];
+
+                if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
                 {
                     ProjectModel pm = new ProjectModel(pdb, IsEditable);
-                    //pm.SubProjects = submembers;
-                    members.Add(pm);
-                }  
+                    ProjectArray[i] = pm;
+                }
             }
+            );
 
-            Projects = members;
+            ProjectArray = ProjectArray.Where(c => c != null).ToArray();
+
+            Projects = new ObservableCollection<ProjectModel>(ProjectArray.ToList()) ;
 
             List<ProjectModel> activeprojects = Projects.Where(x => x.IsActive == true).ToList();
             NumProjects = activeprojects.Count;

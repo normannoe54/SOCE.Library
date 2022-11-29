@@ -23,6 +23,7 @@
             <RowDefinition />
             <RowDefinition />
             <RowDefinition />
+            <RowDefinition />
         </Grid.RowDefinitions>
         <TextBlock Text="New Employee" Grid.Row="0"/>
         <Grid Grid.Row="1" Margin="0 8 0 0">
@@ -59,14 +60,21 @@
                   SelectedValue="{Binding SelectedAuthorization}"  
                   SelectedValuePath="Value"/>
 
-        <TextBox Grid.Row="7"
+        <ComboBox Grid.Row="7" FontSize="16" Height="50" Margin="0 10 0 10" materialDesign:HintAssist.Hint="Default Role" 
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
+                  DisplayMemberPath="Description" 
+                  SelectedValue="{Binding SelectedDefaultRole}"  
+                  SelectedValuePath="Value"/>
+
+        <TextBox Grid.Row="8"
                  materialDesign:HintAssist.Hint="Billable Rate"
                  Style="{DynamicResource MaterialDesignFloatingHintTextBox}" 
                  Text="{Binding BillableRate}"
                  materialDesign:TextFieldAssist.PrefixText="$"
                  materialDesign:TextFieldAssist.SuffixText="\ hr."
                  Margin="0 8 0 0" FontSize="16"/>
-        <Grid Grid.Row="8">
+        <Grid Grid.Row="9">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
@@ -76,7 +84,7 @@
             <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Sick Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding SickLeave,StringFormat = ' {0} hr./month'}" Margin="0 8 0 0" FontSize="16"/>
             <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="Holiday Hours" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding HolidayHours,StringFormat = ' {0} hr.'}" Margin="0 8 0 0" FontSize="16"/>
         </Grid>
-        <TextBox Grid.Row="9" materialDesign:HintAssist.Hint="Temporary Password" Text="{Binding TemporaryPassInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" />
+        <TextBox Grid.Row="10" materialDesign:HintAssist.Hint="Temporary Password" Text="{Binding TemporaryPassInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" />
         <StackPanel Orientation="Horizontal" Grid.Row="10" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddEmployeeCommand}">
                 <TextBlock Text="ACCEPT"/>

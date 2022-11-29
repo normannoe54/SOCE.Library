@@ -121,6 +121,7 @@ namespace SOCE.Library.UI
                 if (!_editEmployeeRateState && value)
                 {
                     UpdateRatePerProject();
+                    Project.FormatData(false);
                 }
                 _editEmployeeRateState = value;
 
@@ -130,28 +131,17 @@ namespace SOCE.Library.UI
         public RatePerProjectModel()
         { }
 
-        public RatePerProjectModel(RatesPerProjectDbModel rpp, ProjectModel project, double overallFee)
+        public RatePerProjectModel(int id, double rate, int employeeId, ProjectModel project, double totalhours, double overallFee)
         {
-            Id = rpp.Id;
-            Employee = new EmployeeModel(SQLAccess.LoadEmployeeById(rpp.EmployeeId));
+            Id = id;
+            Employee = new EmployeeModel(SQLAccess.LoadEmployeeById(employeeId));
             Project = project;
-            Rate = rpp.Rate;
+            Rate = rate;
             OverallFee = overallFee;
-
-            double total = 0;
-
-            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(Project.Id);
-
-            foreach (SubProjectDbModel spdm in subdbmodels)
-            {
-                List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
-                total += tmdata.Sum(x => x.TimeEntry);
-            }
-            TotalHours = total;
-            TotalBudget = total * Rate;
+            TotalHours = totalhours;
+            TotalBudget = totalhours * Rate;
             PercentofBudget = Math.Round((TotalBudget / OverallFee) * 100, 2);
         }
-
 
         public void UpdateRatePerProject()
         {

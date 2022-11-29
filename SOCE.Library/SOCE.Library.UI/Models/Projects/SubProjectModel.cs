@@ -75,12 +75,9 @@ namespace SOCE.Library.UI
             {
                 _percentBudget = value;
                 RaisePropertyChanged(nameof(PercentBudget));
-                UpdateFee();
             }
         }
         private bool onstartup = true;
-        private bool canupdatepercentbudget = false;
-        private bool canupdatefee = false;
 
 
         private double _totalFee;
@@ -163,9 +160,9 @@ namespace SOCE.Library.UI
             }
             set
             {
-                _fee = value;  
+                _fee = value;
+                PercentBudget = (Fee / TotalFee) * 100;
                 RaisePropertyChanged(nameof(Fee));
-                UpdatePercentBudget();
             }
         }
 
@@ -206,6 +203,7 @@ namespace SOCE.Library.UI
                 if (!_editSubFieldState && value)
                 {
                     UpdateSubProject();
+                    baseproject.UpdateSubProjects();
                 }
                 _editSubFieldState = value;
                 ComboSubFieldState = !_editSubFieldState;
@@ -240,8 +238,6 @@ namespace SOCE.Library.UI
         public SubProjectModel()
         {
             onstartup = false;
-            canupdatepercentbudget = true;
-            canupdatefee = true;
         }
 
         public SubProjectModel(SubProjectDbModel spm)
@@ -249,9 +245,10 @@ namespace SOCE.Library.UI
             Constructor(spm);
         }
 
-        public SubProjectModel(SubProjectDbModel spm, double totalfee)
+        public SubProjectModel(SubProjectDbModel spm, double totalfee, ProjectModel pm)
         {
             TotalFee = totalfee;
+            baseproject = pm;
             Constructor(spm);  
         }
 
@@ -268,8 +265,14 @@ namespace SOCE.Library.UI
             PercentComplete = spm.PercentComplete;
             PercentBudget = spm.PercentBudget;
             onstartup = false;
-            canupdatepercentbudget = true;
-            canupdatefee = true;
+
+        }
+
+        private ProjectModel baseproject;
+
+        public void UpdatePercentBudget()
+        {
+            PercentBudget = (Fee / TotalFee) * 100;
         }
 
         public void UpdateSubProject()
@@ -281,39 +284,14 @@ namespace SOCE.Library.UI
                 PointNumber = PointNumber,
                 Description = Description,
                 Fee = Fee,
+                IsCurrActive = 1,
                 IsActive = IsActive ? 1 : 0,
-                IsInvoiced = IsActive ? 1 : 0,
+                IsInvoiced = IsInvoiced ? 1 : 0,
                 PercentComplete = PercentComplete,
                 PercentBudget = PercentBudget,
             };
 
             SQLAccess.UpdateSubProject(subproject);
-        }
-
-        public void UpdatePercentBudget()
-        {
-            if (!onstartup)
-            {
-                if (canupdatefee)
-                {
-                    canupdatefee = false;
-                    PercentBudget = (Fee / TotalFee) * 100;
-                    canupdatepercentbudget = true;
-                }
-            }
-        }
-
-        public void UpdateFee()
-        {
-            if (!onstartup)
-            {
-                if (canupdatepercentbudget)
-                {
-                    canupdatepercentbudget = false;
-                    Fee = (_percentBudget / 100) * TotalFee;
-                    canupdatefee = true;
-                }
-            }
         }
 
 

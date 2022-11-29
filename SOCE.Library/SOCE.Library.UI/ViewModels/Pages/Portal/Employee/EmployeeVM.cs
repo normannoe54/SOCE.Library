@@ -125,7 +125,7 @@ namespace SOCE.Library.UI.ViewModels
                 EmployeeModel em = new EmployeeModel(emdb);
 
                 //load timesheet submissions?
-                em.CollectTimesheetSubmission();
+                //em.CollectTimesheetSubmission();
 
                 //be able to see your own stuff
                 em.SetEmployeeModelfromUser(CurrentEmployee);

@@ -34,5 +34,6 @@ namespace SOCE.Library.Db
         public double FinalSpent { get; set; }
 
         public int IsCurrActive { get; set; }
+        public string MiscName { get; set; }
     }
 }

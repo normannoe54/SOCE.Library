@@ -25,8 +25,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private string _clientNumber { get; set; }
-        public string ClientNumber
+        private int _clientNumber { get; set; }
+        public int ClientNumber
         {
             get
             {

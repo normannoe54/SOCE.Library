@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
 
         <!--Page Title-->
-        <TextBlock Text="Timesheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
+        <TextBlock Text="Time Sheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
 
         <!--Seprator-->
         <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
@@ -78,15 +78,15 @@
                     <Grid>
                         <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Foreground="Green" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="Percent Complete: %" FontSize="10" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding PercentComplete}" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="Percent Complete: " FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding PercentComplete, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Grid>
                     <Grid>
                         <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="Expected Progress: %" FontSize="10" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding ExpectedProgress}" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="Expected Progress:" FontSize="10" FontWeight="SemiBold"/>
+                            <TextBlock Text="{Binding ExpectedProgress, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold" materialDesign:TextFieldAssist.SuffixText="%"/>
                         </StackPanel>
                     </Grid>
                 </StackPanel>
@@ -125,7 +125,7 @@
                                                TextAlignment="Center"
                                                VerticalAlignment="Center" 
                                                FontWeight="SemiBold" 
-                                               Foreground="Gray">
+                                               Foreground="Black">
                                     </TextBlock>
                                 </Grid>
                             </DataTemplate>
@@ -143,7 +143,7 @@
                              VerticalAlignment="Center" 
                              HorizontalAlignment="Stretch" 
                              FontSize="14" FontWeight="SemiBold" 
-                             Foreground="Gray"/>
+                             Foreground="Black"/>
 
                 </Grid>
 
@@ -305,11 +305,12 @@
                                                     <ColumnDefinition Width="*" />
                                                 </Grid.ColumnDefinitions>
                                                 <TextBox 
-                                                    Text="{Binding TimeEntry,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    Text="{Binding TimeEntry,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Delay=250}"
                                                     materialDesign:TextFieldAssist.SuffixText="hr"
                                                     TextAlignment="Center"
                                                     VerticalContentAlignment="Center"
                                                     VerticalAlignment="Stretch" 
+                                                    local:SelectTextOnFocus.Active = "True"
                                                     FontWeight="SemiBold" 
                                                     BorderBrush="LightGray" 
                                                     Background="{Binding CellColor}"

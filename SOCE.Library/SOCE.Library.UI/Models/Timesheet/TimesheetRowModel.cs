@@ -115,6 +115,7 @@ namespace SOCE.Library.UI
             }
 
             SubProjects = members;
+            SelectedSubproject = SubProjects[0];
         }
 
 

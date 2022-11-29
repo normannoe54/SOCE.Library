@@ -11,6 +11,7 @@ namespace SOCE.Library.Db
         public string LastName { get; set; }
         public string Password { get; set; }
         public int AuthId { get; set; }
+        public int DefaultRoleId { get; set; }
         public string Title { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }

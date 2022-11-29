@@ -73,6 +73,15 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _clientInp = value;
+
+                if (_clientInp.ClientName.ToUpper() == "MISC")
+                {
+                    IsClientInputVisible = Visibility.Visible;
+                }
+                else
+                {
+                    IsClientInputVisible = Visibility.Collapsed;
+                }
                 RaisePropertyChanged("ClientInp");
             }
         }
@@ -110,16 +119,68 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _miscClientInput = "";
+        public string MiscClientInput
+        {
+            get { return _miscClientInput; }
+            set
+            {
+                _miscClientInput = value;
+                RaisePropertyChanged("MiscClientInput");
+            }
+        }
+
+        private Visibility _isClientInputVisible = Visibility.Collapsed;
+        public Visibility IsClientInputVisible
+        {
+            get { return _isClientInputVisible; }
+            set
+            {
+                _isClientInputVisible = value;
+                RaisePropertyChanged("IsClientInputVisible");
+            }
+        }
+
+        
+
         private bool _cDPhase = true;
         public bool CDPhase
         {
             get { return _cDPhase; }
             set
             {
-                if (value || (!value && (CAPhase || PPhase)))
+                if (value || (!value && (CAPhase || PPhase || DDPhase || SDPhase)))
                 {
                     _cDPhase = value;
                     RaisePropertyChanged("CDPhase");
+                }
+            }
+        }
+
+        private bool _sDPhase = true;
+        public bool SDPhase
+        {
+            get { return _sDPhase; }
+            set
+            {
+                if (value || (!value && (CAPhase || PPhase || DDPhase || CDPhase)))
+                {
+                    _sDPhase = value;
+                    RaisePropertyChanged("SDPhase");
+                }
+            }
+        }
+
+        private bool _dDPhase = true;
+        public bool DDPhase
+        {
+            get { return _dDPhase; }
+            set
+            {
+                if (value || (!value && (CAPhase || PPhase || SDPhase || CDPhase)))
+                {
+                    _dDPhase = value;
+                    RaisePropertyChanged("DDPhase");
                 }
             }
         }
@@ -130,7 +191,7 @@ namespace SOCE.Library.UI.ViewModels
             get { return _cAPhase; }
             set
             {
-                if (value || (!value && (CDPhase || PPhase)))
+                if (value || (!value && (SDPhase || PPhase || DDPhase || CDPhase)))
                 {
                     _cAPhase = value;
                     RaisePropertyChanged("CAPhase");
@@ -144,7 +205,7 @@ namespace SOCE.Library.UI.ViewModels
             get { return _pPhase; }
             set
             {
-                if (value || (!value && (CDPhase || CAPhase)))
+                if (value || (!value && (CAPhase || SDPhase || DDPhase || CDPhase)))
                 {
                     _pPhase = value;
                     RaisePropertyChanged("PPhase");
@@ -209,6 +270,7 @@ namespace SOCE.Library.UI.ViewModels
                 Architectfolder = "",
                 Plotfolder = "",
                 ProjectStart = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd")),
+                MiscName = MiscClientInput
             };
 
             int id = SQLAccess.AddProject(project);
@@ -218,6 +280,8 @@ namespace SOCE.Library.UI.ViewModels
             count += CDPhase ? 1 : 0;
             count += CAPhase ? 1 : 0;
             count += PPhase ? 1 : 0;
+            count += SDPhase ? 1 : 0;
+            count += DDPhase ? 1 : 0;
 
 
             if (CDPhase && id !=0)
@@ -261,6 +325,40 @@ namespace SOCE.Library.UI.ViewModels
                     ProjectId = id,
                     PointNumber = "Pre",
                     Description = "Proposal Phase",
+                    Fee = (1 / count) * TotalFeeInp,
+                    IsActive = 1,
+                    IsCurrActive = 1,
+                    IsInvoiced = 0,
+                    PercentComplete = 0,
+                    PercentBudget = (1 / count) * 100,
+                };
+                SQLAccess.AddSubProject(pproj);
+            }
+
+            if (SDPhase && id != 0)
+            {
+                SubProjectDbModel pproj = new SubProjectDbModel
+                {
+                    ProjectId = id,
+                    PointNumber = "SD",
+                    Description = "Schematic Design",
+                    Fee = (1 / count) * TotalFeeInp,
+                    IsActive = 1,
+                    IsCurrActive = 1,
+                    IsInvoiced = 0,
+                    PercentComplete = 0,
+                    PercentBudget = (1 / count) * 100,
+                };
+                SQLAccess.AddSubProject(pproj);
+            }
+
+            if (DDPhase && id != 0)
+            {
+                SubProjectDbModel pproj = new SubProjectDbModel
+                {
+                    ProjectId = id,
+                    PointNumber = "DD",
+                    Description = "Design Developement",
                     Fee = (1 / count) * TotalFeeInp,
                     IsActive = 1,
                     IsCurrActive = 1,

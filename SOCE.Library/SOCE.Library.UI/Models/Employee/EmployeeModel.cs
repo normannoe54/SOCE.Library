@@ -65,6 +65,17 @@ namespace SOCE.Library.UI
             }
         }
 
+        private DefaultRoleEnum _defaultRole;
+        public DefaultRoleEnum DefaultRole
+        {
+            get { return _defaultRole; }
+            set
+            {
+                _defaultRole = value;
+                RaisePropertyChanged(nameof(DefaultRole));
+            }
+        }
+
         private string _title;
         public string Title
         {
@@ -441,6 +452,10 @@ namespace SOCE.Library.UI
             }
             set
             {
+                if (value && !Formatted)
+                {
+                    CollectTimesheetSubmission();
+                }
                 if (IsEditable)
                 {
                     _canExpand = value;
@@ -448,6 +463,8 @@ namespace SOCE.Library.UI
                 }
             }
         }
+
+        public bool Formatted = false;
 
         public EmployeeModel()
         { }
@@ -458,7 +475,7 @@ namespace SOCE.Library.UI
             FirstName = emdb.FirstName;
             LastName = emdb.LastName;
             FullName = FirstName + " " + LastName;
-            
+            DefaultRole = ((DefaultRoleEnum)emdb.DefaultRoleId);
             Status = ((AuthEnum)emdb.AuthId);
             Title = emdb.Title;
             Email = emdb.Email;

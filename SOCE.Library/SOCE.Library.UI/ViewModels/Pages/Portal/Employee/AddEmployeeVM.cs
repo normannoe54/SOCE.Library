@@ -142,6 +142,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private DefaultRoleEnum _selectedDefaultRole;
+        public DefaultRoleEnum SelectedDefaultRole
+        {
+            get { return _selectedDefaultRole; }
+            set
+            {
+                _selectedDefaultRole = value;
+                RaisePropertyChanged("SelectedDefaultRole");
+            }
+        }
+
         public ICommand AddEmployeeCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
@@ -153,11 +164,13 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddEmployee()
         {
+
             EmployeeDbModel employee = new EmployeeDbModel()
             {   FirstName = FirstNameInp, 
                 LastName = LastNameInp, 
                 Title = TitleInp, 
                 AuthId = (int)SelectedAuthorization, 
+                DefaultRoleId = (int)SelectedDefaultRole,
                 Email = EmailInp + "@shirkodonovan.com", 
                 PhoneNumber = PhoneNumberInp, 
                 Extension = ExtensionInp,

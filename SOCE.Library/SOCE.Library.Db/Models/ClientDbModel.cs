@@ -10,7 +10,7 @@ namespace SOCE.Library.Db
     {
         public int Id { get; set; }
 
-        public string ClientNumber { get; set; }
+        public int ClientNumber { get; set; }
         public string ClientName { get; set; }
         public int IsActive { get; set; }
     }

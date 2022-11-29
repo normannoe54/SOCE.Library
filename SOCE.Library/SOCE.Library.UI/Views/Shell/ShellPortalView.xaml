@@ -38,9 +38,9 @@
                                 <Border Background="#ffffff" CornerRadius="50" Width="45" Height="45"/>
 
                                 <Border Width="45" Height="45" BorderThickness="3" BorderBrush="#ffffff" CornerRadius="50">
-                                    <Border.Effect>
+                                    <!--<Border.Effect>
                                         <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
-                                    </Border.Effect>
+                                    </Border.Effect>-->
                                     <Image  Source="/SOCE.Library.UI;component/Resources/SOCEIcon.png" />
                                 </Border>
                             </Grid>

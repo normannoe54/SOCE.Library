@@ -1,16 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using MaterialDesignThemes.Wpf;
+﻿using MaterialDesignThemes.Wpf;
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SOCE.Library.Db;
 using SOCE.Library.UI.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Linq;
+using System.Windows;
+using System.Windows.Input;
+using System.Windows.Media;
 
 namespace SOCE.Library.UI
 {
@@ -280,7 +281,6 @@ namespace SOCE.Library.UI
             }
         }
 
-
         private double _totalBudget = 0;
         public double TotalBudget
         {
@@ -349,6 +349,8 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double AvgRate = 0;
+
         private PackIconKind _iconforBudgetSummary = PackIconKind.CheckboxMarkedOutline;
         public PackIconKind IconforBudgetSummary
         {
@@ -374,6 +376,10 @@ namespace SOCE.Library.UI
             }
             set
             {
+                if (value && !Formatted)
+                {
+                    FormatData(true);
+                }
                 if (IsEditable)
                 {
                     _canExpand = value;
@@ -415,6 +421,9 @@ namespace SOCE.Library.UI
         #region constructors
         public ProjectModel()
         {
+            //SubProjects.CollectionChanged += this.SubProjectChanged;
+            //RatePerProject.CollectionChanged += this.RatesChanged;
+
             this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
             this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
             this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
@@ -435,6 +444,9 @@ namespace SOCE.Library.UI
 
         public ProjectModel(ProjectDbModel pm, bool iseditable = true)
         {
+            //SubProjects.CollectionChanged += this.SubProjectChanged;
+            //RatePerProject.CollectionChanged += this.RatesChanged;
+
             IsEditable = iseditable;
             this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
             this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
@@ -479,26 +491,160 @@ namespace SOCE.Library.UI
             Drawingsfolder = pm.Drawingsfolder;
             Architectfolder = pm.Architectfolder;
             Plotfolder = pm.Plotfolder;
-            FormatData();
+            TotalBudget = Fee;
+            //FormatData();
             onstartup = true;
 
         }
         #endregion
 
-        public void FormatData()
+        //private void RatesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.NewItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.NewItems)
+        //        {
+        //            RatePerProjectModel rpm = (RatePerProjectModel)added;
+
+        //            rpm.PropertyChanged += RateItemModificationOnPropertyChanged;
+        //        }
+        //    }
+
+        //    if (e.OldItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.OldItems)
+        //        {
+        //            RatePerProjectModel rpm = (RatePerProjectModel)added;
+
+        //            rpm.PropertyChanged -= RateItemModificationOnPropertyChanged;
+        //        }
+        //    }
+        //}
+
+        //private void RateItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        //{
+        //    FormatData(false);
+        //}
+
+
+        //private void SubProjectChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.NewItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.NewItems)
+        //        {
+        //            SubProjectModel spm = (SubProjectModel)added;
+
+        //            spm.PropertyChanged += SubItemModificationOnPropertyChanged;
+        //        }
+        //    }
+
+        //    if (e.OldItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.OldItems)
+        //        {
+        //            SubProjectModel spm = (SubProjectModel)added;
+
+        //            spm.PropertyChanged -= SubItemModificationOnPropertyChanged;
+        //        }
+        //    }
+        //}
+
+        //private void SubItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        //{
+        //    UpdateSubProjects();
+        //}
+
+        public void UpdateTotalBudget()
         {
+            TotalBudget = 0;
+
+            foreach (SubProjectModel spm in SubProjects)
+            {
+                TotalBudget += spm.Fee;
+            }
+
+        }
+
+        public void UpdateSubProjects()
+        {
+            TotalBudget = 0;
+
+            foreach (SubProjectModel spm in SubProjects)
+            {
+                TotalBudget += spm.Fee;
+            }
+
+            SQLAccess.UpdateFee(Id, TotalBudget);
+
+            //update total budget
+
+            //turn off item mo
+            foreach (SubProjectModel spm in SubProjects)
+            {
+                //spm.PropertyChanged -= SubItemModificationOnPropertyChanged;
+                spm.TotalFee = TotalBudget;
+                spm.UpdatePercentBudget();
+
+                SubProjectDbModel subproject = new SubProjectDbModel()
+                {
+                    Id = spm.Id,
+                    ProjectId = spm.ProjectNumber,
+                    PointNumber = spm.PointNumber,
+                    Description = spm.Description,
+                    Fee = spm.Fee,
+                    IsCurrActive = 1,
+                    IsActive = spm.IsActive ? 1 : 0,
+                    IsInvoiced = spm.IsInvoiced ? 1 : 0,
+                    PercentComplete = spm.PercentComplete,
+                    PercentBudget = spm.PercentBudget,
+                };
+
+                SQLAccess.UpdateSubProject(subproject);
+
+                //spm.PropertyChanged += SubItemModificationOnPropertyChanged;
+
+            }
+
+            UpdateData();
+        }
+
+        public void LoadSubProjects()
+        {
+            SubProjects.Clear();
+            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(Id);
+
+            foreach (SubProjectDbModel spdm in subdbmodels)
+            {
+                SubProjectModel spm = new SubProjectModel(spdm, Fee, this);
+                SubProjects.Add(spm);
+            }
+        }
+
+        public bool Formatted = false;
+
+        public void FormatData(bool addistrue)
+        {
+            SubProjects.Clear();
+            Formatted = true;
             TotalBudget = Fee;
 
             List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
 
             //total
             //get all subprojectIds associated with projectId
-            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(Id);
+            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadAllSubProjectsByProject(Id);
 
             foreach (SubProjectDbModel spdm in subdbmodels)
             {
-                SubProjectModel spm = new SubProjectModel(spdm, Fee);
-                SubProjects.Add(spm);
+                if (addistrue)
+                {
+                    if (spdm.IsCurrActive == 1)
+                    {
+                        SubProjectModel spm = new SubProjectModel(spdm, Fee, this);
+                        SubProjects.Add(spm);
+                    }
+                }
                 List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
                 total.AddRange(tmdata);
             }
@@ -507,6 +653,10 @@ namespace SOCE.Library.UI
             double hourstotal = 0;
             double budgetspent = 0;
             int count = 1;
+
+            List<RatesPerProjectDbModel> ratesdbmodel = SQLAccess.LoadRatesPerProject(Id);
+            //List<RatePerProjectModel> rpms = new List<RatePerProjectModel>();
+
 
             if (total.Count != 0)
             {
@@ -523,40 +673,51 @@ namespace SOCE.Library.UI
                         List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
                         double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
-                        hourstotal += hours;
 
-                        double budgetperemployee = hours * employee.Rate;
+                        RatesPerProjectDbModel rpdm = ratesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
+                        double rate = employee.Rate;
+                        //get rate
+                        if (rpdm != null)
+                        {
+                            RatePerProjectModel rpm = new RatePerProjectModel(rpdm.Id, rpdm.Rate, rpdm.EmployeeId, this, hours, Fee);
+                            rate = rpdm.Rate;
+                            //catch for strange shenanigans
+                            if (rpm.TotalHours == 0)
+                            {
+                                //remove
+                                SQLAccess.DeleteRatesPerProject(rpm.Id);
+                            }
+                            else
+                            {
+                                if (addistrue)
+                                {
+                                    RatePerProject.Add(rpm);
+                                }
+                            }
+                        }
+
+                        hourstotal += hours;
+                        double budgetperemployee = hours * rate;
                         budgetspent += budgetperemployee;
-                        averagerate += employee.Rate;
+                        averagerate += rate*hours;
                         count++;
+
                     }
                 }
-            }     
+            }
 
             HoursSpent = hourstotal;
             BudgetSpent = budgetspent;
+            AvgRate = (averagerate/hourstotal) / count;
+
+            UpdateData();
+        }
+
+        public void UpdateData()
+        {
             BudgetLeft = TotalBudget - BudgetSpent;
-            PercentBudgetSpent = Math.Min(Math.Ceiling((BudgetSpent / TotalBudget) * 100), 100);
-            HoursLeft = Math.Round(Math.Max(0, BudgetLeft / (averagerate / count)),2);
-
-            //IconforBudgetSummary = PercentBudgetSpent > PercentComplete ? PackIconKind.AlertCircleOutline : PackIconKind.CheckboxMarkedOutline;
-            //PercentCompleteColor = PercentBudgetSpent > PercentComplete ? Brushes.Red : Brushes.Green;
-
-            List<RatesPerProjectDbModel> ratesdbmodel = SQLAccess.LoadRatesPerProject(Id);
-
-            foreach (RatesPerProjectDbModel rpp in ratesdbmodel)
-            {
-                RatePerProjectModel rpm = new RatePerProjectModel(rpp, this, Fee);
-
-                //catch for strange shenanigans
-                if (rpm.TotalHours == 0)
-                {
-                    //remove
-                    SQLAccess.DeleteRatesPerProject(rpm.Id);
-                }
-
-                RatePerProject.Add(rpm);
-            }
+            PercentBudgetSpent = Math.Min(Math.Round((BudgetSpent / TotalBudget) * 100, 2), 100);
+            HoursLeft = Math.Round(Math.Max(0, BudgetLeft / AvgRate), 2);
         }
 
         #region project folder
@@ -691,6 +852,7 @@ namespace SOCE.Library.UI
                 ManagerId = ProjectManager.Id,
                 Fee = Fee,
                 IsActive = IsActive ? 1 : 0,
+                IsCurrActive = 1,
                 PercentComplete = PercentComplete,
                 Projectfolder = Projectfolder,
                 Drawingsfolder = Drawingsfolder,
@@ -725,4 +887,6 @@ namespace SOCE.Library.UI
         }
 
     }
+
+
 }
