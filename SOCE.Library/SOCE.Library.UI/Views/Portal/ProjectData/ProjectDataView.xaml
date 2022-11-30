@@ -171,7 +171,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Hours Spent"/>
-                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalHourSpent, Mode=OneWay, StringFormat=' {0} hr.'}"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalHourSpent, Mode=OneWay, StringFormat='{}{0:#,0.##} hr.'}"/>
                         </Grid>
                     </materialDesign:Card>
 
@@ -182,7 +182,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Budget Spent"/>
-                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalBudgetSpent, Mode=OneWay, StringFormat='$ {0}'}"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalBudgetSpent, Mode=OneWay, StringFormat='{}{0:#,0.##}'}"/>
                         </Grid>
                     </materialDesign:Card>
 
@@ -193,7 +193,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Total Budget"/>
-                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalBudget, Mode=OneWay, StringFormat='$ {0}'}"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding TotalBudget, Mode=OneWay, StringFormat='{}{0:#,0.##}'}" />
                         </Grid>
                     </materialDesign:Card>
 
@@ -204,7 +204,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Budget Left"/>
-                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding BudgetLeft, Mode=OneWay, StringFormat='$ {0}'}"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding BudgetLeft, Mode=OneWay, StringFormat='{}{0:#,0.##}'}"/>
                         </Grid>
                     </materialDesign:Card>
 
@@ -215,7 +215,7 @@
                                 <RowDefinition Height="*"/>
                             </Grid.RowDefinitions>
                             <TextBlock Margin="0 0 0 10" Grid.Row="0" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Thin" Text="Hours Left"/>
-                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding EstimatedHoursLeft, Mode=OneWay, StringFormat=' {0} hr.'}"/>
+                            <TextBlock Grid.Row="1" TextWrapping="Wrap" HorizontalAlignment="Center" FontSize="16" FontWeight="Bold" Text="{Binding EstimatedHoursLeft, Mode=OneWay, StringFormat='{}{0:#,0.##} hr.'}"/>
                         </Grid>
                     </materialDesign:Card>
                 </Grid>

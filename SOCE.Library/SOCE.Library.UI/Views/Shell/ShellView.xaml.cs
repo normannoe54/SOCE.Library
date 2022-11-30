@@ -19,6 +19,10 @@ namespace SOCE.Library.UI.Views
     {
         public ShellView()
         {
+            //microsoft get your shit togethor
+            //https://stackoverflow.com/questions/36811199/trouble-binding-a-floating-point-input-field-in-wpf
+            FrameworkCompatibilityPreferences.KeepTextBoxDisplaySynchronizedWithTextProperty = false;
+
             InitializeComponent();
             this.MaxHeight = SystemParameters.MaximizedPrimaryScreenHeight;
             this.DataContext = IoCCore.Application;

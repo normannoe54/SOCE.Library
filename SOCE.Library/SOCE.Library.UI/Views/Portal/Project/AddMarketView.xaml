@@ -16,7 +16,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Text="New Market" Grid.Row="0"/>
+        <TextBlock Grid.Column="0" Text="New Market" FontSize="24" />
         <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Market Name" Text="{Binding MarketNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
 
         <StackPanel Orientation="Horizontal" Grid.Row="2" Margin="0 16 0 0">

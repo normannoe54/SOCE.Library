@@ -397,6 +397,19 @@ namespace SOCE.Library.UI
         //    }
         //}
 
+
+        private bool _canReviewTimesheet;
+        public bool CanReviewTimesheet
+        {
+            get { return _canReviewTimesheet; }
+            set
+            {
+                _canReviewTimesheet = value;
+                RaisePropertyChanged(nameof(CanReviewTimesheet));
+            }
+        }
+
+
         private bool _enabledforView;
         public bool EnabledforView
         {
@@ -513,10 +526,11 @@ namespace SOCE.Library.UI
             List<TimesheetSubmissionDbModel> dbdata = SQLAccess.LoadTimesheetSubmissionByEmployee(Id);
             foreach (TimesheetSubmissionDbModel tsmdb in dbdata)
             {
+                tsm.Add(new TimesheetSubmissionModel(tsmdb, this));
+
                 if (Convert.ToBoolean(tsmdb.Approved))
                 {
                     count++;
-                    tsm.Add(new TimesheetSubmissionModel(tsmdb, this));
                     ptospent += tsmdb.PTOHours;
                     otspent += tsmdb.OTHours;
                     sickspent += tsmdb.SickHours;
@@ -578,6 +592,12 @@ namespace SOCE.Library.UI
             if (Id == currentuser.Id)
             {
                 IsEditable = true;
+                CanReviewTimesheet = true;
+
+            }
+            else
+            {
+                CanReviewTimesheet = false;
             }
         }
 

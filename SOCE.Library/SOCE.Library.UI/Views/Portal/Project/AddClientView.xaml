@@ -17,7 +17,7 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Text="New Client" Grid.Row="0"/>
+        <TextBlock Grid.Column="0" Text="New Client" FontSize="24" />
         <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Client Number" Text="{Binding ClientNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
         <TextBox Grid.Row="2" materialDesign:HintAssist.Hint="Client Name" Text="{Binding ClientNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
 

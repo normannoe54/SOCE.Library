@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:SOCE.Library.UI"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Background="Transparent" Width="400" >
+             Background="Transparent" Width="450" >
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
@@ -25,7 +25,30 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Text="New Employee" Grid.Row="0"/>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions >
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="New Employee" FontSize="24" />
+
+            <TextBlock Margin="30 0 0 0" Grid.Column="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
         <Grid Grid.Row="1" Margin="0 8 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -58,14 +81,26 @@
                   ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:AuthEnum}}}" 
                   DisplayMemberPath="Description" 
                   SelectedValue="{Binding SelectedAuthorization}"  
-                  SelectedValuePath="Value"/>
+                  SelectedValuePath="Value">
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+        </ComboBox>
 
         <ComboBox Grid.Row="7" FontSize="16" Height="50" Margin="0 10 0 10" materialDesign:HintAssist.Hint="Default Role" 
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
                   DisplayMemberPath="Description" 
                   SelectedValue="{Binding SelectedDefaultRole}"  
-                  SelectedValuePath="Value"/>
+                  SelectedValuePath="Value">
+            <ComboBox.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel />
+                </ItemsPanelTemplate>
+            </ComboBox.ItemsPanel>
+        </ComboBox>
 
         <TextBox Grid.Row="8"
                  materialDesign:HintAssist.Hint="Billable Rate"
@@ -80,12 +115,12 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="PTO Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding YearlyPTO,StringFormat = ' {0} hr./month'}" Margin="0 8 0 0" FontSize="16"/>
-            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Sick Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding SickLeave,StringFormat = ' {0} hr./month'}" Margin="0 8 0 0" FontSize="16"/>
-            <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="Holiday Hours" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding HolidayHours,StringFormat = ' {0} hr.'}" Margin="0 8 0 0" FontSize="16"/>
+            <TextBox Grid.Column="0" materialDesign:HintAssist.Hint="PTO Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding YearlyPTO}" Margin="0 8 10 0" FontSize="16" materialDesign:TextFieldAssist.SuffixText="hr./month" HorizontalAlignment="Stretch"/>
+            <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="Sick Rate" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding SickLeave}" Margin="10 8 10 0" FontSize="16" materialDesign:TextFieldAssist.SuffixText="hr./month" HorizontalAlignment="Stretch"/>
+            <TextBox Grid.Column="2" materialDesign:HintAssist.Hint="Holiday Hours" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Text="{Binding HolidayHours}" Margin="10 8 0 0" FontSize="16" materialDesign:TextFieldAssist.SuffixText="hr." HorizontalAlignment="Stretch"/>
         </Grid>
         <TextBox Grid.Row="10" materialDesign:HintAssist.Hint="Temporary Password" Text="{Binding TemporaryPassInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" />
-        <StackPanel Orientation="Horizontal" Grid.Row="10" Margin="0 16 0 0">
+        <StackPanel Orientation="Horizontal" Grid.Row="11" Margin="0 16 0 0">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddEmployeeCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>

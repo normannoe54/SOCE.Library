@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 using System.Windows.Media;
 
@@ -54,9 +55,12 @@ namespace SOCE.Library.UI
             }
             set
             {
-                _timeentry = value;
-                //SetTotal();
-                RaisePropertyChanged(nameof(TimeEntry));
+                if (_timeentry != value)
+                {
+                    _timeentry = value;
+                    RaisePropertyChanged(nameof(TimeEntry));
+
+                }
             }
         }
 

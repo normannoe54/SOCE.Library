@@ -32,6 +32,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToAddEmployee { get; set; }
 
         public ICommand DeleteEmployee { get; set; }
+        public ICommand GoToTimesheetCommand { get; set; }
+
 
         private bool _canAddEmployee = false;
         public bool CanAddEmployee
@@ -71,14 +73,22 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         
-
         public EmployeeVM(EmployeeModel loggedinEmployee)
         {
             CurrentEmployee = loggedinEmployee;
             this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
-
+            this.GoToTimesheetCommand = new RelayCommand<object>(GoToTimesheet);
             LoadEmployees();
+        }
+
+        public void GoToTimesheet(object o)
+        {
+            TimesheetSubmissionModel tsm = (TimesheetSubmissionModel)o;
+            BaseAI CurrentPage = IoCPortal.Application as BaseAI;
+            PortalAI portAI = (PortalAI)CurrentPage;
+            portAI.GoToTimesheetByDate(tsm.Date);
+
         }
 
         private async void ExecuteRunAddDialog(object o)
@@ -89,7 +99,13 @@ namespace SOCE.Library.UI.ViewModels
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
 
-            LoadEmployees();
+            AddEmployeeVM vm = view.DataContext as AddEmployeeVM;
+            bool resultvm = vm.result;
+
+            if (resultvm)
+            {
+                LoadEmployees();
+            }
         }
 
         private async void ExecuteRunDeleteDialog(object o)

@@ -110,6 +110,11 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        public void GoToTimesheetByDate(DateTime date)
+        {
+            CurrentPage = new TimesheetVM(LoggedInEmployee,date);
+        }
+
         public void GoToLogin()
         {
             CoreAI globalwindow = (CoreAI)IoCCore.Application;

@@ -442,7 +442,7 @@ namespace SOCE.Library.UI
             onstartup = true;
         }
 
-        public ProjectModel(ProjectDbModel pm, bool iseditable = true)
+        public ProjectModel(ProjectDbModel pm, bool iseditable = true, bool filter = false )
         {
             //SubProjects.CollectionChanged += this.SubProjectChanged;
             //RatePerProject.CollectionChanged += this.RatesChanged;
@@ -467,7 +467,8 @@ namespace SOCE.Library.UI
             Id = pm.Id;
             ProjectName = pm.ProjectName;
             ProjectNumber = pm.ProjectNumber;
-            SearchText = String.Format("{0} {1}", ProjectName, ProjectNumber.ToString());
+            SearchText = filter ? pm.ProjectName : pm.ProjectNumber.ToString();
+            //SearchText = String.Format("{0} {1}", ProjectNumber.ToString(), ProjectName);
             Fee = pm.Fee;
             IsActive = Convert.ToBoolean(pm.IsActive);
             PercentComplete = pm.PercentComplete;
@@ -494,7 +495,6 @@ namespace SOCE.Library.UI
             TotalBudget = Fee;
             //FormatData();
             onstartup = true;
-
         }
         #endregion
 
@@ -625,7 +625,11 @@ namespace SOCE.Library.UI
 
         public void FormatData(bool addistrue)
         {
-            SubProjects.Clear();
+            if (addistrue)
+            {
+                SubProjects.Clear();
+            }
+
             Formatted = true;
             TotalBudget = Fee;
 
@@ -737,7 +741,10 @@ namespace SOCE.Library.UI
 
         public void CopyProjectFolder()
         {
-            Clipboard.SetText(Projectfolder);
+            if (Projectfolder!=null)
+            {
+                Clipboard.SetText(Projectfolder);
+            }
         }
 
         public void OpenProjectFolder()
@@ -767,7 +774,10 @@ namespace SOCE.Library.UI
 
         public void CopyArchFolder()
         {
-            Clipboard.SetText(Architectfolder);
+            if (Architectfolder != null)
+            {
+                Clipboard.SetText(Architectfolder);
+            }
         }
 
         public void OpenArchFolder()
@@ -797,7 +807,10 @@ namespace SOCE.Library.UI
 
         public void CopyDrawingsFolder()
         {
-            Clipboard.SetText(Drawingsfolder);
+            if (Drawingsfolder != null)
+            {
+                Clipboard.SetText(Drawingsfolder);
+            }
         }
 
         public void OpenDrawingsFolder()
@@ -827,7 +840,10 @@ namespace SOCE.Library.UI
 
         public void CopyPlotFolder()
         {
-            Clipboard.SetText(Plotfolder);
+            if (Plotfolder != null)
+            {
+                Clipboard.SetText(Plotfolder);
+            }
         }
 
         public void OpenPlotFolder()

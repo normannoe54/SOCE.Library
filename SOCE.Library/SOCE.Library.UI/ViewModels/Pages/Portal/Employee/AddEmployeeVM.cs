@@ -10,6 +10,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class AddEmployeeVM : BaseVM
     {
+        public bool result = false;
         private string _firstNameInp;
         public string FirstNameInp
         {
@@ -84,6 +85,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _temporaryPassInp = value;
                 RaisePropertyChanged("TemporaryPassInp");
+            }
+        }
+
+        private string _errorMessage;
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                RaisePropertyChanged("ErrorMessage");
             }
         }
 
@@ -164,6 +176,13 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddEmployee()
         {
+            if (String.IsNullOrEmpty(FirstNameInp) || String.IsNullOrEmpty(LastNameInp) || String.IsNullOrEmpty(TitleInp) || SelectedAuthorization == null || SelectedDefaultRole == null || String.IsNullOrEmpty(EmailInp) ||
+                 String.IsNullOrEmpty(PhoneNumberInp) || String.IsNullOrEmpty(ExtensionInp) || BillableRate == 0 || YearlyPTO == 0 || SickLeave == 0 || HolidayHours == 0 || String.IsNullOrEmpty(TemporaryPassInp))
+            {
+                ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                return;
+            }
+
 
             EmployeeDbModel employee = new EmployeeDbModel()
             {   FirstName = FirstNameInp, 
@@ -185,8 +204,11 @@ namespace SOCE.Library.UI.ViewModels
 
             SQLAccess.AddEmployee(employee);
 
+            result = true;
+
             //do stuff
             CloseWindow();
+
         }
 
         private void CloseWindow()

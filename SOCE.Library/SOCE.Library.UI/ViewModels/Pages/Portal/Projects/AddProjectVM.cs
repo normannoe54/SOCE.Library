@@ -11,6 +11,7 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class AddProjectVM : BaseVM
     {
+        public bool result = false;
         private string _projectNameInp;
         public string ProjectNameInp
         {
@@ -141,7 +142,16 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        
+        private string _errorMessage = "";
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                RaisePropertyChanged("ErrorMessage");
+            }
+        }
 
         private bool _cDPhase = true;
         public bool CDPhase
@@ -254,6 +264,12 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddProject()
         {
+            if(String.IsNullOrEmpty(ProjectNameInp) || ProjectNumberInp == 0 || ClientInp == null || MarketInp ==null || PMInp == null )
+            {
+                ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                return;
+            }
+
             ProjectDbModel project = new ProjectDbModel
             {
                 ProjectName = ProjectNameInp,
@@ -369,6 +385,7 @@ namespace SOCE.Library.UI.ViewModels
                 SQLAccess.AddSubProject(pproj);
             }
 
+            result = true;
 
             //do stuff
             CloseWindow();

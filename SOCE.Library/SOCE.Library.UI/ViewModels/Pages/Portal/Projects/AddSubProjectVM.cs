@@ -12,6 +12,8 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class AddSubProjectVM : BaseVM
     {
+        public bool result = false;
+
         private ProjectModel baseProject = new ProjectModel();
         public ProjectModel BaseProject
         {
@@ -255,21 +257,21 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     
                     subproject.PointNumber = "CA";
-                    subproject.Description = "Construction Document Phase";
+                    subproject.Description = "Construction Document";
                     SQLAccess.AddSubProject(subproject);
                 }
 
                 if (CAPhase && CAPhase)
                 {
                     subproject.PointNumber = "CD";
-                    subproject.Description = "Construction Administration Phase";
+                    subproject.Description = "Construction Administration";
                     SQLAccess.AddSubProject(subproject);
                 }
 
                 if (PPhase && PPhase)
                 {
                     subproject.PointNumber = "Pre";
-                    subproject.Description = "Preposal Phase";
+                    subproject.Description = "Proposal Phase";
                     SQLAccess.AddSubProject(subproject);
                 }
 
@@ -293,7 +295,7 @@ namespace SOCE.Library.UI.ViewModels
                 BaseProject.Fee += AdditionalServicesFee;
                 SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee);
             }
-            
+            result = true;
             //do stuff
             CloseWindow();
         }
