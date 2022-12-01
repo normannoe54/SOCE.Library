@@ -57,6 +57,11 @@ namespace SOCE.Library.UI.ViewModels
                 _rowdata = value;
                 //SumTable();
                 //CollectDates();
+
+                if (Rowdata.Count == 0)
+                {
+
+                }
                 RaisePropertyChanged(nameof(Rowdata));
             }
         }
@@ -69,6 +74,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _projectList = value;
                 RaisePropertyChanged(nameof(ProjectList));
+            }
+        }
+
+        private bool _canPressButton = false;
+        public bool CanPressButton
+        {
+            get { return _canPressButton; }
+            set
+            {
+                _canPressButton = value;
+                RaisePropertyChanged(nameof(CanPressButton));
             }
         }
 
@@ -381,6 +397,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 //if (pm.SubProjects.Count > 0 && activetest)
                 //{
+
                 if (activetest)
                 {
                     ProjectArray[i] = pm;
@@ -704,23 +721,31 @@ namespace SOCE.Library.UI.ViewModels
         /// <param name="currdate"></param>
         private async void CopyPrevious()
         {
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
-            aysvm.TexttoDisplay = "copy the previous timesheet?";
-            aysvm.WordNeeded = "";
-            view.DataContext = aysvm;
-            var result = await DialogHost.Show(view, "RootDialog");
-            aysvm = view.DataContext as AreYouSureVM;
-
-            if (aysvm.Result)
+            if (Rowdata.Count==0)
             {
+                AreYouSureView view = new AreYouSureView();
+                AreYouSureVM aysvm = new AreYouSureVM();
+                aysvm.TexttoDisplay = "copy the previous timesheet?";
+                aysvm.WordNeeded = "";
+                view.DataContext = aysvm;
+                var result = await DialogHost.Show(view, "RootDialog");
+                aysvm = view.DataContext as AreYouSureVM;
 
-                DateTime currdate = DateSummary.First().Value.AddDays(-1);
-                //UpdateDateSummary(currdate);
-                bool issubmitted = LoadTimesheetSubmissionData();
-                LoadProjects(issubmitted);
-                LoadTimesheetDataforCopyPrevious();
+                if (aysvm.Result)
+                {
+
+                    DateTime currdate = DateSummary.First().Value.AddDays(-1);
+                    //UpdateDateSummary(currdate);
+                    bool issubmitted = LoadTimesheetSubmissionData();
+                    LoadProjects(issubmitted);
+                    LoadTimesheetDataforCopyPrevious();
+                }
             }
+            else
+            {
+                //Message sorry fam
+            }
+            
         }
 
         private void LoadTimesheetDataforCopyPrevious()
@@ -872,6 +897,9 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
             }
+
+            CanPressButton = Rowdata.Count == 0 ? true : false;
+            
         }
 
         private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

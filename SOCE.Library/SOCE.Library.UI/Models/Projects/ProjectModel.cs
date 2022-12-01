@@ -421,28 +421,9 @@ namespace SOCE.Library.UI
         #region constructors
         public ProjectModel()
         {
-            //SubProjects.CollectionChanged += this.SubProjectChanged;
-            //RatePerProject.CollectionChanged += this.RatesChanged;
-
-            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
-            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
-            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
-
-            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
-            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
-            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
-
-            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
-            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
-            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
-
-            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
-            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
-            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
-            onstartup = true;
         }
 
-        public ProjectModel(ProjectDbModel pm, bool iseditable = true, bool filter = false )
+        public ProjectModel(ProjectDbModel pm, bool iseditable = true, bool filter = false)
         {
             //SubProjects.CollectionChanged += this.SubProjectChanged;
             //RatePerProject.CollectionChanged += this.RatesChanged;
@@ -494,6 +475,64 @@ namespace SOCE.Library.UI
             Plotfolder = pm.Plotfolder;
             TotalBudget = Fee;
             //FormatData();
+            onstartup = true;
+        }
+
+        public ProjectModel(ProjectDbModel pm)
+        {
+            //SubProjects.CollectionChanged += this.SubProjectChanged;
+            //RatePerProject.CollectionChanged += this.RatesChanged;
+
+            //IsEditable = iseditable;
+            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
+            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
+            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
+
+            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
+            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
+            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
+
+            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
+            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
+            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
+
+            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
+            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
+            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+
+            Id = pm.Id;
+            ProjectName = pm.ProjectName;
+            ProjectNumber = pm.ProjectNumber;
+            SearchText = pm.ProjectName;
+            //SearchText = String.Format("{0} {1}", ProjectNumber.ToString(), ProjectName);
+            Fee = pm.Fee;
+            IsActive = Convert.ToBoolean(pm.IsActive);
+            //PercentComplete = pm.PercentComplete;
+            //ProjectStart = pm.ProjectStart;
+            //ProjectEnd = pm.ProjectEnd;
+            //FinalSpent = pm.FinalSpent;
+
+            //FormatData();
+            //onstartup = true;
+        }
+
+        private void Constructor()
+        {
+            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
+            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
+            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
+
+            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
+            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
+            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
+
+            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
+            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
+            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
+
+            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
+            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
+            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
             onstartup = true;
         }
         #endregion
