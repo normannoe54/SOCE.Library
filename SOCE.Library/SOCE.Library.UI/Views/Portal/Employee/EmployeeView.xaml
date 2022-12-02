@@ -75,8 +75,6 @@
                                             </Border>
                                         </Button.Content>
                                     </Button>
-                                    <!--Content="{materialDesign:PackIcon Kind=Lock}"-->
-                                    <!--materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=ContentSave}"-->
                                     <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"               
                                       Foreground="White"
                                       IsEnabled="{Binding CanEditorDelete}"
@@ -107,11 +105,6 @@
                                   SelectedValuePath="Value"/>
                                 <VirtualizingStackPanel Margin="50 0 0 0" Grid.Column="5" Orientation="Horizontal">
                                     <materialDesign:PackIcon  Margin="10 0 0 0" Background="Transparent" Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
-                                    <!--<Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Background="Transparent" ToolTip="Email" Width="30" Margin="10 0 0 0" Padding="0">
-                                        <Button.Content>
-                                            
-                                        </Button.Content>
-                                    </Button>-->
                                     <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding EmailForward}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
                                     <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
                                 </VirtualizingStackPanel>

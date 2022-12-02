@@ -129,8 +129,9 @@ namespace SOCE.Library.UI.ViewModels
         {           
             CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
-            portAI.LoggedInEmployee = employee;
-            portAI.CurrentPage = new TimesheetVM(employee);
+            portAI.Initiate(employee);
+            //portAI.CurrentPage = new TimesheetVM(employee);
+            portAI.GoToPage(PortalPage.Timesheet);
             WindowType = WindowState.Maximized;
             DetermineIcon();
             WidthRef = 1900;

@@ -70,6 +70,13 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private EmployeeVM employeeVM;
+        private TimesheetVM timesheetVM;
+        private TimesheetReviewVM timesheetReviewVM;
+        private ProjectDataVM projectDataVM;
+        private ProjectVM projectVM;
+        private PortalPage currentPage;
+
         public ICommand GoToNewViewCommand { get; set; }
 
         public ICommand GoToLoginCommand { get; set; }
@@ -80,34 +87,50 @@ namespace SOCE.Library.UI.ViewModels
             //CurrentPage = new TimesheetVM(employee);
             GoToNewViewCommand = new RelayCommand<PortalPage>(GoToPage);
             GoToLoginCommand = new RelayCommand(GoToLogin);
+            
+        }
+
+        public void Initiate(EmployeeModel employee)
+        {
+            LoggedInEmployee = employee;
+            employeeVM = new EmployeeVM(employee);
+            timesheetVM = new TimesheetVM(employee);
+            timesheetReviewVM = new TimesheetReviewVM(employee);
+            projectDataVM = new ProjectDataVM(employee);
+            projectVM = new ProjectVM(employee);
         }
 
         public void GoToPage(PortalPage page)
-        {
+        {   if (currentPage == page )
+            {
+                return;
+            }
             switch (page)
             {
                 //case PortalPage.Home:
                 //    CurrentPage = new EmployeeVM(LoggedInEmployee);
                 //    break;
                 case PortalPage.Employee:
-                    CurrentPage = new EmployeeVM(LoggedInEmployee);
+                    CurrentPage = employeeVM;
                     break;
                 case PortalPage.Timesheet:
-                    CurrentPage = new TimesheetVM(LoggedInEmployee);
+                    CurrentPage = timesheetVM;
                     break;
                 case PortalPage.TimesheetReview:
-                    CurrentPage = new TimesheetReviewVM(LoggedInEmployee);
+                    CurrentPage = timesheetReviewVM;
                     break;
                 case PortalPage.ProjectData:
-                    CurrentPage = new ProjectDataVM(LoggedInEmployee);
+                    CurrentPage = projectDataVM;
                     break;
                 //case PortalPage.LicenseManager:
                 //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);
                 //    break;
                 case PortalPage.Projects:
-                    CurrentPage = new ProjectVM(LoggedInEmployee);
+                    CurrentPage = projectVM;
                     break;
             }
+
+            currentPage = page;
         }
 
         public void GoToTimesheetByDate(DateTime date)
@@ -117,6 +140,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public void GoToLogin()
         {
+            currentPage = PortalPage.Default;
             CoreAI globalwindow = (CoreAI)IoCCore.Application;
             globalwindow.GoToLogin();
 

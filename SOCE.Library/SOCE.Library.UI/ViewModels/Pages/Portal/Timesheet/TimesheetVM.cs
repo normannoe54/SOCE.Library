@@ -15,6 +15,8 @@ using System.Globalization;
 using MaterialDesignThemes.Wpf;
 using SOCE.Library.UI.Views;
 using System.Threading.Tasks;
+using SOCE.Library.Excel;
+using System.Diagnostics;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -46,6 +48,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand CurrentCommand { get; set; }
 
         public ICommand CopyPreviousCommand { get; set; }
+
+        public ICommand ExportToExcel { get; set; }
         public List<TimesheetRowModel> CopiedTimesheetData { get; set; } = new List<TimesheetRowModel>();
 
         private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
@@ -282,6 +286,7 @@ namespace SOCE.Library.UI.ViewModels
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             this.CopyPreviousCommand = new RelayCommand(CopyPrevious);
+            this.ExportToExcel = new RelayCommand(ExportCurrentTimesheetToExcel);
             
         }
 
@@ -314,6 +319,28 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             Rowdata.Remove(trm);
+        }
+
+
+        private void ExportCurrentTimesheetToExcel()
+        {
+            //do stuff
+            //save down to downloads
+
+            string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            string pathDownload = Path.Combine(pathUser, "Downloads\\TimeSheet.xlsx");
+            File.WriteAllBytes(pathDownload, Properties.Resources.TimesheetBase);
+            Excel.Excel exinst = new Excel.Excel(pathDownload, AppEnum.Existing);
+
+            foreach(TimesheetRowModel trm in Rowdata)
+            {
+
+            }
+            //exinst.InsertRow(6, new List<string>() { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1" });
+            //exinst.InsertRow(7, new List<string>() { "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2" });
+            exinst.Dispose();
+            Process.Start(pathDownload);
+
         }
 
         /// <summary>

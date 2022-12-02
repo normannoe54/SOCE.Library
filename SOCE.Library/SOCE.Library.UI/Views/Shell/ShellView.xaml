@@ -14,9 +14,9 @@
         AllowsTransparency ="True" 
         Background="Transparent">
     <Border BorderThickness="1" BorderBrush="Black">
-        <!--<materialDesign:DialogHost
+        <materialDesign:DialogHost
         Identifier="RootDialog"
-        DialogTheme="Light">-->
+        DialogTheme="Light">
             <Grid>
                 <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right">
                     <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
@@ -32,6 +32,6 @@
 
                 <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Grid>
-        <!--</materialDesign:DialogHost>-->
+        </materialDesign:DialogHost>
     </Border>
 </Window>

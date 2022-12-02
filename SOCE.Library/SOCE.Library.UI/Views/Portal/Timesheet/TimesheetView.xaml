@@ -98,8 +98,23 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-            </StackPanel>
-            <TextBlock Grid.Column="2" Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            </StackPanel >
+
+            <Grid Grid.Column="2">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
+                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Gray" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Export" Foreground="{StaticResource SOCELightRed}" VerticalAlignment="Center"/>
+
+                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="{StaticResource SOCELightRed}"/>
+                    </StackPanel>
+                </Button>
+                <TextBlock Grid.Row="1"  Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+            </Grid>
         </Grid>
         <ScrollViewer Grid.Row="3" Margin="0 5 0 0">
             <Grid>
@@ -258,7 +273,7 @@
                                 <Grid Grid.Column="0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="200"/>
                                         <ColumnDefinition Width="Auto"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}">
@@ -274,7 +289,6 @@
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
                                                   IsTextSearchEnabled="True" IsEditable="False" 
                                                   StaysOpenOnEdit="True"
-                                                  materialDesign:HintAssist.HintOpacity=".26"
                                                   SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"
                                                   TextSearch.TextPath="SearchText"
@@ -288,20 +302,7 @@
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>
-                                    <!--SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"-->
-                                    <!--<materialDesign:PackIcon 
-                                            Grid.Column="2" 
-                                            Padding ="0" 
-                                            Margin="10 0 0 0"
-                                            VerticalAlignment="Center" 
-                                            HorizontalAlignment="Right" 
-                                            Kind="StarAddOutline" 
-                                            Foreground="DarkGoldenrod"
-                                            Visibility="{Binding Project.IsAdservice, Converter={StaticResource BoolToVis}}"/>-->
                                 </Grid>
-                                <!--ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"-->
-                                <!--Need to set Width of name TextBlock so items line up correctly-->
-
 
                                 <ComboBox Grid.Column="1"
                                                   Margin="10 0 0 0"
@@ -319,45 +320,32 @@
                                                   MaxDropDownHeight="250">
                                 </ComboBox>
 
-                                <!--<TextBlock Width="200" Text="{Binding Project.ProjectName}" />-->
-                                <!--<TextBlock Text="{Binding Project.JobNum}" VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="14" FontWeight="Regular" Margin="10 0 0 0" Grid.Column="1"/>-->
                                 <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="2">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="*" />
-                                                </Grid.ColumnDefinitions>
-                                                <TextBox 
-                                                    Text="{Binding TimeEntry,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                    materialDesign:TextFieldAssist.SuffixText="hr"
+                                            <TextBox 
+                                                    Text="{Binding TimeEntry,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                     TextAlignment="Center"
                                                     VerticalContentAlignment="Center"
-                                                    VerticalAlignment="Stretch" 
                                                     local:SelectTextOnFocus.Active = "True"
                                                     FontWeight="SemiBold" 
-                                                    BorderBrush="LightGray" 
                                                     Background="{Binding CellColor}"
-                                                    BorderThickness="1"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter}}">
-                                                    <TextBox.Style >
-                                                        <Style TargetType="TextBox">
-                                                            <Style.Triggers>
-                                                                <Trigger Property="IsMouseOver" Value="True">
-                                                                    <Setter Property="Background" Value="Transparent" />
-                                                                    <Setter Property="Foreground" Value="Black" />
-                                                                    <Setter Property="BorderBrush" Value="Transparent" />
-                                                                </Trigger>
-                                                                <Trigger Property="IsFocused" Value="True">
-                                                                    <Setter Property="Background" Value="Transparent" />
-                                                                    <Setter Property="Foreground" Value="Black" />
-                                                                    <Setter Property="BorderBrush" Value="Transparent" />
-                                                                </Trigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBox.Style>
-                                                </TextBox>
-                                            </Grid>
+                                                <TextBox.Style >
+                                                    <Style TargetType="TextBox">
+                                                        <Style.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                            </Trigger>
+                                                            <Trigger Property="IsFocused" Value="True">
+                                                                <Setter Property="Background" Value="Transparent" />
+                                                                <Setter Property="BorderBrush" Value="Transparent" />
+                                                            </Trigger>
+                                                        </Style.Triggers>
+                                                    </Style>
+                                                </TextBox.Style>
+                                            </TextBox>
                                         </DataTemplate>
                                     </ItemsControl.ItemTemplate>
                                     <ItemsControl.ItemsPanel>
@@ -369,7 +357,6 @@
                                     </ItemsControl.ItemsPanel>
                                 </ItemsControl>
                                 <TextBlock Grid.Column="3"
-                                           materialDesign:TextFieldAssist.SuffixText=" h"
                                            Text="{Binding Total}" 
                                            TextAlignment="Center"
                                            VerticalAlignment="Center" 

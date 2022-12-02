@@ -247,6 +247,9 @@
     <Compile Include="Views\Portal\Project\FolderButtons\PopUpInput.xaml.cs">
       <DependentUpon>PopUpInput.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\Project\ProjectSummaryView.xaml.cs">
+      <DependentUpon>ProjectSummaryView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\Project\ProjectView.xaml.cs">
       <DependentUpon>ProjectView.xaml</DependentUpon>
     </Compile>
@@ -367,6 +370,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Portal\Project\ProjectSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Portal\Project\ProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -414,6 +421,7 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Resources\TimesheetBase.xlsx" />
     <Resource Include="Resources\SOCEIcon.png" />
     <Resource Include="Resources\AMZPicture.png" />
     <Resource Include="Icon.ico" />
@@ -443,6 +451,10 @@
     <ProjectReference Include="..\SOCE.Library.Db\SOCE.Library.Db.csproj">
       <Project>{7f96f6cb-24af-4dad-9505-469f70377154}</Project>
       <Name>SOCE.Library.Db</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SOCE.Library.Excel\SOCE.Library.Excel.csproj">
+      <Project>{ebb6a425-65b0-4812-98d6-693e894cbd6b}</Project>
+      <Name>SOCE.Library.Excel</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
