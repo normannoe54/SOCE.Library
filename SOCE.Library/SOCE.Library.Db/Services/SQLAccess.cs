@@ -524,53 +524,52 @@ namespace SOCE.Library.Db
         #endregion
 
         #region RatesPerProject
-        public static void AddRatesPerProject(RatesPerProjectDbModel rateperproject)
+        public static void AddRolesPerSubProject(RolePerSubProjectDbModel rolepersubproject)
         {
             //check if employee and project already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                List<RatesPerProjectDbModel> output = cnn.Query<RatesPerProjectDbModel>("SELECT * FROM RatesPerProject " +
-                    "WHERE EmployeeId = @EmployeeId AND ProjectId = @ProjectId",
-                    new { rateperproject.EmployeeId, rateperproject.ProjectId}).ToList();
+                List<RolePerSubProjectDbModel> output = cnn.Query<RolePerSubProjectDbModel>("SELECT * FROM RolePerSubProject " +
+                    "WHERE EmployeeId = @EmployeeId AND SubProjectId = @SubProjectId AND Role = @Role",
+                    new { rolepersubproject.EmployeeId, rolepersubproject.SubProjectId, rolepersubproject.Role}).ToList();
 
                 //you dont want to update cuz that screws stuff up
                 if (output.Count == 0)
                 {
                     //add
-                    cnn.Execute("INSERT INTO RatesPerProject (EmployeeId, ProjectId, Rate)" +
-                    "VALUES (@EmployeeId, @ProjectId, @Rate)", rateperproject);
+                    cnn.Execute("INSERT INTO RolePerSubProject (EmployeeId, SubProjectId, Rate, Role, BudgetHours)" +
+                    "VALUES (@EmployeeId, @SubProjectId, @Rate, @Role, @BudgetHours)", rolepersubproject);
                 }
             }
         }
 
-        public static List<RatesPerProjectDbModel> LoadRatesPerProject(int projectId)
+        public static List<RolePerSubProjectDbModel> LoadRolesPerSubProject(int subprojectId)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<RatesPerProjectDbModel>("SELECT * FROM RatesPerProject WHERE ProjectId = @projectId"
-                    , new { projectId});
+                var output = cnn.Query<RolePerSubProjectDbModel>("SELECT * FROM RolePerSubProject WHERE SubProjectId = @subprojectId"
+                    , new { subprojectId });
 
                 return output.ToList();
             }
         }
 
-        public static void UpdateRatesPerProject(RatesPerProjectDbModel rpp)
+        public static void UpdateRolesPerSubProject(RolePerSubProjectDbModel rpp)
         {
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("UPDATE RatesPerProject SET EmployeeId = @EmployeeId, ProjectId = @ProjectId, Rate = @Rate WHERE Id = @Id",
-                        new { rpp.EmployeeId, rpp.ProjectId, rpp.Rate, rpp.Id });
+                cnn.Execute("UPDATE RolePerSubProject SET EmployeeId = @EmployeeId, SubProjectId = @SubProjectId, Rate = @Rate, Role = @Role, @BudgetHours = BudgetHours WHERE Id = @Id",
+                        new { rpp.EmployeeId, rpp.SubProjectId, rpp.Rate, rpp.Role, rpp.BudgetHours, rpp.Id });
             }
         }
 
-        public static void DeleteRatesPerProject(int id)
+        public static void DeleteRolesPerSubProject(int id)
         {
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("DELETE FROM RatesPerProject WHERE Id = @Id",
-                        new { id });
+                cnn.Execute("DELETE FROM RolePerSubProject WHERE Id = @Id", new { id });
             }
         }
         #endregion

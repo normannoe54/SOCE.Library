@@ -147,11 +147,12 @@
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\SeriesDataModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\BudgetEstimateVM.cs" />
     <Compile Include="Models\Projects\ClientModel.cs" />
     <Compile Include="Models\Projects\MarketModel.cs" />
     <Compile Include="Models\Projects\PhaseEnum.cs" />
     <Compile Include="Models\Projects\ProjectModel.cs" />
-    <Compile Include="Models\Projects\RatePerProjectModel.cs" />
+    <Compile Include="Models\Projects\RolePerSubProjectModel.cs" />
     <Compile Include="Models\Projects\SubProjectModel.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -240,6 +241,9 @@
     </Compile>
     <Compile Include="Views\Portal\Project\AddSubProjectView.xaml.cs">
       <DependentUpon>AddSubProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\BudgetEstimateView.xaml.cs">
+      <DependentUpon>BudgetEstimateView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\FolderButtons\ButtonwithPopUp.xaml.cs">
       <DependentUpon>ButtonwithPopUp.xaml</DependentUpon>
@@ -359,6 +363,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Project\AddSubProjectView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\BudgetEstimateView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

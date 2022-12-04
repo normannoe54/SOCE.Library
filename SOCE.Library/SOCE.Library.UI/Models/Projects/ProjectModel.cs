@@ -18,16 +18,16 @@ namespace SOCE.Library.UI
     public class ProjectModel : BaseVM
     {
 
-        private ObservableCollection<RatePerProjectModel> _ratePerProject = new ObservableCollection<RatePerProjectModel>();
-        public ObservableCollection<RatePerProjectModel> RatePerProject
-        {
-            get { return _ratePerProject; }
-            set
-            {
-                _ratePerProject = value;
-                RaisePropertyChanged(nameof(RatePerProject));
-            }
-        }
+        //private ObservableCollection<RatePerProjectModel> _ratePerProject = new ObservableCollection<RatePerProjectModel>();
+        //public ObservableCollection<RatePerProjectModel> RatePerProject
+        //{
+        //    get { return _ratePerProject; }
+        //    set
+        //    {
+        //        _ratePerProject = value;
+        //        RaisePropertyChanged(nameof(RatePerProject));
+        //    }
+        //}
 
         private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
         public ObservableCollection<SubProjectModel> SubProjects
@@ -697,7 +697,7 @@ namespace SOCE.Library.UI
             double budgetspent = 0;
             int count = 1;
 
-            List<RatesPerProjectDbModel> ratesdbmodel = SQLAccess.LoadRatesPerProject(Id);
+            //List<RatesPerProjectDbModel> ratesdbmodel = SQLAccess.LoadRatesPerProject(Id);
             //List<RatePerProjectModel> rpms = new List<RatePerProjectModel>();
 
 
@@ -717,33 +717,33 @@ namespace SOCE.Library.UI
 
                         double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
 
-                        RatesPerProjectDbModel rpdm = ratesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
-                        double rate = employee.Rate;
-                        //get rate
-                        if (rpdm != null)
-                        {
-                            RatePerProjectModel rpm = new RatePerProjectModel(rpdm.Id, rpdm.Rate, rpdm.EmployeeId, this, hours, Fee);
-                            rate = rpdm.Rate;
-                            //catch for strange shenanigans
-                            if (rpm.TotalHours == 0)
-                            {
-                                //remove
-                                SQLAccess.DeleteRatesPerProject(rpm.Id);
-                            }
-                            else
-                            {
-                                if (addistrue)
-                                {
-                                    RatePerProject.Add(rpm);
-                                }
-                            }
-                        }
+                        //RatesPerProjectDbModel rpdm = ratesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
+                        //double rate = employee.Rate;
+                        ////get rate
+                        //if (rpdm != null)
+                        //{
+                        //    RatePerProjectModel rpm = new RatePerProjectModel(rpdm.Id, rpdm.Rate, rpdm.EmployeeId, this, hours, Fee);
+                        //    rate = rpdm.Rate;
+                        //    //catch for strange shenanigans
+                        //    if (rpm.TotalHours == 0)
+                        //    {
+                        //        //remove
+                        //        SQLAccess.DeleteRatesPerProject(rpm.Id);
+                        //    }
+                        //    else
+                        //    {
+                        //        if (addistrue)
+                        //        {
+                        //            RatePerProject.Add(rpm);
+                        //        }
+                        //    }
+                        //}
 
-                        hourstotal += hours;
-                        double budgetperemployee = hours * rate;
-                        budgetspent += budgetperemployee;
-                        averagerate += rate*hours;
-                        count++;
+                        //hourstotal += hours;
+                        //double budgetperemployee = hours * rate;
+                        //budgetspent += budgetperemployee;
+                        //averagerate += rate*hours;
+                        //count++;
 
                     }
                 }

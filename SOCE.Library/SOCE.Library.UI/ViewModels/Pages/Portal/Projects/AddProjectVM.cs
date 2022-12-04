@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using SOCE.Library.Db;
 using System.Collections.ObjectModel;
+using SOCE.Library.UI.Views;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -42,6 +43,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _clientsAvailable = value;
                 RaisePropertyChanged(nameof(ClientsAvailable));
+            }
+        }
+
+        private ObservableCollection<BudgetEstimateView> _roles = new ObservableCollection<BudgetEstimateView>();
+        public ObservableCollection<BudgetEstimateView> Roles
+        {
+            get { return _roles; }
+            set
+            {
+                _roles = value;
+                RaisePropertyChanged(nameof(Roles));
             }
         }
 
@@ -153,78 +165,219 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _cDPhase = true;
+        private bool _cLDevPhase;
+        public bool CLDevPhase
+        {
+            get { return _cLDevPhase; }
+            set
+            {
+                if (value || (!value && (CAPhase || SDPhase || DDPhase || CDPhase || PPhase || COPhase || InvPhase)))
+                {
+                    _cLDevPhase = value;
+
+                    if (_cLDevPhase)
+                    {
+                        Roles.Add(CLDevView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(CLDevView);
+                    }
+
+                    RaisePropertyChanged("CLDevView");
+                }
+            }
+        }
+
+
+        private bool _cDPhase;
         public bool CDPhase
         {
             get { return _cDPhase; }
             set
             {
-                if (value || (!value && (CAPhase || PPhase || DDPhase || SDPhase)))
+                if (value || (!value && (CAPhase || SDPhase || DDPhase || InvPhase || PPhase || COPhase || CLDevPhase)))
                 {
                     _cDPhase = value;
+
+                    if (_cDPhase)
+                    {
+                        Roles.Add(CDView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(CDView);
+                    }
+
                     RaisePropertyChanged("CDPhase");
                 }
             }
         }
 
-        private bool _sDPhase = true;
+        private bool _sDPhase;
         public bool SDPhase
         {
             get { return _sDPhase; }
             set
             {
-                if (value || (!value && (CAPhase || PPhase || DDPhase || CDPhase)))
+                if (value || (!value && (CAPhase || InvPhase || DDPhase || CDPhase || PPhase || COPhase || CLDevPhase)))
                 {
                     _sDPhase = value;
+
+                    if (_sDPhase)
+                    {
+                        Roles.Add(SDView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(SDView);
+                    }
+
                     RaisePropertyChanged("SDPhase");
                 }
             }
         }
 
-        private bool _dDPhase = true;
+        private bool _dDPhase;
         public bool DDPhase
         {
             get { return _dDPhase; }
             set
             {
-                if (value || (!value && (CAPhase || PPhase || SDPhase || CDPhase)))
+                if (value || (!value && (CAPhase || SDPhase || InvPhase || CDPhase || PPhase || COPhase || CLDevPhase)))
                 {
                     _dDPhase = value;
+
+                    if (_dDPhase)
+                    {
+                        Roles.Add(DDView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(DDView);
+                    }
+
                     RaisePropertyChanged("DDPhase");
                 }
             }
         }
 
-        private bool _cAPhase = true;
+        private bool _cAPhase;
         public bool CAPhase
         {
             get { return _cAPhase; }
             set
             {
-                if (value || (!value && (SDPhase || PPhase || DDPhase || CDPhase)))
+                if (value || (!value && (InvPhase || SDPhase || DDPhase || CDPhase || PPhase || COPhase || CLDevPhase)))
                 {
                     _cAPhase = value;
+                    //Add CA Phase
+                    if (_cAPhase)
+                    {
+                        Roles.Add(CAView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(CAView);
+                    }
+
+                    //UpdateFees();
                     RaisePropertyChanged("CAPhase");
                 }
             }
         }
 
-        private bool _pPhase = false;
+        private bool _pPhase;
         public bool PPhase
         {
             get { return _pPhase; }
             set
             {
-                if (value || (!value && (CAPhase || SDPhase || DDPhase || CDPhase)))
+                if (value || (!value && (CAPhase || SDPhase || DDPhase || CDPhase || InvPhase || COPhase || CLDevPhase)))
                 {
                     _pPhase = value;
+                    if (_pPhase)
+                    {
+                        Roles.Add(PropView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(PropView);
+                    }
+
+
                     RaisePropertyChanged("PPhase");
+                }
+            }
+        }
+
+        private bool _invPhase;
+        public bool InvPhase
+        {
+            get { return _invPhase; }
+            set
+            {
+                if (value || (!value && (CAPhase || SDPhase || DDPhase || CDPhase || PPhase || COPhase || CLDevPhase)))
+                {
+                    _invPhase = value;
+                    if (_invPhase)
+                    {
+                        Roles.Add(InvestigationView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(InvestigationView);
+                    }
+
+
+                    RaisePropertyChanged("InvPhase");
+                }
+            }
+        }
+
+        private bool _cOPhase;
+        public bool COPhase
+        {
+            get { return _cOPhase; }
+            set
+            {
+                if (value || (!value && (CAPhase || SDPhase || DDPhase || CDPhase || PPhase || InvPhase || CLDevPhase)))
+                {
+                    _cOPhase = value;
+                    if (_cOPhase)
+                    {
+                        Roles.Add(ConstrObvView);
+                    }
+                    else
+                    {
+                        //remove from list
+                        Roles.Remove(ConstrObvView);
+                    }
+
+
+                    RaisePropertyChanged("COPhase");
                 }
             }
         }
 
         public ICommand AddProjectCommand { get; set; }
         public ICommand CloseCommand { get; set; }
+
+        private BudgetEstimateView CLDevView;
+        private BudgetEstimateView PropView;
+        private BudgetEstimateView SDView;
+        private BudgetEstimateView DDView;
+        private BudgetEstimateView CDView;
+        private BudgetEstimateView CAView;
+        private BudgetEstimateView InvestigationView;
+        private BudgetEstimateView ConstrObvView;
 
         public AddProjectVM()
         {
@@ -256,15 +409,131 @@ namespace SOCE.Library.UI.ViewModels
                 TotalPMs.Add(new EmployeeModel(pm));
             }
 
+            SetSubs();
+            CAPhase = true;
+            CDPhase = true;
             MarketsAvailable = TotalMark;
             ClientsAvailable = TotalClients;
             PMsAvailable = TotalPMs;
 
         }
+        private void UpdateFee()
+        {
+
+        }
+
+
+        private void SetSubs()
+        {
+            CLDevView = new BudgetEstimateView();
+            SubProjectModel clientdevproj = new SubProjectModel
+            {
+                PointNumber = "CLDev",
+                Description = "Client Developement",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM CLDevVM = new BudgetEstimateVM(clientdevproj, 0);
+            CLDevView.DataContext = CLDevVM;
+
+            PropView = new BudgetEstimateView();
+            SubProjectModel proposalproj = new SubProjectModel
+            {
+                PointNumber = "Prop",
+                Description = "Proposal",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM PropVM = new BudgetEstimateVM(proposalproj, 0);
+            PropView.DataContext = PropVM;
+
+            SDView = new BudgetEstimateView();
+            SubProjectModel sdproj = new SubProjectModel
+            {
+                PointNumber = "SD",
+                Description = "Schematic Design",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM SDVM = new BudgetEstimateVM(sdproj, 0);
+            SDView.DataContext = SDVM;
+
+            DDView = new BudgetEstimateView();
+            SubProjectModel ddproj = new SubProjectModel
+            {
+                PointNumber = "DD",
+                Description = "Design Developement",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM DDVM = new BudgetEstimateVM(ddproj, 0);
+            DDView.DataContext = DDVM;
+
+            CDView = new BudgetEstimateView();
+            SubProjectModel cdproj = new SubProjectModel
+            {
+                PointNumber = "CD",
+                Description = "Construction Document",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM CDVM = new BudgetEstimateVM(cdproj, 0);
+            CDView.DataContext = CDVM;
+
+            CAView = new BudgetEstimateView();
+            SubProjectModel caproj = new SubProjectModel
+            {
+                PointNumber = "CA",
+                Description = "Construction Administration",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM CAVM = new BudgetEstimateVM(caproj, 0);
+            CAView.DataContext = CAVM;
+
+            InvestigationView = new BudgetEstimateView();
+            SubProjectModel investigationproj = new SubProjectModel
+            {
+                PointNumber = "I",
+                Description = "Investigation",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM InvestigationVM = new BudgetEstimateVM(investigationproj, 0);
+            InvestigationView.DataContext = InvestigationVM;
+
+            ConstrObvView = new BudgetEstimateView();
+            SubProjectModel constrobsproj = new SubProjectModel
+            {
+                PointNumber = "CO",
+                Description = "Construction Observation",
+                IsActive = true,
+                IsInvoiced = false,
+                PercentComplete = 0,
+                PercentBudget = 0,
+            };
+            BudgetEstimateVM COVM = new BudgetEstimateVM(constrobsproj, 0);
+            ConstrObvView.DataContext = COVM;
+        }
+
 
         public void AddProject()
         {
-            if(String.IsNullOrEmpty(ProjectNameInp) || ProjectNumberInp == 0 || ClientInp == null || MarketInp ==null || PMInp == null )
+            if (String.IsNullOrEmpty(ProjectNameInp) || ProjectNumberInp == 0 || ClientInp == null || MarketInp == null || PMInp == null)
             {
                 ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
                 return;
@@ -293,97 +562,97 @@ namespace SOCE.Library.UI.ViewModels
 
             double count = 0;
 
-            count += CDPhase ? 1 : 0;
-            count += CAPhase ? 1 : 0;
-            count += PPhase ? 1 : 0;
-            count += SDPhase ? 1 : 0;
-            count += DDPhase ? 1 : 0;
+            //count += CDPhase ? 1 : 0;
+            //count += CAPhase ? 1 : 0;
+            //count += PPhase ? 1 : 0;
+            //count += SDPhase ? 1 : 0;
+            //count += DDPhase ? 1 : 0;
 
 
-            if (CDPhase && id !=0)
-            {
-                SubProjectDbModel cdproj = new SubProjectDbModel
-                {
-                    ProjectId = id,
-                    PointNumber = "CD",
-                    Description = "Construction Document Phase",
-                    Fee = (1/count) * TotalFeeInp,
-                    IsActive = 1,
-                    IsCurrActive = 1,
-                    IsInvoiced = 0,
-                    PercentComplete = 0,
-                    PercentBudget = (1 / count)*100,
-                };
-                SQLAccess.AddSubProject(cdproj);
-            }
+            //if (CDPhase && id !=0)
+            //{
+            //    SubProjectDbModel cdproj = new SubProjectDbModel
+            //    {
+            //        ProjectId = id,
+            //        PointNumber = "CD",
+            //        Description = "Construction Document Phase",
+            //        Fee = (1/count) * TotalFeeInp,
+            //        IsActive = 1,
+            //        IsCurrActive = 1,
+            //        IsInvoiced = 0,
+            //        PercentComplete = 0,
+            //        PercentBudget = (1 / count)*100,
+            //    };
+            //    SQLAccess.AddSubProject(cdproj);
+            //}
 
-            if (CAPhase && id != 0)
-            {
-                SubProjectDbModel caproj = new SubProjectDbModel
-                {
-                    ProjectId = id,
-                    PointNumber = "CA",
-                    Description = "Construction Administration Phase",
-                    Fee = (1 / count) * TotalFeeInp,
-                    IsActive = 1,
-                    IsCurrActive = 1,
-                    IsInvoiced = 0,
-                    PercentComplete = 0,
-                    PercentBudget = (1 / count) * 100,
-                };
-                SQLAccess.AddSubProject(caproj);
-            }
+            //if (CAPhase && id != 0)
+            //{
+            //    SubProjectDbModel caproj = new SubProjectDbModel
+            //    {
+            //        ProjectId = id,
+            //        PointNumber = "CA",
+            //        Description = "Construction Administration Phase",
+            //        Fee = (1 / count) * TotalFeeInp,
+            //        IsActive = 1,
+            //        IsCurrActive = 1,
+            //        IsInvoiced = 0,
+            //        PercentComplete = 0,
+            //        PercentBudget = (1 / count) * 100,
+            //    };
+            //    SQLAccess.AddSubProject(caproj);
+            //}
 
-            if (PPhase && id != 0)
-            {
-                SubProjectDbModel pproj = new SubProjectDbModel
-                {
-                    ProjectId = id,
-                    PointNumber = "Pre",
-                    Description = "Proposal Phase",
-                    Fee = (1 / count) * TotalFeeInp,
-                    IsActive = 1,
-                    IsCurrActive = 1,
-                    IsInvoiced = 0,
-                    PercentComplete = 0,
-                    PercentBudget = (1 / count) * 100,
-                };
-                SQLAccess.AddSubProject(pproj);
-            }
+            //if (PPhase && id != 0)
+            //{
+            //    SubProjectDbModel pproj = new SubProjectDbModel
+            //    {
+            //        ProjectId = id,
+            //        PointNumber = "Pre",
+            //        Description = "Proposal Phase",
+            //        Fee = (1 / count) * TotalFeeInp,
+            //        IsActive = 1,
+            //        IsCurrActive = 1,
+            //        IsInvoiced = 0,
+            //        PercentComplete = 0,
+            //        PercentBudget = (1 / count) * 100,
+            //    };
+            //    SQLAccess.AddSubProject(pproj);
+            //}
 
-            if (SDPhase && id != 0)
-            {
-                SubProjectDbModel pproj = new SubProjectDbModel
-                {
-                    ProjectId = id,
-                    PointNumber = "SD",
-                    Description = "Schematic Design",
-                    Fee = (1 / count) * TotalFeeInp,
-                    IsActive = 1,
-                    IsCurrActive = 1,
-                    IsInvoiced = 0,
-                    PercentComplete = 0,
-                    PercentBudget = (1 / count) * 100,
-                };
-                SQLAccess.AddSubProject(pproj);
-            }
+            //if (SDPhase && id != 0)
+            //{
+            //    SubProjectDbModel pproj = new SubProjectDbModel
+            //    {
+            //        ProjectId = id,
+            //        PointNumber = "SD",
+            //        Description = "Schematic Design",
+            //        Fee = (1 / count) * TotalFeeInp,
+            //        IsActive = 1,
+            //        IsCurrActive = 1,
+            //        IsInvoiced = 0,
+            //        PercentComplete = 0,
+            //        PercentBudget = (1 / count) * 100,
+            //    };
+            //    SQLAccess.AddSubProject(pproj);
+            //}
 
-            if (DDPhase && id != 0)
-            {
-                SubProjectDbModel pproj = new SubProjectDbModel
-                {
-                    ProjectId = id,
-                    PointNumber = "DD",
-                    Description = "Design Developement",
-                    Fee = (1 / count) * TotalFeeInp,
-                    IsActive = 1,
-                    IsCurrActive = 1,
-                    IsInvoiced = 0,
-                    PercentComplete = 0,
-                    PercentBudget = (1 / count) * 100,
-                };
-                SQLAccess.AddSubProject(pproj);
-            }
+            //if (DDPhase && id != 0)
+            //{
+            //    SubProjectDbModel pproj = new SubProjectDbModel
+            //    {
+            //        ProjectId = id,
+            //        PointNumber = "DD",
+            //        Description = "Design Developement",
+            //        Fee = (1 / count) * TotalFeeInp,
+            //        IsActive = 1,
+            //        IsCurrActive = 1,
+            //        IsInvoiced = 0,
+            //        PercentComplete = 0,
+            //        PercentBudget = (1 / count) * 100,
+            //    };
+            //    SQLAccess.AddSubProject(pproj);
+            //}
 
             result = true;
 

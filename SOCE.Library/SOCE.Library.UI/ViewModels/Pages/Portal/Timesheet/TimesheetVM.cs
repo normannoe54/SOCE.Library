@@ -672,14 +672,14 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                RatesPerProjectDbModel rpp = new RatesPerProjectDbModel()
-                {
-                    ProjectId = trm.Project.Id,
-                    EmployeeId = CurrentEmployee.Id,
-                    Rate = CurrentEmployee.Rate
-                };
+                //RatesPerProjectDbModel rpp = new RatesPerProjectDbModel()
+                //{
+                //    ProjectId = trm.Project.Id,
+                //    EmployeeId = CurrentEmployee.Id,
+                //    Rate = CurrentEmployee.Rate
+                //};
 
-                SQLAccess.AddRatesPerProject(rpp);
+                //SQLAccess.AddRatesPerProject(rpp);
             }
 
             //deleting
