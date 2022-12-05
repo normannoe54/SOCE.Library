@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 using System.Text;
 using System.Windows.Media;
 using SOCE.Library.Db;
@@ -8,6 +11,17 @@ namespace SOCE.Library.UI
 {
     public class SubProjectModel : PropertyChangedBase, ICloneable
     {
+        private ObservableCollection<RolePerSubProjectModel> _rolesPerSub = new ObservableCollection<RolePerSubProjectModel>();
+        public ObservableCollection<RolePerSubProjectModel> RolesPerSub
+        {
+            get { return _rolesPerSub; }
+            set
+            {
+                _rolesPerSub = value;
+                RaisePropertyChanged(nameof(RolesPerSub));
+            }
+        }
+
         private int _id { get; set; }
         public int Id
         {
@@ -64,7 +78,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private double _percentBudget { get; set; }
+        private double _percentBudget { get; set; } = 0;
         public double PercentBudget
         {
             get
@@ -74,9 +88,17 @@ namespace SOCE.Library.UI
             set
             {
                 _percentBudget = value;
+                UpdateFee();
+
+                //update others
+                foreach(RolePerSubProjectModel rspm in RolesPerSub)
+                {
+                    rspm.OverallFee = Fee;
+                }
                 RaisePropertyChanged(nameof(PercentBudget));
             }
         }
+
         private bool onstartup = true;
 
 
@@ -90,7 +112,13 @@ namespace SOCE.Library.UI
             set
             {
                 _totalFee = value;
-                PercentBudget = Math.Round(Fee / TotalFee * 100, 2);
+                UpdateFee();
+
+                //foreach(RolePerSubProjectModel role in RolesPerSub)
+                //{
+                //    role.OverallFee = Fee;
+                //}
+
                 RaisePropertyChanged(nameof(TotalFee));
             }
         }
@@ -161,7 +189,19 @@ namespace SOCE.Library.UI
             set
             {
                 _fee = value;
-                PercentBudget = (Fee / TotalFee) * 100;
+
+                //update others
+                foreach (RolePerSubProjectModel rspm in RolesPerSub)
+                {
+                    rspm.OverallFee = Fee;
+                }
+
+                if (RolesPerSub.Count>0)
+                {
+                    UpdatePercentAllocated();
+                }
+
+                //PercentBudget = (Fee / TotalFee) * 100;
                 RaisePropertyChanged(nameof(Fee));
             }
         }
@@ -235,6 +275,29 @@ namespace SOCE.Library.UI
             }
         }
 
+
+        private double _percentAllocated = 0;
+        public double PercentAllocated
+        {
+            get { return _percentAllocated; }
+            set
+            {
+                _percentAllocated = value;
+                RaisePropertyChanged("PercentAllocated");
+            }
+        }
+
+        private double _budgetedFee = 0;
+        public double BudgetedFee
+        {
+            get { return _budgetedFee; }
+            set
+            {
+                _budgetedFee = value;
+                RaisePropertyChanged("BudgetedFee");
+            }
+        }
+
         public SubProjectModel()
         {
             onstartup = false;
@@ -268,7 +331,17 @@ namespace SOCE.Library.UI
 
         }
 
+        public void SetCollectionChanged()
+        {
+            RolesPerSub.CollectionChanged += RowDataChanged;
+        }
+
         private ProjectModel baseproject;
+
+        private void UpdateFee()
+        {
+            Fee = PercentBudget * (TotalFee / 100);
+        }
 
         public void UpdatePercentBudget()
         {
@@ -292,6 +365,46 @@ namespace SOCE.Library.UI
             };
 
             SQLAccess.UpdateSubProject(subproject);
+        }
+
+        private void RowDataChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (INotifyPropertyChanged added in e?.NewItems)
+                {
+                    RolePerSubProjectModel spm = (RolePerSubProjectModel)added;
+                    spm.PropertyChanged += ItemModificationOnPropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (INotifyPropertyChanged added in e?.OldItems)
+                {
+                    RolePerSubProjectModel spm = (RolePerSubProjectModel)added;
+                    spm.PropertyChanged -= ItemModificationOnPropertyChanged;
+                }
+            }
+        }
+
+        private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            UpdatePercentAllocated();
+        }
+
+        private void UpdatePercentAllocated()
+        {
+            double totalbudgetspent = 0;
+
+            foreach (RolePerSubProjectModel role in RolesPerSub)
+            {
+                totalbudgetspent += role.BudgetedHours * role.Rate;
+            }
+
+
+            BudgetedFee = totalbudgetspent;
+            PercentAllocated = Math.Round((totalbudgetspent / Fee * 100), 2);
         }
 
 

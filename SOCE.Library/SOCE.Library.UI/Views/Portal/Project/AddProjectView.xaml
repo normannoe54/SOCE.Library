@@ -159,7 +159,17 @@
                     <RowDefinition Height="580"/>
 
                 </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Hours Estimate" FontSize="18" Margin="10 20 20 10"/>
+                <Grid Grid.Row="0" Margin="10 20 20 10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0"  Text="Hours Estimate" FontSize="18" />
+                    <TextBlock Grid.Column="1" Margin="30 0 0 0" FontSize="12" 
+                               Foreground="{StaticResource SOCERed}" 
+                               VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" 
+                               Text="{Binding ErrorPercentMessage}"/>
+                </Grid>
                 <TextBlock Grid.Row="1" Text="Specify hours for each phase of the project below" FontSize="12" Margin="10"/>
                 <ItemsControl Grid.Row="2"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Roles}">
 

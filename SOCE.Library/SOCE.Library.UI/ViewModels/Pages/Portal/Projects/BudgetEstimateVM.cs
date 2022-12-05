@@ -6,6 +6,8 @@ using System.Windows;
 using System.Windows.Input;
 using SOCE.Library.Db;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -23,16 +25,16 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<RolePerSubProjectModel> _rolesPerSub = new ObservableCollection<RolePerSubProjectModel>();
-        public ObservableCollection<RolePerSubProjectModel> RolesPerSub
-        {
-            get { return _rolesPerSub; }
-            set
-            {
-                _rolesPerSub = value;
-                RaisePropertyChanged(nameof(RolesPerSub));
-            }
-        }
+        //private ObservableCollection<RolePerSubProjectModel> _rolesPerSub = new ObservableCollection<RolePerSubProjectModel>();
+        //public ObservableCollection<RolePerSubProjectModel> RolesPerSub
+        //{
+        //    get { return _rolesPerSub; }
+        //    set
+        //    {
+        //        _rolesPerSub = value;
+        //        RaisePropertyChanged(nameof(RolesPerSub));
+        //    }
+        //}
 
         private SubProjectModel _selectedProjectPhase;
         public SubProjectModel SelectedProjectPhase
@@ -53,28 +55,6 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _selectedEmployee = value;
                 RaisePropertyChanged("SelectedEmployee");
-            }
-        }
-
-        private double _percentAllocated;
-        public double PercentAllocated
-        {
-            get { return _percentAllocated; }
-            set
-            {
-                _percentAllocated = value;
-                RaisePropertyChanged("PercentAllocated");
-            }
-        }
-
-        private double _budgetedHours=0;
-        public double BudgetedHours
-        {
-            get { return _budgetedHours; }
-            set
-            {
-                _budgetedHours = value;
-                RaisePropertyChanged("BudgetedHours");
             }
         }
 
@@ -100,13 +80,23 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        //private double _overallFee = 0;
+        //public double OverallFee
+        //{
+        //    get { return _overallFee; }
+        //    set
+        //    {
+        //        _overallFee = value;
+        //    }
+        //}
+
+
         public ICommand GoToAddRole { get; set; }
         public ICommand RemoveRoleCommand { get; set; }
 
-        private double _overallfee;
-
         public BudgetEstimateVM(SubProjectModel spm, double overallfee)
         {
+            //RolesPerSub.CollectionChanged += RowDataChanged;
             SelectedProjectPhase = spm;
             this.GoToAddRole = new RelayCommand(this.AddRole);
             this.RemoveRoleCommand = new RelayCommand<RolePerSubProjectModel>(this.RemoveRole);
@@ -119,7 +109,7 @@ namespace SOCE.Library.UI.ViewModels
                 foreach (RolePerSubProjectDbModel roles in rolespersubdb)
                 {
                     RolePerSubProjectModel rpm = new RolePerSubProjectModel(roles.Id, roles.Rate, (DefaultRoleEnum)roles.Role, roles.EmployeeId, spm, roles.BudgetHours, overallfee);
-                    totalrolespersub.Add(rpm);
+                    SelectedProjectPhase.RolesPerSub.Add(rpm);
                 }
             }
 
@@ -130,20 +120,22 @@ namespace SOCE.Library.UI.ViewModels
             {
                 totalemployees.Add(new EmployeeModel(employee));
             }
-        
-            _overallfee = overallfee;
+
+            //OverallFee = overallfee;
             Employees = totalemployees;
-            RolesPerSub = totalrolespersub;
+            //RolesPerSub = totalrolespersub;
         }
+
+
 
         private void AddRole()
         {
-            RolesPerSub.Add(new RolePerSubProjectModel(SelectedProjectPhase, _overallfee));
+            SelectedProjectPhase.RolesPerSub.Add(new RolePerSubProjectModel(SelectedProjectPhase, SelectedProjectPhase.Fee));
         }
 
         private void RemoveRole(RolePerSubProjectModel rpsm)
         {
-            RolesPerSub.Remove(rpsm);
+            SelectedProjectPhase.RolesPerSub.Remove(rpsm);
         }
     }
 }

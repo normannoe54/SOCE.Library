@@ -68,9 +68,7 @@ namespace SOCE.Library.UI
             set
             {
                 _rate = value;
-                //TotalBudget = TotalHours * Rate;
-                double totalspent = _rate * BudgetedHours;
-                PercentofBudget = Math.Round((totalspent / _overallfee) * 100, 2);
+                UpdatePercentBudget();
                 RaisePropertyChanged(nameof(Rate));
             }
         }
@@ -85,6 +83,7 @@ namespace SOCE.Library.UI
             set
             {
                 _budgetedHours = value;
+                UpdatePercentBudget();
                 RaisePropertyChanged(nameof(BudgetedHours));
             }
         }
@@ -103,12 +102,25 @@ namespace SOCE.Library.UI
             }
         }
 
-        private double _overallfee { get; set; }
+        private double _overallFee { get; set; }
+        public double OverallFee
+        {
+            get
+            {
+                return _overallFee;
+            }
+            set
+            {
+                _overallFee = value;
+                UpdatePercentBudget();
+
+            }
+        }
 
         public RolePerSubProjectModel(SubProjectModel subproject, double overallFee)
         {
             Subproject = subproject;
-            _overallfee = overallFee;
+            OverallFee = overallFee;
         }
 
         public RolePerSubProjectModel(int id, double rate, DefaultRoleEnum role, int employeeId, SubProjectModel subproject, double budgetedhours, double overallFee)
@@ -118,8 +130,14 @@ namespace SOCE.Library.UI
             Subproject = subproject;
             Role = role;
             BudgetedHours = budgetedhours;
-            _overallfee = overallFee;
+            OverallFee = overallFee;
             Rate = rate;
+        }
+
+        private void UpdatePercentBudget()
+        {
+            double totalspent = _rate * BudgetedHours;
+            PercentofBudget = Math.Round((totalspent / OverallFee) * 100, 2);
         }
 
         public void UpdateRolePerSub()

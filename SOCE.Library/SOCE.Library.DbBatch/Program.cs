@@ -146,18 +146,18 @@ namespace SOCE.Library.DbBatch
                         }
 
 
-                        
+
 
 
 
                         Console.WriteLine("\t" + line);
                     }
 
-                    
 
-                    
 
-                    
+
+
+
                 }
                 count2++;
             }

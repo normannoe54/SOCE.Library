@@ -367,26 +367,26 @@ namespace SOCE.Library.UI
 
         private bool IsEditable;
 
-        private bool _canExpand = false;
-        public bool CanExpand
-        {
-            get
-            {
-                return _canExpand;
-            }
-            set
-            {
-                if (value && !Formatted)
-                {
-                    FormatData(true);
-                }
-                if (IsEditable)
-                {
-                    _canExpand = value;
-                    RaisePropertyChanged(nameof(CanExpand));
-                }
-            }
-        }
+        //private bool _canExpand = false;
+        //public bool CanExpand
+        //{
+        //    get
+        //    {
+        //        return _canExpand;
+        //    }
+        //    set
+        //    {
+        //        if (value && !Formatted)
+        //        {
+        //            FormatData(true);
+        //        }
+        //        if (IsEditable)
+        //        {
+        //            _canExpand = value;
+        //            RaisePropertyChanged(nameof(CanExpand));
+        //        }
+        //    }
+        //}
 
         public int ProjectStart;
 
@@ -429,21 +429,7 @@ namespace SOCE.Library.UI
             //RatePerProject.CollectionChanged += this.RatesChanged;
 
             IsEditable = iseditable;
-            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
-            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
-            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
-
-            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
-            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
-            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
-
-            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
-            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
-            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
-
-            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
-            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
-            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+            Constructor();
 
             Id = pm.Id;
             ProjectName = pm.ProjectName;
@@ -484,21 +470,7 @@ namespace SOCE.Library.UI
             //RatePerProject.CollectionChanged += this.RatesChanged;
 
             //IsEditable = iseditable;
-            this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
-            this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
-            this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
-
-            this.CopyArchitectFolderCommand = new RelayCommand(this.CopyArchFolder);
-            this.SelectArchitectFolderCommand = new RelayCommand(this.SelectArchFolder);
-            this.OpenArchitectFolderCommand = new RelayCommand(this.OpenArchFolder);
-
-            this.CopyDrawingsFolderCommand = new RelayCommand(this.CopyDrawingsFolder);
-            this.SelectDrawingsFolderCommand = new RelayCommand(this.SelectDrawingsFolder);
-            this.OpenDrawingsFolderCommand = new RelayCommand(this.OpenDrawingsFolder);
-
-            this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
-            this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
-            this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+            Constructor();
 
             Id = pm.Id;
             ProjectName = pm.ProjectName;
@@ -594,16 +566,16 @@ namespace SOCE.Library.UI
         //    UpdateSubProjects();
         //}
 
-        public void UpdateTotalBudget()
-        {
-            TotalBudget = 0;
+        //public void UpdateTotalBudget()
+        //{
+        //    TotalBudget = 0;
 
-            foreach (SubProjectModel spm in SubProjects)
-            {
-                TotalBudget += spm.Fee;
-            }
+        //    foreach (SubProjectModel spm in SubProjects)
+        //    {
+        //        TotalBudget += spm.Fee;
+        //    }
 
-        }
+        //}
 
         public void UpdateSubProjects()
         {
@@ -697,57 +669,56 @@ namespace SOCE.Library.UI
             double budgetspent = 0;
             int count = 1;
 
-            //List<RatesPerProjectDbModel> ratesdbmodel = SQLAccess.LoadRatesPerProject(Id);
-            //List<RatePerProjectModel> rpms = new List<RatePerProjectModel>();
+            //List<RolePerSubProjectDbModel> ratesdbmodel = SQLAccess.LoadRolesPerSubProject(Id);
+            //List<RolePerSubProjectModel> rpms = new List<RolePerSubProjectModel>();
 
+            //if (total.Count != 0)
+            //{
+            //    var grouped = total.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
 
-            if (total.Count != 0)
-            {
-                var grouped = total.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
+            //    count = 0;
+            //    foreach (var item in grouped)
+            //    {
+            //        EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
 
-                count = 0;
-                foreach (var item in grouped)
-                {
-                    EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
+            //        if (employee != null)
+            //        {
+            //            //order by date
+            //            List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
-                    if (employee != null)
-                    {
-                        //order by date
-                        List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
+            //            double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
 
-                        double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
+            //            RolePerSubProjectDbModel rpdm = ratesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
+            //            double rate = employee.Rate;
+            //            //get rate
+            //            if (rpdm != null)
+            //            {
+            //                RolePerSubProjectModel rpm = new RolePerSubProjectModel(rpdm.Id, rpdm.Rate, (DefaultRoleEnum)rpdm.Role, rpdm.EmployeeId, this, hours, Fee);
+            //                rate = rpdm.Rate;
+            //                //catch for strange shenanigans
+            //                if (rpm.TotalHours == 0)
+            //                {
+            //                    //remove
+            //                    SQLAccess.DeleteRatesPerProject(rpm.Id);
+            //                }
+            //                else
+            //                {
+            //                    if (addistrue)
+            //                    {
+            //                        RatePerProject.Add(rpm);
+            //                    }
+            //                }
+            //            }
 
-                        //RatesPerProjectDbModel rpdm = ratesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
-                        //double rate = employee.Rate;
-                        ////get rate
-                        //if (rpdm != null)
-                        //{
-                        //    RatePerProjectModel rpm = new RatePerProjectModel(rpdm.Id, rpdm.Rate, rpdm.EmployeeId, this, hours, Fee);
-                        //    rate = rpdm.Rate;
-                        //    //catch for strange shenanigans
-                        //    if (rpm.TotalHours == 0)
-                        //    {
-                        //        //remove
-                        //        SQLAccess.DeleteRatesPerProject(rpm.Id);
-                        //    }
-                        //    else
-                        //    {
-                        //        if (addistrue)
-                        //        {
-                        //            RatePerProject.Add(rpm);
-                        //        }
-                        //    }
-                        //}
+            //            hourstotal += hours;
+            //            double budgetperemployee = hours * rate;
+            //            budgetspent += budgetperemployee;
+            //            averagerate += rate * hours;
+            //            count++;
 
-                        //hourstotal += hours;
-                        //double budgetperemployee = hours * rate;
-                        //budgetspent += budgetperemployee;
-                        //averagerate += rate*hours;
-                        //count++;
-
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
             HoursSpent = hourstotal;
             BudgetSpent = budgetspent;

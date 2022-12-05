@@ -42,22 +42,16 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToAddProject { get; set; }
         public ICommand GoToAddClient { get; set; }
         public ICommand GoToAddMarket { get; set; }
-        public ICommand GoToAddSubProject { get; set; }
-
-
+        //public ICommand GoToAddSubProject { get; set; }
         public ICommand ArchiveProject { get; set; }
         public ICommand ArchiveMarket { get; set; }
         public ICommand ArchiveClient { get; set; }
-
         public ICommand DeleteSubProject { get; set; }
-
         public ICommand ClearComboBox { get; set; }
-
         public ICommand ClearSearchParamters { get; set; }
-
         public ICommand SearchCommand { get; set; }
-
         public ICommand ExportDataCommand { get; set; }
+        public ICommand GoToOpenProjectSummary { get; set; }
 
         private bool _canAddProject = false;
         public bool CanAddProject
@@ -93,6 +87,39 @@ namespace SOCE.Library.UI.ViewModels
                 _projects = value;
                 TextProjects = Projects.Count + " Total";
                 RaisePropertyChanged(nameof(Projects));
+            }
+        }
+
+        private EmployeeModel _selectedPM;
+        public EmployeeModel SelectedPM
+        {
+            get { return _selectedPM; }
+            set
+            {
+                _selectedPM = value;
+                RaisePropertyChanged(nameof(SelectedPM));
+            }
+        }
+
+        private MarketModel _selectedMarket;
+        public MarketModel SelectedMarket
+        {
+            get { return _selectedMarket; }
+            set
+            {
+                _selectedMarket = value;
+                RaisePropertyChanged(nameof(SelectedMarket));
+            }
+        }
+
+        private ClientModel _selectedClient;
+        public ClientModel SelectedClient
+        {
+            get { return _selectedClient; }
+            set
+            {
+                _selectedClient = value;
+                RaisePropertyChanged(nameof(SelectedClient));
             }
         }
 
@@ -153,87 +180,6 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<object> _objectsToSelect = new ObservableCollection<object>();
-        public ObservableCollection<object> ObjectsToSelect
-        {
-            get { return _objectsToSelect; }
-            set
-            {
-                _objectsToSelect = value;
-                RaisePropertyChanged(nameof(ObjectsToSelect));
-            }
-        }
-
-        private object _objectofInterest { get; set; }
-        public object ObjectofInterest
-        {
-            get { return _objectofInterest; }
-            set
-            {
-                _objectofInterest = value;
-                RaisePropertyChanged(nameof(ObjectofInterest));
-
-                if (_objectofInterest != null)
-                {
-                    CloseButtonVisible = true;
-
-                }
-                else
-                {
-                    CloseButtonVisible = false;
-                    SearchableText = "";
-                }
-            }
-        }
-
-        private int _selectedIndexofSearch { get; set; }
-        public int SelectedIndexofSearch
-        {
-            get { return _selectedIndexofSearch; }
-            set
-            {
-                ObjectofInterest = null;
-                _selectedIndexofSearch = value;
-
-                switch (_selectedIndexofSearch)
-                {
-                    case (0):
-                        {
-                            ObjectsToSelect = new ObservableCollection<object>(ProjectManagers);
-                            TextSearchPath = "FullName";
-                            break;
-                        }
-                    case (1):
-                        {
-                            ObjectsToSelect = new ObservableCollection<object>(Clients);
-                            TextSearchPath = "ClientName";
-                            break;
-                        }
-                    case (2):
-                        {
-                            ObjectsToSelect = new ObservableCollection<object>(Markets);
-                            TextSearchPath = "MarketName";
-                            break;
-                        }
-                    default:
-                        break;
-                }
-
-                RaisePropertyChanged(nameof(SelectedIndexofSearch));
-            }
-        }
-
-        private string _textSearchPath { get; set; }
-        public string TextSearchPath
-        {
-            get { return _textSearchPath; }
-            set
-            {
-                _textSearchPath = value;
-                RaisePropertyChanged(nameof(TextSearchPath));
-            }
-        }
-
         private bool _closeButtonVisible { get; set; } = false;
         public bool CloseButtonVisible
         {
@@ -285,14 +231,14 @@ namespace SOCE.Library.UI.ViewModels
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
-            this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunAddSubProjectDialog);
+            //this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunAddSubProjectDialog);
+            this.GoToOpenProjectSummary = new RelayCommand<object>(this.ExecuteOpenSubDialog);
 
             this.ArchiveProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.ArchiveClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.ArchiveMarket = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.DeleteSubProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
 
-            this.ClearComboBox = new RelayCommand(this.ClearSearchableComboBox);
             this.ClearSearchParamters = new RelayCommand(this.ClearInputsandReload);
             this.SearchCommand = new RelayCommand(this.RunSearch);
             this.ExportDataCommand = new RelayCommand(this.RunExport);
@@ -301,16 +247,16 @@ namespace SOCE.Library.UI.ViewModels
             LoadClients();
             LoadMarkets();
             LoadProjectManagers();
-            SelectedIndexofSearch = 0;
         }
 
         private void ClearInputsandReload()
         {
-            ObjectofInterest = null;
+            //ObjectofInterest = null;
             SearchableText = "";
-
+            SelectedMarket = null;
+            SelectedClient = null;
+            SelectedPM = null;
             Projects = new ObservableCollection<ProjectModel>(AllProjects);
-            
         }
 
         private void RunExport()
@@ -354,105 +300,51 @@ namespace SOCE.Library.UI.ViewModels
 
         private void RunSearch()
         {
-            List<ProjectModel> pmnew = new List<ProjectModel>();
+            List<ProjectModel> pmnew = AllProjects;
 
-            if (_objectofInterest == null)
+            if (SelectedPM != null)
             {
-                if (String.IsNullOrEmpty(_searchableText))
-                {
-                    ClearInputsandReload();
-                    return;
-                }
-                else
-                {
-                    foreach (ProjectModel pm in AllProjects)
-                    {
-                        if (pm.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || pm.ProjectNumber.ToString().Contains(_searchableText))
-                        {
-                            pmnew.Add(pm);
-                        }
-                    }
-                }
+                pmnew = pmnew.Where(x => x.ProjectManager.Id == SelectedPM.Id).ToList();
             }
-            else
+
+            if (SelectedClient != null)
             {
-                foreach (ProjectModel pm in AllProjects)
-                {
-                    switch (_selectedIndexofSearch)
-                    {
-                        case (0):
-                            {
-                                EmployeeModel em = (EmployeeModel)_objectofInterest;
-
-                                if (pm.ProjectManager.Id == em.Id)
-                                {
-                                    if (!String.IsNullOrEmpty(_searchableText))
-                                    {
-                                        if (pm.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || pm.ProjectNumber.ToString().Contains(_searchableText))
-                                        {
-                                            pmnew.Add(pm);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        pmnew.Add(pm);
-                                    }
-                                }
-                                break;
-                            }
-                        case (1):
-                            {
-                                ClientModel cm = (ClientModel)_objectofInterest;
-
-                                if (pm.Client.Id == cm.Id)
-                                {
-                                    if (!String.IsNullOrEmpty(_searchableText))
-                                    {
-                                        if (pm.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || pm.ProjectNumber.ToString().Contains(_searchableText))
-                                        {
-                                            pmnew.Add(pm);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        pmnew.Add(pm);
-                                    }
-                                }
-                                break;
-                            }
-                        case (2):
-                            {
-                                MarketModel mm = (MarketModel)_objectofInterest;
-
-                                if (pm.Market.Id == mm.Id)
-                                {
-                                    if (!String.IsNullOrEmpty(_searchableText))
-                                    {
-                                        if (pm.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || pm.ProjectNumber.ToString().Contains(_searchableText))
-                                        {
-                                            pmnew.Add(pm);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        pmnew.Add(pm);
-                                    }
-                                }
-                                break;
-                            }
-                        default:
-                            break;
-                    }
-                }
+                pmnew = pmnew.Where(x => x.Client.Id == SelectedClient.Id).ToList();
             }
-            
+
+            if (SelectedMarket != null)
+            {
+                pmnew = pmnew.Where(x => x.Market.Id == SelectedMarket.Id).ToList();
+            }
+
+            if (!String.IsNullOrEmpty(SearchableText))
+            {
+                pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
+            }
+
             Projects = new ObservableCollection<ProjectModel>(pmnew);
         }
 
-        private void ClearSearchableComboBox()
+        private async void ExecuteOpenSubDialog(object o)
         {
-            ObjectofInterest = null;
-        } 
+            ProjectModel pm = (ProjectModel)o;
+
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new ProjectSummaryView();
+            ProjectSummaryVM vm = new ProjectSummaryVM(pm, CurrentEmployee);
+            view.DataContext = vm;
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            //AddProjectVM vm = view.DataContext as AddProjectVM;
+            //bool resultvm = vm.result;
+
+            //if (resultvm)
+            //{
+            //    LoadProjects();
+            //}
+        }
+
 
         private async void ExecuteRunAddDialog(object o)
         {
@@ -471,28 +363,28 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private async void ExecuteRunAddSubProjectDialog(object o)
-        {
-            ProjectModel pm = (ProjectModel)o;
+        //private async void ExecuteRunAddSubProjectDialog(object o)
+        //{
+        //    ProjectModel pm = (ProjectModel)o;
 
-            if (pm != null)
-            {
-                AddSubProjectVM aspvm = new AddSubProjectVM(pm);
-                var view = new AddSubProjectView();
-                view.DataContext = aspvm;
+        //    if (pm != null)
+        //    {
+        //        AddSubProjectVM aspvm = new AddSubProjectVM(pm);
+        //        var view = new AddSubProjectView();
+        //        view.DataContext = aspvm;
 
-                //show the dialog
-                var result = await DialogHost.Show(view, "RootDialog");
-                AddSubProjectVM vm = view.DataContext as AddSubProjectVM;
-                bool resultvm = vm.result;
-                if (resultvm)
-                {
-                    pm.LoadSubProjects();
-                    pm.UpdateSubProjects();
-                }
-                //LoadProjects();
-            }
-        }
+        //        //show the dialog
+        //        var result = await DialogHost.Show(view, "RootDialog");
+        //        AddSubProjectVM vm = view.DataContext as AddSubProjectVM;
+        //        bool resultvm = vm.result;
+        //        if (resultvm)
+        //        {
+        //            pm.LoadSubProjects();
+        //            pm.UpdateSubProjects();
+        //        }
+        //        //LoadProjects();
+        //    }
+        //}
 
         private async void ExecuteRunAddClientDialog(object o)
         {

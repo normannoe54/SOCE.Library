@@ -350,13 +350,16 @@ namespace SOCE.Library.Db
             }
         }
 
-        public static void AddSubProject(SubProjectDbModel subproject)
+        public static int AddSubProject(SubProjectDbModel subproject)
         {
+            int output = 0;
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee, PercentComplete, PercentBudget, IsActive, IsInvoiced, IsCurrActive)" +
-                    "VALUES (@ProjectId, @PointNumber, @Description, @Fee, @PercentComplete, @PercentBudget, @IsActive, @IsInvoiced, @IsCurrActive)", subproject);
+                int id = cnn.QuerySingle<int>("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee, PercentComplete, PercentBudget, IsActive, IsInvoiced, IsCurrActive)" +
+                    "VALUES (@ProjectId, @PointNumber, @Description, @Fee, @PercentComplete, @PercentBudget, @IsActive, @IsInvoiced, @IsCurrActive) returning id;", subproject);
+                output = id;
             }
+            return output;
         }
 
         public static void UpdateSubProject(SubProjectDbModel subproject)

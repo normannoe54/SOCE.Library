@@ -7,6 +7,8 @@ using System.Windows.Input;
 using SOCE.Library.Db;
 using System.Collections.ObjectModel;
 using SOCE.Library.UI.Views;
+using System.Collections.Specialized;
+using System.ComponentModel;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -128,6 +130,8 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _totalFeeInp = value;
+                //fee
+                UpdateFee();
                 RaisePropertyChanged("TotalFeeInp");
             }
         }
@@ -165,6 +169,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _errorPercentMessage = "";
+        public string ErrorPercentMessage
+        {
+            get { return _errorPercentMessage; }
+            set
+            {
+                _errorPercentMessage = value;
+                RaisePropertyChanged("ErrorPercentMessage");
+            }
+        }
+
         private bool _cLDevPhase;
         public bool CLDevPhase
         {
@@ -177,6 +192,8 @@ namespace SOCE.Library.UI.ViewModels
 
                     if (_cLDevPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)CLDevView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(CLDevView);
                     }
                     else
@@ -203,6 +220,8 @@ namespace SOCE.Library.UI.ViewModels
 
                     if (_cDPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)CDView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(CDView);
                     }
                     else
@@ -228,6 +247,8 @@ namespace SOCE.Library.UI.ViewModels
 
                     if (_sDPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)SDView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(SDView);
                     }
                     else
@@ -253,6 +274,8 @@ namespace SOCE.Library.UI.ViewModels
 
                     if (_dDPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)DDView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(DDView);
                     }
                     else
@@ -278,6 +301,8 @@ namespace SOCE.Library.UI.ViewModels
                     //Add CA Phase
                     if (_cAPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)CAView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(CAView);
                     }
                     else
@@ -303,6 +328,8 @@ namespace SOCE.Library.UI.ViewModels
                     _pPhase = value;
                     if (_pPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)PropView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(PropView);
                     }
                     else
@@ -328,6 +355,8 @@ namespace SOCE.Library.UI.ViewModels
                     _invPhase = value;
                     if (_invPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)InvestigationView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(InvestigationView);
                     }
                     else
@@ -353,6 +382,8 @@ namespace SOCE.Library.UI.ViewModels
                     _cOPhase = value;
                     if (_cOPhase)
                     {
+                        BudgetEstimateVM bevm = (BudgetEstimateVM)ConstrObvView.DataContext;
+                        bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
                         Roles.Add(ConstrObvView);
                     }
                     else
@@ -383,7 +414,7 @@ namespace SOCE.Library.UI.ViewModels
         {
             MarketsAvailable.Clear();
             ClientsAvailable.Clear();
-
+            Roles.CollectionChanged += CollectionChanged;
             this.AddProjectCommand = new RelayCommand(this.AddProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
 
@@ -417,9 +448,69 @@ namespace SOCE.Library.UI.ViewModels
             PMsAvailable = TotalPMs;
 
         }
+
+        private void CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            if (e.NewItems != null)
+            {
+                foreach (object added in e?.NewItems)
+                {
+                    BudgetEstimateView bev = (BudgetEstimateView)added;
+                    BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                    bevm.SelectedProjectPhase.PropertyChanged += ItemModificationOnPropertyChanged;
+                }
+            }
+
+            if (e.OldItems != null)
+            {
+                foreach (object added in e?.OldItems)
+                {
+                    BudgetEstimateView bev = (BudgetEstimateView)added;
+                    BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                    bevm.SelectedProjectPhase.PropertyChanged -= ItemModificationOnPropertyChanged;
+                }
+            }
+
+            RunPercentCheck();
+        }
+
+        private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        {
+            RunPercentCheck();
+        }
+
+        private void RunPercentCheck()
+        {
+            double total = 0;
+            //The sum of your 
+            foreach (BudgetEstimateView bev in Roles)
+            {
+                BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                total += bevm.SelectedProjectPhase.PercentBudget;
+            }
+
+            if (total > 100)
+            {
+                ErrorPercentMessage = "Over 100% of total budget allocated to project phases,&#10;please revise.";
+            }
+            else if (total < 100)
+            {
+                ErrorPercentMessage = "Under 100% of total budget allocated to project phases.";
+            }
+            else
+            {
+                ErrorPercentMessage = "";
+            }
+        }
+
+
         private void UpdateFee()
         {
-
+            foreach (BudgetEstimateView bev in Roles)
+            {
+                BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                bevm.SelectedProjectPhase.TotalFee = TotalFeeInp;
+            }
         }
 
 
@@ -433,8 +524,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 5,
+                Fee = 0
             };
+            clientdevproj.SetCollectionChanged();
             BudgetEstimateVM CLDevVM = new BudgetEstimateVM(clientdevproj, 0);
             CLDevView.DataContext = CLDevVM;
 
@@ -446,8 +539,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 5,
+                Fee = 0
             };
+            proposalproj.SetCollectionChanged();
             BudgetEstimateVM PropVM = new BudgetEstimateVM(proposalproj, 0);
             PropView.DataContext = PropVM;
 
@@ -459,8 +554,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 10,
+                Fee = 0
             };
+            sdproj.SetCollectionChanged();
             BudgetEstimateVM SDVM = new BudgetEstimateVM(sdproj, 0);
             SDView.DataContext = SDVM;
 
@@ -472,8 +569,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 10,
+                Fee = 0
             };
+            ddproj.SetCollectionChanged();
             BudgetEstimateVM DDVM = new BudgetEstimateVM(ddproj, 0);
             DDView.DataContext = DDVM;
 
@@ -485,8 +584,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 80,
+                Fee = 0
             };
+            cdproj.SetCollectionChanged();
             BudgetEstimateVM CDVM = new BudgetEstimateVM(cdproj, 0);
             CDView.DataContext = CDVM;
 
@@ -498,8 +599,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 20,
+                Fee = 0
             };
+            caproj.SetCollectionChanged();
             BudgetEstimateVM CAVM = new BudgetEstimateVM(caproj, 0);
             CAView.DataContext = CAVM;
 
@@ -511,8 +614,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 5,
+                Fee = 0
             };
+            investigationproj.SetCollectionChanged();
             BudgetEstimateVM InvestigationVM = new BudgetEstimateVM(investigationproj, 0);
             InvestigationView.DataContext = InvestigationVM;
 
@@ -524,8 +629,10 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 0,
+                PercentBudget = 5,
+                Fee = 0
             };
+            constrobsproj.SetCollectionChanged();
             BudgetEstimateVM COVM = new BudgetEstimateVM(constrobsproj, 0);
             ConstrObvView.DataContext = COVM;
         }
@@ -537,6 +644,21 @@ namespace SOCE.Library.UI.ViewModels
             {
                 ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
                 return;
+            }
+
+            foreach (BudgetEstimateView bev in Roles)
+            {
+                BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                SubProjectModel spm = bevm.SelectedProjectPhase;
+
+                foreach (RolePerSubProjectModel rspm in bevm.SelectedProjectPhase.RolesPerSub)
+                {
+                    if (rspm.Employee == null || rspm.Role == DefaultRoleEnum.Default )
+                    {
+                        ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                        return;
+                    }
+                }       
             }
 
             ProjectDbModel project = new ProjectDbModel
@@ -560,99 +682,41 @@ namespace SOCE.Library.UI.ViewModels
 
             int id = SQLAccess.AddProject(project);
 
-            double count = 0;
+            foreach (BudgetEstimateView bev in Roles)
+            {
+                //add subproject then add roles
+                BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                SubProjectDbModel sub = new SubProjectDbModel()
+                {
+                    ProjectId = bevm.SelectedProjectPhase.ProjectNumber,
+                    PointNumber = bevm.SelectedProjectPhase.PointNumStr,
+                    Description = bevm.SelectedProjectPhase.Description,
+                    Fee = bevm.SelectedProjectPhase.Fee,
+                    IsActive = 1,
+                    IsCurrActive = 1,
+                    IsInvoiced = 0,
+                    PercentComplete = 0,
+                    PercentBudget = bevm.SelectedProjectPhase.PercentBudget,
+                };
 
-            //count += CDPhase ? 1 : 0;
-            //count += CAPhase ? 1 : 0;
-            //count += PPhase ? 1 : 0;
-            //count += SDPhase ? 1 : 0;
-            //count += DDPhase ? 1 : 0;
+                int subid = SQLAccess.AddSubProject(sub);
 
-
-            //if (CDPhase && id !=0)
-            //{
-            //    SubProjectDbModel cdproj = new SubProjectDbModel
-            //    {
-            //        ProjectId = id,
-            //        PointNumber = "CD",
-            //        Description = "Construction Document Phase",
-            //        Fee = (1/count) * TotalFeeInp,
-            //        IsActive = 1,
-            //        IsCurrActive = 1,
-            //        IsInvoiced = 0,
-            //        PercentComplete = 0,
-            //        PercentBudget = (1 / count)*100,
-            //    };
-            //    SQLAccess.AddSubProject(cdproj);
-            //}
-
-            //if (CAPhase && id != 0)
-            //{
-            //    SubProjectDbModel caproj = new SubProjectDbModel
-            //    {
-            //        ProjectId = id,
-            //        PointNumber = "CA",
-            //        Description = "Construction Administration Phase",
-            //        Fee = (1 / count) * TotalFeeInp,
-            //        IsActive = 1,
-            //        IsCurrActive = 1,
-            //        IsInvoiced = 0,
-            //        PercentComplete = 0,
-            //        PercentBudget = (1 / count) * 100,
-            //    };
-            //    SQLAccess.AddSubProject(caproj);
-            //}
-
-            //if (PPhase && id != 0)
-            //{
-            //    SubProjectDbModel pproj = new SubProjectDbModel
-            //    {
-            //        ProjectId = id,
-            //        PointNumber = "Pre",
-            //        Description = "Proposal Phase",
-            //        Fee = (1 / count) * TotalFeeInp,
-            //        IsActive = 1,
-            //        IsCurrActive = 1,
-            //        IsInvoiced = 0,
-            //        PercentComplete = 0,
-            //        PercentBudget = (1 / count) * 100,
-            //    };
-            //    SQLAccess.AddSubProject(pproj);
-            //}
-
-            //if (SDPhase && id != 0)
-            //{
-            //    SubProjectDbModel pproj = new SubProjectDbModel
-            //    {
-            //        ProjectId = id,
-            //        PointNumber = "SD",
-            //        Description = "Schematic Design",
-            //        Fee = (1 / count) * TotalFeeInp,
-            //        IsActive = 1,
-            //        IsCurrActive = 1,
-            //        IsInvoiced = 0,
-            //        PercentComplete = 0,
-            //        PercentBudget = (1 / count) * 100,
-            //    };
-            //    SQLAccess.AddSubProject(pproj);
-            //}
-
-            //if (DDPhase && id != 0)
-            //{
-            //    SubProjectDbModel pproj = new SubProjectDbModel
-            //    {
-            //        ProjectId = id,
-            //        PointNumber = "DD",
-            //        Description = "Design Developement",
-            //        Fee = (1 / count) * TotalFeeInp,
-            //        IsActive = 1,
-            //        IsCurrActive = 1,
-            //        IsInvoiced = 0,
-            //        PercentComplete = 0,
-            //        PercentBudget = (1 / count) * 100,
-            //    };
-            //    SQLAccess.AddSubProject(pproj);
-            //}
+                if (subid != 0)
+                {
+                    foreach (RolePerSubProjectModel rspm in bevm.SelectedProjectPhase.RolesPerSub)
+                    {
+                        RolePerSubProjectDbModel role = new RolePerSubProjectDbModel()
+                        {
+                            SubProjectId = subid,
+                            Rate = rspm.Rate,
+                            Role = (int)rspm.Role,
+                            BudgetHours = rspm.BudgetedHours,
+                            EmployeeId = rspm.Employee.Id
+                        };
+                        SQLAccess.AddRolesPerSubProject(role);
+                    }
+                }
+            }
 
             result = true;
 

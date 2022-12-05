@@ -189,6 +189,7 @@
     <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\FolderButtons\ButtonwithPopUpVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\FolderButtons\PopUpInputVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\ProjectSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />

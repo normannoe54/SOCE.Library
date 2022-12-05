@@ -18,5 +18,6 @@ namespace SOCE.Library.UI
 
         [Description("QC Reviewer")]
         QC = 3,
+        Default = 4
     }
 }

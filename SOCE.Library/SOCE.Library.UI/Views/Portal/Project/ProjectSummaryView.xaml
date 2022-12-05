@@ -33,11 +33,11 @@
 
             <VirtualizingStackPanel Margin="10 0 0 0" Grid.Row="1" Orientation="Horizontal">
                 <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Text="Project Phases" />
-                <Button Margin="10 0 0 0" IsEnabled="{Binding Path= DataContext.CanAddProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                <Button Margin="10 0 0 0" IsEnabled="{Binding CanAddPhase}"
                                                     Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
                                                     Foreground="Black" Background="Transparent" 
                                                     BorderBrush="Transparent"
-                                                    Command="{Binding Path=DataContext.GoToAddSubProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                                    Command="{Binding AddSubCommand}"
                                                     CommandParameter="{Binding}"
                                                     ToolTip="Add Phase">
 
@@ -75,7 +75,6 @@
                 <TextBlock Grid.Column="12" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced?"/>
             </Grid>
 
-
             <ItemsControl ItemsSource="{Binding SubProjects}" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                 <ItemsControl.Resources>
                     <local:InvoicedColorConverter x:Key="valueconverter"/>
@@ -112,11 +111,8 @@
                                     <ColumnDefinition Width="90"/>
                                     <ColumnDefinition Width="60"/>
                                     <ColumnDefinition Width="60"/>
-
                                 </Grid.ColumnDefinitions>
-
-
-                                <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0" IsEnabled="{Binding Path=DataContext.CanAddProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0" IsEnabled="{Binding Path=DataContext.CanEditPhase, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                     <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent"  Foreground="Black" Height="20" Width="20" Command="{Binding Path=DataContext.DeleteSubProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
                                         <Button.Content>
                                             <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -137,15 +133,11 @@
                                 <TextBox Grid.Column="3" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$"/>
                                 <TextBox Grid.Column="4" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%"/>
                                 <TextBox Grid.Column="5" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%"/>
-
                                 <TextBox Grid.Column="6" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HoursSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText=" hr."/>
                                 <TextBox Grid.Column="7" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HoursLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText=" hr."/>
                                 <TextBox Grid.Column="8" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding BudgetSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$"/>
                                 <TextBox Grid.Column="9" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding BudgetLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$"/>
                                 <TextBox Grid.Column="10" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%"/>
-
-
-
                                 <CheckBox Grid.Column="11" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray" />
                                 <CheckBox Grid.Column="12" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
                             </Grid>
@@ -198,14 +190,10 @@
                         <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Average Rate" />
                         <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Budget Spent" />
                         <TextBlock Grid.Column="7" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent Phase Budget" />
-
-
-
-
                     </Grid>
 
                     <ScrollViewer Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                        <ItemsControl ItemsSource="{Binding RatePerProject}">
+                        <ItemsControl ItemsSource="{Binding SelectedSubProject.RolesPerSub}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5">
