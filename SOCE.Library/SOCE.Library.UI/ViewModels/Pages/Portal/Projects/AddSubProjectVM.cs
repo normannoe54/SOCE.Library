@@ -73,85 +73,109 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _cDPhase = false;
+        private bool _cLDevPhase;
+        public bool CLDevPhase
+        {
+            get { return _cLDevPhase; }
+            set
+            {
+                _cLDevPhase = value;
+                RaisePropertyChanged("CLDevPhase");
+            }
+        }
+
+
+        private bool _cDPhase;
         public bool CDPhase
         {
             get { return _cDPhase; }
             set
             {
-
                 _cDPhase = value;
                 RaisePropertyChanged("CDPhase");
-
             }
         }
 
-        private bool _cAPhase = false;
+        private bool _sDPhase;
+        public bool SDPhase
+        {
+            get { return _sDPhase; }
+            set
+            {
+                _sDPhase = value;
+                RaisePropertyChanged("SDPhase");
+            }
+        }
+
+        private bool _dDPhase;
+        public bool DDPhase
+        {
+            get { return _dDPhase; }
+            set
+            {
+                _dDPhase = value;
+                RaisePropertyChanged("DDPhase"); 
+            }
+        }
+
+        private bool _cAPhase;
         public bool CAPhase
         {
             get { return _cAPhase; }
             set
             {
-
                 _cAPhase = value;
                 RaisePropertyChanged("CAPhase");
-
             }
         }
 
-        private bool _pPhase = false;
+        private bool _pPhase;
         public bool PPhase
         {
             get { return _pPhase; }
             set
             {
-
                 _pPhase = value;
                 RaisePropertyChanged("PPhase");
-
             }
         }
 
-        private bool _miscPhase = false;
-        public bool MISCPhase
+        private bool _invPhase;
+        public bool InvPhase
         {
-            get { return _miscPhase; }
+            get { return _invPhase; }
+            set
+            {
+                _invPhase = value;
+                RaisePropertyChanged("InvPhase");
+            }
+        }
+
+        private bool _cOPhase;
+        public bool COPhase
+        {
+            get { return _cOPhase; }
+            set
+            {
+                _cOPhase = value;
+                RaisePropertyChanged("COPhase");
+            }
+        }
+
+        private bool _cLDevEnabled;
+        public bool CLDevEnabled
+        {
+            get { return _cLDevEnabled; }
             set
             {
 
-                _miscPhase = value;
-                RaisePropertyChanged("MISCPhase");
+                _cLDevEnabled = value;
+                RaisePropertyChanged("CLDevEnabled");
 
             }
         }
 
-        private bool _cDEnabled = true;
-        public bool CDEnabled
-        {
-            get { return _cDEnabled; }
-            set
-            {
-
-                _cDEnabled = value;
-                RaisePropertyChanged("CDEnabled");
-
-            }
-        }
-
-        private bool _cAEnabled = true;
-        public bool CAEnabled
-        {
-            get { return _cAEnabled; }
-            set
-            {
-
-                _cAEnabled = value;
-                RaisePropertyChanged("CAEnabled");
-
-            }
-        }
-
-        private bool _pEnabled = true;
+        private bool _pEnabled;
         public bool PEnabled
         {
             get { return _pEnabled; }
@@ -164,15 +188,80 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _miscEnabled = true;
-        public bool MISCEnabled
+        private bool _sDEnabled;
+        public bool SDEnabled
         {
-            get { return _miscEnabled; }
+            get { return _sDEnabled; }
             set
             {
 
-                _miscEnabled = value;
-                RaisePropertyChanged("MISCEnabled");
+                _sDEnabled = value;
+                RaisePropertyChanged("SDEnabled");
+
+            }
+        }
+
+        private bool _dDEnabled;
+        public bool DDEnabled
+        {
+            get { return _dDEnabled; }
+            set
+            {
+
+                _dDEnabled = value;
+                RaisePropertyChanged("DDEnabled");
+
+            }
+        }
+
+        private bool _cDEnabled;
+        public bool CDEnabled
+        {
+            get { return _cDEnabled; }
+            set
+            {
+
+                _cDEnabled = value;
+                RaisePropertyChanged("CDEnabled");
+
+            }
+        }
+
+        private bool _cAEnabled;
+        public bool CAEnabled
+        {
+            get { return _cAEnabled; }
+            set
+            {
+
+                _cAEnabled = value;
+                RaisePropertyChanged("CAEnabled");
+
+            }
+        }
+
+        private bool _cOEnabled;
+        public bool COEnabled
+        {
+            get { return _cOEnabled; }
+            set
+            {
+
+                _cOEnabled = value;
+                RaisePropertyChanged("COEnabled");
+
+            }
+        }
+
+        private bool _invEnabled;
+        public bool InvEnabled
+        {
+            get { return _invEnabled; }
+            set
+            {
+
+                _invEnabled = value;
+                RaisePropertyChanged("InvEnabled");
 
             }
         }
@@ -190,12 +279,25 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _errorMessage = "";
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                RaisePropertyChanged("ErrorMessage");
+            }
+        }
+
         public ICommand AddSubProjectCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
-        public AddSubProjectVM(ProjectModel pm)
-        {
+        private ProjectSummaryVM baseViewModel;
 
+        public AddSubProjectVM(ProjectModel pm, ProjectSummaryVM psvm)
+        {
+            baseViewModel = psvm;
             this.AddSubProjectCommand = new RelayCommand(this.AddSubProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
 
@@ -207,15 +309,18 @@ namespace SOCE.Library.UI.ViewModels
             //get latest adservice
             List<SubProjectModel> spms = BaseProject.SubProjects.ToList();
 
-            bool CDphaseexists = !spms.Any(x => x.PointNumber == "CD");
-            bool Prephaseexists = !spms.Any(x => x.PointNumber == "Pre");
-            bool CAphaseexists = !spms.Any(x => x.PointNumber == "CA");
-            bool MISCphaseexists = !spms.Any(x => x.PointNumber == "MISC");
+            CLDevEnabled = !spms.Any(x => x.PointNumber == "CLD");
+            PEnabled = !spms.Any(x => x.PointNumber == "P");
+            InvEnabled = !spms.Any(x => x.PointNumber == "INV");
+            COEnabled = !spms.Any(x => x.PointNumber == "CO");
+            SDEnabled = !spms.Any(x => x.PointNumber == "SD");
+            DDEnabled = !spms.Any(x => x.PointNumber == "DD");
+            CDEnabled = !spms.Any(x => x.PointNumber == "CD");
+            CAEnabled = !spms.Any(x => x.PointNumber == "CA");
 
-            CDEnabled = CDphaseexists;
-            CAEnabled = CAphaseexists;
-            PEnabled = Prephaseexists;
-            MISCEnabled = MISCphaseexists;
+            //bool Prephaseexists = !spms.Any(x => x.PointNumber == "Pre");
+            //bool CAphaseexists = !spms.Any(x => x.PointNumber == "CA");
+            //bool MISCphaseexists = !spms.Any(x => x.PointNumber == "MISC");
 
             //see if CA, CD, P are available
             double pointmax = 0;
@@ -232,12 +337,10 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             LatestAdServiceNumber = pointmax + 0.1;
-
         }
 
         public void AddSubProject()
         {
-
             SubProjectDbModel subproject = new SubProjectDbModel
             {
                 ProjectId = BaseProject.Id,
@@ -252,44 +355,74 @@ namespace SOCE.Library.UI.ViewModels
 
             if (PhaseSelected)
             {
+                if (InvEnabled && InvPhase)
+                {
+                    subproject.PointNumber = "INV";
+                    subproject.Description = "Investigation";
+                    SQLAccess.AddSubProject(subproject);
+                }
+
+                if (CLDevPhase && CLDevPhase)
+                {
+                    subproject.PointNumber = "CLD";
+                    subproject.Description = "Client Developement";
+                    SQLAccess.AddSubProject(subproject);
+                }
+
+                if (PPhase && PEnabled)
+                {
+                    subproject.PointNumber = "P";
+                    subproject.Description = "Proposal";
+                    SQLAccess.AddSubProject(subproject);
+                }
+
+                if (SDPhase && SDEnabled)
+                {
+                    subproject.PointNumber = "SD";
+                    subproject.Description = "Schematic Design";
+                    SQLAccess.AddSubProject(subproject);
+                }
+
+                if (DDPhase && DDEnabled)
+                {
+                    subproject.PointNumber = "DD";
+                    subproject.Description = "Design Developement";
+                    SQLAccess.AddSubProject(subproject);
+                }
 
                 if (CDPhase && CDEnabled)
                 {
-                    
-                    subproject.PointNumber = "CA";
+                    subproject.PointNumber = "CD";
                     subproject.Description = "Construction Document";
                     SQLAccess.AddSubProject(subproject);
                 }
 
                 if (CAPhase && CAPhase)
                 {
-                    subproject.PointNumber = "CD";
+                    subproject.PointNumber = "CA";
                     subproject.Description = "Construction Administration";
                     SQLAccess.AddSubProject(subproject);
                 }
 
-                if (PPhase && PPhase)
+                if (COPhase && COEnabled)
                 {
-                    subproject.PointNumber = "Pre";
-                    subproject.Description = "Proposal Phase";
+                    subproject.PointNumber = "CO";
+                    subproject.Description = "Construction Observation";
                     SQLAccess.AddSubProject(subproject);
                 }
-
-                if (MISCPhase && MISCEnabled)
-                {
-                    subproject.PointNumber = "MISC";
-                    subproject.Description = "Miscellaneous";
-                    SQLAccess.AddSubProject(subproject);
-                }
-
             }
             else if (AdSelected)
             {
+                if (String.IsNullOrEmpty(Description) || LatestAdServiceNumber == 0)
+                {
+                    ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                    return;
+                }
+
                 subproject.PointNumber = LatestAdServiceNumber.ToString();
                 subproject.Fee = AdditionalServicesFee;
                 subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee+ AdditionalServicesFee) *100,2);
                 SQLAccess.AddSubProject(subproject);
-
 
                 //update project overall fee
                 BaseProject.Fee += AdditionalServicesFee;
@@ -302,7 +435,9 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            DialogHost.Close("RootDialog");
+            baseViewModel.BaseProject.FormatData(result);
+            baseViewModel.LeftDrawerOpen = false;
+            //DialogHost.Close("RootDialog");
         }
     }
 }

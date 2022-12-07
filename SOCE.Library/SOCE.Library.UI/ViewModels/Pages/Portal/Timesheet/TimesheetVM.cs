@@ -411,10 +411,10 @@ namespace SOCE.Library.UI.ViewModels
 
             ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
 
-            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
+            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count-1];
 
             //Do not include the last layer
-            Parallel.For(0, dbprojects.Count, i =>
+            Parallel.For(0, dbprojects.Count-1, i =>
             {
                 ProjectDbModel pdb = dbprojects[i];
                 ProjectModel pm = new ProjectModel(pdb);

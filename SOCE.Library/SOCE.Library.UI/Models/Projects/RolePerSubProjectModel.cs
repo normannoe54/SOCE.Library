@@ -284,7 +284,14 @@ namespace SOCE.Library.UI
                 BudgetHours = BudgetedHours
             };
 
-            SQLAccess.UpdateRolesPerSubProject(rpp);
+            if (Id ==0)
+            {
+                SQLAccess.AddRolesPerSubProject(rpp);
+            }
+            else
+            {
+                SQLAccess.UpdateRolesPerSubProject(rpp);
+            }
         }
 
     }

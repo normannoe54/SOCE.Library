@@ -8,83 +8,122 @@
              xmlns:local="clr-namespace:SOCE.Library.UI"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Background="Transparent" Width="400" >
+             Background="Transparent" Width="375">
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition Height ="200"/>
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
-            <RowDefinition />
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height ="*"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Column="0" Text="New Project Phase" FontSize="24" />
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal">
+                <TextBlock Grid.Column="0" materialDesign:HintAssist.Hint="Project Name" Text="{Binding BaseProject.ProjectName}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" />
+                <TextBlock Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding BaseProject.ProjectNumber, StringFormat= ' [{0}]'}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" HorizontalAlignment="Left"/>
+            </VirtualizingStackPanel>
+            <TextBlock Margin="30 0 0 0" Grid.Column="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
 
 
-        <VirtualizingStackPanel Grid.Row="1" Orientation="Horizontal">
-            <TextBlock Grid.Column="0" materialDesign:HintAssist.Hint="Project Name" Text="{Binding BaseProject.ProjectName}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" />
-            <TextBlock Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding BaseProject.ProjectNumber, StringFormat= ' [{0}]'}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" HorizontalAlignment="Left"/>
-        </VirtualizingStackPanel>
+
 
         <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}" Grid.Row="2" Background="Transparent" Margin="0 10 0 0">
-            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding PhaseSelected}" Height="100" Background="{StaticResource SOCELighterRed}" Width="90">
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding PhaseSelected}" Background="{StaticResource SOCELighterRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Typical"  Foreground="DarkRed"/>
-                        <TextBlock Text="Project"  Foreground="DarkRed"/>
-                        <TextBlock Text="Phases"  Foreground="DarkRed"/>
+                        <TextBlock Text="Typical&#10;Project&#10;Phases" TextAlignment="Center" Foreground="DarkRed"/>
                     </StackPanel>
                 </TabItem.Header>
-                <StackPanel Grid.Row="1" Margin="10">
-                    <CheckBox IsChecked="{Binding PPhase}" IsEnabled="{Binding PEnabled}" Background="{StaticResource SOCERed}">
+                <StackPanel Grid.Row="1" Margin="10 0 10 0">
+                    <TextBlock Text="Project Phases" FontSize="16" FontWeight="SemiBold" TextAlignment="Center" Foreground="Black" Margin="0 0 0 10"/>
+                    <CheckBox IsEnabled="{Binding CLDevEnabled}" IsChecked="{Binding CLDevPhase}" Background="{StaticResource SOCERed}">
                         <CheckBox.Content>
-                            <TextBlock Text="Preposal Phase [P]"/>
+                            <TextBlock Text="Client Development [CLD]"/>
                         </CheckBox.Content>
                     </CheckBox>
-                    <CheckBox IsChecked="{Binding CDPhase}"  IsEnabled="{Binding CDEnabled}" Margin="0 10 0 0" Background="{StaticResource SOCERed}">
+                    <CheckBox IsEnabled="{Binding PEnabled}" IsChecked="{Binding PPhase}" Margin="0 10 0 0" Background="{StaticResource SOCERed}">
+                        <CheckBox.Content>
+                            <TextBlock Text="Proposal Phase [P]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsEnabled="{Binding SDEnabled}" IsChecked="{Binding SDPhase}"  Margin="0 10 0 0" Background="{StaticResource SOCERed}">
+                        <CheckBox.Content>
+                            <TextBlock Text="Schematic Design [SD]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsEnabled="{Binding DDEnabled}" IsChecked="{Binding DDPhase}"  Margin="0 10 0 0" Background="{StaticResource SOCERed}">
+                        <CheckBox.Content>
+                            <TextBlock Text="Design Developement [DD]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsEnabled="{Binding CDEnabled}" IsChecked="{Binding CDPhase}" Margin="0 10 0 0" Background="{StaticResource SOCERed}">
                         <CheckBox.Content>
                             <TextBlock Text="Construction Documents [CD]"/>
                         </CheckBox.Content>
                     </CheckBox>
-                    <CheckBox IsChecked="{Binding CAPhase}" IsEnabled="{Binding CAEnabled}" Margin="0 10 0 10" Background="{StaticResource SOCERed}">
+                    <CheckBox IsEnabled="{Binding CAEnabled}" IsChecked="{Binding CAPhase}" Margin="0 10 0 0" Background="{StaticResource SOCERed}">
                         <CheckBox.Content>
                             <TextBlock Text="Construction Administration [CA]"/>
                         </CheckBox.Content>
                     </CheckBox>
-                    <CheckBox IsChecked="{Binding MISCPhase}" IsEnabled="{Binding MISCEnabled}" Margin="0 10 0 10" Background="{StaticResource SOCERed}">
+                    <CheckBox IsEnabled="{Binding COEnabled}" IsChecked="{Binding COPhase}" Margin="0 10 0 0" Background="{StaticResource SOCERed}">
                         <CheckBox.Content>
-                            <TextBlock Text="Miscellaneous [MISC]"/>
+                            <TextBlock Text="Construction Observation [CO]"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox IsEnabled="{Binding InvEnabled}" IsChecked="{Binding InvPhase}" Margin="0 10 0 10" Background="{StaticResource SOCERed}">
+                        <CheckBox.Content>
+                            <TextBlock Text="Investigation Report [INV]"/>
                         </CheckBox.Content>
                     </CheckBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Center" IsSelected="{Binding AdSelected}" Height="100" Background="{StaticResource SOCELighterRed}" Width="90">
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding AdSelected}" Background="{StaticResource SOCELighterRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Add-service"  Foreground="DarkRed"/>
+                        <TextBlock Text="Add-&#10;Service" TextAlignment="Center" Foreground="DarkRed"/>
                     </StackPanel>
                 </TabItem.Header>
                 <StackPanel Orientation="Vertical" Margin="10 20 0 0">
-                    <TextBlock Text="Subsequent Adservice point number:" />
-                    <TextBox IsReadOnly="True" Width="75" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding LatestAdServiceNumber}"/>
-                    <TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding Description}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" Grid.Row="4"/>
-                    <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Text="{Binding AdditionalServicesFee}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
+                    <TextBlock Text="Add-Service" FontSize="16" FontWeight="SemiBold" TextAlignment="Center" Foreground="Black" Margin="0 0 0 10"/>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Next Add-service&#10;point number:" />
+                        <TextBox Grid.Column="1" Width="30" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding LatestAdServiceNumber}" VerticalAlignment="Bottom"/>
+                    </Grid>
+
+                    <TextBox materialDesign:HintAssist.Hint="Name" Text="{Binding Description}" 
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
+                    <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$" Margin="0 8 0 0" FontSize="16" Grid.Row="5"/>
                 </StackPanel>
             </TabItem>
-            <!--<TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" >
-                <TabItem.Header>
-                    <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Custom"/>
-                    </StackPanel>
-                </TabItem.Header>
-            </TabItem>-->
         </TabControl>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0">
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0" HorizontalAlignment="Center">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddSubProjectCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>

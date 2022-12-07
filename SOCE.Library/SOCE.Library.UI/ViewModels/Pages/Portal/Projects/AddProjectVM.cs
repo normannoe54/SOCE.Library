@@ -202,7 +202,7 @@ namespace SOCE.Library.UI.ViewModels
                         Roles.Remove(CLDevView);
                     }
 
-                    RaisePropertyChanged("CLDevView");
+                    RaisePropertyChanged("CLDevPhase");
                 }
             }
         }
@@ -491,7 +491,7 @@ namespace SOCE.Library.UI.ViewModels
 
             if (total > 100)
             {
-                ErrorPercentMessage = "Over 100% of total budget allocated to project phases,&#10;please revise.";
+                ErrorPercentMessage = $"Over 100% of total budget allocated to project phases,{Environment.NewLine}please revise.";
             }
             else if (total < 100)
             {
@@ -519,7 +519,7 @@ namespace SOCE.Library.UI.ViewModels
             CLDevView = new BudgetEstimateView();
             SubProjectModel clientdevproj = new SubProjectModel
             {
-                PointNumber = "CLDev",
+                PointNumber = "CLD",
                 Description = "Client Developement",
                 IsActive = true,
                 IsInvoiced = false,
@@ -535,7 +535,7 @@ namespace SOCE.Library.UI.ViewModels
             PropView = new BudgetEstimateView();
             SubProjectModel proposalproj = new SubProjectModel
             {
-                PointNumber = "Prop",
+                PointNumber = "P",
                 Description = "Proposal",
                 IsActive = true,
                 IsInvoiced = false,
@@ -615,7 +615,7 @@ namespace SOCE.Library.UI.ViewModels
             InvestigationView = new BudgetEstimateView();
             SubProjectModel investigationproj = new SubProjectModel
             {
-                PointNumber = "I",
+                PointNumber = "INV",
                 Description = "Investigation",
                 IsActive = true,
                 IsInvoiced = false,

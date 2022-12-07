@@ -182,12 +182,16 @@
 
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="0" VerticalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <Button Grid.Row="0" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" 
+                        <Button Grid.Row="0" Grid.Column="0" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" 
                             Background="{StaticResource SOCERed}" Command="{Binding GoToAddProject}" HorizontalAlignment="Center" VerticalAlignment="Top" Margin="0 10 0 0">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
@@ -195,11 +199,11 @@
                             </StackPanel>
                         </Button>
 
-                        <StackPanel Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Left" VerticalAlignment="Center">
+                        <StackPanel Grid.Column="0" Grid.Row="1" Orientation="Horizontal" Margin="0 10 0 0" HorizontalAlignment="Left" VerticalAlignment="Center">
                             <ToggleButton Style="{StaticResource MaterialDesignSwitchToggleButton}" 
                                   IsChecked="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                   Content="{materialDesign:PackIcon Kind=No}" 
-                                      VerticalAlignment="Center"
+                                  VerticalAlignment="Center" HorizontalAlignment="Left"
                                   materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Check}">
                                 <materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
                                     <SolidColorBrush Color="Green" />
@@ -211,7 +215,7 @@
                             <TextBlock Foreground="Black" Margin="10 0 0 0" Text="Active Only?" FontWeight="Regular" FontStyle="Italic" FontSize="14" VerticalAlignment="Center"/>
                         </StackPanel>
 
-                        <Button Grid.Row="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportDataCommand}" 
+                        <Button Grid.Column="0" Grid.Row="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportDataCommand}" 
                         IsEnabled="{Binding IsEditable}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0 0 0 0" BorderBrush="Gray" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Download" VerticalAlignment="Center" Margin="-5 1 8 0"  Width="20" Height="20" ToolTip="Export Current" Foreground="{StaticResource SOCERed}"/>
@@ -219,6 +223,8 @@
                                 <TextBlock Text="Export Data" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
+                        <TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Visibility="{ Binding ShowActiveProjects, Converter={StaticResource BooleanToVisibilityConverter} }" Text="Select year complete:" Margin="10 0 0 0"/>
+                        <DatePicker Grid.Row="1" Grid.Column="1" Width="100" materialDesign:HintAssist.Hint="Pick Date" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"  />
                     </Grid>
 
 

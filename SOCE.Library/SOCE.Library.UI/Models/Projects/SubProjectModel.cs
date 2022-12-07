@@ -324,7 +324,7 @@ namespace SOCE.Library.UI
                 if (!_editSubFieldState && value)
                 {
                     //UpdateSubProject();
-                    baseproject.UpdateSubProjects();
+                    baseproject.UpdateSubProjects(this);
                 }
                 _editSubFieldState = value;
                 ComboSubFieldState = !_editSubFieldState;

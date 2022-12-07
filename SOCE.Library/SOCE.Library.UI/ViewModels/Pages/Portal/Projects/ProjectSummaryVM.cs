@@ -9,11 +9,35 @@ using System.Collections.ObjectModel;
 using SOCE.Library.UI.Views;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Windows.Controls;
 
 namespace SOCE.Library.UI.ViewModels
 {
     public class ProjectSummaryVM : BaseVM
     {
+
+        private UserControl _leftViewToShow = new UserControl();
+        public UserControl LeftViewToShow
+        {
+            get { return _leftViewToShow; }
+            set
+            {
+                _leftViewToShow = value;
+                RaisePropertyChanged(nameof(LeftViewToShow));
+            }
+        }
+
+        private object _itemToDelete;
+        public object ItemToDelete
+        {
+            get { return _itemToDelete; }
+            set
+            {
+                _itemToDelete = value;
+                RaisePropertyChanged(nameof(ItemToDelete));
+            }
+        }
+
         public bool result = false;
 
         private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
@@ -26,6 +50,8 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged(nameof(SubProjects));
             }
         }
+
+        public ObservableCollection<EmployeeModel> BaseEmployees = new ObservableCollection<EmployeeModel>();
 
         private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
         public ObservableCollection<EmployeeModel> Employees
@@ -45,6 +71,13 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedProjectPhase = value;
+
+                //Employees = BaseEmployees;
+                ////set stuff
+                //foreach (RolePerSubProjectModel role in _selectedProjectPhase.RolesPerSub)
+                //{
+                //    Employees.Remove(role.Employee);
+                //}
                 RaisePropertyChanged("SelectedProjectPhase");
             }
         }
@@ -57,6 +90,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _errorMessage = value;
                 RaisePropertyChanged("ErrorMessage");
+            }
+        }
+
+        private bool _leftDrawerOpen =false;
+        public bool LeftDrawerOpen
+        {
+            get { return _leftDrawerOpen; }
+            set
+            {
+                _leftDrawerOpen = value;
+                RaisePropertyChanged("LeftDrawerOpen");
             }
         }
 
@@ -112,14 +156,6 @@ namespace SOCE.Library.UI.ViewModels
             this.DeleteSubProject = new RelayCommand<SubProjectModel>(this.DeleteSub);
             this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
 
-            pm.FormatData(true);
-            SubProjects = pm.SubProjects;
-
-            if (SubProjects.Count >0)
-            {
-                SelectedProjectPhase = SubProjects[0];
-            }
-
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
             ObservableCollection<EmployeeModel> totalemployees = new ObservableCollection<EmployeeModel>();
 
@@ -130,40 +166,64 @@ namespace SOCE.Library.UI.ViewModels
 
             //OverallFee = overallfee;
             Employees = totalemployees;
+
+            pm.FormatData(true);
+            SubProjects = pm.SubProjects;
+
+            if (SubProjects.Count >0)
+            {
+                SelectedProjectPhase = SubProjects[0];
+            }
         }
 
         private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)
         {
-            if (rpsm.SpentHours == 0)
+            if (rpsm.Id != 0)
             {
-                SQLAccess.DeleteRolesPerSubProject(rpsm.Id);
+                LeftViewToShow = new AreYouSureView();
+                AreYouSureVM aysvm = new AreYouSureVM(rpsm, this);
+                LeftViewToShow.DataContext = aysvm;
+                ItemToDelete = rpsm;
+                LeftDrawerOpen = true;
             }
+            else
+            {
+                SelectedProjectPhase.RolesPerSub.Remove(rpsm);
+            }
+
+            //update roles
             
         }
 
         private void DeleteSub(SubProjectModel spm)
         {
-            //need a popup warning
-
-            foreach(RolePerSubProjectModel rpspm in spm.RolesPerSub)
+            if (SubProjects.Count>1)
             {
-                SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
+                LeftViewToShow = new AreYouSureView();
+                AreYouSureVM aysvm = new AreYouSureVM(spm, this);
+                LeftViewToShow.DataContext = aysvm;
+                ItemToDelete = spm;
+                LeftDrawerOpen = true;
             }
-            SQLAccess.ArchiveSubProject(spm.Id);
-            SubProjects.Remove(spm);
         }
 
         private void AddRole()
         {
-            RolePerSubProjectModel rpspm = new RolePerSubProjectModel(SelectedProjectPhase, SelectedProjectPhase.Fee);
-            rpspm.EditRoleFieldState = false;
-            rpspm.SpentHours = 0;
-            SelectedProjectPhase.RolesPerSub.Add(rpspm);
+            if (SelectedProjectPhase != null)
+            {
+                RolePerSubProjectModel rpspm = new RolePerSubProjectModel(SelectedProjectPhase, SelectedProjectPhase.Fee);
+                rpspm.EditRoleFieldState = false;
+                rpspm.SpentHours = 0;
+                SelectedProjectPhase.RolesPerSub.Add(rpspm);
+            }
         }
 
         private void AddSubProject()
         {
-
+            LeftViewToShow = new AddSubProjectView();
+            AddSubProjectVM addsubvm = new AddSubProjectVM(BaseProject, this);
+            LeftViewToShow.DataContext = addsubvm;
+            LeftDrawerOpen = true;
         }
 
         private void CloseWindow()

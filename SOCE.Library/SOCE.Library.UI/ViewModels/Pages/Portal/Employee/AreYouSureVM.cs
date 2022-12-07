@@ -5,12 +5,16 @@ using System.Text;
 using System.Windows;
 using System.Windows.Input;
 using SOCE.Library.Db;
+using System.Reflection;
+using System.ComponentModel;
 
 namespace SOCE.Library.UI.ViewModels
 {
     public class AreYouSureVM : BaseVM
     {
         public bool Result { get; set; }
+
+        private ProjectSummaryVM ProjectSummary { get; set; }
 
         public string WordNeeded { get; set; } = "delete: ";
         public string TexttoDisplay { get; set; }
@@ -29,7 +33,7 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            WordNeeded =  "archive:";
+            WordNeeded = "archive:";
             TexttoDisplay = em.FirstName + " " + em.LastName;
         }
 
@@ -49,12 +53,23 @@ namespace SOCE.Library.UI.ViewModels
             TexttoDisplay = mm.MarketName;
         }
 
-        public AreYouSureVM(SubProjectModel spm)
+        public AreYouSureVM(SubProjectModel spm, ProjectSummaryVM psm)
         {
+            ProjectSummary = psm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
             TexttoDisplay = $"Phase: {spm.PointNumber}";
+        }
+
+        public AreYouSureVM(RolePerSubProjectModel rpspm, ProjectSummaryVM psm)
+        {
+            ProjectSummary = psm;
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+            string description = GetEnumDescription((DefaultRoleEnum)rpspm.Role);
+            TexttoDisplay = $"Role: {description} {Environment.NewLine}Employee: {rpspm.Employee.FullName}";
         }
 
         public AreYouSureVM(ProjectModel pm)
@@ -65,10 +80,23 @@ namespace SOCE.Library.UI.ViewModels
             TexttoDisplay = pm.ProjectName;
         }
 
+        private string GetEnumDescription(Enum value)
+        {
+            // Get the Description attribute value for the enum value
+            FieldInfo fi = value.GetType().GetField(value.ToString());
+            DescriptionAttribute[] attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+
+            if (attributes.Length > 0)
+                return attributes[0].Description;
+            else
+                return value.ToString();
+        }
+
         public void YesDoTheAction()
         {
             Result = true;
             //do stuff
+
             CloseWindow();
         }
 
@@ -81,7 +109,42 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            DialogHost.Close("RootDialog");
+            if (ProjectSummary == null)
+            {
+                DialogHost.Close("RootDialog");
+            }
+            else
+            {
+                object itemtodelete = ProjectSummary.ItemToDelete;
+
+                switch (itemtodelete)
+                {
+                    case SubProjectModel sub:
+                        {
+                            foreach (RolePerSubProjectModel rpspm in sub.RolesPerSub)
+                            {
+                                SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
+                            }
+                            SQLAccess.ArchiveSubProject(sub.Id);
+                            ProjectSummary.SubProjects.Remove(sub);
+                            ProjectSummary.LeftDrawerOpen = false;
+                            break;
+                        }
+                    case RolePerSubProjectModel role:
+                        {
+                            if (role.SpentHours == 0)
+                            {
+                                SQLAccess.DeleteRolesPerSubProject(role.Id);
+                            }
+                            ProjectSummary.SelectedProjectPhase.RolesPerSub.Remove(role);
+                            ProjectSummary.LeftDrawerOpen = false;
+                            break;
+                        }
+                    default:
+                        break;
+                }
+                ProjectSummary.ItemToDelete = null;
+            }
         }
     }
 }

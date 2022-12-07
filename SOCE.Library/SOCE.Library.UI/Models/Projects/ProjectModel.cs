@@ -164,12 +164,17 @@ namespace SOCE.Library.UI
                 {
                     ProjectEnd = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd"));
                     FinalSpent = BudgetSpent;
+                    //foreach (SubProjectModel sub in SubProjects)
+                    //{
+                    //    sub.IsActive = false;
+                    //}
                 }
 
                 if (!_isActive && value)
                 {
                     ProjectEnd = 0;
                     FinalSpent = 0;
+                    //UpdateSubProjects(SubProjects[0]);
                 }
 
                 _isActive = value;
@@ -599,7 +604,7 @@ namespace SOCE.Library.UI
 
         //}
 
-        public void UpdateSubProjects()
+        public void UpdateSubProjects(SubProjectModel subinput)
         {
             TotalBudget = 0;
 
@@ -612,7 +617,7 @@ namespace SOCE.Library.UI
 
             Fee = TotalBudget;
             //update total budget
-
+            bool onehastobeactive = false;
             //turn off item mo
             foreach (SubProjectModel spm in SubProjects)
             {
@@ -637,8 +642,28 @@ namespace SOCE.Library.UI
 
                 SQLAccess.UpdateSubProject(subproject);
 
-                //spm.PropertyChanged += SubItemModificationOnPropertyChanged;
+                onehastobeactive = onehastobeactive || spm.IsActive;
 
+            }
+
+            //catch for no actives
+            if (!onehastobeactive)
+            {
+                subinput.IsActive = true;
+                SubProjectDbModel subproject = new SubProjectDbModel()
+                {
+                    Id = subinput.Id,
+                    ProjectId = subinput.ProjectNumber,
+                    PointNumber = subinput.PointNumber,
+                    Description = subinput.Description,
+                    Fee = subinput.Fee,
+                    IsCurrActive = 1,
+                    IsActive = 1,
+                    IsInvoiced = subinput.IsInvoiced ? 1 : 0,
+                    PercentComplete = subinput.PercentComplete,
+                    PercentBudget = subinput.PercentBudget,
+                };
+                SQLAccess.UpdateSubProject(subproject);
             }
 
             UpdateData();
@@ -691,19 +716,27 @@ namespace SOCE.Library.UI
 
                 SubProjectModel spm = null;
 
-                if (addistrue)
+                if (spdm.IsCurrActive == 1)
                 {
-                    spm = new SubProjectModel(spdm, Fee, this);
+                    if (addistrue)
+                    {
+                        spm = new SubProjectModel(spdm, Fee, this);
+                    }
+                    else
+                    {
+                
+                        spm = SubProjects.Where(x => x.Id == spdm.Id).FirstOrDefault();
+                        spm.RolesPerSub.Clear();
+                        if (spm == null)
+                        {
+                            //delete item from database? should never happen
+                            continue;
+                        }
+                    }
                 }
                 else
                 {
-                    spm = SubProjects.Where(x => x.Id == spdm.Id).FirstOrDefault();
-                    spm.RolesPerSub.Clear();
-                    if (spm == null)
-                    {
-                        //delete item from database? should never happen
-                        continue;
-                    }
+                    continue;
                 }
 
                 List<RolePerSubProjectDbModel> rolesdbmodel = SQLAccess.LoadRolesPerSubProject(spm.Id);

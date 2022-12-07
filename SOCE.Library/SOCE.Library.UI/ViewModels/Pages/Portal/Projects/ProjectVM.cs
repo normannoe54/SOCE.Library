@@ -336,13 +336,6 @@ namespace SOCE.Library.UI.ViewModels
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
 
-            //AddProjectVM vm = view.DataContext as AddProjectVM;
-            //bool resultvm = vm.result;
-
-            //if (resultvm)
-            //{
-            //    LoadProjects();
-            //}
         }
 
 
@@ -362,29 +355,6 @@ namespace SOCE.Library.UI.ViewModels
                 LoadProjects();
             }
         }
-
-        //private async void ExecuteRunAddSubProjectDialog(object o)
-        //{
-        //    ProjectModel pm = (ProjectModel)o;
-
-        //    if (pm != null)
-        //    {
-        //        AddSubProjectVM aspvm = new AddSubProjectVM(pm);
-        //        var view = new AddSubProjectView();
-        //        view.DataContext = aspvm;
-
-        //        //show the dialog
-        //        var result = await DialogHost.Show(view, "RootDialog");
-        //        AddSubProjectVM vm = view.DataContext as AddSubProjectVM;
-        //        bool resultvm = vm.result;
-        //        if (resultvm)
-        //        {
-        //            pm.LoadSubProjects();
-        //            pm.UpdateSubProjects();
-        //        }
-        //        //LoadProjects();
-        //    }
-        //}
 
         private async void ExecuteRunAddClientDialog(object o)
         {
@@ -427,9 +397,6 @@ namespace SOCE.Library.UI.ViewModels
                 case MarketModel mm:
                     aysvm = new AreYouSureVM(mm);
                     break;
-                case SubProjectModel spm:
-                    aysvm = new AreYouSureVM(spm);
-                    break;
                 default:
                     return;
                     // code block
@@ -457,12 +424,6 @@ namespace SOCE.Library.UI.ViewModels
                     case MarketModel mm:
                         SQLAccess.ArchiveMarket(mm.Id);
                         LoadMarkets();
-                        break;
-                    case SubProjectModel spm:
-                        SQLAccess.ArchiveSubProject(spm.Id);
-                        ProjectModel prj = Projects.Where(x => x.Id == spm.ProjectNumber).FirstOrDefault();
-                        prj.LoadSubProjects();
-                        prj.UpdateSubProjects();
                         break;
                     default:
                         // code block
