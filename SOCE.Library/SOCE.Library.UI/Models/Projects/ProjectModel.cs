@@ -292,6 +292,28 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _totalRegulatedBudget = 0;
+        public double TotalRegulatedBudget
+        {
+            get { return _totalRegulatedBudget; }
+            set
+            {
+                _totalRegulatedBudget = value;
+                RaisePropertyChanged(nameof(TotalRegulatedBudget));
+            }
+        }
+
+        private double _percentofInvoicedFee = 0;
+        public double PercentofInvoicedFee
+        {
+            get { return _percentofInvoicedFee; }
+            set
+            {
+                _percentofInvoicedFee = value;
+                RaisePropertyChanged(nameof(PercentofInvoicedFee));
+            }
+        }
+
         private double _budgetSpent = 0;
         public double BudgetSpent
         {
@@ -583,11 +605,12 @@ namespace SOCE.Library.UI
 
             foreach (SubProjectModel spm in SubProjects)
             {
-                TotalBudget += spm.Fee;
+                TotalBudget += spm.Fee;             
             }
 
             SQLAccess.UpdateFee(Id, TotalBudget);
 
+            Fee = TotalBudget;
             //update total budget
 
             //turn off item mo
@@ -595,7 +618,8 @@ namespace SOCE.Library.UI
             {
                 //spm.PropertyChanged -= SubItemModificationOnPropertyChanged;
                 spm.TotalFee = TotalBudget;
-                spm.UpdatePercentBudget();
+                spm.UpdatePercents();
+                //spm.UpdatePercentBudget();
 
                 SubProjectDbModel subproject = new SubProjectDbModel()
                 {
@@ -644,94 +668,144 @@ namespace SOCE.Library.UI
             Formatted = true;
             TotalBudget = Fee;
 
-            List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
+            //List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
 
             //total
             //get all subprojectIds associated with projectId
             List<SubProjectDbModel> subdbmodels = SQLAccess.LoadAllSubProjectsByProject(Id);
 
+            double hourstotal = 0;
+            double hourstotalleft = 0;
+            double budgetspent = 0;
+            double totalregulatedbudget = 0;
+            int count = 1;
+
             foreach (SubProjectDbModel spdm in subdbmodels)
             {
+                double hoursspentpersub = 0;
+                double hoursleftpersub = 0;
+                double budgetspentpersub = 0;
+                double budgetleftpersub = 0;
+                double regulatedbudgetpersub = 0;
+                double totalbudgethours = 0;
+
+                SubProjectModel spm = null;
+
                 if (addistrue)
                 {
-                    if (spdm.IsCurrActive == 1)
+                    spm = new SubProjectModel(spdm, Fee, this);
+                }
+                else
+                {
+                    spm = SubProjects.Where(x => x.Id == spdm.Id).FirstOrDefault();
+                    spm.RolesPerSub.Clear();
+                    if (spm == null)
                     {
-                        SubProjectModel spm = new SubProjectModel(spdm, Fee, this);
+                        //delete item from database? should never happen
+                        continue;
+                    }
+                }
+
+                List<RolePerSubProjectDbModel> rolesdbmodel = SQLAccess.LoadRolesPerSubProject(spm.Id);
+                
+                List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
+
+                if (tmdata.Count != 0)
+                {
+                    var grouped = tmdata.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
+
+                    foreach (var item in grouped)
+                    {
+                        EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
+
+                        if (employee != null)
+                        {
+                            //order by date
+                            List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
+
+                            double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
+
+                            RolePerSubProjectDbModel rpdm = rolesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
+                            double rate = rpdm.Rate;
+                     
+                            double hoursleft = rpdm.BudgetHours - hours;
+                            hoursspentpersub += hours;
+                            hoursleftpersub += hoursleft;
+                            budgetspentpersub += hours * rate;
+                            budgetleftpersub += hoursleft *rate;
+                            regulatedbudgetpersub += rpdm.BudgetHours * rate;
+                            totalbudgethours += rpdm.BudgetHours;
+                            //get rate
+                            if (rpdm != null)
+                            {
+                                RolePerSubProjectModel rspm = new RolePerSubProjectModel(rpdm.Id, rpdm.Rate, (DefaultRoleEnum)rpdm.Role, rpdm.EmployeeId, spm, rpdm.BudgetHours, spm.Fee);
+                                rspm.SpentHours = hours;
+                                //rspm.PercentofRegulatedBudget = (rpdm.BudgetHours /regulatedbudgetpersub)*100;
+                                rate = rpdm.Rate;
+                                spm.RolesPerSub.Add(rspm);
+                                
+                            }
+
+                        }
+                    }     
+                }
+
+                foreach (RolePerSubProjectDbModel rspdb in rolesdbmodel)
+                {
+                    RolePerSubProjectModel rpdm = spm.RolesPerSub.Where(x => x.Employee.Id == rspdb.EmployeeId).FirstOrDefault();
+
+                    if (rpdm == null)
+                    {
+                        hoursleftpersub += rspdb.BudgetHours;
+                        budgetleftpersub += rspdb.BudgetHours * rspdb.Rate;
+                        regulatedbudgetpersub += rspdb.BudgetHours * rspdb.Rate;
+                        totalbudgethours += rspdb.BudgetHours;
+                        //add
+                        RolePerSubProjectModel rspm = new RolePerSubProjectModel(rspdb.Id, rspdb.Rate, (DefaultRoleEnum)rspdb.Role, rspdb.EmployeeId, spm, rspdb.BudgetHours, spm.Fee);
+                        rspm.SpentHours = 0;
+                        //rspm.PercentofRegulatedBudget = (rspdb.BudgetHours / regulatedbudgetpersub) * 100;
+                         spm.RolesPerSub.Add(rspm);
+                       
+                    }
+                }
+
+                spm.HoursUsed = hoursspentpersub;
+                spm.HoursLeft = hoursleftpersub;
+                spm.FeeUsed = budgetspentpersub;
+                spm.FeeLeft = budgetleftpersub;
+                spm.RegulatedBudget = regulatedbudgetpersub;
+                spm.TotalHours = totalbudgethours;
+                spm.UpdatePercents();
+
+                if (spdm.IsCurrActive == 1)
+                {
+                    if (addistrue)
+                    {
                         SubProjects.Add(spm);
                     }
                 }
-                List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
-                total.AddRange(tmdata);
+
+                totalregulatedbudget += regulatedbudgetpersub;
+                hourstotal += hoursspentpersub;
+                hourstotalleft += hoursleftpersub;
+                budgetspent += budgetspentpersub;
+
+                //averagerate += rate * hours;
             }
 
-            double averagerate = 250;
-            double hourstotal = 0;
-            double budgetspent = 0;
-            int count = 1;
-
-            //List<RolePerSubProjectDbModel> ratesdbmodel = SQLAccess.LoadRolesPerSubProject(Id);
-            //List<RolePerSubProjectModel> rpms = new List<RolePerSubProjectModel>();
-
-            //if (total.Count != 0)
-            //{
-            //    var grouped = total.OrderBy(x => x.EmployeeId).GroupBy(x => x.EmployeeId);
-
-            //    count = 0;
-            //    foreach (var item in grouped)
-            //    {
-            //        EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
-
-            //        if (employee != null)
-            //        {
-            //            //order by date
-            //            List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
-
-            //            double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
-
-            //            RolePerSubProjectDbModel rpdm = ratesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
-            //            double rate = employee.Rate;
-            //            //get rate
-            //            if (rpdm != null)
-            //            {
-            //                RolePerSubProjectModel rpm = new RolePerSubProjectModel(rpdm.Id, rpdm.Rate, (DefaultRoleEnum)rpdm.Role, rpdm.EmployeeId, this, hours, Fee);
-            //                rate = rpdm.Rate;
-            //                //catch for strange shenanigans
-            //                if (rpm.TotalHours == 0)
-            //                {
-            //                    //remove
-            //                    SQLAccess.DeleteRatesPerProject(rpm.Id);
-            //                }
-            //                else
-            //                {
-            //                    if (addistrue)
-            //                    {
-            //                        RatePerProject.Add(rpm);
-            //                    }
-            //                }
-            //            }
-
-            //            hourstotal += hours;
-            //            double budgetperemployee = hours * rate;
-            //            budgetspent += budgetperemployee;
-            //            averagerate += rate * hours;
-            //            count++;
-
-            //        }
-            //    }
-            //}
-
+            TotalRegulatedBudget = totalregulatedbudget;
             HoursSpent = hourstotal;
+            HoursLeft = hourstotalleft;
             BudgetSpent = budgetspent;
-            AvgRate = (averagerate/hourstotal) / count;
-
+            PercentofInvoicedFee = Math.Round((TotalRegulatedBudget / TotalBudget) * 100, 2);
             UpdateData();
         }
 
         public void UpdateData()
         {
-            BudgetLeft = TotalBudget - BudgetSpent;
-            PercentBudgetSpent = Math.Min(Math.Round((BudgetSpent / TotalBudget) * 100, 2), 100);
-            HoursLeft = Math.Round(Math.Max(0, BudgetLeft / AvgRate), 2);
+            BudgetLeft = TotalRegulatedBudget - BudgetSpent;
+            PercentBudgetSpent = Math.Min(Math.Round((BudgetSpent / TotalRegulatedBudget) * 100, 2), 100);
+            //HoursLeft = Math.Round(Math.Max(0, BudgetLeft / AvgRate), 2);
         }
 
         #region project folder

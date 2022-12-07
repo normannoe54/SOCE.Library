@@ -25,17 +25,6 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        //private ObservableCollection<RolePerSubProjectModel> _rolesPerSub = new ObservableCollection<RolePerSubProjectModel>();
-        //public ObservableCollection<RolePerSubProjectModel> RolesPerSub
-        //{
-        //    get { return _rolesPerSub; }
-        //    set
-        //    {
-        //        _rolesPerSub = value;
-        //        RaisePropertyChanged(nameof(RolesPerSub));
-        //    }
-        //}
-
         private SubProjectModel _selectedProjectPhase;
         public SubProjectModel SelectedProjectPhase
         {
@@ -79,17 +68,6 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged("CDPhase");
             }
         }
-
-        //private double _overallFee = 0;
-        //public double OverallFee
-        //{
-        //    get { return _overallFee; }
-        //    set
-        //    {
-        //        _overallFee = value;
-        //    }
-        //}
-
 
         public ICommand GoToAddRole { get; set; }
         public ICommand RemoveRoleCommand { get; set; }

@@ -562,7 +562,7 @@ namespace SOCE.Library.Db
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("UPDATE RolePerSubProject SET EmployeeId = @EmployeeId, SubProjectId = @SubProjectId, Rate = @Rate, Role = @Role, @BudgetHours = BudgetHours WHERE Id = @Id",
+                cnn.Execute("UPDATE RolePerSubProject SET EmployeeId = @EmployeeId, SubProjectId = @SubProjectId, Rate = @Rate, Role = @Role, BudgetHours = @BudgetHours WHERE Id = @Id",
                         new { rpp.EmployeeId, rpp.SubProjectId, rpp.Rate, rpp.Role, rpp.BudgetHours, rpp.Id });
             }
         }

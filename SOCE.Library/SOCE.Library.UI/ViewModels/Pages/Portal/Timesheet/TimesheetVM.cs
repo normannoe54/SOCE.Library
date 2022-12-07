@@ -287,7 +287,7 @@ namespace SOCE.Library.UI.ViewModels
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             this.CopyPreviousCommand = new RelayCommand(CopyPrevious);
             this.ExportToExcel = new RelayCommand(ExportCurrentTimesheetToExcel);
-            
+
         }
 
         private void Rowdata_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -332,7 +332,7 @@ namespace SOCE.Library.UI.ViewModels
             File.WriteAllBytes(pathDownload, Properties.Resources.TimesheetBase);
             Excel.Excel exinst = new Excel.Excel(pathDownload, AppEnum.Existing);
 
-            foreach(TimesheetRowModel trm in Rowdata)
+            foreach (TimesheetRowModel trm in Rowdata)
             {
 
             }
@@ -434,7 +434,7 @@ namespace SOCE.Library.UI.ViewModels
             }
             );
 
-            ProjectArray = ProjectArray.Where(x => x != null).OrderBy(x=>x.ProjectNumber).ToArray();
+            ProjectArray = ProjectArray.Where(x => x != null).OrderBy(x => x.ProjectNumber).ToArray();
 
             ProjectList = new ObservableCollection<ProjectModel>(ProjectArray.ToList());
 
@@ -648,15 +648,16 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void SaveCommand(int submit)
         {
-
             //adding and modifying
             foreach (TimesheetRowModel trm in Rowdata)
             {
+                double timepersub = 0;
                 //adding or modifying an existing submission
                 foreach (TREntryModel trentry in trm.Entries)
                 {
                     if (trentry.TimeEntry > 0 && trm.SelectedSubproject != null)
                     {
+                        timepersub += trentry.TimeEntry;
                         TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
                         {
                             EmployeeId = CurrentEmployee.Id,
@@ -672,14 +673,16 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                //RatesPerProjectDbModel rpp = new RatesPerProjectDbModel()
-                //{
-                //    ProjectId = trm.Project.Id,
-                //    EmployeeId = CurrentEmployee.Id,
-                //    Rate = CurrentEmployee.Rate
-                //};
+                RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
+                {
+                    SubProjectId = trm.SelectedSubproject.Id,
+                    EmployeeId = CurrentEmployee.Id,
+                    Role = (int)CurrentEmployee.DefaultRole,
+                    Rate = CurrentEmployee.Rate,
+                    BudgetHours = timepersub
+                };
 
-                //SQLAccess.AddRatesPerProject(rpp);
+                SQLAccess.AddRolesPerSubProject(rpp);
             }
 
             //deleting
@@ -748,7 +751,7 @@ namespace SOCE.Library.UI.ViewModels
         /// <param name="currdate"></param>
         private async void CopyPrevious()
         {
-            if (Rowdata.Count==0)
+            if (Rowdata.Count == 0)
             {
                 AreYouSureView view = new AreYouSureView();
                 AreYouSureVM aysvm = new AreYouSureVM();
@@ -772,7 +775,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 //Message sorry fam
             }
-            
+
         }
 
         private void LoadTimesheetDataforCopyPrevious()
@@ -839,7 +842,7 @@ namespace SOCE.Library.UI.ViewModels
                 catch
                 {
                     continue;
-                }    
+                }
             }
 
             //Rowdata = members;
@@ -926,7 +929,7 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             CanPressButton = Rowdata.Count == 0 ? true : false;
-            
+
         }
 
         private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

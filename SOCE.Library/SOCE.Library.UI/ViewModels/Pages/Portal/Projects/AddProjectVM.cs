@@ -525,7 +525,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 5,
-                Fee = 0
+                Fee = 0,
+                isAddProj =true
             };
             clientdevproj.SetCollectionChanged();
             BudgetEstimateVM CLDevVM = new BudgetEstimateVM(clientdevproj, 0);
@@ -540,7 +541,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 5,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             proposalproj.SetCollectionChanged();
             BudgetEstimateVM PropVM = new BudgetEstimateVM(proposalproj, 0);
@@ -555,7 +557,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 10,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             sdproj.SetCollectionChanged();
             BudgetEstimateVM SDVM = new BudgetEstimateVM(sdproj, 0);
@@ -570,7 +573,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 10,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             ddproj.SetCollectionChanged();
             BudgetEstimateVM DDVM = new BudgetEstimateVM(ddproj, 0);
@@ -585,7 +589,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 80,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             cdproj.SetCollectionChanged();
             BudgetEstimateVM CDVM = new BudgetEstimateVM(cdproj, 0);
@@ -600,7 +605,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 20,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             caproj.SetCollectionChanged();
             BudgetEstimateVM CAVM = new BudgetEstimateVM(caproj, 0);
@@ -615,7 +621,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 5,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             investigationproj.SetCollectionChanged();
             BudgetEstimateVM InvestigationVM = new BudgetEstimateVM(investigationproj, 0);
@@ -630,7 +637,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = false,
                 PercentComplete = 0,
                 PercentBudget = 5,
-                Fee = 0
+                Fee = 0,
+                isAddProj = true
             };
             constrobsproj.SetCollectionChanged();
             BudgetEstimateVM COVM = new BudgetEstimateVM(constrobsproj, 0);
@@ -653,7 +661,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 foreach (RolePerSubProjectModel rspm in bevm.SelectedProjectPhase.RolesPerSub)
                 {
-                    if (rspm.Employee == null || rspm.Role == DefaultRoleEnum.Default )
+                    if (rspm.Employee == null)
                     {
                         ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
                         return;
@@ -688,8 +696,8 @@ namespace SOCE.Library.UI.ViewModels
                 BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
                 SubProjectDbModel sub = new SubProjectDbModel()
                 {
-                    ProjectId = bevm.SelectedProjectPhase.ProjectNumber,
-                    PointNumber = bevm.SelectedProjectPhase.PointNumStr,
+                    ProjectId = id,
+                    PointNumber = bevm.SelectedProjectPhase.PointNumber,
                     Description = bevm.SelectedProjectPhase.Description,
                     Fee = bevm.SelectedProjectPhase.Fee,
                     IsActive = 1,

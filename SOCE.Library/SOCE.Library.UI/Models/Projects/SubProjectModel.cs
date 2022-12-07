@@ -88,10 +88,13 @@ namespace SOCE.Library.UI
             set
             {
                 _percentBudget = value;
-                UpdateFee();
+                if (isAddProj)
+                {
+                    UpdateFee();
+                }
 
                 //update others
-                foreach(RolePerSubProjectModel rspm in RolesPerSub)
+                foreach (RolePerSubProjectModel rspm in RolesPerSub)
                 {
                     rspm.OverallFee = Fee;
                 }
@@ -99,8 +102,24 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool onstartup = true;
+        public bool isAddProj = false;
 
+
+        private double _percentSpent;
+        public double PercentSpent
+        {
+            get
+            {
+                return _percentSpent;
+            }
+            set
+            {
+                _percentSpent = value;
+                RaisePropertyChanged(nameof(PercentSpent));
+            }
+        }
+
+        private bool onstartup = true;
 
         private double _totalFee;
         public double TotalFee
@@ -112,30 +131,13 @@ namespace SOCE.Library.UI
             set
             {
                 _totalFee = value;
-                UpdateFee();
-
-                //foreach(RolePerSubProjectModel role in RolesPerSub)
-                //{
-                //    role.OverallFee = Fee;
-                //}
-
+                if (isAddProj)
+                {
+                    UpdateFee();
+                }
                 RaisePropertyChanged(nameof(TotalFee));
             }
         }
-
-        //private double _estimatedFee { get; set; }
-        //public double EstimatedFee
-        //{
-        //    get
-        //    {
-        //        return _estimatedFee;
-        //    }
-        //    set
-        //    {
-        //        _estimatedFee = value;
-        //        RaisePropertyChanged(nameof(EstimatedFee));
-        //    }
-        //}
 
         private double _percentComplete { get; set; }
         public double PercentComplete
@@ -148,6 +150,51 @@ namespace SOCE.Library.UI
             {
                 _percentComplete = value;
                 RaisePropertyChanged(nameof(PercentComplete));
+            }
+        }
+
+        private double _totalHours { get; set; }
+        public double TotalHours
+        {
+            get
+            {
+                return _totalHours;
+            }
+            set
+            {
+                _totalHours = value;
+                RaisePropertyChanged(nameof(TotalHours));
+            }
+        }
+
+        private double _hoursUsed { get; set; }
+        public double HoursUsed
+        {
+            get
+            {
+                return _hoursUsed;
+            }
+            set
+            {
+                _hoursUsed = value;
+
+                CanDelete = _hoursUsed == 0;
+
+                RaisePropertyChanged(nameof(HoursUsed));
+            }
+        }
+
+        private double _hoursLeft { get; set; }
+        public double HoursLeft
+        {
+            get
+            {
+                return _hoursLeft;
+            }
+            set
+            {
+                _hoursLeft = value;
+                RaisePropertyChanged(nameof(HoursLeft));
             }
         }
 
@@ -176,6 +223,40 @@ namespace SOCE.Library.UI
             {
                 _feeLeft = value;
                 RaisePropertyChanged(nameof(FeeLeft));
+            }
+        }
+
+        private double _regulatedBudget { get; set; }
+        public double RegulatedBudget
+        {
+            get
+            {
+                return _regulatedBudget;
+            }
+            set
+            {
+                _regulatedBudget = value;
+
+                foreach (RolePerSubProjectModel rspm in RolesPerSub)
+                {
+                    rspm.PercentofRegulatedBudget = ((rspm.BudgetedHours * rspm.Rate) / _regulatedBudget)*100;
+                }
+
+                RaisePropertyChanged(nameof(RegulatedBudget));
+            }
+        }
+
+        private double _percentofInvoicedFee { get; set; }
+        public double PercentofInvoicedFee
+        {
+            get
+            {
+                return _percentofInvoicedFee;
+            }
+            set
+            {
+                _percentofInvoicedFee = value;
+                RaisePropertyChanged(nameof(PercentofInvoicedFee));
             }
         }
 
@@ -242,17 +323,16 @@ namespace SOCE.Library.UI
             {
                 if (!_editSubFieldState && value)
                 {
-                    UpdateSubProject();
+                    //UpdateSubProject();
                     baseproject.UpdateSubProjects();
                 }
                 _editSubFieldState = value;
                 ComboSubFieldState = !_editSubFieldState;
-
                 RaisePropertyChanged(nameof(EditSubFieldState));
             }
         }
 
-        private bool _comboSubFieldState;
+        private bool _comboSubFieldState = false;
         public bool ComboSubFieldState
         {
             get { return _comboSubFieldState; }
@@ -260,6 +340,21 @@ namespace SOCE.Library.UI
             {
                 _comboSubFieldState = value;
                 RaisePropertyChanged(nameof(ComboSubFieldState));
+            }
+        }
+
+        private bool _canDelete { get; set; } = false;
+        public bool CanDelete
+        {
+            get
+            {
+                return _canDelete;
+            }
+            set
+            {
+                _canDelete = value;
+                RaisePropertyChanged(nameof(CanDelete));
+
             }
         }
 
@@ -328,6 +423,7 @@ namespace SOCE.Library.UI
             PercentComplete = spm.PercentComplete;
             PercentBudget = spm.PercentBudget;
             onstartup = false;
+            isAddProj = false;
 
         }
 
@@ -336,17 +432,24 @@ namespace SOCE.Library.UI
             RolesPerSub.CollectionChanged += RowDataChanged;
         }
 
-        private ProjectModel baseproject;
+        public ProjectModel baseproject;
+
+        public void UpdatePercents()
+        {
+            PercentBudget = (Fee / TotalFee) * 100;
+            PercentofInvoicedFee = Math.Round(RegulatedBudget / Fee * 100, 2);
+            PercentSpent = Math.Round(FeeUsed / RegulatedBudget * 100, 2);
+        }
 
         private void UpdateFee()
         {
             Fee = PercentBudget * (TotalFee / 100);
         }
 
-        public void UpdatePercentBudget()
-        {
-            PercentBudget = (Fee / TotalFee) * 100;
-        }
+        //public void UpdatePercentBudget()
+        //{
+        //    PercentBudget = (Fee / TotalFee) * 100;
+        //}
 
         public void UpdateSubProject()
         {
@@ -401,7 +504,6 @@ namespace SOCE.Library.UI
             {
                 totalbudgetspent += role.BudgetedHours * role.Rate;
             }
-
 
             BudgetedFee = totalbudgetspent;
             PercentAllocated = Math.Round((totalbudgetspent / Fee * 100), 2);

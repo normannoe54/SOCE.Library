@@ -27,6 +27,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
+        public ObservableCollection<EmployeeModel> Employees
+        {
+            get { return _employees; }
+            set
+            {
+                _employees = value;
+                RaisePropertyChanged(nameof(Employees));
+            }
+        }
+
         private SubProjectModel _selectedProjectPhase;
         public SubProjectModel SelectedProjectPhase
         {
@@ -71,25 +82,83 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ProjectModel _baseProject;
+        public ProjectModel BaseProject
+        {
+            get { return _baseProject; }
+            set
+            {
+                _baseProject = value;
+                RaisePropertyChanged("BaseProject");
+            }
+        }
+
         public ICommand AddSubCommand { get; set; }
+
+        public ICommand AddRoleCommand { get; set; }
         public ICommand CloseCommand { get; set; }
-
-
+        public ICommand DeleteSubProject { get; set; }
+        public ICommand DeleteRole { get; set; }
         public ProjectSummaryVM(ProjectModel pm, EmployeeModel employee)
         {
             CanAddPhase = employee.Status != AuthEnum.Standard ? true : false;
             CanEditPhase = employee.Status != AuthEnum.Standard ? true : false;
-
-            if (employee.Status != AuthEnum.Standard)
-            {
-
-            }
+            BaseProject = pm;
             //Roles.CollectionChanged += CollectionChanged;
             this.AddSubCommand = new RelayCommand(this.AddSubProject);
+            this.AddRoleCommand = new RelayCommand(this.AddRole);
+
             this.CloseCommand = new RelayCommand(this.CloseWindow);
+            this.DeleteSubProject = new RelayCommand<SubProjectModel>(this.DeleteSub);
+            this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
 
             pm.FormatData(true);
             SubProjects = pm.SubProjects;
+
+            if (SubProjects.Count >0)
+            {
+                SelectedProjectPhase = SubProjects[0];
+            }
+
+            List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
+            ObservableCollection<EmployeeModel> totalemployees = new ObservableCollection<EmployeeModel>();
+
+            foreach (EmployeeDbModel employeenew in employeesDb)
+            {
+                totalemployees.Add(new EmployeeModel(employeenew));
+            }
+
+            //OverallFee = overallfee;
+            Employees = totalemployees;
+        }
+
+        private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)
+        {
+            if (rpsm.SpentHours == 0)
+            {
+                SQLAccess.DeleteRolesPerSubProject(rpsm.Id);
+            }
+            
+        }
+
+        private void DeleteSub(SubProjectModel spm)
+        {
+            //need a popup warning
+
+            foreach(RolePerSubProjectModel rpspm in spm.RolesPerSub)
+            {
+                SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
+            }
+            SQLAccess.ArchiveSubProject(spm.Id);
+            SubProjects.Remove(spm);
+        }
+
+        private void AddRole()
+        {
+            RolePerSubProjectModel rpspm = new RolePerSubProjectModel(SelectedProjectPhase, SelectedProjectPhase.Fee);
+            rpspm.EditRoleFieldState = false;
+            rpspm.SpentHours = 0;
+            SelectedProjectPhase.RolesPerSub.Add(rpspm);
         }
 
         private void AddSubProject()

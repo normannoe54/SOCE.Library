@@ -102,6 +102,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _percentofRegulatedBudget { get; set; }
+        public double PercentofRegulatedBudget
+        {
+            get
+            {
+                return _percentofRegulatedBudget;
+            }
+            set
+            {
+                _percentofRegulatedBudget = value;
+                RaisePropertyChanged(nameof(PercentofRegulatedBudget));
+            }
+        }
+
         private double _overallFee { get; set; }
         public double OverallFee
         {
@@ -117,10 +131,127 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _spentHours { get; set; }
+        public double SpentHours
+        {
+            get
+            {
+                return _spentHours;
+            }
+            set
+            {
+                _spentHours = value;
+                SpentBudget = _spentHours * Rate;
+                PercentSpent = (_spentHours / BudgetedHours) * 100;
+
+                CanDelete = _spentHours == 0;
+                RaisePropertyChanged(nameof(SpentHours));
+
+            }
+        }
+
+        private double _spentBudget { get; set; }
+        public double SpentBudget
+        {
+            get
+            {
+                return _spentBudget;
+            }
+            set
+            {
+                _spentBudget = value;
+                RaisePropertyChanged(nameof(SpentBudget));
+
+            }
+        }
+
+        private double _percentSpent { get; set; }
+        public double PercentSpent
+        {
+            get
+            {
+                return _percentSpent;
+            }
+            set
+            {
+                _percentSpent = value;
+                RaisePropertyChanged(nameof(PercentSpent));
+            }
+        }
+
+        private bool _editRoleFieldState = true;
+        public bool EditRoleFieldState
+        {
+            get { return _editRoleFieldState; }
+            set
+            {
+                if (!_editRoleFieldState && value)
+                {
+                    if (Employee == null)
+                    {
+                        return;
+                    }
+
+                    UpdateRolePerSub();
+                    Subproject.baseproject.FormatData(false);
+                    //need to update sub project.
+                    
+                }
+                _editRoleFieldState = value;
+                EditComboRoleFieldState = !_editRoleFieldState;
+
+                if (CanDelete)
+                {
+                    EditComboEmployeeFieldState = !_editRoleFieldState;
+                }
+                RaisePropertyChanged(nameof(EditRoleFieldState));
+            }
+        }
+
+        private bool _editComboRoleFieldState = false;
+        public bool EditComboRoleFieldState
+        {
+            get { return _editComboRoleFieldState; }
+            set
+            {
+
+                _editComboRoleFieldState = value;
+                RaisePropertyChanged(nameof(EditComboRoleFieldState));
+            }
+        }
+
+        private bool _editComboEmployeeFieldState = false;
+        public bool EditComboEmployeeFieldState
+        {
+            get { return _editComboEmployeeFieldState; }
+            set
+            {
+
+                _editComboEmployeeFieldState = value;
+                RaisePropertyChanged(nameof(EditComboEmployeeFieldState));
+            }
+        }
+
+        private bool _canDelete { get; set; }
+        public bool CanDelete
+        {
+            get
+            {
+                return _canDelete;
+            }
+            set
+            {
+                _canDelete = value;
+                RaisePropertyChanged(nameof(CanDelete));
+
+            }
+        }
+
         public RolePerSubProjectModel(SubProjectModel subproject, double overallFee)
         {
             Subproject = subproject;
             OverallFee = overallFee;
+            SpentHours = 0;
         }
 
         public RolePerSubProjectModel(int id, double rate, DefaultRoleEnum role, int employeeId, SubProjectModel subproject, double budgetedhours, double overallFee)
@@ -132,6 +263,7 @@ namespace SOCE.Library.UI
             BudgetedHours = budgetedhours;
             OverallFee = overallFee;
             Rate = rate;
+            SpentHours = 0;
         }
 
         private void UpdatePercentBudget()
