@@ -465,19 +465,43 @@ namespace SOCE.Library.UI
             }
             set
             {
-                if (value && !Formatted)
-                {
-                    CollectTimesheetSubmission();
-                }
+                
                 if (IsEditable)
                 {
                     _canExpand = value;
                     RaisePropertyChanged(nameof(CanExpand));
+
+                    if (value && !Formatted)
+                    {
+                        CollectTimesheetSubmission();
+                    }
                 }
             }
         }
 
+        private Brush _borderColor = Brushes.Transparent;
+        public Brush BorderColor
+        {
+            get { return _borderColor; }
+            set
+            {
+                _borderColor = value;
+                RaisePropertyChanged(nameof(BorderColor));
+            }
+        }
+
         public bool Formatted = false;
+
+        private bool _isActive;
+        public bool IsActive
+        {
+            get { return _isActive; }
+            set
+            {
+                _isActive = value;
+                RaisePropertyChanged(nameof(IsActive));
+            }
+        }
 
         public EmployeeModel()
         { }
@@ -492,7 +516,7 @@ namespace SOCE.Library.UI
             Status = ((AuthEnum)emdb.AuthId);
             Title = emdb.Title;
             Email = emdb.Email;
-
+            IsActive = Convert.ToBoolean(emdb.IsActive);
             int index = emdb.Email.IndexOf("@");
             if (index != -1)
             {
@@ -528,15 +552,15 @@ namespace SOCE.Library.UI
             {
                 tsm.Add(new TimesheetSubmissionModel(tsmdb, this));
 
-                if (Convert.ToBoolean(tsmdb.Approved))
-                {
-                    count++;
-                    ptospent += tsmdb.PTOHours;
-                    otspent += tsmdb.OTHours;
-                    sickspent += tsmdb.SickHours;
-                    holidayspent += tsmdb.HolidayHours;
-                }
-               
+                //if (Convert.ToBoolean(tsmdb.Approved))
+                //{
+                count++;
+                ptospent += tsmdb.PTOHours;
+                otspent += tsmdb.OTHours;
+                sickspent += tsmdb.SickHours;
+                holidayspent += tsmdb.HolidayHours;
+                //}
+
             }
 
             TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
@@ -545,6 +569,7 @@ namespace SOCE.Library.UI
             SickUsed = sickspent;
             PTOEarned = (PTORate * count) / 2;
             SickEarned = (SickRate * count) / 2;
+            HolidayUsed = holidayspent;
             HolidayLeft = HolidayHours - HolidayUsed;
             PTOHours = PTOCarryover + PTOEarned - PTOUsed;
             SickHours = SickCarryover + SickEarned - SickUsed;
@@ -593,7 +618,7 @@ namespace SOCE.Library.UI
             {
                 IsEditable = true;
                 CanReviewTimesheet = true;
-
+                BorderColor = Brushes.BlueViolet;
             }
             else
             {
@@ -604,22 +629,25 @@ namespace SOCE.Library.UI
         public void UpdateEmployee()
         {
             EmployeeDbModel employee = new EmployeeDbModel()
-            { Id = Id,
+            {
+                Id = Id,
                 FirstName = FirstName,
                 LastName = LastName,
                 AuthId = (int)Status,
                 Title = Title,
                 Email = Email,
-                PhoneNumber = PhoneNumber, 
+                PhoneNumber = PhoneNumber,
                 Extension = Extension,
-                Rate= Rate,
+                Rate = Rate,
                 PTORate = PTORate,
-                //PTOHours = PTOHours,
+                //PTOHours = PTOHours
+                DefaultRoleId = (int)DefaultRole,
                 PTOCarryover = PTOCarryover,
                 HolidayHours = HolidayHours,
                 //SickHours = SickHours,
                 SickRate = SickRate,
-                SickCarryover = SickCarryover
+                SickCarryover = SickCarryover,
+                IsActive = 1
             };
 
             SQLAccess.UpdateEmployee(employee);

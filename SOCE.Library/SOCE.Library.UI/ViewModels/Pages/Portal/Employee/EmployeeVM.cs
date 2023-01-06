@@ -72,10 +72,23 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        
+        private bool _rateTitleVisible;
+        public bool RateTitleVisible
+        {
+            get { return _rateTitleVisible; }
+            set
+            {
+                _rateTitleVisible = value;
+                RaisePropertyChanged(nameof(RateTitleVisible));
+            }
+        }
+
         public EmployeeVM(EmployeeModel loggedinEmployee)
         {
             CurrentEmployee = loggedinEmployee;
+
+            RateTitleVisible = loggedinEmployee.Status == AuthEnum.Standard ? false : true;
+
             this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.GoToTimesheetCommand = new RelayCommand<object>(GoToTimesheet);

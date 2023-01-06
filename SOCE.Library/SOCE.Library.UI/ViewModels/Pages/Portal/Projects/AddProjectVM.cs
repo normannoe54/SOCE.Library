@@ -729,6 +729,12 @@ namespace SOCE.Library.UI.ViewModels
             result = true;
 
             //do stuff
+
+            //update view models?
+            BaseAI CurrentPage = IoCPortal.Application as BaseAI;
+            PortalAI portAI = (PortalAI)CurrentPage;
+            portAI.RefreshViews();
+
             CloseWindow();
         }
 

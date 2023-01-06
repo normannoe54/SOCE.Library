@@ -435,19 +435,21 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadTimesSheetSubmissionData(DateTime currdate)
         {
-            List<EmployeeModel> activeemployees = LoadActiveEmployees();
+            List<EmployeeModel> allemployees = LoadActiveEmployees();
             TotalHeader.Clear();
             TimesheetSubmissions.Clear();
 
-            foreach (EmployeeModel em in activeemployees)
+            foreach (EmployeeModel em in allemployees)
             {
                 TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, em.Id);
 
                 if (tsdbm == null)
                 {
                     //not submitted yet
-                    TimesheetSubmissions.Add(TimesheetSubmissionModel.Didnotsubmityet(em));    
-
+                    if (em.IsActive)
+                    {
+                        TimesheetSubmissions.Add(TimesheetSubmissionModel.Didnotsubmityet(em));
+                    }
                 }
                 else
                 {
@@ -463,7 +465,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private List<EmployeeModel> LoadActiveEmployees()
         {
-            List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
+            List<EmployeeDbModel> dbemployees = SQLAccess.LoadAllEmployees();
 
             List<EmployeeModel> members = new List<EmployeeModel>();
 

@@ -169,6 +169,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private int? _yearInp=2022;
+        public int? YearInp
+        {
+            get { return _yearInp; }
+            set
+            {
+                _yearInp = value;
+                RaisePropertyChanged(nameof(YearInp));
+            }
+        }
+
         private bool _isEditable = false;
         public bool IsEditable
         {
@@ -191,6 +202,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+
+        private int _dateTimeSelection { get; set; }
+        public int DateTimeSelection
+        {
+            get { return _dateTimeSelection; }
+            set
+            {
+                _dateTimeSelection = value;
+                RaisePropertyChanged(nameof(DateTimeSelection));
+            }
+        }
+        
+
         private bool _showActiveProjects { get; set; } = true;
         public bool ShowActiveProjects
         {
@@ -201,7 +225,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 if (_showActiveProjects)
                 {
-                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive = _showActiveProjects).ToList());
+                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive == _showActiveProjects).ToList());
                 }
                 else
                 {
@@ -247,16 +271,32 @@ namespace SOCE.Library.UI.ViewModels
             LoadClients();
             LoadMarkets();
             LoadProjectManagers();
+
+            ShowActiveProjects = true;
         }
 
         private void ClearInputsandReload()
         {
-            //ObjectofInterest = null;
             SearchableText = "";
             SelectedMarket = null;
             SelectedClient = null;
             SelectedPM = null;
-            Projects = new ObservableCollection<ProjectModel>(AllProjects);
+
+            if (!ShowActiveProjects)
+            {
+                if (YearInp != null)
+                {
+                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => Convert.ToDouble(x.ProjectStart.ToString().Substring(0, 4)) >= YearInp).ToList());
+                }
+                else
+                {
+                    Projects = new ObservableCollection<ProjectModel>(AllProjects);
+                }
+            }
+            else
+            {
+                Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x=>x.IsActive == true).ToList());
+            }
         }
 
         private void RunExport()
@@ -276,7 +316,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 if (!pm.Formatted)
                 {
-                    pm.FormatData(false);
+                    pm.FormatData(true);
                 }
                 string appendeddata = $"{pm.ProjectNumber},{pm.ProjectName.Replace(",","")},{pm.ProjectManager.FullName},{pm.Client.ClientName.Replace(",", "")}[{pm.Client.ClientNumber}],%{pm.PercentComplete},{pm.TotalBudget},{pm.BudgetSpent}[%{pm.PercentBudgetSpent}],{pm.BudgetLeft},{pm.HoursSpent},{pm.HoursLeft}";
                 csv.AppendLine(appendeddata);
@@ -320,6 +360,11 @@ namespace SOCE.Library.UI.ViewModels
             if (!String.IsNullOrEmpty(SearchableText))
             {
                 pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
+            }
+
+            if (!ShowActiveProjects  && YearInp != null)
+            {
+                pmnew = pmnew.Where(x => Convert.ToDouble(x.ProjectStart.ToString().Substring(0, 4)) >=  YearInp).ToList();
             }
 
             Projects = new ObservableCollection<ProjectModel>(pmnew);
@@ -386,10 +431,26 @@ namespace SOCE.Library.UI.ViewModels
         {
             AreYouSureView view = new AreYouSureView();
             AreYouSureVM aysvm = new AreYouSureVM();
+            
+            bool donothing = false;
             switch (o)
             {
                 case ProjectModel pm:
+                    List<SubProjectDbModel> subs =  SQLAccess.LoadSubProjectsByProject(pm.Id);
                     aysvm = new AreYouSureVM(pm);
+                    foreach (SubProjectDbModel spm in subs)
+                    {
+
+                        List<TimesheetRowDbModel> val = SQLAccess.LoadTimeSheetDatabySubId(spm.Id);
+
+                        if (val.Count > 0)
+                        {
+                            aysvm.TopLine = "Cannot delete project,";
+                            aysvm.BottomLine = "Hours already saved to project.";
+                            donothing = true;
+                        }
+                    }
+                    
                     break;
                 case ClientModel cm:
                     aysvm = new AreYouSureVM(cm);
@@ -409,7 +470,7 @@ namespace SOCE.Library.UI.ViewModels
 
             aysvm = view.DataContext as AreYouSureVM;
 
-            if (aysvm.Result)
+            if (aysvm.Result && !donothing)
             {
                 switch (o)
                 {

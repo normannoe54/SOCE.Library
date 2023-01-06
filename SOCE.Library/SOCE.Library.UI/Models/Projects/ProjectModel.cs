@@ -204,10 +204,10 @@ namespace SOCE.Library.UI
             set
             {
                 _projectfolder = value;
-                //if (onstartup)
-                //{
-                //    UpdateProject();
-                //}
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Projectfolder));
             }
         }
@@ -220,10 +220,10 @@ namespace SOCE.Library.UI
             set
             {
                 _drawingsfolder = value;
-                //if (onstartup)
-                //{
-                //    UpdateProject();
-                //}
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Drawingsfolder));
             }
         }
@@ -235,10 +235,10 @@ namespace SOCE.Library.UI
             set
             {
                 _architectfolder = value;
-                //if (onstartup)
-                //{
-                //    UpdateProject();
-                //}
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Architectfolder));
             }
         }
@@ -250,10 +250,10 @@ namespace SOCE.Library.UI
             set
             {
                 _plotfolder = value;
-                //if (onstartup)
-                //{
-                //    UpdateProject();
-                //}
+                if (onstartup)
+                {
+                    UpdateProject();
+                }
                 RaisePropertyChanged(nameof(Plotfolder));
             }
         }
@@ -269,22 +269,22 @@ namespace SOCE.Library.UI
                     UpdateProject();
                 }
                 _editFieldState = value;
-                ComboFieldState = !_editFieldState;
+                //ComboFieldState = !_editFieldState;
 
                 RaisePropertyChanged(nameof(EditFieldState));
             }
         }
 
-        private bool _comboFieldState;
-        public bool ComboFieldState
-        {
-            get { return _comboFieldState; }
-            set
-            {
-                _comboFieldState = value;
-                RaisePropertyChanged(nameof(ComboFieldState));
-            }
-        }
+        //private bool _comboFieldState;
+        //public bool ComboFieldState
+        //{
+        //    get { return _comboFieldState; }
+        //    set
+        //    {
+        //        _comboFieldState = value;
+        //        RaisePropertyChanged(nameof(ComboFieldState));
+        //    }
+        //}
 
         private double _totalBudget = 0;
         public double TotalBudget
@@ -394,26 +394,20 @@ namespace SOCE.Library.UI
 
         private bool IsEditable;
 
-        //private bool _canExpand = false;
-        //public bool CanExpand
-        //{
-        //    get
-        //    {
-        //        return _canExpand;
-        //    }
-        //    set
-        //    {
-        //        if (value && !Formatted)
-        //        {
-        //            FormatData(true);
-        //        }
-        //        if (IsEditable)
-        //        {
-        //            _canExpand = value;
-        //            RaisePropertyChanged(nameof(CanExpand));
-        //        }
-        //    }
-        //}
+        private bool _canDelete { get; set; } = false;
+        public bool CanDelete
+        {
+            get
+            {
+                return _canDelete;
+            }
+            set
+            {
+                _canDelete = value;
+                RaisePropertyChanged(nameof(CanDelete));
+
+            }
+        }
 
         public int ProjectStart;
 
@@ -454,7 +448,7 @@ namespace SOCE.Library.UI
         {
             //SubProjects.CollectionChanged += this.SubProjectChanged;
             //RatePerProject.CollectionChanged += this.RatesChanged;
-
+            onstartup = true;
             IsEditable = iseditable;
             Constructor();
 
@@ -604,7 +598,7 @@ namespace SOCE.Library.UI
 
         //}
 
-        public void UpdateSubProjects(SubProjectModel subinput)
+        public void UpdateSubProjects(SubProjectModel subinput = null)
         {
             TotalBudget = 0;
 
@@ -647,25 +641,28 @@ namespace SOCE.Library.UI
             }
 
             //catch for no actives
-            if (!onehastobeactive)
+            if (subinput !=null)
             {
-                subinput.IsActive = true;
-                SubProjectDbModel subproject = new SubProjectDbModel()
+                if (!onehastobeactive)
                 {
-                    Id = subinput.Id,
-                    ProjectId = subinput.ProjectNumber,
-                    PointNumber = subinput.PointNumber,
-                    Description = subinput.Description,
-                    Fee = subinput.Fee,
-                    IsCurrActive = 1,
-                    IsActive = 1,
-                    IsInvoiced = subinput.IsInvoiced ? 1 : 0,
-                    PercentComplete = subinput.PercentComplete,
-                    PercentBudget = subinput.PercentBudget,
-                };
-                SQLAccess.UpdateSubProject(subproject);
+                    subinput.IsActive = true;
+                    SubProjectDbModel subproject = new SubProjectDbModel()
+                    {
+                        Id = subinput.Id,
+                        ProjectId = subinput.ProjectNumber,
+                        PointNumber = subinput.PointNumber,
+                        Description = subinput.Description,
+                        Fee = subinput.Fee,
+                        IsCurrActive = 1,
+                        IsActive = 1,
+                        IsInvoiced = subinput.IsInvoiced ? 1 : 0,
+                        PercentComplete = subinput.PercentComplete,
+                        PercentBudget = subinput.PercentBudget,
+                    };
+                    SQLAccess.UpdateSubProject(subproject);
+                }
             }
-
+            
             UpdateData();
         }
 

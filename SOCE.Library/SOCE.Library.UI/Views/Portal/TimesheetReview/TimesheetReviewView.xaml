@@ -21,7 +21,7 @@
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
 
-            <Grid Grid.Row="0" Width="260" HorizontalAlignment="Left">
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
@@ -33,7 +33,7 @@
                     <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center"  Foreground="Gray"/>
                 </Button>
                 
-                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
+                <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
                     <TextBlock Text="{Binding MonthYearString}" FontSize="14" FontWeight="SemiBold"/>
                     <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="14" FontWeight="Regular"/>
                 </StackPanel>
@@ -68,7 +68,7 @@
                                     <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="90"/>
                                     <ColumnDefinition Width="40"/>
-                                    <ColumnDefinition Width="120"/>
+                                    <!--<ColumnDefinition Width="120"/>-->
                                     <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="40"/>
                                     <ColumnDefinition Width="40"/>
@@ -79,7 +79,7 @@
                                 <materialDesign:PackIcon Grid.Column="2" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="0 0 10 0" Kind="{Binding SubmittedIcon}" Foreground="{Binding SubmittedIconcolor}" ToolTip="{Binding SubmittedStatusTooltip}"/>
 
 
-                                <Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <!--<Grid Grid.Column="3" VerticalAlignment="Center" HorizontalAlignment="Center">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="50"/>
@@ -104,19 +104,19 @@
                                         <TextBlock Text="SICK:" FontSize="10" FontWeight="Regular" VerticalAlignment="Center"/>
                                         <TextBlock Text="{Binding SickHours, StringFormat=' {0} hr.'}" FontSize="10" VerticalAlignment="Center"/>
                                     </StackPanel>
-                                </Grid>
-                                <StackPanel Grid.Column="4" Orientation="Horizontal">
+                                </Grid>-->
+                                <StackPanel Grid.Column="3" Orientation="Horizontal">
                                     <TextBlock Text="Total:" FontSize="14"  VerticalAlignment="Center"/>
                                     <TextBlock FontSize="14" FontWeight="Regular" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}"/>
                                 </StackPanel>
-                                <Button Grid.Column="5" Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding SubmittedEnabled}" Command="{Binding Path=DataContext.OpenTimesheetSubmission, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"
+                                <Button Grid.Column="4" Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding SubmittedEnabled}" Command="{Binding Path=DataContext.OpenTimesheetSubmission, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"
                                          VerticalAlignment="Center" Background="ForestGreen" ToolTip="Review" Width="30" Padding="0">
                                     <Button.Content>
                                         <materialDesign:PackIcon Foreground="White" Kind="ArrowRight" VerticalAlignment="Center"/>
                                     </Button.Content>
                                 </Button>
 
-                                <Button Grid.Column="6" Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding EmailRemind}" Command="{Binding Path=DataContext.EmailReminder, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"
+                                <Button Grid.Column="5" Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding EmailRemind}" Command="{Binding Path=DataContext.EmailReminder, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"
                                         VerticalAlignment="Center" Background="Transparent" ToolTip="Remind" Width="30" Padding="0">
                                     <Button.Content>
                                         <materialDesign:PackIcon Foreground="DarkGray" Kind="EmailAlert" VerticalAlignment="Center"/>
@@ -171,7 +171,7 @@
             </Grid>
 
 
-            <ScrollViewer Grid.Row="3" Margin="0 5 0 0" IsEnabled="False">
+            <ScrollViewer Grid.Row="3" Margin="0 5 0 0" >
                 <StackPanel>
                     <Grid Background="Transparent">
                         <Grid.ColumnDefinitions>
@@ -230,7 +230,7 @@
                                FontSize="14" FontWeight="SemiBold" 
                                Foreground="Gray"/>
 
-                        <ItemsControl Grid.Column="1"  ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40" IsEnabled="False">
+                        <ItemsControl Grid.Column="1"  ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -264,11 +264,26 @@
                                Foreground="Gray"/>
                     </Grid>
 
-                    <ListView Background="Transparent" ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ListView Background="Transparent" ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="False">
                         <ListView.Resources>
                             <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
                             <local:TableColorConverter x:Key="valueconverter"/>
                         </ListView.Resources>
+                        <ListView.Template>
+                            <ControlTemplate>
+                                <Grid Width="Auto" Height="Auto">
+                                    <Border x:Name="Border" CornerRadius="0,0,0,0"/>
+                                    <ScrollViewer Focusable="false" IsTabStop="False" HorizontalScrollBarVisibility="Disabled">
+                                        <StackPanel IsItemsHost="true"/>
+                                    </ScrollViewer>
+                                </Grid>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsEnabled" Value="false">
+                                        <Setter Property="Background" Value="Yellow"/>
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </ListView.Template>
                         <ListView.ItemContainerStyle>
                             <Style TargetType="{x:Type ListViewItem}">
                                 <Setter Property="Background" Value="Transparent" />

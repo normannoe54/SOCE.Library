@@ -84,14 +84,14 @@
 
                 <StackPanel Orientation="Vertical"  VerticalAlignment="Bottom" Margin="0 10 0 0">
                     <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Foreground="Green" BorderThickness="1" BorderBrush="LightGray"/>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Background="Transparent" Foreground="Green" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="Percent Complete: " FontSize="10" FontWeight="SemiBold"/>
                             <TextBlock Text="{Binding PercentComplete, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Grid>
                     <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}"  Background="Transparent" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="Expected Progress:" FontSize="10" FontWeight="SemiBold"/>
                             <TextBlock Text="{Binding ExpectedProgress, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold" materialDesign:TextFieldAssist.SuffixText="%"/>

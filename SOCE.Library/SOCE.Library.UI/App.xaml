@@ -12,7 +12,20 @@
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Red.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
+
+            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#e38a8a"/>
+            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="Black"/>
+            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#5c5c5c"/>
+            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="White"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="#4f1d1b"/>
+            <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="DarkGray"/>
+
+
+            <!--<SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>
+            <SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>
+            <SolidColorBrush x:Key="SOCELightRed" Color="#e36d6d"/>-->
 
             <!--<DataTemplate DataType="{x:Type viewmodels:EmployeeDataVM}">
                 <views:EmployeeDataView/>

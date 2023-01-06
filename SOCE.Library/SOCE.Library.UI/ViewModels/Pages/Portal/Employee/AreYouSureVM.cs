@@ -16,8 +16,9 @@ namespace SOCE.Library.UI.ViewModels
 
         private ProjectSummaryVM ProjectSummary { get; set; }
 
-        public string WordNeeded { get; set; } = "delete: ";
-        public string TexttoDisplay { get; set; }
+        public string TopLine { get; set; } = "Are you sure you want to delete:";
+
+        public string BottomLine { get; set; }
         public ICommand YesCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
@@ -33,8 +34,8 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            WordNeeded = "archive:";
-            TexttoDisplay = em.FirstName + " " + em.LastName;
+            TopLine = "Are you sure you want to archive:";
+            BottomLine = em.FirstName + " " + em.LastName;
         }
 
         public AreYouSureVM(ClientModel cm)
@@ -42,7 +43,8 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            TexttoDisplay = cm.ClientName;
+            BottomLine = cm.ClientName;
+            TopLine = "Are you sure you want to archive:";
         }
 
         public AreYouSureVM(MarketModel mm)
@@ -50,7 +52,7 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            TexttoDisplay = mm.MarketName;
+            BottomLine = mm.MarketName;
         }
 
         public AreYouSureVM(SubProjectModel spm, ProjectSummaryVM psm)
@@ -59,7 +61,7 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            TexttoDisplay = $"Phase: {spm.PointNumber}";
+            BottomLine = $"Phase: {spm.PointNumber}";
         }
 
         public AreYouSureVM(RolePerSubProjectModel rpspm, ProjectSummaryVM psm)
@@ -69,7 +71,7 @@ namespace SOCE.Library.UI.ViewModels
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
             string description = GetEnumDescription((DefaultRoleEnum)rpspm.Role);
-            TexttoDisplay = $"Role: {description} {Environment.NewLine}Employee: {rpspm.Employee.FullName}";
+            BottomLine = $"Role: {description} {Environment.NewLine}Employee: {rpspm.Employee.FullName}";
         }
 
         public AreYouSureVM(ProjectModel pm)
@@ -77,7 +79,7 @@ namespace SOCE.Library.UI.ViewModels
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            TexttoDisplay = pm.ProjectName;
+            BottomLine = pm.ProjectName;
         }
 
         private string GetEnumDescription(Enum value)
@@ -117,33 +119,36 @@ namespace SOCE.Library.UI.ViewModels
             {
                 object itemtodelete = ProjectSummary.ItemToDelete;
 
-                switch (itemtodelete)
+                if (Result)
                 {
-                    case SubProjectModel sub:
-                        {
-                            foreach (RolePerSubProjectModel rpspm in sub.RolesPerSub)
+                    switch (itemtodelete)
+                    {
+                        case SubProjectModel sub:
                             {
-                                SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
+                                foreach (RolePerSubProjectModel rpspm in sub.RolesPerSub)
+                                {
+                                    SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
+                                }
+                                SQLAccess.ArchiveSubProject(sub.Id);
+                                ProjectSummary.SubProjects.Remove(sub);
+                                ProjectSummary.BaseProject.UpdateSubProjects();
+                                break;
                             }
-                            SQLAccess.ArchiveSubProject(sub.Id);
-                            ProjectSummary.SubProjects.Remove(sub);
-                            ProjectSummary.LeftDrawerOpen = false;
-                            break;
-                        }
-                    case RolePerSubProjectModel role:
-                        {
-                            if (role.SpentHours == 0)
+                        case RolePerSubProjectModel role:
                             {
-                                SQLAccess.DeleteRolesPerSubProject(role.Id);
+                                if (role.SpentHours == 0)
+                                {
+                                    SQLAccess.DeleteRolesPerSubProject(role.Id);
+                                }
+                                ProjectSummary.SelectedProjectPhase.RolesPerSub.Remove(role);
+                                break;
                             }
-                            ProjectSummary.SelectedProjectPhase.RolesPerSub.Remove(role);
-                            ProjectSummary.LeftDrawerOpen = false;
+                        default:
                             break;
-                        }
-                    default:
-                        break;
+                    }
                 }
                 ProjectSummary.ItemToDelete = null;
+                ProjectSummary.LeftDrawerOpen = false;
             }
         }
     }

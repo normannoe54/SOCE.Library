@@ -100,6 +100,11 @@ namespace SOCE.Library.UI.ViewModels
             projectVM = new ProjectVM(employee);
         }
 
+        public void RefreshViews()
+        {
+            Initiate(LoggedInEmployee);
+        }
+
         public void GoToPage(PortalPage page)
         {   if (currentPage == page )
             {
@@ -135,6 +140,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public void GoToTimesheetByDate(DateTime date)
         {
+            currentPage = PortalPage.Timesheet;
             CurrentPage = new TimesheetVM(LoggedInEmployee,date);
         }
 

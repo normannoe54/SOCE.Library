@@ -143,7 +143,10 @@ namespace SOCE.Library.UI
                 _spentHours = value;
                 SpentBudget = _spentHours * Rate;
                 PercentSpent = (_spentHours / BudgetedHours) * 100;
-
+                if (_spentHours > 0)
+                {
+                    TextBoxVisible = true;
+                }
                 CanDelete = _spentHours == 0;
                 RaisePropertyChanged(nameof(SpentHours));
 
@@ -244,6 +247,20 @@ namespace SOCE.Library.UI
                 _canDelete = value;
                 RaisePropertyChanged(nameof(CanDelete));
 
+            }
+        }
+
+        private bool _textBoxVisible { get; set; } = false;
+        public bool TextBoxVisible
+        {
+            get
+            {
+                return _textBoxVisible;
+            }
+            set
+            {
+                _textBoxVisible = value;
+                RaisePropertyChanged(nameof(TextBoxVisible));
             }
         }
 

@@ -212,6 +212,7 @@ namespace SOCE.Library.UI
             PTOHours = emdb.PTOHours;
             SickHours = emdb.SickHours;
             HolidayHours = emdb.HolidayHours;
+            OTHours = emdb.OTHours;
             Approved = Convert.ToBoolean(emdb.Approved);
             Missing = false;
             EmailRemind = false;

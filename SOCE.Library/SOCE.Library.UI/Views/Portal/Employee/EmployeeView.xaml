@@ -12,18 +12,19 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        
+
         <!--Page Title-->
         <TextBlock Text="Employees" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
-        
+
         <!--Seprator-->
         <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
 
         <!--Counter Title-->
         <TextBlock Text="{Binding TextEmployees}" Grid.Row="2" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-        
+
         <!--Add Button-->
         <Button Grid.Row="2" IsEnabled="{Binding CanAddEmployee}" Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" Background="{StaticResource SOCERed}" Command="{Binding GoToAddEmployee}" HorizontalAlignment="Right">
             <StackPanel Orientation="Horizontal">
@@ -32,7 +33,28 @@
             </StackPanel>
         </Button>
 
-        <ItemsControl ItemsSource="{Binding Employees}"  HorizontalAlignment="Stretch" Grid.Row="3" Margin="5 20 5 5">
+        <Grid Grid.Row="3" Margin="0 20 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="180"/>
+                <ColumnDefinition Width="220"/>
+                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="150"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="75"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Name" />
+            <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Title"/>
+            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Permissions"/>
+            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Role"/>
+            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Email"/>
+            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Extension"/>
+            <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Rate" Visibility="{Binding RateTitleVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+        </Grid>
+
+        <ItemsControl ItemsSource="{Binding Employees}"  HorizontalAlignment="Stretch" Grid.Row="4" Margin="5 20 5 5">
             <ItemsControl.Template>
                 <ControlTemplate>
                     <ScrollViewer CanContentScroll="True" 
@@ -42,85 +64,94 @@
                     </ScrollViewer>
                 </ControlTemplate>
             </ItemsControl.Template>
-            
+
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <VirtualizingStackPanel IsVirtualizing="True"
                               VirtualizationMode="Recycling" />
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
-            
+
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Expander Background="Transparent" IsExpanded="{Binding CanExpand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="exp1">
+                    <Expander Background="Transparent" IsExpanded="{Binding CanExpand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="exp1" >
                         <Expander.Header>
-                            <Grid Margin="0 5 0 0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="50"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="270"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="400"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="75"/>
-                                </Grid.ColumnDefinitions>
+                            <Border BorderBrush="{Binding BorderColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" CornerRadius="5">
+                                <Grid Margin="0 5 0 0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="180"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="400"/>
+                                        <ColumnDefinition Width="150"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="75"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <VirtualizingStackPanel Orientation="Horizontal" Margin="10">
-                                    <Button HorizontalAlignment="Left" IsEnabled="{Binding CanEditorDelete}"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Command="{Binding Path=DataContext.DeleteEmployee, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
-                                        <Button.Content>
-                                            <Border CornerRadius="3" Background="{StaticResource SOCERed}" Height="27" Width="27" >
-                                                <materialDesign:PackIcon Foreground="White" Kind="Archive" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </Button.Content>
-                                    </Button>
-                                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"               
-                                      Foreground="White"
+                                    <VirtualizingStackPanel Orientation="Horizontal" Grid.Column="0">
+                                        <Button HorizontalAlignment="Left" IsEnabled="{Binding CanEditorDelete}"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
+                                            Command="{Binding Path=DataContext.DeleteEmployee, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
+                                            <Button.Content>
+                                                <Border CornerRadius="3" Background="{StaticResource SOCERed}" Height="27" Width="27" >
+                                                    <materialDesign:PackIcon Foreground="White" Kind="Archive" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </Button.Content>
+                                        </Button>
+                                        <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"               
+                                      Foreground="White" Background="Transparent" BorderBrush="Transparent"
                                       IsEnabled="{Binding CanEditorDelete}"
                                       IsChecked="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                        <ToggleButton.Content>
-                                            <Border CornerRadius="8" Background="ForestGreen" Height="27" Width="27" ToolTip="Save">
-                                                <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </ToggleButton.Content>
-                                        <materialDesign:ToggleButtonAssist.OnContent>
-                                            <Border Background="Orange" Height="27" Width="27" ToolTip="Edit">
-                                                <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                            </Border>
-                                        </materialDesign:ToggleButtonAssist.OnContent>
-                                    </ToggleButton>
-                                </VirtualizingStackPanel>
-                                <!--<TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Id}" TextAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0"/>-->
-                                <VirtualizingStackPanel Grid.Column="2" Margin="10 0 0 0" HorizontalAlignment="Left" Orientation="Horizontal">
-                                    <TextBox  IsReadOnly="{Binding EditFieldState}"  Text="{Binding FirstName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                    <TextBox Margin="3 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding LastName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
-                                <TextBox Grid.Column="3" MinWidth="125" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Title}" TextAlignment="Left" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                <ComboBox Grid.Column="4" Margin="10 0 0 0" FontSize="14"
-                                  IsEnabled="{Binding ComboFieldState}"
+                                            <ToggleButton.Content>
+                                                <Border CornerRadius="8" Background="ForestGreen" Height="27" Width="27" ToolTip="Save">
+                                                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </ToggleButton.Content>
+                                            <materialDesign:ToggleButtonAssist.OnContent>
+                                                <Border Background="Orange" Height="27" Width="27" ToolTip="Edit">
+                                                    <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                </Border>
+                                            </materialDesign:ToggleButtonAssist.OnContent>
+                                        </ToggleButton>
+                                    </VirtualizingStackPanel>
+                                    <!--<TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Id}" TextAlignment="Center" VerticalAlignment="Center" Margin="10 0 0 0"/>-->
+                                    <VirtualizingStackPanel Grid.Column="1" HorizontalAlignment="Left" Orientation="Horizontal" Margin="10 0 0 0">
+                                        <TextBox  IsReadOnly="{Binding EditFieldState}"  Text="{Binding FirstName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                                        <TextBox Margin="3 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding LastName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                                    </VirtualizingStackPanel>
+                                    <TextBox Grid.Column="2" MinWidth="125" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Title}" TextAlignment="Left" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                                    <ComboBox Grid.Column="3" Margin="10 0 0 0" FontSize="14"
+                                  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                   ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:AuthEnum}}}" 
                                   DisplayMemberPath="Description" 
                                   SelectedValue="{Binding Status}"  
                                   SelectedValuePath="Value"/>
-                                <VirtualizingStackPanel Margin="50 0 0 0" Grid.Column="5" Orientation="Horizontal">
-                                    <materialDesign:PackIcon  Margin="10 0 0 0" Background="Transparent" Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding EmailForward}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                    <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
+                                    <ComboBox Grid.Column="4" Margin="10 0 0 0" FontSize="14"
+                                  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                  ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
+                                  DisplayMemberPath="Description" 
+                                  SelectedValue="{Binding DefaultRole}"  
+                                  SelectedValuePath="Value"/>
+                                    <VirtualizingStackPanel Margin="50 0 0 0" Grid.Column="5" Orientation="Horizontal">
+                                        <materialDesign:PackIcon  Margin="10 0 0 0" Background="Transparent" Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
+                                        <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding EmailForward}" TextAlignment="Center" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                                        <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="14" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
+                                    </VirtualizingStackPanel>
 
-                                <VirtualizingStackPanel Margin="10 0 0 0" Grid.Column="6" Orientation="Horizontal">
-                                    <materialDesign:PackIcon Foreground="Black" Kind="PhoneOutline" VerticalAlignment="Center"/>
-                                    <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="EXT." TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Extension}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
+                                    <VirtualizingStackPanel Margin="10 0 0 0" Grid.Column="6" Orientation="Horizontal">
+                                        <materialDesign:PackIcon Foreground="Black" Kind="PhoneOutline" VerticalAlignment="Center"/>
+                                        <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="EXT." TextAlignment="Center" FontSize="14" VerticalAlignment="Center"/>
+                                        <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Extension}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
+                                    </VirtualizingStackPanel>
 
-                                <VirtualizingStackPanel Margin="20 0 0 0" Grid.Column="7" Orientation="Horizontal" Visibility="{Binding RateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="Rate:" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}"  HorizontalAlignment="Left" Text="{Binding Rate}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center" materialDesign:TextFieldAssist.PrefixText="$"/>
-                                    <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text=" / hr." TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
-                            </Grid>
+                                    <VirtualizingStackPanel Margin="20 0 0 0" Grid.Column="7" Orientation="Horizontal" Visibility="{Binding RateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="Rate:" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
+                                        <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}"  HorizontalAlignment="Left" Text="{Binding Rate}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center" materialDesign:TextFieldAssist.PrefixText="$"/>
+                                        <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text=" / hr." TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
+                                    </VirtualizingStackPanel>
+                                </Grid>
+                            </Border>
                         </Expander.Header>
                         <Grid Margin="15" Visibility="{Binding ElementName=exp1, Path=IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.ColumnDefinitions>
@@ -130,7 +161,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
 
-                            <Grid Grid.Column="0" Margin="5" Height="200" >
+                            <Grid Grid.Column="0" Margin="5" Height="200">
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="40"/>
                                     <RowDefinition Height="40"/>
@@ -160,7 +191,6 @@
                                 </Grid>
 
                                 <ItemsControl ItemsSource="{Binding TimesheetSubmissions}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                                    
                                     <ItemsControl.Template>
                                         <ControlTemplate>
                                             <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
@@ -174,7 +204,7 @@
                                             <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
                                         </ItemsPanelTemplate>
                                     </ItemsControl.ItemsPanel>
-                                    
+
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
                                             <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5">

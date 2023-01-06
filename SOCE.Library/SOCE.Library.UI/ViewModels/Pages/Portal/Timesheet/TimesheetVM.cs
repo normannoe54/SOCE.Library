@@ -307,7 +307,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 AreYouSureView view = new AreYouSureView();
                 AreYouSureVM aysvm = new AreYouSureVM();
-                aysvm.TexttoDisplay = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
+                aysvm.BottomLine = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
                 view.DataContext = aysvm;
                 var result = await DialogHost.Show(view, "RootDialog");
                 aysvm = view.DataContext as AreYouSureVM;
@@ -326,20 +326,83 @@ namespace SOCE.Library.UI.ViewModels
         {
             //do stuff
             //save down to downloads
+            try
+            {
+                string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string pathDownload = Path.Combine(pathUser, "Downloads\\TimeSheet.xlsx");
+                File.WriteAllBytes(pathDownload, Properties.Resources.TimesheetBase);
+                Excel.Excel exinst = new Excel.Excel(pathDownload);
 
-            string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string pathDownload = Path.Combine(pathUser, "Downloads\\TimeSheet.xlsx");
-            File.WriteAllBytes(pathDownload, Properties.Resources.TimesheetBase);
-            Excel.Excel exinst = new Excel.Excel(pathDownload, AppEnum.Existing);
+                if (Rowdata.Count > 0)
+                {
+                    TimesheetRowModel trmfirst = Rowdata[0];
+                    int count = trmfirst.Entries.Count;
 
-            foreach (TimesheetRowModel trm in Rowdata)
+                    for (int i = 0; i < count - 2; i++)
+                    {
+                        exinst.InsertBlankColumns(i + 3);
+                    }
+
+                    List<string> dates = new List<string>();
+                    List<double> number = new List<double>();
+
+                    //write column formula
+                    char cval = 'C';
+                    char finalval = 'B';
+
+                    foreach (TREntryModel ent1 in Rowdata[0].Entries)
+                    {
+                        dates.Add(ent1.Date.DayOfWeek.ToString().Substring(0, 1));
+                        number.Add(ent1.Date.Day);
+                        finalval++;
+                    }
+
+                    exinst.WriteRow(5, 3, dates);
+                    exinst.WriteRow(6, 3, number);
+
+                    string cell = $"{MonthYearString} {DateString}";
+
+                    exinst.WriteCell(3, count + 2, cell);
+
+                    int basenum = 6;
+
+                    foreach (TimesheetRowModel trm in Rowdata)
+                    {
+                        List<object> rowinputs = new List<object>();
+                        string projectname = $"{ trm.Project.ProjectName} [{trm.SelectedSubproject.PointNumber}]";
+                        rowinputs.Add(trm.Project.ProjectNumber);
+                        rowinputs.Add(projectname);
+
+                        foreach (TREntryModel ent in trm.Entries)
+                        {
+                            rowinputs.Add(ent.TimeEntry);
+                        }
+
+                        exinst.InsertRowBelow(basenum, rowinputs);
+
+                        basenum++;
+
+                        string formula = $"SUM(C{basenum}: {finalval}{basenum})";
+                        exinst.WriteFormula(basenum, count + 3, formula);
+                    }
+
+                    for (int i = 0; i < count+1; i++)
+                    {
+                        string formula = $"SUM({cval}7:{cval}{basenum})";
+                        exinst.WriteFormula(basenum+1, i + 3, formula);
+                        cval++;
+                    }
+
+                    exinst.FitColumns();
+                }
+
+                Process.Start(pathDownload);
+            }
+            catch
             {
 
             }
-            //exinst.InsertRow(6, new List<string>() { "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1", "1" });
-            //exinst.InsertRow(7, new List<string>() { "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2", "2" });
-            exinst.Dispose();
-            Process.Start(pathDownload);
+            
 
         }
 
@@ -411,10 +474,10 @@ namespace SOCE.Library.UI.ViewModels
 
             ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
 
-            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count-1];
+            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
 
             //Do not include the last layer
-            Parallel.For(0, dbprojects.Count-1, i =>
+            Parallel.For(0, dbprojects.Count, i =>
             {
                 ProjectDbModel pdb = dbprojects[i];
                 ProjectModel pm = new ProjectModel(pdb);
@@ -586,8 +649,7 @@ namespace SOCE.Library.UI.ViewModels
         {
             AreYouSureView view = new AreYouSureView();
             AreYouSureVM aysvm = new AreYouSureVM();
-            aysvm.TexttoDisplay = "submit timesheet?";
-            aysvm.WordNeeded = "";
+            aysvm.TopLine = "submit timesheet?";
             view.DataContext = aysvm;
             var result = await DialogHost.Show(view, "RootDialog");
             aysvm = view.DataContext as AreYouSureVM;
@@ -609,7 +671,7 @@ namespace SOCE.Library.UI.ViewModels
                         {
                             sum += trentry.TimeEntry;
 
-                            if (trm.Project.ProjectName == "PTO")
+                            if (trm.Project.ProjectName == "VACATION")
                             {
                                 pto += trentry.TimeEntry;
                             }
@@ -755,8 +817,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 AreYouSureView view = new AreYouSureView();
                 AreYouSureVM aysvm = new AreYouSureVM();
-                aysvm.TexttoDisplay = "copy the previous timesheet?";
-                aysvm.WordNeeded = "";
+                aysvm.TopLine = "copy the previous timesheet?";
                 view.DataContext = aysvm;
                 var result = await DialogHost.Show(view, "RootDialog");
                 aysvm = view.DataContext as AreYouSureVM;

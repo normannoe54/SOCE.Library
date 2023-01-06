@@ -137,6 +137,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _activeProject;
+        public bool ActiveProject
+        {
+            get { return _activeProject; }
+            set
+            {
+                _activeProject = value;
+                RaisePropertyChanged("ActiveProject");
+            }
+        }
+
         public ICommand AddSubCommand { get; set; }
 
         public ICommand AddRoleCommand { get; set; }
@@ -156,7 +167,9 @@ namespace SOCE.Library.UI.ViewModels
             this.DeleteSubProject = new RelayCommand<SubProjectModel>(this.DeleteSub);
             this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
 
+            ActiveProject = pm.IsActive;
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
+            
             ObservableCollection<EmployeeModel> totalemployees = new ObservableCollection<EmployeeModel>();
 
             foreach (EmployeeDbModel employeenew in employeesDb)
@@ -170,10 +183,11 @@ namespace SOCE.Library.UI.ViewModels
             pm.FormatData(true);
             SubProjects = pm.SubProjects;
 
-            if (SubProjects.Count >0)
+            if (SubProjects.Count > 0)
             {
                 SelectedProjectPhase = SubProjects[0];
             }
+
         }
 
         private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)
@@ -192,7 +206,7 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             //update roles
-            
+
         }
 
         private void DeleteSub(SubProjectModel spm)
@@ -205,6 +219,7 @@ namespace SOCE.Library.UI.ViewModels
                 ItemToDelete = spm;
                 LeftDrawerOpen = true;
             }
+
         }
 
         private void AddRole()

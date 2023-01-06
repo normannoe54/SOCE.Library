@@ -32,7 +32,7 @@
             <Button Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
                 <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
             </Button>
-            <Grid Grid.Row="0" Margin="5" Height="250" >
+            <Grid Grid.Row="0" Margin="5" Height="250" IsEnabled="{Binding ActiveProject}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
@@ -142,7 +142,7 @@
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
                                     <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0" IsEnabled="{Binding Path=DataContext.CanEditPhase, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                        <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent"  Foreground="Black" Height="20" Width="20" IsEnabled="{Binding CanDelete}"
+                                        <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20" IsEnabled="{Binding CanDelete}"
                                             Command="{Binding Path=DataContext.DeleteSubProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
                                             <Button.Content>
                                                 <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -257,7 +257,7 @@
                                    VerticalAlignment="Center" Text="{Binding SelectedProjectPhase.HoursLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.]'}"/>
                             </VirtualizingStackPanel>
                         </VirtualizingStackPanel>
-                        <Grid Grid.Row="1">
+                        <Grid Grid.Row="1" IsEnabled="{Binding ActiveProject}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="130"/>
@@ -283,7 +283,7 @@
                             <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent&#10;Regulated Budget" TextAlignment="Center" />
                         </Grid>
 
-                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="{Binding ActiveProject}">
                             <ItemsControl.Resources>
                                 <local:InvoicedColorConverter x:Key="valueconverter"/>
                             </ItemsControl.Resources>
@@ -317,7 +317,7 @@
                                                 <ColumnDefinition Width="*"/>
                                             </Grid.ColumnDefinitions>
                                             <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0">
-                                                <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent"  Foreground="Black" Height="20" Width="20" 
+                                                <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20" 
                                                     IsEnabled="{Binding CanDelete}" Command="{Binding Path=DataContext.DeleteRole, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
                                                     <Button.Content>
                                                         <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -346,13 +346,14 @@
                                       DisplayMemberPath="Description"
                                       SelectedValue="{Binding Role}"  
                                       SelectedValuePath="Value"/>
-
-                                            <ComboBox Grid.Column="2" Margin="10 0 0 0" FontSize="14"
-                                                 IsEnabled="{Binding EditComboEmployeeFieldState}"
-                                      ItemsSource="{Binding Path=DataContext.Employees, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
-                                      DisplayMemberPath="FullName" 
-                                      MaxDropDownHeight="200"
-                                      SelectedItem="{Binding Path = Employee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16 0 0 2"
+                                                       Text="{Binding Employee.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                       Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            <ComboBox Grid.Column="2" Margin="10 0 0 0" FontSize="14" 
+                                                      Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
+                                                      IsEnabled="{Binding EditComboEmployeeFieldState}"
+                                                      ItemsSource="{Binding Path=DataContext.Employees, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                                      DisplayMemberPath="FullName" MaxDropDownHeight="200" SelectedItem="{Binding Path = Employee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                 <ComboBox.ItemsPanel>
                                                     <ItemsPanelTemplate>
                                                         <VirtualizingStackPanel />
@@ -434,14 +435,14 @@
 
                         <StackPanel Grid.Row="7" Orientation="Vertical" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0 10 0 0">
                             <Grid>
-                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentBudgetSpent}" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
+                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentBudgetSpent}" Foreground="{StaticResource SOCELightRed}" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="Budget Spent: " FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock Text="{Binding BaseProject.PercentBudgetSpent, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </Grid>
                             <Grid>
-                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentComplete}" Foreground="Green" BorderThickness="1" BorderBrush="LightGray"/>
+                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentComplete}" Foreground="Green" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="Percent Complete: " FontSize="10" FontWeight="SemiBold"/>
                                     <TextBlock Text="{Binding BaseProject.PercentComplete, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
