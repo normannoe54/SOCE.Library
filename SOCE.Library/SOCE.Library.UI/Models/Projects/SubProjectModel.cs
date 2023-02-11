@@ -436,7 +436,7 @@ namespace SOCE.Library.UI
 
         public void UpdatePercents()
         {
-            PercentBudget = (Fee / TotalFee) * 100;
+            PercentBudget = (RegulatedBudget / TotalFee) * 100;
             PercentofInvoicedFee = Math.Round(RegulatedBudget / Fee * 100, 2);
             PercentSpent = Math.Round(FeeUsed / RegulatedBudget * 100, 2);
         }

@@ -307,8 +307,8 @@
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
                                     <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Stretch">
-                                        <TextBlock Text="{Binding Path= Project.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" />
                                         <TextBlock Text="{Binding Path= Project.ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="5 0 0 0" />
+                                        <TextBlock Text="{Binding Path= Project.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" />
                                     </StackPanel>
                                     <!--<ComboBox Grid.Column="0"
                                                   Margin="10 0 0 0"

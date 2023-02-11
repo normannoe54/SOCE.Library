@@ -448,15 +448,12 @@ namespace SOCE.Library.UI
         {
             //SubProjects.CollectionChanged += this.SubProjectChanged;
             //RatePerProject.CollectionChanged += this.RatesChanged;
-            onstartup = true;
             IsEditable = iseditable;
             Constructor();
 
             Id = pm.Id;
             ProjectName = pm.ProjectName;
             ProjectNumber = pm.ProjectNumber;
-            SearchText = filter ? pm.ProjectName : pm.ProjectNumber.ToString();
-            //SearchText = String.Format("{0} {1}", ProjectNumber.ToString(), ProjectName);
             Fee = pm.Fee;
             IsActive = Convert.ToBoolean(pm.IsActive);
             PercentComplete = pm.PercentComplete;
@@ -491,12 +488,11 @@ namespace SOCE.Library.UI
             //RatePerProject.CollectionChanged += this.RatesChanged;
 
             //IsEditable = iseditable;
-            Constructor();
+            //Constructor();
 
             Id = pm.Id;
             ProjectName = pm.ProjectName;
             ProjectNumber = pm.ProjectNumber;
-            SearchText = pm.ProjectName;
             //SearchText = String.Format("{0} {1}", ProjectNumber.ToString(), ProjectName);
             Fee = pm.Fee;
             IsActive = Convert.ToBoolean(pm.IsActive);
@@ -526,7 +522,7 @@ namespace SOCE.Library.UI
             this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
             this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
             this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
-            onstartup = true;
+            onstartup = false;
         }
         #endregion
 
@@ -754,22 +750,24 @@ namespace SOCE.Library.UI
                             List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
                             double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
-
+                            double spentbudget = employeetimesheetdata.Sum(x => x.BudgetSpent);
                             RolePerSubProjectDbModel rpdm = rolesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
                             double rate = rpdm.Rate;
                      
                             double hoursleft = rpdm.BudgetHours - hours;
                             hoursspentpersub += hours;
                             hoursleftpersub += hoursleft;
-                            budgetspentpersub += hours * rate;
-                            budgetleftpersub += hoursleft *rate;
+                            budgetspentpersub += spentbudget;
                             regulatedbudgetpersub += rpdm.BudgetHours * rate;
+                            budgetleftpersub += regulatedbudgetpersub - spentbudget;
                             totalbudgethours += rpdm.BudgetHours;
+
                             //get rate
                             if (rpdm != null)
                             {
                                 RolePerSubProjectModel rspm = new RolePerSubProjectModel(rpdm.Id, rpdm.Rate, (DefaultRoleEnum)rpdm.Role, rpdm.EmployeeId, spm, rpdm.BudgetHours, spm.Fee);
                                 rspm.SpentHours = hours;
+                                rspm.SpentBudget = spentbudget;
                                 //rspm.PercentofRegulatedBudget = (rpdm.BudgetHours /regulatedbudgetpersub)*100;
                                 rate = rpdm.Rate;
                                 spm.RolesPerSub.Add(rspm);

@@ -264,6 +264,8 @@ namespace SOCE.Library.UI.ViewModels
             Constructor(loggedinEmployee);
             LoadCurrentTimesheet(DateTime.Now);
             SumTable();
+            SearchFilter = false;
+
         }
 
         public TimesheetVM(EmployeeModel loggedinEmployee, DateTime date)
@@ -271,6 +273,8 @@ namespace SOCE.Library.UI.ViewModels
             Constructor(loggedinEmployee);
             LoadCurrentTimesheet(date);
             SumTable();
+            SearchFilter = false;
+
         }
 
         private void Constructor(EmployeeModel loggedinEmployee)
@@ -727,7 +731,8 @@ namespace SOCE.Library.UI.ViewModels
                             Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
                             Submitted = submit,
                             Approved = 0,
-                            TimeEntry = trentry.TimeEntry
+                            TimeEntry = trentry.TimeEntry,
+                            BudgetSpent = CurrentEmployee.Rate * trentry.TimeEntry
                         };
 
                         SQLAccess.AddTimesheetData(dbmodel);
@@ -735,16 +740,23 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
+                try
                 {
-                    SubProjectId = trm.SelectedSubproject.Id,
-                    EmployeeId = CurrentEmployee.Id,
-                    Role = (int)CurrentEmployee.DefaultRole,
-                    Rate = CurrentEmployee.Rate,
-                    BudgetHours = timepersub
-                };
+                    RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
+                    {
+                        SubProjectId = trm.SelectedSubproject.Id,
+                        EmployeeId = CurrentEmployee.Id,
+                        Role = (int)CurrentEmployee.DefaultRole,
+                        Rate = CurrentEmployee.Rate,
+                        BudgetHours = 0
+                    };
+                    SQLAccess.AddRolesPerSubProject(rpp);
 
-                SQLAccess.AddRolesPerSubProject(rpp);
+                }
+                catch
+                {
+                }
+
             }
 
             //deleting
@@ -936,14 +948,17 @@ namespace SOCE.Library.UI.ViewModels
             int diff = (lastdate - firstdate).Days;
             List<DateWrapper> dates = new List<DateWrapper>();
             int workdays = 0;
-
+            int friday = 0;
             for (int i = 0; i <= diff; i++)
             {
                 DateTime dt = firstdate.AddDays(i);
                 BlankEntry.Add(new TREntryModel { Date = dt });
                 dates.Add(new DateWrapper(dt.Date));
-
-                if (!(dt.DayOfWeek == DayOfWeek.Saturday) && !(dt.DayOfWeek == DayOfWeek.Sunday))
+                if (dt.DayOfWeek == DayOfWeek.Friday)
+                {
+                    friday++;
+                }
+                else if (!(dt.DayOfWeek == DayOfWeek.Saturday) && !(dt.DayOfWeek == DayOfWeek.Sunday))
                 {
                     workdays++;
                 }
@@ -952,7 +967,7 @@ namespace SOCE.Library.UI.ViewModels
             DateSummary = new ObservableCollection<DateWrapper>(dates);
             MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
-            BaseHours = workdays * 9;
+            BaseHours = workdays * 9 + friday*4;
             DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
             DateTime enddate = DateSummary.Last().Value;
             int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays, 0));

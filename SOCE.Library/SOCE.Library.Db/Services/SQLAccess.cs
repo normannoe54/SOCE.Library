@@ -482,16 +482,16 @@ namespace SOCE.Library.Db
                 if (output.Count == 0)
                 {
                     //add
-                    cnn.Execute("INSERT INTO Timesheets (EmployeeId, Date, SubProjectId, TimeEntry, Submitted, Approved)" +
-                    "VALUES (@EmployeeId, @Date, @SubProjectId, @TimeEntry, @Submitted, @Approved)", timesheetrow);
+                    cnn.Execute("INSERT INTO Timesheets (EmployeeId, Date, SubProjectId, TimeEntry, BudgetSpent, Submitted, Approved)" +
+                    "VALUES (@EmployeeId, @Date, @SubProjectId, @TimeEntry, @BudgetSpent, @Submitted, @Approved)", timesheetrow);
                 }
                 else
                 {
                     TimesheetRowDbModel founditem = output.FirstOrDefault();
                     int index = founditem.Id;
                     //replace
-                    cnn.Execute("UPDATE Timesheets SET TimeEntry = @TimeEntry, Submitted = @Submitted, Approved = @Approved WHERE Id = @index", 
-                        new{ timesheetrow.TimeEntry, timesheetrow.Submitted, timesheetrow.Approved, index });
+                    cnn.Execute("UPDATE Timesheets SET TimeEntry = @TimeEntry, BudgetSpent = @BudgetSpent, Submitted = @Submitted, Approved = @Approved WHERE Id = @index", 
+                        new{ timesheetrow.TimeEntry, timesheetrow.BudgetSpent, timesheetrow.Submitted, timesheetrow.Approved, index });
                 }
 
             }
@@ -502,8 +502,8 @@ namespace SOCE.Library.Db
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("UPDATE Timesheets SET TimeEntry = @TimeEntry, Submitted = @Submitted, Approved = @Approved WHERE Id = @Id",
-                        new { timesheetrow.TimeEntry, timesheetrow.Submitted, timesheetrow.Approved, timesheetrow.Id });
+                cnn.Execute("UPDATE Timesheets SET TimeEntry = @TimeEntry, BudgetSpent = @BudgetSpent, Submitted = @Submitted, Approved = @Approved WHERE Id = @Id",
+                        new { timesheetrow.TimeEntry, timesheetrow.BudgetSpent, timesheetrow.Submitted, timesheetrow.Approved, timesheetrow.Id });
             }
         }
 

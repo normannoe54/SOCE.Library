@@ -141,12 +141,19 @@ namespace SOCE.Library.UI
             set
             {
                 _spentHours = value;
-                SpentBudget = _spentHours * Rate;
-                PercentSpent = (_spentHours / BudgetedHours) * 100;
+                //SpentBudget = _spentHours * Rate;
+
+                if (SpentHours ==0)
+                {
+                    SpentBudget = 0;
+                }
+
                 if (_spentHours > 0)
                 {
                     TextBoxVisible = true;
                 }
+
+                PercentSpent = (_spentHours / BudgetedHours) * 100;
                 CanDelete = _spentHours == 0;
                 RaisePropertyChanged(nameof(SpentHours));
 
@@ -163,6 +170,7 @@ namespace SOCE.Library.UI
             set
             {
                 _spentBudget = value;
+                //PercentSpent = (_spentBudget / OverallFee) * 100;
                 RaisePropertyChanged(nameof(SpentBudget));
 
             }

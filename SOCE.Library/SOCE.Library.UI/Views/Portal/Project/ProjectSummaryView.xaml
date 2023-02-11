@@ -18,7 +18,7 @@
         <Grid Margin="10" >
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="320"/>
             </Grid.RowDefinitions>
 
             <!--<Grid Grid.Row="0">
@@ -70,32 +70,32 @@
                         <ColumnDefinition Width="75"/>
                         <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="45"/>
                         <ColumnDefinition Width="45"/>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="70"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="1" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Phase" />
                     <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Description" />
                     <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Total&#10;Phase Fee" TextAlignment="Center"/>
-                    <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Regulated&#10;Budget" TextAlignment="Center"/>
+                    <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Planned&#10;Phase Budget" TextAlignment="Center"/>
                     <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="% Total&#10;Phase Fee" TextAlignment="Center" />
                     <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Total&#10;Budget" TextAlignment="Center"/>
                     <TextBlock Grid.Column="7" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Complete"/>
-                    <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total&#10;Hours" TextAlignment="Center"/>
+                    <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Planned&#10;Hours" TextAlignment="Center"/>
                     <TextBlock Grid.Column="9" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Hours&#10;Spent" TextAlignment="Center"/>
                     <TextBlock Grid.Column="10" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Hours&#10;Left" TextAlignment="Center"/>
                     <TextBlock Grid.Column="11" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Budget&#10;Spent" TextAlignment="Center"/>
                     <TextBlock Grid.Column="12" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Budget&#10;Left" TextAlignment="Center"/>
-                    <TextBlock Grid.Column="13" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Spent"/>
+                    <TextBlock Grid.Column="13" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Planned&#10;Budget Spent"/>
                     <TextBlock Grid.Column="14" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Active?"/>
                     <TextBlock Grid.Column="15" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced?"/>
                 </Grid>
@@ -126,18 +126,18 @@
                                         <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="75"/>
                                         <ColumnDefinition Width="160"/>
-                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="40"/>
                                         <ColumnDefinition Width="10"/>
                                         <ColumnDefinition Width="40"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
@@ -195,6 +195,7 @@
                     <ColumnDefinition Width="300"/>
                 </Grid.ColumnDefinitions>
                 <materialDesign:Card Grid.Column="0" Margin="10" Padding="5"
+                                     VerticalAlignment="Stretch"
                                               materialDesign:ColorZoneAssist.Mode="Custom"
                                               materialDesign:ColorZoneAssist.Background="#525252"
                                               materialDesign:ColorZoneAssist.Foreground="White">
@@ -242,7 +243,7 @@
                                       DisplayMemberPath="Description"   
                                       MaxDropDownHeight="250">
                             </ComboBox>
-                            <TextBlock Margin="20,0,0,0" VerticalAlignment="Center" FontSize="14" Text="Regulated Budget:" FontWeight="Thin" />
+                            <TextBlock Margin="20,0,0,0" VerticalAlignment="Center" FontSize="14" Text="Planned Budget:" FontWeight="Thin" />
                             <TextBlock FontWeight="Thin" FontSize="14" HorizontalAlignment="Center" Margin="8 0 0 0"
                                    VerticalAlignment="Center" Text="{Binding SelectedProjectPhase.RegulatedBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
 
@@ -280,7 +281,7 @@
                             <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent&#10;Spent" TextAlignment="Center"/>
                             <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Rate" TextAlignment="Center"/>
                             <TextBlock Grid.Column="7" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Budget&#10;Spent" TextAlignment="Center"/>
-                            <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent&#10;Regulated Budget" TextAlignment="Center" />
+                            <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent of&#10;Planned Budget" TextAlignment="Center" />
                         </Grid>
 
                         <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="{Binding ActiveProject}">
@@ -290,7 +291,7 @@
 
                             <ItemsControl.Template>
                                 <ControlTemplate>
-                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
+                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
                                         <ItemsPresenter />
                                     </ScrollViewer>
                                 </ControlTemplate>
@@ -368,12 +369,8 @@
                                                    materialDesign:TextFieldAssist.SuffixText=" hr."/>
                                             <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center" Text="{Binding PercentSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
-                                            <TextBox Grid.Column="6"
-                                                 IsReadOnly="{Binding EditRoleFieldState}"
-                                         FontWeight="Regular" FontSize="12" 
-                                         HorizontalAlignment="Center" VerticalAlignment="Center" 
-                                         Text="{Binding Rate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" 
-                                         materialDesign:TextFieldAssist.PrefixText="$" materialDesign:TextFieldAssist.SuffixText="/hr."/>
+                                            <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                                       Text="{Binding Rate, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' ${0:#,0.##}/hr.'}"/>
                                             <TextBlock Grid.Column="7" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center" Text="{Binding SpentBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
                                             <TextBlock Grid.Column="8" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
@@ -418,10 +415,10 @@
                         </Grid.RowDefinitions>
 
                         <TextBlock Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Total Fee:"/>
-                        <TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Total Regulated Budget:"/>
-                        <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Mark up/down percent:"/>
-                        <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Regulated Budget Spent:"/>
-                        <TextBlock Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Regulated Budget Left:"/>
+                        <TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Total Planned Budget:"/>
+                        <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Planned Percent Profit:"/>
+                        <TextBlock Grid.Column="0" Grid.Row="3" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Planned Budget Spent:"/>
+                        <TextBlock Grid.Column="0" Grid.Row="4" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Planned Budget Left:"/>
                         <TextBlock Grid.Column="0" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Hours Spent:"/>
                         <TextBlock Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Hours Left:"/>
 

@@ -159,6 +159,7 @@ namespace SOCE.Library.UI.ViewModels
             CanAddPhase = employee.Status != AuthEnum.Standard ? true : false;
             CanEditPhase = employee.Status != AuthEnum.Standard ? true : false;
             BaseProject = pm;
+
             //Roles.CollectionChanged += CollectionChanged;
             this.AddSubCommand = new RelayCommand(this.AddSubProject);
             this.AddRoleCommand = new RelayCommand(this.AddRole);
@@ -206,7 +207,6 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             //update roles
-
         }
 
         private void DeleteSub(SubProjectModel spm)
@@ -221,7 +221,6 @@ namespace SOCE.Library.UI.ViewModels
             }
 
         }
-
         private void AddRole()
         {
             if (SelectedProjectPhase != null)

@@ -141,6 +141,8 @@ namespace SOCE.Library.UI.ViewModels
                                     SQLAccess.DeleteRolesPerSubProject(role.Id);
                                 }
                                 ProjectSummary.SelectedProjectPhase.RolesPerSub.Remove(role);
+                                role.Subproject.baseproject.FormatData(false);
+
                                 break;
                             }
                         default:
@@ -149,6 +151,7 @@ namespace SOCE.Library.UI.ViewModels
                 }
                 ProjectSummary.ItemToDelete = null;
                 ProjectSummary.LeftDrawerOpen = false;
+                
             }
         }
     }

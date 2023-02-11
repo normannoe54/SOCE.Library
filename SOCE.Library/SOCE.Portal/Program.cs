@@ -12,7 +12,7 @@ namespace SOCE.Portal
     class Program
     {
         static string basepath = "W:\\Documnts\\Software\\Portal\\InstallerFiles\\";
-        static string executingpath = System.IO.Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
+        static string executingpath = "C:\\ProgramData\\SOCE\\";
 
         static void Main(string[] args)
         {
@@ -22,29 +22,44 @@ namespace SOCE.Portal
             //W drive location exists
             string excutingfile = Path.Combine(executingpath, filename);
 
-            //look at version numbers
-            bool executingexists = File.Exists(excutingfile);
+            string directoryname = System.IO.Path.GetDirectoryName(executingpath);
+            bool folderexists = Directory.Exists(directoryname);
 
-            if (!executingexists)
+            if (!folderexists)
             {
-                //copy them over.
+                //add directory
+                System.IO.Directory.CreateDirectory(executingpath);
+
+                //add files
                 CopyFiles();
             }
             else
             {
-                StreamReader basereader = new System.IO.StreamReader(basefile);
-                double baseversion = DetermineVersion(basereader);
-                basereader.Close();
+                //look at version numbers
+                bool executingexists = File.Exists(excutingfile);
 
-                StreamReader executingreader = new System.IO.StreamReader(excutingfile);
-                double executingversion = DetermineVersion(executingreader);
-                executingreader.Close();
-
-                if (baseversion != executingversion)
+                if (!executingexists)
                 {
+                    //copy them over.
                     CopyFiles();
                 }
+                else
+                {
+                    StreamReader basereader = new System.IO.StreamReader(basefile);
+                    double baseversion = DetermineVersion(basereader);
+                    basereader.Close();
+
+                    StreamReader executingreader = new System.IO.StreamReader(excutingfile);
+                    double executingversion = DetermineVersion(executingreader);
+                    executingreader.Close();
+
+                    if (baseversion != executingversion)
+                    {
+                        CopyFiles();
+                    }
+                }
             }
+            
 
             string exepath = $"{executingpath}\\SOCEPortal\\SOCE.Library.UI.exe";
             ProcessStartInfo processInfo = new ProcessStartInfo();

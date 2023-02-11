@@ -13,6 +13,7 @@ namespace SOCE.Library.Db
         public int Date { get; set; }
         public int SubProjectId { get; set; }
         public double TimeEntry { get; set; }
+        public double BudgetSpent { get; set; }
         public int Submitted { get; set; }
         public int Approved { get; set; }
     }

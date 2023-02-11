@@ -17,8 +17,8 @@ namespace SOCE.Library.DbBatch
 
             foreach (string line in lines)
             {
-                string sep = "\t";
-                string[] splitContent = line.Split(sep.ToCharArray());
+                char[] sep = new char[] { '\t' };
+                string[] splitContent = line.Split(sep);
 
                 ClientDbModel client = new ClientDbModel() { ClientNumber = Convert.ToInt32(splitContent[0]), ClientName = splitContent[1], IsActive = 1 };
                 SQLAccess.AddClient(client);
@@ -58,109 +58,121 @@ namespace SOCE.Library.DbBatch
                 count1++;
             }
 
-            string[] projectlines = System.IO.File.ReadAllLines(@"T:\PortalImport\Projects.txt", Encoding.Default);
+            string[] projectlines = System.IO.File.ReadAllLines(@"T:\PortalImport\ProjectsNew.txt", Encoding.Default);
             int count2 = 0;
 
-            //List<ClientDbModel> clients = SQLAccess.LoadClients();
-            //List<EmployeeDbModel> pms = SQLAccess.LoadProjectManagers();
+            List<ClientDbModel> clients = SQLAccess.LoadClients();
+            List<EmployeeDbModel> pms = SQLAccess.LoadProjectManagers();
 
-            //foreach (string line in projectlines)
-            //{
-            //    if (count2 > 0)
-            //    {
-            //        string sep = "\t";
-            //        string[] splitContent = line.Split(sep.ToCharArray());
+            foreach (string line in projectlines)
+            {
+                if (count2 > 0)
+                {
+                    string sep = "\t";
+                    string[] splitContent = line.Split(sep.ToCharArray());
 
-            //        int clientnum = Convert.ToInt32(splitContent[2]);
+                    int clientnum = Convert.ToInt32(splitContent[2]);
 
-            //        ClientDbModel client = clients.Where(x => x.ClientNumber == clientnum).FirstOrDefault();
-            //        EmployeeDbModel pm = pms.Where(x => x.FirstName == splitContent[3].Trim()).FirstOrDefault();
+                    ClientDbModel client = clients.Where(x => x.ClientNumber == clientnum).FirstOrDefault();
+                    EmployeeDbModel pm = pms.Where(x => x.FirstName == splitContent[3].Trim()).FirstOrDefault();
 
-            //        if (client != null && pm != null)
-            //        {
-            //            string s = splitContent[0].Replace("\"", "");
+                    if (client != null && pm != null)
+                    {
+                        string s = splitContent[0].Replace("\"", "");
 
-            //            ProjectDbModel project = new ProjectDbModel()
-            //            {
-            //                ProjectName = s,
-            //                ProjectNumber = Convert.ToInt32(splitContent[1]),
-            //                ClientId = client.Id,
-            //                ManagerId = pm.Id,
-            //                MarketId = 1,
-            //                Fee = 100000,
-            //                PercentComplete = 0,
-            //                IsActive = 1,
-            //                IsCurrActive = 1
-            //            };
+                        string startdate = "0";
 
-            //            int projectnumber = SQLAccess.AddProject(project);
+                        if (splitContent[1].Length > 2)
+                        {
+                            startdate = splitContent[1].Substring(0, 2);
+                        }
 
-            //            if (splitContent[0].ToUpper().Contains("MISCELLANEOUS"))
-            //            {
-            //                SubProjectDbModel miscsub = new SubProjectDbModel()
-            //                {
-            //                    ProjectId = projectnumber,
-            //                    PercentComplete = 0,
-            //                    PointNumber = "MISC",
-            //                    IsActive = 1,
-            //                    IsCurrActive = 1,
-            //                    Description = "Miscellaneous",
-            //                    Fee = 0,
-            //                    PercentBudget = 100,
-            //                    IsInvoiced = 0,
-            //                };
+                        int intdate = 2000 + Convert.ToInt32(startdate);
 
-            //                SQLAccess.AddSubProject(miscsub);
+                        DateTime dateconvert = new DateTime(intdate, 1, 1);
 
-            //            }
-            //            else
-            //            {
-            //                SubProjectDbModel CDsub = new SubProjectDbModel()
-            //                {
-            //                    ProjectId = projectnumber,
-            //                    PercentComplete = 0,
-            //                    PointNumber = "CD",
-            //                    IsActive = 1,
-            //                    IsCurrActive = 1,
-            //                    Description = "Construction Documents",
-            //                    Fee = 50000,
-            //                    PercentBudget = 50,
-            //                    IsInvoiced = 0,
-            //                };
+                        ProjectDbModel project = new ProjectDbModel()
+                        {
+                            ProjectName = s,
+                            ProjectNumber = Convert.ToInt32(splitContent[1]),
+                            ClientId = client.Id,
+                            ManagerId = pm.Id,
+                            MarketId = 1,
+                            Fee = 2000,
+                            PercentComplete = 0,
+                            ProjectStart = (int)long.Parse(dateconvert.ToString("yyyyMMdd")),
+                            IsActive = 1,
+                            IsCurrActive = 1
+                        };
 
-            //                SubProjectDbModel CAsub = new SubProjectDbModel()
-            //                {
-            //                    ProjectId = projectnumber,
-            //                    PercentComplete = 0,
-            //                    PointNumber = "CA",
-            //                    IsActive = 1,
-            //                    IsCurrActive = 1,
-            //                    Description = "Construction Administration",
-            //                    Fee = 50000,
-            //                    PercentBudget = 50,
-            //                    IsInvoiced = 0,
-            //                };
+                        int projectnumber = SQLAccess.AddProject(project);
 
-            //                SQLAccess.AddSubProject(CDsub);
-            //                SQLAccess.AddSubProject(CAsub);
-            //            }
+                        if (splitContent[0].ToUpper().Contains("General"))
+                        {
+                            SubProjectDbModel miscsub = new SubProjectDbModel()
+                            {
+                                ProjectId = projectnumber,
+                                PercentComplete = 0,
+                                PointNumber = "MISC",
+                                IsActive = 1,
+                                IsCurrActive = 1,
+                                Description = "Miscellaneous",
+                                Fee = 0,
+                                PercentBudget = 100,
+                                IsInvoiced = 0,
+                            };
+
+                            SQLAccess.AddSubProject(miscsub);
+
+                        }
+                        else
+                        {
+                            SubProjectDbModel CDsub = new SubProjectDbModel()
+                            {
+                                ProjectId = projectnumber,
+                                PercentComplete = 0,
+                                PointNumber = "CD",
+                                IsActive = 1,
+                                IsCurrActive = 1,
+                                Description = "Construction Documents",
+                                Fee = 1000,
+                                PercentBudget = 50,
+                                IsInvoiced = 0,
+                            };
+
+                            SubProjectDbModel CAsub = new SubProjectDbModel()
+                            {
+                                ProjectId = projectnumber,
+                                PercentComplete = 0,
+                                PointNumber = "CA",
+                                IsActive = 1,
+                                IsCurrActive = 1,
+                                Description = "Construction Administration",
+                                Fee = 1000,
+                                PercentBudget = 50,
+                                IsInvoiced = 0,
+                            };
+
+                            SQLAccess.AddSubProject(CDsub);
+                            SQLAccess.AddSubProject(CAsub);
+                        }
 
 
 
 
 
 
-            //            Console.WriteLine("\t" + line);
-            //        }
+                        Console.WriteLine("\t" + line);
+                    }
 
 
 
 
 
 
-            //    }
-            //    count2++;
-            //}
+                }
+                count2++;
+            }
 
 
 
