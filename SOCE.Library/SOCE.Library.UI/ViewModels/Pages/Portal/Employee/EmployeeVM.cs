@@ -49,6 +49,26 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _showRates = false;
+        public bool ShowRates
+        {
+            get
+            {
+                return _showRates;
+            }
+            set
+            {
+                _showRates = value;
+
+                foreach (EmployeeModel em in Employees)
+                {
+                    em.RateVisible = _showRates;
+                }
+
+                RaisePropertyChanged(nameof(ShowRates));
+            }
+        }
+
         private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
         public ObservableCollection<EmployeeModel> Employees
         {

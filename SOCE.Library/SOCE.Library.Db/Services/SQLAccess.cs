@@ -299,6 +299,24 @@ namespace SOCE.Library.Db
             }
         }
 
+        public static List<ProjectDbModel> LoadActiveProjects(bool active)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<ProjectDbModel>("SELECT * FROM Projects WHERE IsCurrActive = 1 AND IsActive = @active", new {active});
+                return output.ToList();
+            }
+        }
+
+        public static List<ProjectDbModel> LoadInactiveProjectsByYear()
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<ProjectDbModel>("SELECT * FROM Projects WHERE IsCurrActive = 1 AND IsActive = 0 AND ");
+                return output.ToList();
+            }
+        }
+
         public static ProjectDbModel LoadProjectsById(int projectId)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))

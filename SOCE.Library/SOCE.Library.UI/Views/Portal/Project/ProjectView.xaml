@@ -15,7 +15,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-         </Grid.RowDefinitions>
+        </Grid.RowDefinitions>
         <StackPanel Orientation="Vertical" Grid.Row="0" HorizontalAlignment="Stretch">
             <TextBlock Text="Projects" FontSize="32" FontWeight="SemiBold"  Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
             <Separator Height="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
@@ -213,22 +213,29 @@
                                 </materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
                             </ToggleButton>
                             <TextBlock Foreground="Black" Margin="10 0 0 0" Text="Active?" FontWeight="Regular" FontStyle="Italic" FontSize="14" VerticalAlignment="Center"/>
-                            <TextBox Text="{Binding YearInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Grid.Row="1" Grid.ColumnSpan="2" Margin="20 0 0 0" Width="110" IsEnabled="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
-                                     HorizontalAlignment="Stretch" VerticalAlignment="Center" materialDesign:TextFieldAssist.HasClearButton="True" materialDesign:HintAssist.Hint="Specify start year"/>
-                            
-                            <!--<DatePicker Grid.Row="1" Margin="20 0 0 0" materialDesign:HintAssist.Hint="Start Date" VerticalAlignment="Center" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"--> 
-                                        <!--HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="90" Text="{Binding DateTimeSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}"/>-->
+                            <TextBox IsReadOnly="True" Text="{Binding YearInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintTextBox}" Margin="20 0 0 0" Width="90" IsEnabled="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                     HorizontalAlignment="Stretch" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Specify Year"/>
+                            <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding AddYearCommand}" BorderThickness="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="0 0 0 0"
+                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Add Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                <materialDesign:PackIcon Kind="plus" VerticalAlignment="Center"  Width="12" Height="12"/>
+                            </Button>
+                            <Button Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubtractYearCommand}" BorderThickness="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="0 0 0 0"
+                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Subtract Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                <materialDesign:PackIcon Kind="Minus" VerticalAlignment="Center"  Width="12" Height="12"/>
+                            </Button>
+                            <!--<DatePicker Grid.Row="1" Margin="20 0 0 0" materialDesign:HintAssist.Hint="Start Date" VerticalAlignment="Center" Style="{StaticResource MaterialDesignFloatingHintDatePicker}"-->
+                            <!--HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="90" Text="{Binding DateTimeSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}"/>-->
                         </StackPanel>
                         <Button Grid.Row="1" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SearchCommand}" BorderThickness="0" HorizontalAlignment="Right" VerticalContentAlignment="Stretch" VerticalAlignment="Bottom" Margin="0 0 0 5"
                                 Height="22" Width="22" Padding="0" Background="Transparent" Foreground="Black" ToolTip="Search" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
                             <materialDesign:PackIcon Kind="MagnifyScan" VerticalAlignment="Center"  Width="18" Height="18"/>
                         </Button>
-                        <Button Grid.Row="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportDataCommand}" 
+                        <Button Grid.Row="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportDataCommand}"
                         IsEnabled="{Binding IsEditable}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0 0 0 0" BorderBrush="Gray" BorderThickness="1">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Download" VerticalAlignment="Center" Margin="-5 1 8 0"  Width="20" Height="20" ToolTip="Export Current" Foreground="{StaticResource SOCERed}"/>
 
-                                <TextBlock Text="Export Data" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center"/>
+                                <TextBlock Text="Export Project Data Shown" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center"/>
                             </StackPanel>
                         </Button>
                         <!--<TextBlock Grid.Row="0" Grid.Column="1" VerticalAlignment="Bottom" Visibility="{ Binding ShowActiveProjects, Converter={StaticResource BooleanToVisibilityConverter} }" Text="Select year complete:" Margin="10 0 0 0"/>-->
@@ -358,7 +365,20 @@
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Name" />
-                    <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Number"/>
+                    <VirtualizingStackPanel Grid.Column="2" Orientation="Horizontal">
+                        <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding SortFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <ToggleButton.Content>
+                                <materialDesign:PackIcon Background="Transparent" ToolTip="Sort" Kind="ArrowUp" VerticalAlignment="Center" HorizontalAlignment="Center" Height="15" Width="15"/>
+                            </ToggleButton.Content>
+                            <materialDesign:ToggleButtonAssist.OnContent>
+                                <materialDesign:PackIcon Background="Transparent" ToolTip="Sort" Kind="ArrowDown" VerticalAlignment="Center" HorizontalAlignment="Center" Height="15" Width="15"/>
+                            </materialDesign:ToggleButtonAssist.OnContent>
+                        </ToggleButton>
+                        <TextBlock  FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Number"/>
+
+                    </VirtualizingStackPanel>
+                    
+
                     <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Client"/>
                     <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Market"/>
                     <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="PM"/>

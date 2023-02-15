@@ -330,7 +330,7 @@ namespace SOCE.Library.UI
         }
 
 
-        private bool _rateVisible = true;
+        private bool _rateVisible = false;
         public bool RateVisible
         {
             get { return _rateVisible; }
@@ -548,19 +548,23 @@ namespace SOCE.Library.UI
             //years
             int count = 0;
             List<TimesheetSubmissionDbModel> dbdata = SQLAccess.LoadTimesheetSubmissionByEmployee(Id);
+
+            int year = DateTime.Now.Year;
+            DateTime firstDay = new DateTime(year, 1, 1);
+
             foreach (TimesheetSubmissionDbModel tsmdb in dbdata)
             {
-                tsm.Add(new TimesheetSubmissionModel(tsmdb, this));
+                TimesheetSubmissionModel tsmnew = new TimesheetSubmissionModel(tsmdb, this);
+                tsm.Add(tsmnew);
 
-                //if (Convert.ToBoolean(tsmdb.Approved))
-                //{
-                count++;
-                ptospent += tsmdb.PTOHours;
-                otspent += tsmdb.OTHours;
-                sickspent += tsmdb.SickHours;
-                holidayspent += tsmdb.HolidayHours;
-                //}
-
+                if (tsmnew.Date >= firstDay)
+                {
+                    count++;
+                    ptospent += tsmdb.PTOHours;
+                    otspent += tsmdb.OTHours;
+                    sickspent += tsmdb.SickHours;
+                    holidayspent += tsmdb.HolidayHours;
+                }
             }
 
             TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
@@ -580,37 +584,31 @@ namespace SOCE.Library.UI
             switch (currentuser.Status)
             {
                 case AuthEnum.Admin:
-                    RateVisible = true;
                     IsEditable = true;
                     CanEditorDelete = true;
                     CanEditPTO = true;
                     break;
                 case AuthEnum.Principal:
-                    RateVisible = true;
                     IsEditable = true;
                     CanEditorDelete = false;
                     CanEditPTO = false;
                     break;
                 case AuthEnum.PM:
-                    RateVisible = true;
                     IsEditable = false;
                     CanEditorDelete = false;
                     CanEditPTO = false;
 
                     break;
                 case AuthEnum.Standard:
-                    RateVisible = false;
                     IsEditable = false;
                     CanEditorDelete = false;
                     CanEditPTO = false;
 
                     break;
                 default:
-                    RateVisible = false;
                     IsEditable = false;
                     CanEditorDelete = false;
                     CanEditPTO = false;
-
                     break;
             }
 

@@ -32,7 +32,7 @@
             <Button Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
                 <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
             </Button>
-            <Grid Grid.Row="0" Margin="5" Height="250" IsEnabled="{Binding ActiveProject}">
+            <Grid Grid.Row="0" Margin="5" Height="250">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
@@ -75,8 +75,8 @@
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="45"/>
-                        <ColumnDefinition Width="45"/>
+                        <ColumnDefinition Width="55"/>
+                        <ColumnDefinition Width="55"/>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="80"/>
@@ -120,7 +120,7 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="{Binding IsInvoiced, Converter={StaticResource valueconverter}}">
+                            <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="{Binding IsInvoiced, Converter={StaticResource valueconverter}}" IsEnabled="{Binding Path =DataContext.ActiveProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                 <Grid Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="50"/>
@@ -132,9 +132,9 @@
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="10"/>
-                                        <ColumnDefinition Width="40"/>
+                                        <ColumnDefinition Width="50"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="80"/>
@@ -258,7 +258,7 @@
                                    VerticalAlignment="Center" Text="{Binding SelectedProjectPhase.HoursLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.]'}"/>
                             </VirtualizingStackPanel>
                         </VirtualizingStackPanel>
-                        <Grid Grid.Row="1" IsEnabled="{Binding ActiveProject}">
+                        <Grid Grid.Row="1">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="50"/>
                                 <ColumnDefinition Width="130"/>
@@ -284,7 +284,7 @@
                             <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent of&#10;Planned Budget" TextAlignment="Center" />
                         </Grid>
 
-                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsEnabled="{Binding ActiveProject}">
+                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                             <ItemsControl.Resources>
                                 <local:InvoicedColorConverter x:Key="valueconverter"/>
                             </ItemsControl.Resources>
@@ -304,7 +304,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="Transparent">
+                                    <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="Transparent" IsEnabled="{Binding Path=DataContext.ActiveProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                         <Grid Margin="0 5 0 5">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="50"/>

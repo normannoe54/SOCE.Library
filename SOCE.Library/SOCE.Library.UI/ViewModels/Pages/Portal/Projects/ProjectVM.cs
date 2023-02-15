@@ -53,6 +53,25 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand ExportDataCommand { get; set; }
         public ICommand GoToOpenProjectSummary { get; set; }
 
+        public ICommand AddYearCommand { get; set; }
+
+        public ICommand SubtractYearCommand { get; set; }
+
+        private bool _sortFilter = false;
+        public bool SortFilter
+        {
+            get
+            {
+                return _sortFilter;
+            }
+            set
+            {
+                _sortFilter = value;
+                SortProjects(_sortFilter);
+                RaisePropertyChanged(nameof(SortFilter));
+            }
+        }
+
         private bool _canAddProject = false;
         public bool CanAddProject
         {
@@ -222,15 +241,19 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _showActiveProjects = value;
-
-                if (_showActiveProjects)
-                {
-                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive == _showActiveProjects).ToList());
-                }
-                else
-                {
-                    Projects = new ObservableCollection<ProjectModel>(AllProjects);
-                }
+                LoadProjects();
+                Projects = new ObservableCollection<ProjectModel>(AllProjects);
+                SortProjects(SortFilter);
+                //if (_showActiveProjects)
+                //{
+                //    AllProjects = LoadProjects();
+                //    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive == _showActiveProjects).ToList());
+                //}
+                //else
+                //{
+                //    AllProjects = 
+                //    Projects = new ObservableCollection<ProjectModel>(AllProjects);
+                //}
 
                 RaisePropertyChanged(nameof(ShowActiveProjects));
 
@@ -266,11 +289,14 @@ namespace SOCE.Library.UI.ViewModels
             this.ClearSearchParamters = new RelayCommand(this.ClearInputsandReload);
             this.SearchCommand = new RelayCommand(this.RunSearch);
             this.ExportDataCommand = new RelayCommand(this.RunExport);
+            this.AddYearCommand = new RelayCommand(this.AddToYear);
+            this.SubtractYearCommand = new RelayCommand(this.SubtractToYear);
 
-            LoadProjects();
             LoadClients();
             LoadMarkets();
             LoadProjectManagers();
+            LoadProjects();
+
 
             ShowActiveProjects = true;
         }
@@ -286,7 +312,8 @@ namespace SOCE.Library.UI.ViewModels
             {
                 if (YearInp != null)
                 {
-                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => Convert.ToDouble(x.ProjectStart.ToString().Substring(0, 4)) >= YearInp).ToList());
+                    string yearinpstr = YearInp.ToString();
+                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList());
                 }
                 else
                 {
@@ -297,39 +324,72 @@ namespace SOCE.Library.UI.ViewModels
             {
                 Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x=>x.IsActive == true).ToList());
             }
+            SortProjects(SortFilter);
+        }
+
+        private void SortProjects(bool sort)
+        {
+            if (sort)
+            {
+                Projects = new ObservableCollection<ProjectModel>(Projects.OrderBy(x => x.ProjectNumber).ToList());
+            }
+            else
+            {
+                Projects = new ObservableCollection<ProjectModel>(Projects.OrderByDescending(x => x.ProjectNumber).ToList());
+            }
+
         }
 
         private void RunExport()
         {
-            StringBuilder csv = new StringBuilder();
 
-            string CSVHeader = $"Project Data";
-            csv.AppendLine(CSVHeader);
-
-            string DateHeader = $"{DateTime.Now.ToString("MM/dd/yyyy")}";
-            csv.AppendLine(DateHeader);
-
-            string header = $"Number,Name,PM,Client,Percent Complete,Total Budget,Budget Spent,Budget Left,Hours Spent,Hours Left";
-            csv.AppendLine(header);
-
-            foreach (ProjectModel pm in Projects)
-            {
-                if (!pm.Formatted)
-                {
-                    pm.FormatData(true);
-                }
-                string appendeddata = $"{pm.ProjectNumber},{pm.ProjectName.Replace(",","")},{pm.ProjectManager.FullName},{pm.Client.ClientName.Replace(",", "")}[{pm.Client.ClientNumber}],%{pm.PercentComplete},{pm.TotalBudget},{pm.BudgetSpent}[%{pm.PercentBudgetSpent}],{pm.BudgetLeft},{pm.HoursSpent},{pm.HoursLeft}";
-                csv.AppendLine(appendeddata);
-
-            }
-
-            //after your loop
-            string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-            string pathDownload = Path.Combine(pathUser, "Downloads\\DataExport.csv");
+            //do stuff
+            //save down to downloads
 
             try
             {
-                File.WriteAllText(pathDownload, csv.ToString());
+                string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string pathDownload = Path.Combine(pathUser, "Downloads\\ProjectDataExport.xlsx");
+                File.WriteAllBytes(pathDownload, Properties.Resources.ProjectDataExport);
+                Excel.Excel exinst = new Excel.Excel(pathDownload);
+                int basenum = 6;
+
+                if (Projects.Count > 0)
+                {
+                    foreach (ProjectModel pm in Projects)
+                    {
+                        pm.FormatData(true);
+
+                        List<object> rowinputs = new List<object>();
+                        rowinputs.Add(pm.ProjectNumber);
+                        rowinputs.Add(pm.ProjectName);
+                        rowinputs.Add(pm.Client.ClientName);
+                        rowinputs.Add(pm.Market.MarketName);
+                        rowinputs.Add(pm.ProjectManager.FullName);
+                        rowinputs.Add(pm.PercentComplete);
+                        rowinputs.Add(pm.Fee);
+                        rowinputs.Add(pm.TotalRegulatedBudget);
+                        rowinputs.Add(pm.BudgetSpent);
+                        rowinputs.Add(pm.BudgetLeft);
+                        rowinputs.Add(pm.HoursSpent);
+                        rowinputs.Add(pm.HoursLeft);
+                        rowinputs.Add(pm.PercentBudgetSpent);
+
+
+                        exinst.WriteRow<object>(basenum,1, rowinputs);
+
+                        basenum++;
+
+                        //foreach (SubProjectModel spm in pm.SubProjects)
+                        //{
+                        //write sub rows
+                        //}
+                    }
+
+
+                    //exinst.FitColumns();
+                }
+
                 Process.Start(pathDownload);
             }
             catch
@@ -364,10 +424,12 @@ namespace SOCE.Library.UI.ViewModels
 
             if (!ShowActiveProjects  && YearInp != null)
             {
-                pmnew = pmnew.Where(x => Convert.ToDouble(x.ProjectStart.ToString().Substring(0, 4)) >=  YearInp).ToList();
+                string yearinpstr = YearInp.ToString();
+                pmnew = pmnew.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList();
             }
 
             Projects = new ObservableCollection<ProjectModel>(pmnew);
+            SortProjects(SortFilter);
         }
 
         private async void ExecuteOpenSubDialog(object o)
@@ -408,10 +470,10 @@ namespace SOCE.Library.UI.ViewModels
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
-            if (result != null)
-            {
+            //if (result != null)
+            //{
                 LoadClients();
-            }
+            //}
         }
 
         private async void ExecuteRunAddMarketDialog(object o)
@@ -421,10 +483,10 @@ namespace SOCE.Library.UI.ViewModels
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
-            if (result != null)
-            {
+            //if (result != null)
+            //{
                 LoadMarkets();
-            }
+            //}
         }
 
         private async void ExecuteRunDeleteDialog(object o)
@@ -512,31 +574,51 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadProjects()
         {
-            List<ProjectDbModel> dbprojects = SQLAccess.LoadProjects();
+            List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
 
             ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
 
             ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
+
 
             //Do not include the last layer
             Parallel.For(0, dbprojects.Count, i =>
             {
                 ProjectDbModel pdb = dbprojects[i];
 
-                if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
-                {
-                    ProjectModel pm = new ProjectModel(pdb, IsEditable);
+            //if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
+            //{
+                ProjectModel pm = new ProjectModel(pdb, IsEditable);
+                    EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
+                    ClientModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
+                    MarketModel mm = Markets.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
+
+                    pm.ProjectManager = em;
+                    pm.Client = cm;
+                    pm.Market = mm;
+                    //EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
+                    //EmployeeModel em = new EmployeeModel(emdbm);
+                    //ProjectManager = em;
+
+                    //ClientDbModel cdbm = SQLAccess.LoadClientById(pm.ClientId);
+                    //ClientModel cm = new ClientModel(cdbm);
+                    //Client = cm;
+
+                    //MarketDbModel mdbm = SQLAccess.LoadMarketeById(pm.MarketId);
+                    //MarketModel mm = new MarketModel(mdbm);
+                    //Market = mm;
+
                     ProjectArray[i] = pm;
-                }
+                //}
             }
             );
 
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();
             AllProjects = ProjectArray.ToList();
             Projects = new ObservableCollection<ProjectModel>(ProjectArray.ToList());
-
-            List<ProjectModel> activeprojects = Projects.Where(x => x.IsActive == true).ToList();
-            NumProjects = activeprojects.Count;
+            
+            //List<ProjectModel> activeprojects = Projects.Where(x => x.IsActive == true).ToList();
+            NumProjects = Projects.Count;
         }
 
         private void LoadClients()
@@ -551,6 +633,16 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             Clients = members;
+        }
+
+        private void AddToYear()
+        {
+            YearInp++;
+        }
+
+        private void SubtractToYear()
+        {
+            YearInp--;
         }
 
         private void LoadMarkets()

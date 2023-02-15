@@ -365,8 +365,10 @@ namespace SOCE.Library.UI.ViewModels
                     exinst.WriteRow(6, 3, number);
 
                     string cell = $"{MonthYearString} {DateString}";
+                    exinst.WriteCell(1, count + 2, cell);
 
-                    exinst.WriteCell(3, count + 2, cell);
+                    string name = $"{CurrentEmployee.FullName}";
+                    exinst.WriteCell(3, count + 2, name);
 
                     int basenum = 6;
 
@@ -675,15 +677,15 @@ namespace SOCE.Library.UI.ViewModels
                         {
                             sum += trentry.TimeEntry;
 
-                            if (trm.Project.ProjectName == "VACATION")
+                            if (trm.Project.ProjectName.ToUpper() == "VACATION")
                             {
                                 pto += trentry.TimeEntry;
                             }
-                            else if (trm.Project.ProjectName == "SICK")
+                            else if (trm.Project.ProjectName.ToUpper() == "SICK")
                             {
                                 sick += trentry.TimeEntry;
                             }
-                            else if (trm.Project.ProjectName == "HOLIDAY")
+                            else if (trm.Project.ProjectName.ToUpper() == "HOLIDAY")
                             {
                                 holiday += trentry.TimeEntry;
                             }

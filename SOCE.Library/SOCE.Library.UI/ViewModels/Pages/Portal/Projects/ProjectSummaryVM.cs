@@ -115,6 +115,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _canAddRole = true;
+        public bool CanAddRole
+        {
+            get { return _canAddRole; }
+            set
+            {
+                _canAddRole = value;
+                RaisePropertyChanged("CDPhase");
+            }
+        }
+
         private bool _canEditPhase;
         public bool CanEditPhase
         {
@@ -144,6 +155,12 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _activeProject = value;
+
+                if(!_activeProject)
+                {
+                    CanAddPhase = false;
+                    CanAddRole = false;
+                }
                 RaisePropertyChanged("ActiveProject");
             }
         }

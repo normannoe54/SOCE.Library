@@ -461,17 +461,17 @@ namespace SOCE.Library.UI
             ProjectEnd = pm.ProjectEnd;
             FinalSpent = pm.FinalSpent;
 
-            EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
-            EmployeeModel em = new EmployeeModel(emdbm);
-            ProjectManager = em;
+            //EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
+            //EmployeeModel em = new EmployeeModel(emdbm);
+            //ProjectManager = em;
 
-            ClientDbModel cdbm = SQLAccess.LoadClientById(pm.ClientId);
-            ClientModel cm = new ClientModel(cdbm);
-            Client = cm;
+            //ClientDbModel cdbm = SQLAccess.LoadClientById(pm.ClientId);
+            //ClientModel cm = new ClientModel(cdbm);
+            //Client = cm;
 
-            MarketDbModel mdbm = SQLAccess.LoadMarketeById(pm.MarketId);
-            MarketModel mm = new MarketModel(mdbm);
-            Market = mm;
+            //MarketDbModel mdbm = SQLAccess.LoadMarketeById(pm.MarketId);
+            //MarketModel mm = new MarketModel(mdbm);
+            //Market = mm;
 
             Projectfolder = pm.Projectfolder;
             Drawingsfolder = pm.Drawingsfolder;
@@ -703,7 +703,6 @@ namespace SOCE.Library.UI
                 double hoursspentpersub = 0;
                 double hoursleftpersub = 0;
                 double budgetspentpersub = 0;
-                double budgetleftpersub = 0;
                 double regulatedbudgetpersub = 0;
                 double totalbudgethours = 0;
 
@@ -759,7 +758,6 @@ namespace SOCE.Library.UI
                             hoursleftpersub += hoursleft;
                             budgetspentpersub += spentbudget;
                             regulatedbudgetpersub += rpdm.BudgetHours * rate;
-                            budgetleftpersub += regulatedbudgetpersub - spentbudget;
                             totalbudgethours += rpdm.BudgetHours;
 
                             //get rate
@@ -785,22 +783,21 @@ namespace SOCE.Library.UI
                     if (rpdm == null)
                     {
                         hoursleftpersub += rspdb.BudgetHours;
-                        budgetleftpersub += rspdb.BudgetHours * rspdb.Rate;
                         regulatedbudgetpersub += rspdb.BudgetHours * rspdb.Rate;
                         totalbudgethours += rspdb.BudgetHours;
                         //add
                         RolePerSubProjectModel rspm = new RolePerSubProjectModel(rspdb.Id, rspdb.Rate, (DefaultRoleEnum)rspdb.Role, rspdb.EmployeeId, spm, rspdb.BudgetHours, spm.Fee);
                         rspm.SpentHours = 0;
                         //rspm.PercentofRegulatedBudget = (rspdb.BudgetHours / regulatedbudgetpersub) * 100;
-                         spm.RolesPerSub.Add(rspm);
-                       
+                        spm.RolesPerSub.Add(rspm);
+
                     }
                 }
 
                 spm.HoursUsed = hoursspentpersub;
                 spm.HoursLeft = hoursleftpersub;
                 spm.FeeUsed = budgetspentpersub;
-                spm.FeeLeft = budgetleftpersub;
+                spm.FeeLeft = regulatedbudgetpersub - spm.FeeUsed;
                 spm.RegulatedBudget = regulatedbudgetpersub;
                 spm.TotalHours = totalbudgethours;
                 spm.UpdatePercents();
