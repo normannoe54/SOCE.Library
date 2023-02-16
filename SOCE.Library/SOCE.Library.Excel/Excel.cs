@@ -33,7 +33,7 @@ namespace SOCE.Library.Excel
         {
             IXLColumn colnew = activeworksheet.Column(column);
             colnew.InsertColumnsAfter(1);
-            document.Save();
+            //document.Save();
         }
 
         /// <summary>
@@ -51,27 +51,32 @@ namespace SOCE.Library.Excel
 
             IXLRange rangeWithStrings = activeworksheet.Cell(rownewval, 1).InsertData(values,true);
 
-            document.Save();
+            //document.Save();
         }
 
         public void WriteRow<T>(int row, int startingcell, List<T> values)
         {
             IXLRange rangeWithStrings = activeworksheet.Cell(row, startingcell).InsertData(values, true);
 
-            document.Save();
+            //document.Save();
         }
 
         public void WriteCell(int row, int column, string cellvalue)
         {
             activeworksheet.Cell(row, column).Value = cellvalue;
 
-            document.Save();
+            //document.Save();
         }
 
         public void WriteFormula(int row, int column, string cellvalue)
         {
             activeworksheet.Cell(row, column).FormulaA1 = cellvalue;
 
+            //document.Save();
+        }
+
+        public void Save()
+        {
             document.Save();
         }
     }

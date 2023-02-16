@@ -340,61 +340,28 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-        private void RunExport()
+        private async void RunExport()
         {
+            AreYouSureView view = new AreYouSureView();
+            AreYouSureVM aysvm = new AreYouSureVM();
 
-            //do stuff
-            //save down to downloads
+            aysvm.TopLine = $"Are you sure you want to export";
+            aysvm.BottomLine = $"{Projects.Count} projects";
+            view.DataContext = aysvm;
 
-            try
+            //show the dialog
+            var Result = await DialogHost.Show(view, "RootDialog");
+
+            AreYouSureVM vm = view.DataContext as AreYouSureVM;
+            bool resultvm = vm.Result;
+
+            if (resultvm)
             {
-                string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string pathDownload = Path.Combine(pathUser, "Downloads\\ProjectDataExport.xlsx");
-                File.WriteAllBytes(pathDownload, Properties.Resources.ProjectDataExport);
-                Excel.Excel exinst = new Excel.Excel(pathDownload);
-                int basenum = 6;
-
-                if (Projects.Count > 0)
-                {
-                    foreach (ProjectModel pm in Projects)
-                    {
-                        pm.FormatData(true);
-
-                        List<object> rowinputs = new List<object>();
-                        rowinputs.Add(pm.ProjectNumber);
-                        rowinputs.Add(pm.ProjectName);
-                        rowinputs.Add(pm.Client.ClientName);
-                        rowinputs.Add(pm.Market.MarketName);
-                        rowinputs.Add(pm.ProjectManager.FullName);
-                        rowinputs.Add(pm.PercentComplete);
-                        rowinputs.Add(pm.Fee);
-                        rowinputs.Add(pm.TotalRegulatedBudget);
-                        rowinputs.Add(pm.BudgetSpent);
-                        rowinputs.Add(pm.BudgetLeft);
-                        rowinputs.Add(pm.HoursSpent);
-                        rowinputs.Add(pm.HoursLeft);
-                        rowinputs.Add(pm.PercentBudgetSpent);
-
-
-                        exinst.WriteRow<object>(basenum,1, rowinputs);
-
-                        basenum++;
-
-                        //foreach (SubProjectModel spm in pm.SubProjects)
-                        //{
-                        //write sub rows
-                        //}
-                    }
-
-
-                    //exinst.FitColumns();
-                }
-
-                Process.Start(pathDownload);
-            }
-            catch
-            {
-
+                ExportConfirmView ecv = new ExportConfirmView();
+                ExportConfirmVM ecvm = new ExportConfirmVM(Projects.ToList());
+                //show progress bar and do stuff
+                ecv.DataContext = ecvm;
+                var newres = await DialogHost.Show(ecv, "RootDialog");
             }
         }
 

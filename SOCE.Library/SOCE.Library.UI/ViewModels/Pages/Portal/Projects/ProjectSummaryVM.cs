@@ -171,6 +171,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand CloseCommand { get; set; }
         public ICommand DeleteSubProject { get; set; }
         public ICommand DeleteRole { get; set; }
+        public ICommand ExportDataCommand { get; set; }
+
         public ProjectSummaryVM(ProjectModel pm, EmployeeModel employee)
         {
             CanAddPhase = employee.Status != AuthEnum.Standard ? true : false;
@@ -184,6 +186,8 @@ namespace SOCE.Library.UI.ViewModels
             this.CloseCommand = new RelayCommand(this.CloseWindow);
             this.DeleteSubProject = new RelayCommand<SubProjectModel>(this.DeleteSub);
             this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
+            this.ExportDataCommand = new RelayCommand(this.RunExport);
+
 
             ActiveProject = pm.IsActive;
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
@@ -206,6 +210,31 @@ namespace SOCE.Library.UI.ViewModels
                 SelectedProjectPhase = SubProjects[0];
             }
 
+        }
+
+        private async void RunExport()
+        {
+            AreYouSureView view = new AreYouSureView();
+            AreYouSureVM aysvm = new AreYouSureVM();
+
+            aysvm.TopLine = $"Are you sure you want to export";
+            aysvm.BottomLine = $"[{BaseProject.ProjectNumber}] {BaseProject.ProjectName}";
+            view.DataContext = aysvm;
+
+            //show the dialog
+            var Result = await DialogHost.Show(view, "RootDialog");
+
+            AreYouSureVM vm = view.DataContext as AreYouSureVM;
+            bool resultvm = vm.Result;
+
+            if (resultvm)
+            {
+                ExportConfirmView ecv = new ExportConfirmView();
+                ExportConfirmVM ecvm = new ExportConfirmVM(new List<ProjectModel> { BaseProject });
+                //show progress bar and do stuff
+                ecv.DataContext = ecvm;
+                var newres = await DialogHost.Show(ecv, "RootDialog");
+            }
         }
 
         private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)

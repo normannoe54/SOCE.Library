@@ -39,6 +39,27 @@
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <VirtualizingStackPanel  Grid.Column="0" Margin="10 0 0 0" Orientation="Horizontal">
+                        <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold"  Text="{Binding BaseProject.ProjectName}"/>
+                        <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Margin="10 0 0 0" Text="{Binding BaseProject.ProjectNumber, StringFormat='[{0}]'}"/>
+                        <VirtualizingStackPanel  Margin="30 0 0 0" Orientation="Horizontal">
+                            <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="20" FontWeight="SemiBold" Text="PM:"/>
+                            <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="20" FontWeight="SemiBold" Margin="10 0 0 0" Text="{Binding BaseProject.ProjectManager.FullName}"/>
+                        </VirtualizingStackPanel>
+                    </VirtualizingStackPanel>
+                    <!--<Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportDataCommand}"
+                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0 0 0 0" BorderBrush="Gray" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Download" VerticalAlignment="Center" Margin="-5 1 8 0"  Width="20" Height="20" ToolTip="Export Current" Foreground="{StaticResource SOCERed}"/>
+                            <TextBlock Text="Export Project Data" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center"/>
+                        </StackPanel>
+                    </Button>-->
+                </Grid>
                 <VirtualizingStackPanel  Grid.Row="0" Margin="10 0 0 0" Orientation="Horizontal">
                     <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold"  Text="{Binding BaseProject.ProjectName}"/>
                     <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Margin="10 0 0 0" Text="{Binding BaseProject.ProjectNumber, StringFormat='[{0}]'}"/>

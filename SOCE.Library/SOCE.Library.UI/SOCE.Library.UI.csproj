@@ -191,6 +191,7 @@
     <Compile Include="ViewModels\Pages\Portal\Projects\AddMarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddSubProjectVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\ExportConfirmVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\FolderButtons\ButtonwithPopUpVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\FolderButtons\PopUpInputVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ProjectSummaryVM.cs" />
@@ -249,6 +250,9 @@
     </Compile>
     <Compile Include="Views\Portal\Project\BudgetEstimateView.xaml.cs">
       <DependentUpon>BudgetEstimateView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\ExportConfirmView.xaml.cs">
+      <DependentUpon>ExportConfirmView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\FolderButtons\ButtonwithPopUp.xaml.cs">
       <DependentUpon>ButtonwithPopUp.xaml</DependentUpon>
@@ -372,6 +376,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Project\BudgetEstimateView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\ExportConfirmView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
