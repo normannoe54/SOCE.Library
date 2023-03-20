@@ -21,6 +21,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+
+        private string _errorMessage = "";
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                RaisePropertyChanged("ErrorMessage");
+            }
+        }
+
+
         private int _clientNumberInp;
         public int ClientNumberInp
         {
@@ -46,7 +59,14 @@ namespace SOCE.Library.UI.ViewModels
             ClientDbModel client = new ClientDbModel()
             { ClientName = ClientNameInp, ClientNumber = ClientNumberInp, IsActive = 1};
 
-            SQLAccess.AddClient(client);
+             int id = SQLAccess.AddClient(client);
+
+            if (id == 0)
+            {
+                ErrorMessage = $"Client number exists already";
+                return;
+            }
+
 
             //do stuff
             CloseWindow();

@@ -21,6 +21,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _errorMessage = "";
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                RaisePropertyChanged("ErrorMessage");
+            }
+        }
+
         public ICommand AddMarketCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
@@ -35,7 +46,13 @@ namespace SOCE.Library.UI.ViewModels
             MarketDbModel market = new MarketDbModel()
             { MarketName = MarketNameInp, IsActive = 1 };
 
-            SQLAccess.AddMarket(market);
+            int id = SQLAccess.AddMarket(market);
+
+            if (id == 0)
+            {
+                ErrorMessage = $"Market name exists already";
+                return;
+            }
 
             //do stuff
             CloseWindow();

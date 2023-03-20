@@ -284,7 +284,7 @@ namespace SOCE.Library.UI.ViewModels
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
-            this.SaveTimesheetCommand = new RelayCommand<int>(SaveCommand);
+            this.SaveTimesheetCommand = new AsyncRelayCommand<int>(SaveCommand);
 
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
             this.NextCommand = new RelayCommand(NextTimesheet);
@@ -392,10 +392,10 @@ namespace SOCE.Library.UI.ViewModels
                         exinst.WriteFormula(basenum, count + 3, formula);
                     }
 
-                    for (int i = 0; i < count+1; i++)
+                    for (int i = 0; i < count + 1; i++)
                     {
                         string formula = $"SUM({cval}7:{cval}{basenum})";
-                        exinst.WriteFormula(basenum+1, i + 3, formula);
+                        exinst.WriteFormula(basenum + 1, i + 3, formula);
                         cval++;
                     }
 
@@ -406,10 +406,7 @@ namespace SOCE.Library.UI.ViewModels
             }
             catch
             {
-
             }
-            
-
         }
 
         /// <summary>
@@ -483,29 +480,48 @@ namespace SOCE.Library.UI.ViewModels
             ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
 
             //Do not include the last layer
-            Parallel.For(0, dbprojects.Count, i =>
+            for (int i = 0; i < dbprojects.Count; i++)
             {
                 ProjectDbModel pdb = dbprojects[i];
                 ProjectModel pm = new ProjectModel(pdb);
+
+
                 bool activetest = submitted ? true : pm.IsActive;
+                if (activetest)
+                {
+                    ProjectArray[i] = pm;
+                }
 
                 //pm.LoadSubProjects();
 
                 //if (pm.SubProjects.Count > 0 && activetest)
                 //{
-
-                if (activetest)
-                {
-                    ProjectArray[i] = pm;
-                }
-                //members.Add(pm);
-                //}
             }
-            );
 
-            ProjectArray = ProjectArray.Where(x => x != null).OrderBy(x => x.ProjectNumber).ToArray();
+            //Parallel.For(0, dbprojects.Count, i =>
+            //{
+            //    ProjectDbModel pdb = dbprojects[i];
+            //    ProjectModel pm = new ProjectModel(pdb);
+            //    bool activetest = submitted ? true : pm.IsActive;
 
+            //    //pm.LoadSubProjects();
+
+            //    //if (pm.SubProjects.Count > 0 && activetest)
+            //    //{
+
+            //    if (activetest)
+            //    {
+            //        ProjectArray[i] = pm;
+            //    }
+            //    //members.Add(pm);
+            //    //}
+            //}
+            //);
+
+            ProjectArray = ProjectArray.Where(x => x != null).OrderByDescending(x => x.ProjectNumber).ToArray();
             ProjectList = new ObservableCollection<ProjectModel>(ProjectArray.ToList());
+
+            //ProjectList = new ObservableCollection<ProjectModel>(ProjectArray.ToList().OrderByDescending(x=>x.ProjectNumber));
 
 
 
@@ -580,8 +596,8 @@ namespace SOCE.Library.UI.ViewModels
                 TimesheetRowDbModel subitem = item.First();
                 SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
                 ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
-
                 ProjectModel pm = new ProjectModel(pdb);
+
                 SubProjectModel spm = new SubProjectModel(spdb);
 
                 ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.FirstOrDefault();
@@ -643,7 +659,7 @@ namespace SOCE.Library.UI.ViewModels
 
             List<TimesheetRowModel> trmadjusted = trms?.OrderBy(x => x.Project.ProjectNumber).ToList();
 
-            foreach (TimesheetRowModel trm in trmadjusted)
+            foreach (TimesheetRowModel trm in trms)
             {
                 Rowdata.Add(trm);
                 CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
@@ -759,6 +775,7 @@ namespace SOCE.Library.UI.ViewModels
                 {
                 }
 
+                
             }
 
             //deleting
@@ -812,7 +829,7 @@ namespace SOCE.Library.UI.ViewModels
         /// Load Date of Timesheet
         /// </summary>
         /// <param name="currdate"></param>
-        private void LoadCurrentTimesheet(DateTime currdate)
+        public void LoadCurrentTimesheet(DateTime currdate)
         {
             UpdateDateSummary(currdate);
             bool issubmitted = LoadTimesheetSubmissionData();
@@ -969,7 +986,16 @@ namespace SOCE.Library.UI.ViewModels
             DateSummary = new ObservableCollection<DateWrapper>(dates);
             MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
-            BaseHours = workdays * 9 + friday*4;
+
+            if (CurrentEmployee.HoursPerWeek != 40)
+            {
+                BaseHours = (workdays+friday)* (CurrentEmployee.HoursPerWeek*0.2);
+            }
+            else
+            {
+                BaseHours = workdays * 9 + friday * 4;
+            }
+            
             DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
             DateTime enddate = DateSummary.Last().Value;
             int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays, 0));
@@ -1028,8 +1054,14 @@ namespace SOCE.Library.UI.ViewModels
             if (!currentlyqued)
             {
                 currentlyqued = true;
-                await Task.Delay(60000);
-                SaveCommand(0);
+                await Task.Delay(10000);
+
+                Task.Run(() =>
+                {
+                    SaveCommand(0);
+
+                });
+
                 currentlyqued = false;
             }
         }

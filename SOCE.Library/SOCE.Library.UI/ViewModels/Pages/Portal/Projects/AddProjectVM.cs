@@ -26,6 +26,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _estimateHours;
+        public bool EstimateHours
+        {
+            get { return _estimateHours; }
+            set
+            {
+                _estimateHours = value;
+                RaisePropertyChanged("EstimateHours");
+            }
+        }
+
         private int _projectNumberInp;
         public int ProjectNumberInp
         {
@@ -34,6 +45,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _projectNumberInp = value;
                 RaisePropertyChanged("ProjectNumberInp");
+            }
+        }
+
+        private bool _isProjectNumEnabled = false;
+        public bool IsProjectNumEnabled
+        {
+            get { return _isProjectNumEnabled; }
+            set
+            {
+                _isProjectNumEnabled = value;
+                RaisePropertyChanged("IsProjectNumEnabled");
             }
         }
 
@@ -89,7 +111,9 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _clientInp = value;
 
-                if (_clientInp.ClientName.ToUpper() == "MISC")
+                IsProjectNumEnabled = true;
+
+                if (_clientInp.ClientName.ToUpper() == "MISCELLANEOUS")
                 {
                     IsClientInputVisible = Visibility.Visible;
                 }
@@ -97,6 +121,14 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     IsClientInputVisible = Visibility.Collapsed;
                 }
+
+                int year = DateTime.Now.Year % 100;
+                int clientnum = ClientInp.ClientNumber;
+
+                //collect all and find next iteration
+                int newNumber = int.Parse(year.ToString() + clientnum.ToString() + "00");
+                ProjectNumberInp = newNumber;
+
                 RaisePropertyChanged("ClientInp");
             }
         }
@@ -679,7 +711,6 @@ namespace SOCE.Library.UI.ViewModels
                 Fee = TotalFeeInp,
                 PercentComplete = 0,
                 IsActive = 1,
-                IsCurrActive = 1,
                 Projectfolder = "",
                 Drawingsfolder = "",
                 Architectfolder = "",
@@ -689,6 +720,12 @@ namespace SOCE.Library.UI.ViewModels
             };
 
             int id = SQLAccess.AddProject(project);
+
+            if (id == 0)
+            {
+                ErrorMessage = $"Project number exists{Environment.NewLine}check inactive projects.";
+                return;
+            }
 
             foreach (BudgetEstimateView bev in Roles)
             {
@@ -701,7 +738,6 @@ namespace SOCE.Library.UI.ViewModels
                     Description = bevm.SelectedProjectPhase.Description,
                     Fee = bevm.SelectedProjectPhase.Fee,
                     IsActive = 1,
-                    IsCurrActive = 1,
                     IsInvoiced = 0,
                     PercentComplete = 0,
                     PercentBudget = bevm.SelectedProjectPhase.PercentBudget,

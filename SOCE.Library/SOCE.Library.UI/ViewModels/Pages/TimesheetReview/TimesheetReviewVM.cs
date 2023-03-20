@@ -683,7 +683,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 };
 
-                SendEmailMessage(txt, SubmittedTimesheet.Employee, "SOCE Portal Timesheet Denied");
+                //SendEmailMessage(txt, SubmittedTimesheet.Employee, "SOCE Portal Timesheet Denied");
                 
             }
             else
@@ -703,19 +703,19 @@ namespace SOCE.Library.UI.ViewModels
 
                 SQLAccess.UpdateTimesheetSubmission(dbmodel2);
 
-                TextPart txt = new TextPart("plain")
-                {
-                    Text = $"Hello {SubmittedTimesheet.Employee.FirstName}, {Environment.NewLine}" +
-                    $"Your timesheet has been approved for the following pay period: {Environment.NewLine}" +
-                    $"{Environment.NewLine} {MonthYearString} {DateString} {Environment.NewLine} {Environment.NewLine}" +
-                    $"Thanks,{Environment.NewLine}" +
-                    $"SOCE Portal Dev Team."
+                //TextPart txt = new TextPart("plain")
+                //{
+                //    Text = $"Hello {SubmittedTimesheet.Employee.FirstName}, {Environment.NewLine}" +
+                //    $"Your timesheet has been approved for the following pay period: {Environment.NewLine}" +
+                //    $"{Environment.NewLine} {MonthYearString} {DateString} {Environment.NewLine} {Environment.NewLine}" +
+                //    $"Thanks,{Environment.NewLine}" +
+                //    $"SOCE Portal Dev Team."
 
-                };
+                //};
 
-                SendEmailMessage(txt, SubmittedTimesheet.Employee, "SOCE Portal Timesheet Approved");
+                //SendEmailMessage(txt, SubmittedTimesheet.Employee, "SOCE Portal Timesheet Approved");
             }
-            
+
             LoadCurrentTimesheet(DateSummary.First().Value);
 
         }

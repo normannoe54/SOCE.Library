@@ -22,12 +22,13 @@ namespace SOCE.Library.Db
         public double PTOCarryover { get; set; }
 
         public double SickRate { get; set; }
-        public double SickCarryover { get; set; }
+        //public double SickCarryover { get; set; }
 
         public double HolidayHours { get; set; }
         public double Rate { get; set; }
         public int IsActive { get; set; }
         public int StartDate { get; set; }
+        public double HoursPerWeek { get; set; }
         public string FullName
         {
             get

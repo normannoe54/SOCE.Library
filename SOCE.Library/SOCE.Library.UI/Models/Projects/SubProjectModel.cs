@@ -460,7 +460,6 @@ namespace SOCE.Library.UI
                 PointNumber = PointNumber,
                 Description = Description,
                 Fee = Fee,
-                IsCurrActive = 1,
                 IsActive = IsActive ? 1 : 0,
                 IsInvoiced = IsInvoiced ? 1 : 0,
                 PercentComplete = PercentComplete,

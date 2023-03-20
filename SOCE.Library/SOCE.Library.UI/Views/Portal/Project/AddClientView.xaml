@@ -8,7 +8,7 @@
              xmlns:local="clr-namespace:SOCE.Library.UI"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Background="Transparent" Width="300" >
+             Background="Transparent" Width="350" >
 
     <Grid Margin="16">
         <Grid.RowDefinitions>
@@ -17,7 +17,25 @@
             <RowDefinition />
             <RowDefinition />
         </Grid.RowDefinitions>
-        <TextBlock Grid.Column="0" Text="New Client" FontSize="24" />
+        <StackPanel Orientation="Horizontal" Grid.Row="0">
+            <TextBlock Grid.Column="0" Text="New Client" FontSize="24" />
+            <TextBlock Margin="30 0 0 0"  FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </StackPanel>
         <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Client Number" Text="{Binding ClientNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
         <TextBox Grid.Row="2" materialDesign:HintAssist.Hint="Client Name" Text="{Binding ClientNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
 

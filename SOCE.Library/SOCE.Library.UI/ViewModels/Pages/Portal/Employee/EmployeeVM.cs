@@ -167,14 +167,9 @@ namespace SOCE.Library.UI.ViewModels
             Employees.Clear();
             List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
 
-            //ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
-
             foreach (EmployeeDbModel emdb in dbemployees)
             {
                 EmployeeModel em = new EmployeeModel(emdb);
-
-                //load timesheet submissions?
-                //em.CollectTimesheetSubmission();
 
                 //be able to see your own stuff
                 em.SetEmployeeModelfromUser(CurrentEmployee);
@@ -182,8 +177,6 @@ namespace SOCE.Library.UI.ViewModels
                 //members.Add(em);
                 Employees.Add(em);
             }
-
-            //Employees = members;
         }
 
     }

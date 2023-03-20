@@ -78,7 +78,7 @@
                                             <Button HorizontalAlignment="Left" Height="20" Width="20" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
                                                     Command="{Binding Path=DataContext.ArchiveClient, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
                                                 <Button.Content>
-                                                    <materialDesign:PackIcon Foreground="Black" Kind="Archive" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <materialDesign:PackIcon Foreground="Black" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Button.Content>
                                             </Button>
                                             <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Foreground="Black"
@@ -145,7 +145,7 @@
                                             <Button HorizontalAlignment="Left" Height="20" Width="20" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
                                                     Command="{Binding Path=DataContext.ArchiveMarket, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
                                                 <Button.Content>
-                                                    <materialDesign:PackIcon Foreground="Black" Kind="Archive" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                    <materialDesign:PackIcon Foreground="Black" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                                 </Button.Content>
                                             </Button>
                                             <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Foreground="Black" Background="Transparent" BorderBrush="Transparent"
@@ -327,6 +327,9 @@
                          HorizontalAlignment="Stretch" VerticalAlignment="Center"
                          materialDesign:TextFieldAssist.HasClearButton="True"
                          materialDesign:HintAssist.Hint="Seach by Name or #">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding SearchCommand}"  Key="Enter"/>
+                                </TextBox.InputBindings>
                             </TextBox>
                         </Grid>
 
@@ -377,7 +380,7 @@
                         <TextBlock  FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Number"/>
 
                     </VirtualizingStackPanel>
-                    
+
 
                     <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Client"/>
                     <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Market"/>
@@ -439,7 +442,7 @@
                                             Command="{Binding Path=DataContext.ArchiveProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
                                         <Button.Content>
                                             <Border CornerRadius="3" Background="{StaticResource SOCERed}" Height="27" Width="27" >
-                                                <materialDesign:PackIcon Foreground="White" Kind="Archive" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                                <materialDesign:PackIcon Foreground="White" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </Border>
                                         </Button.Content>
                                     </Button>

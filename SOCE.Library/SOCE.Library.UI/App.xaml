@@ -39,9 +39,9 @@
             <!--<DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
                 <views:LicenseManagerView/>
             </DataTemplate>-->
-            <DataTemplate DataType="{x:Type viewmodels:ProjectDataVM}">
+            <!--<DataTemplate DataType="{x:Type viewmodels:ProjectDataVM}">
                 <views:ProjectDataView/>
-            </DataTemplate>
+            </DataTemplate>-->
             <!--<DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
                 <views:ResourcesView/>
             </DataTemplate>-->

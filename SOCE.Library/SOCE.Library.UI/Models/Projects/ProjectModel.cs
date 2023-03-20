@@ -319,6 +319,17 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _percentTotalFeeSpent = 0;
+        public double PercentTotalFeeSpent
+        {
+            get { return _percentTotalFeeSpent; }
+            set
+            {
+                _percentTotalFeeSpent = value;
+                RaisePropertyChanged(nameof(PercentTotalFeeSpent));
+            }
+        }
+
         private double _budgetSpent = 0;
         public double BudgetSpent
         {
@@ -623,7 +634,6 @@ namespace SOCE.Library.UI
                     PointNumber = spm.PointNumber,
                     Description = spm.Description,
                     Fee = spm.Fee,
-                    IsCurrActive = 1,
                     IsActive = spm.IsActive ? 1 : 0,
                     IsInvoiced = spm.IsInvoiced ? 1 : 0,
                     PercentComplete = spm.PercentComplete,
@@ -649,7 +659,6 @@ namespace SOCE.Library.UI
                         PointNumber = subinput.PointNumber,
                         Description = subinput.Description,
                         Fee = subinput.Fee,
-                        IsCurrActive = 1,
                         IsActive = 1,
                         IsInvoiced = subinput.IsInvoiced ? 1 : 0,
                         PercentComplete = subinput.PercentComplete,
@@ -708,8 +717,8 @@ namespace SOCE.Library.UI
 
                 SubProjectModel spm = null;
 
-                if (spdm.IsCurrActive == 1)
-                {
+                //if (spdm.IsCurrActive == 1)
+                //{
                     if (addistrue)
                     {
                         spm = new SubProjectModel(spdm, Fee, this);
@@ -725,11 +734,11 @@ namespace SOCE.Library.UI
                             continue;
                         }
                     }
-                }
-                else
-                {
-                    continue;
-                }
+                //}
+                //else
+                //{
+                //    continue;
+                //}
 
                 List<RolePerSubProjectDbModel> rolesdbmodel = SQLAccess.LoadRolesPerSubProject(spm.Id);
                 
@@ -802,13 +811,13 @@ namespace SOCE.Library.UI
                 spm.TotalHours = totalbudgethours;
                 spm.UpdatePercents();
 
-                if (spdm.IsCurrActive == 1)
-                {
+                //if (spdm.IsCurrActive == 1)
+                //{
                     if (addistrue)
                     {
                         SubProjects.Add(spm);
                     }
-                }
+                //}
 
                 totalregulatedbudget += regulatedbudgetpersub;
                 hourstotal += hoursspentpersub;
@@ -822,14 +831,15 @@ namespace SOCE.Library.UI
             HoursSpent = hourstotal;
             HoursLeft = hourstotalleft;
             BudgetSpent = budgetspent;
-            PercentofInvoicedFee = Math.Round((TotalRegulatedBudget / TotalBudget) * 100, 2);
+            PercentofInvoicedFee = Math.Round((TotalBudget/TotalRegulatedBudget) * 100, 2);
             UpdateData();
         }
 
         public void UpdateData()
         {
             BudgetLeft = TotalRegulatedBudget - BudgetSpent;
-            PercentBudgetSpent = Math.Min(Math.Round((BudgetSpent / TotalRegulatedBudget) * 100, 2), 100);
+            PercentBudgetSpent = Math.Round((BudgetSpent / TotalRegulatedBudget) * 100, 2);
+            PercentTotalFeeSpent = Math.Round((BudgetSpent / Fee) * 100, 2);
             //HoursLeft = Math.Round(Math.Max(0, BudgetLeft / AvgRate), 2);
         }
 
@@ -977,7 +987,6 @@ namespace SOCE.Library.UI
                 ManagerId = ProjectManager.Id,
                 Fee = Fee,
                 IsActive = IsActive ? 1 : 0,
-                IsCurrActive = 1,
                 PercentComplete = PercentComplete,
                 Projectfolder = Projectfolder,
                 Drawingsfolder = Drawingsfolder,

@@ -68,11 +68,8 @@
     <Reference Include="Castle.Windsor, Version=4.0.0.0, Culture=neutral, PublicKeyToken=407dd0808d44fbdc, processorArchitecture=MSIL">
       <HintPath>..\packages\Castle.Windsor.4.0.0\lib\net45\Castle.Windsor.dll</HintPath>
     </Reference>
-    <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
-    </Reference>
-    <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
-      <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
+    <Reference Include="Dapper, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Dapper.2.0.123\lib\net461\Dapper.dll</HintPath>
     </Reference>
     <Reference Include="MailKit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=4e064fe7c44a8f1b, processorArchitecture=MSIL">
       <HintPath>..\packages\MailKit.3.4.1\lib\net48\MailKit.dll</HintPath>
@@ -101,13 +98,22 @@
     <Reference Include="MimeKit, Version=3.4.0.0, Culture=neutral, PublicKeyToken=bede1c8a46c66814, processorArchitecture=MSIL">
       <HintPath>..\packages\MimeKit.3.4.1\lib\net48\MimeKit.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.SQLite, Version=1.0.117.0, Culture=neutral, PublicKeyToken=db937bc2d44ff139, processorArchitecture=MSIL">
+      <HintPath>..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\lib\net46\System.Data.SQLite.dll</HintPath>
+    </Reference>
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
+    </Reference>
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -141,6 +147,10 @@
     <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
     </ApplicationDefinition>
+    <Compile Include="Commands\AsyncRelayCommand.cs" />
+    <Compile Include="Components\BindablePasswordBox.xaml.cs">
+      <DependentUpon>BindablePasswordBox.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
     <Compile Include="Converters\InvoicedColorConverter.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
@@ -149,7 +159,6 @@
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
-    <Compile Include="Models\ProjectData\SeriesDataModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BudgetEstimateVM.cs" />
     <Compile Include="Models\Projects\ClientModel.cs" />
@@ -184,9 +193,7 @@
     <Compile Include="ViewModels\Pages\Portal\Employee\AddEmployeeVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\AreYouSureVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
-    <Compile Include="ViewModels\Pages\Portal\HomeViewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
-    <Compile Include="ViewModels\Pages\Portal\ProjectData\ProjectDataVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddMarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddProjectVM.cs" />
@@ -227,14 +234,8 @@
     <Compile Include="Views\Portal\Employee\EmployeeView.xaml.cs">
       <DependentUpon>EmployeeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Portal\HomeView.xaml.cs">
-      <DependentUpon>HomeView.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Views\Portal\LicenseManagerView.xaml.cs">
       <DependentUpon>LicenseManagerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Portal\ProjectData\ProjectDataView.xaml.cs">
-      <DependentUpon>ProjectDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\AddClientView.xaml.cs">
       <DependentUpon>AddClientView.xaml</DependentUpon>
@@ -284,19 +285,12 @@
     <Compile Include="Views\Shell\ShellView.xaml.cs">
       <DependentUpon>ShellView.xaml</DependentUpon>
     </Compile>
-    <Page Include="Components\BindablePasswordBox.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Commands\AccountCommand.cs" />
     <Compile Include="Commands\RelayCommand.cs" />
-    <Compile Include="Components\BindablePasswordBox.xaml.cs">
-      <DependentUpon>BindablePasswordBox.xaml</DependentUpon>
-    </Compile>
     <Compile Include="Converters\CustomBoolToVisibilityConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringConverter.cs" />
     <Compile Include="Converters\MarkupExtensions\EnumerationExtension.cs" />
@@ -311,6 +305,10 @@
     <Compile Include="IoC\IoCCore.cs" />
     <Compile Include="IoC\IoCLogin.cs" />
     <Compile Include="IoC\IoCPortal.cs" />
+    <Page Include="Components\BindablePasswordBox.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Login\CodeInsertView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -347,15 +345,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Portal\HomeView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Page Include="Views\Portal\LicenseManagerView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Portal\ProjectData\ProjectDataView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -442,6 +432,8 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <Resource Include="license.txt" />
+    <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Resources\ProjectDataExport.xlsx" />
     <Resource Include="VersionChecker.xml">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -450,8 +442,6 @@
     <Resource Include="Resources\SOCEIcon.png" />
     <Resource Include="Resources\AMZPicture.png" />
     <Resource Include="Icon.ico" />
-    <Resource Include="license.txt" />
-    <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -471,6 +461,8 @@
   <ItemGroup>
     <Folder Include="Models\Login\" />
     <Folder Include="ViewModels\Components\" />
+    <Folder Include="ViewModels\Pages\Portal\ProjectData\" />
+    <Folder Include="Views\Portal\ProjectData\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SOCE.Library.Db\SOCE.Library.Db.csproj">
@@ -495,11 +487,13 @@
     </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
     <Error Condition="!Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets'))" />
+    <Error Condition="!Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets'))" />
   </Target>
+  <Import Project="..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets" Condition="Exists('..\packages\MaterialDesignThemes.4.1.0\build\MaterialDesignThemes.targets')" />
+  <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.117.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />
 </Project>

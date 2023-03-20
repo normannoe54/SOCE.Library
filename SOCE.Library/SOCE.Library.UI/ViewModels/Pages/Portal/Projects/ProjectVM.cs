@@ -342,11 +342,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void RunExport()
         {
+            TimeSpan time = TimeSpan.FromSeconds(Projects.Count * 0.4);
             AreYouSureView view = new AreYouSureView();
             AreYouSureVM aysvm = new AreYouSureVM();
 
-            aysvm.TopLine = $"Are you sure you want to export";
-            aysvm.BottomLine = $"{Projects.Count} projects";
+            aysvm.TopLine = $"Are you sure you want to export {Projects.Count} projects?";
+            aysvm.BottomLine = $"Estimated time to complete: {time.Minutes} min. {time.Seconds} sec.";
             view.DataContext = aysvm;
 
             //show the dialog
@@ -469,7 +470,6 @@ namespace SOCE.Library.UI.ViewModels
                     aysvm = new AreYouSureVM(pm);
                     foreach (SubProjectDbModel spm in subs)
                     {
-
                         List<TimesheetRowDbModel> val = SQLAccess.LoadTimeSheetDatabySubId(spm.Id);
 
                         if (val.Count > 0)
@@ -477,14 +477,37 @@ namespace SOCE.Library.UI.ViewModels
                             aysvm.TopLine = "Cannot delete project,";
                             aysvm.BottomLine = "Hours already saved to project.";
                             donothing = true;
+                            break;
                         }
                     }
                     
                     break;
                 case ClientModel cm:
+                    List<ProjectDbModel> project1 = SQLAccess.LoadProjects();
+                    List<ProjectDbModel> projclient = project1.Where(x => x.ClientId == cm.Id).ToList();
                     aysvm = new AreYouSureVM(cm);
+
+                    if (projclient.Count>0)
+                    {
+                        aysvm.TopLine = "Cannot delete client,";
+                        aysvm.BottomLine = "client assigned to existing project";
+                        donothing = true;
+                        break;
+                    }
+
                     break;
                 case MarketModel mm:
+
+                    List<ProjectDbModel> project2 = SQLAccess.LoadProjects();
+                    List<ProjectDbModel> projmarket = project2.Where(x => x.MarketId == mm.Id).ToList();
+
+                    if (projmarket.Count > 0)
+                    {
+                        aysvm.TopLine = "Cannot delete market,";
+                        aysvm.BottomLine = "market assigned to existing project";
+                        donothing = true;
+                        break;
+                    }
                     aysvm = new AreYouSureVM(mm);
                     break;
                 default:
@@ -504,15 +527,21 @@ namespace SOCE.Library.UI.ViewModels
                 switch (o)
                 {
                     case ProjectModel pm:
-                        SQLAccess.ArchiveProject(pm.Id);
+                        SQLAccess.DeleteProject(pm.Id);
+
+                        foreach(SubProjectModel spm in pm.SubProjects)
+                        {
+                            SQLAccess.DeleteSubProject(spm.Id);
+                        }
+
                         LoadProjects();
                         break;
                     case ClientModel cm:
-                        SQLAccess.ArchiveClient(cm.Id);
+                        SQLAccess.DeleteClient(cm.Id);
                         LoadClients();
                         break;
                     case MarketModel mm:
-                        SQLAccess.ArchiveMarket(mm.Id);
+                        SQLAccess.DeleteMarket(mm.Id);
                         LoadMarkets();
                         break;
                     default:
@@ -563,17 +592,7 @@ namespace SOCE.Library.UI.ViewModels
                     pm.ProjectManager = em;
                     pm.Client = cm;
                     pm.Market = mm;
-                    //EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
-                    //EmployeeModel em = new EmployeeModel(emdbm);
-                    //ProjectManager = em;
 
-                    //ClientDbModel cdbm = SQLAccess.LoadClientById(pm.ClientId);
-                    //ClientModel cm = new ClientModel(cdbm);
-                    //Client = cm;
-
-                    //MarketDbModel mdbm = SQLAccess.LoadMarketeById(pm.MarketId);
-                    //MarketModel mm = new MarketModel(mdbm);
-                    //Market = mm;
 
                     ProjectArray[i] = pm;
                 //}
@@ -592,14 +611,15 @@ namespace SOCE.Library.UI.ViewModels
         {
             List<ClientDbModel> dbclients = SQLAccess.LoadClients();
 
-            ObservableCollection<ClientModel> members = new ObservableCollection<ClientModel>();
-
+            List<ClientModel> clients = new List<ClientModel>();
             foreach (ClientDbModel cdbm in dbclients)
             {
-                members.Add(new ClientModel(cdbm));
+                clients.Add(new ClientModel(cdbm));
             }
 
-            Clients = members;
+            List<ClientModel> newclients = clients.OrderBy(x => x.ClientNumber).ToList();
+
+            Clients = new ObservableCollection<ClientModel>(newclients);
         }
 
         private void AddToYear()

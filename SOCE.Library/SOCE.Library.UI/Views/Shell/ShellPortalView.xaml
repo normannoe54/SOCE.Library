@@ -103,12 +103,12 @@
 
                         <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                        <Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <!--<Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ChartBellCurve" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Project Data" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
-                        </Button>
+                        </Button>-->
 
                         <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding PrincVisible}">
                             <StackPanel Orientation="Horizontal">

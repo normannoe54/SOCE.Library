@@ -346,7 +346,6 @@ namespace SOCE.Library.UI.ViewModels
                 ProjectId = BaseProject.Id,
                 Description = Description,
                 IsActive = 1,
-                IsCurrActive = 1,
                 IsInvoiced = 0,
                 PercentComplete = 0,
                 PercentBudget = 0,

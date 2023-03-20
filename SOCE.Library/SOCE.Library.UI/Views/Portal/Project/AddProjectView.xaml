@@ -9,18 +9,18 @@
              xmlns:views="clr-namespace:SOCE.Library.UI.Views"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Background="Transparent" Height="750">
+             Background="Transparent">
     <Grid Margin="16">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Grid Grid.Row="0">
+        <Grid Grid.Row="0" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
+            <Grid Grid.Column="0" Width="400">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto" />
                     <RowDefinition Height="Auto"/>
@@ -31,6 +31,8 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions >
@@ -58,9 +60,9 @@
                 </Grid>
 
                 <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
-                <TextBox  Grid.Row="2" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
-                <TextBox  Grid.Row="3" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp,StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
-                <ComboBox Grid.Row="4" Margin="0 8 0 0" FontSize="16"
+                <TextBox IsEnabled="{Binding IsProjectNumEnabled}"  Grid.Row="4" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+                <TextBox  Grid.Row="5" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp,StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+                <ComboBox Grid.Row="2" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Client"        
                   ItemsSource="{Binding ClientsAvailable}" 
@@ -72,7 +74,7 @@
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
-                <TextBox Grid.Row="5" Visibility="{Binding IsClientInputVisible}" materialDesign:HintAssist.Hint="Type Client Name" Text="{Binding MiscClientInput}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
+                <TextBox Grid.Row="3" Visibility="{Binding IsClientInputVisible}" materialDesign:HintAssist.Hint="Type Client Name" Text="{Binding MiscClientInput}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
                 <ComboBox Grid.Row="6" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Market"
@@ -97,14 +99,19 @@
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
+                <CheckBox Grid.Row="8" IsChecked="{Binding EstimateHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SOCERed}" Margin="0 20 0 0">
+                    <CheckBox.Content>
+                        <TextBlock Text="Create Hours Projection" FontSize="14"/>
+                    </CheckBox.Content>
+                </CheckBox>
 
-                <Grid Grid.Row="8">
+                <Grid Grid.Row="9">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    <StackPanel Grid.Row="0" Margin="0 10 0 0" Orientation="Horizontal">
-                        <TextBlock Text="Default Project Phases" Margin="0 8 0 0" FontSize="14"/>
+                    <StackPanel Grid.Row="0" Margin="0 5 0 0" Orientation="Horizontal">
+                        <TextBlock Text="Default Project Phases" Margin="0 8 0 0" FontSize="14" TextDecorations="Underline"/>
                         <TextBlock Text="(must select at least 1)" FontStyle="Italic" Margin="10 8 0 0" FontSize="14"/>
                     </StackPanel>
                     <StackPanel Grid.Row="1" Margin="0 10 0 0">
@@ -152,7 +159,7 @@
                     </StackPanel>
                 </Grid>
             </Grid>
-            <Grid Grid.Column="1">
+            <Grid Grid.Column="1" Visibility="{Binding EstimateHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>

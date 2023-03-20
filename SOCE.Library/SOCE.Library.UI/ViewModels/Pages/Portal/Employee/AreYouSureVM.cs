@@ -129,7 +129,7 @@ namespace SOCE.Library.UI.ViewModels
                                 {
                                     SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
                                 }
-                                SQLAccess.ArchiveSubProject(sub.Id);
+                                SQLAccess.DeleteSubProject(sub.Id);
                                 ProjectSummary.SubProjects.Remove(sub);
                                 ProjectSummary.BaseProject.UpdateSubProjects();
                                 break;

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using SOCE.Library.Db;
@@ -209,16 +210,27 @@ namespace SOCE.Library.UI
             }
         }
 
-        private double _sickCarryover;
-        public double SickCarryover
+        private double _hoursPerWeek;
+        public double HoursPerWeek
         {
-            get { return _sickCarryover; }
+            get { return _hoursPerWeek; }
             set
             {
-                _sickCarryover = value;
-                RaisePropertyChanged(nameof(SickCarryover));
+                _hoursPerWeek = value;
+                RaisePropertyChanged(nameof(HoursPerWeek));
             }
         }
+
+        //private double _sickCarryover;
+        //public double SickCarryover
+        //{
+        //    get { return _sickCarryover; }
+        //    set
+        //    {
+        //        _sickCarryover = value;
+        //        RaisePropertyChanged(nameof(SickCarryover));
+        //    }
+        //}
 
         private double _sickUsed;
         public double SickUsed
@@ -530,7 +542,7 @@ namespace SOCE.Library.UI
             PTOCarryover = emdb.PTOCarryover;
             PTORate = emdb.PTORate;
 
-            SickCarryover = emdb.SickCarryover;
+            HoursPerWeek = emdb.HoursPerWeek;
             SickRate = emdb.SickRate;
 
             HolidayHours = emdb.HolidayHours;
@@ -566,8 +578,8 @@ namespace SOCE.Library.UI
                     holidayspent += tsmdb.HolidayHours;
                 }
             }
-
-            TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsm);
+            List<TimesheetSubmissionModel> tsmfinal = tsm.OrderByDescending(x => x.Date).ToList(); 
+            TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsmfinal);
             PTOUsed = ptospent;
             TotalOT = otspent;
             SickUsed = sickspent;
@@ -576,7 +588,7 @@ namespace SOCE.Library.UI
             HolidayUsed = holidayspent;
             HolidayLeft = HolidayHours - HolidayUsed;
             PTOHours = PTOCarryover + PTOEarned - PTOUsed;
-            SickHours = SickCarryover + SickEarned - SickUsed;
+            SickHours = SickEarned - SickUsed;
         }
 
         public void SetEmployeeModelfromUser(EmployeeModel currentuser)
@@ -616,7 +628,7 @@ namespace SOCE.Library.UI
             {
                 IsEditable = true;
                 CanReviewTimesheet = true;
-                BorderColor = Brushes.BlueViolet;
+                BorderColor = Brushes.LightGray;
             }
             else
             {
@@ -644,7 +656,7 @@ namespace SOCE.Library.UI
                 HolidayHours = HolidayHours,
                 //SickHours = SickHours,
                 SickRate = SickRate,
-                SickCarryover = SickCarryover,
+                HoursPerWeek = HoursPerWeek,
                 IsActive = 1
             };
 

@@ -69,7 +69,13 @@ namespace SOCE.Portal
             processInfo.RedirectStandardOutput = true;
             processInfo.RedirectStandardError = true;
             processInfo.WorkingDirectory = Path.GetDirectoryName(exepath);
-            Process proc = Process.Start(processInfo);
+
+            //int length = Process.GetProcessesByName("SOCE.Library.UI").Length;
+
+            if (Process.GetProcessesByName("SOCE.Library.UI").Length == 0)
+            {
+                Process proc = Process.Start(processInfo);
+            }
         }
 
         private static double DetermineVersion(StreamReader file)

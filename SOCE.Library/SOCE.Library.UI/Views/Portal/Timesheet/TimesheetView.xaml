@@ -7,7 +7,7 @@
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-    <Grid Grid.Column="1" Margin="30 10 20 20">
+    <Grid Grid.Column="1" Margin="30 10 40 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
@@ -91,7 +91,7 @@
                         </StackPanel>
                     </Grid>
                     <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}"  Background="Transparent" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}"  Background="Transparent" Foreground="CornflowerBlue" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="Expected Progress:" FontSize="10" FontWeight="SemiBold"/>
                             <TextBlock Text="{Binding ExpectedProgress, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold" materialDesign:TextFieldAssist.SuffixText="%"/>
@@ -116,56 +116,56 @@
                 <TextBlock Grid.Row="1"  Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
             </Grid>
         </Grid>
-        <ScrollViewer Grid.Row="3" Margin="0 5 0 0">
-            <Grid>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+        <!--<ScrollViewer >-->
+        <Grid Grid.Row="3" Margin="0 5 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
 
-                <Grid Background="Transparent" Grid.Row="0">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="430"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="60"/>
-                    </Grid.ColumnDefinitions>
+            <Grid Background="Transparent" Grid.Row="0" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="430"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
 
-                    <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
-                            <TextBlock Text="Add Project"/>
-                        </StackPanel>
-                    </Button>
+                <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
+                        <TextBlock Text="Add Project"/>
+                    </StackPanel>
+                </Button>
 
-                    <ItemsControl Grid.Column="1" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Height="40">
-                        <ItemsControl.Resources>
-                            <local:DatetoStringConverter x:Key="DatetoString"/>
-                        </ItemsControl.Resources>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Value, Converter={StaticResource DatetoString}}"
+                <ItemsControl Grid.Column="1" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Height="40">
+                    <ItemsControl.Resources>
+                        <local:DatetoStringConverter x:Key="DatetoString"/>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Value, Converter={StaticResource DatetoString}}"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center" 
                                                FontWeight="SemiBold" 
                                                Foreground="Black">
-                                    </TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="1"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-                    <TextBlock Grid.Column="2"
+                <TextBlock Grid.Column="2"
                              Text="Total" 
                              TextAlignment="Center"
                              VerticalAlignment="Center" 
@@ -173,114 +173,114 @@
                              FontSize="14" FontWeight="SemiBold" 
                              Foreground="Black"/>
 
-                </Grid>
+            </Grid>
 
 
-                <Grid Background="Transparent"  Grid.Row="1" >
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="430"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="60"/>
-                    </Grid.ColumnDefinitions>
+            <Grid Background="Transparent"  Grid.Row="1" >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="430"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
 
-                    <TextBlock Grid.Column="0"
+                <TextBlock Grid.Column="0"
                                Text="Total:" 
                                Padding="10"
                                TextAlignment="Left"
                                VerticalAlignment="Center" 
                                HorizontalAlignment="Stretch" 
                                FontSize="14" FontWeight="SemiBold" 
-                               Foreground="Gray"/>
+                               Foreground="Gray" />
 
-                    <ItemsControl Grid.Column="1"  ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40">
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Value}" 
+                <ItemsControl Grid.Column="1"  ItemsSource="{Binding TotalHeader}" HorizontalAlignment="Stretch" Height="40" >
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Value}" 
                                                materialDesign:TextFieldAssist.SuffixText=" h"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center" 
                                                FontWeight="SemiBold" 
                                                Foreground="Gray">
-                                    </TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="1"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
 
-                    <TextBlock Grid.Column="2"
+                <TextBlock Grid.Column="2"
                                Text="{Binding Total}" 
                                materialDesign:TextFieldAssist.SuffixText=" h"
                                TextAlignment="Center"
                                VerticalAlignment="Center" 
                                HorizontalAlignment="Stretch" 
                                FontSize="14" FontWeight="SemiBold" 
-                               Foreground="Gray"/>
+                               Foreground="Gray" />
 
-                </Grid>
+            </Grid>
 
-                <!-- Bind Rows using the default StackPanel for the ItemsPanel -->
-                <!--<ScrollViewer>-->
-                <ListView   Grid.Row="2"
+            <!-- Bind Rows using the default StackPanel for the ItemsPanel -->
+            <!--<ScrollViewer Grid.Row="2">-->
+            <ListView   Grid.Row="2" Margin="0 0 -20 0"
                     Background="Transparent" 
-                          SelectionMode="Single" 
-                          IsEnabled="{Binding IsSubEditable}"
+                          SelectionMode="Single"             
                           ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                           SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}">
-                    <ListView.Resources>
-                        <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
-                        <local:TableColorConverter x:Key="valueconverter"/>
-                    </ListView.Resources>
+                <ListView.Resources>
+                    <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
+                    <local:TableColorConverter x:Key="valueconverter"/>
+                </ListView.Resources>
 
-                    <ListView.Template>
-                        <ControlTemplate>
-                            <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
-                                <ItemsPresenter />
-                            </ScrollViewer>
-                        </ControlTemplate>
-                    </ListView.Template>
+                <ListView.Template>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Visible" Focusable="False">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListView.Template>
 
-                    <ListView.ItemContainerStyle>
-                        <Style TargetType="{x:Type ListViewItem}">
-                            <Setter Property="Background" Value="Transparent" />
-                            <Setter Property="Template">
-                                <Setter.Value>
-                                    <ControlTemplate TargetType="{x:Type ListViewItem}">
-                                        <ContentPresenter/>
-                                    </ControlTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </ListView.ItemContainerStyle>
-                    <!-- Set the Template for each row to a TextBlock and another ItemsControl -->
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <Grid>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="IsEnabled" Value="{Binding Path=DataContext.IsSubEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <!-- Set the Template for each row to a TextBlock and another ItemsControl -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="330"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="330"/>
-                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="60"/>
                                 </Grid.ColumnDefinitions>
-                                <Grid Grid.Column="0">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}">
-                                        <Button.Content>
-                                            <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
-                                        </Button.Content>
-                                    </Button>
-                                    <ComboBox Grid.Column="1"
+                                <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}">
+                                    <Button.Content>
+                                        <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="10"/>
+                                    </Button.Content>
+                                </Button>
+                                <ComboBox Grid.Column="1"
                                                   Margin="10 0 0 0"
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Stretch"
@@ -291,38 +291,43 @@
                                                   SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding RelativeSource={RelativeSource AncestorType=ItemsControl},Path=DataContext.ProjectList}"
                                                   TextSearch.TextPath="SearchText"
-                                                  MaxDropDownHeight="250">
-                                        <ComboBox.ItemTemplate>
-                                            <DataTemplate DataType="ProjectModel">
-                                                <StackPanel Orientation="Horizontal">
-                                                    <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
-                                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0" />
-                                                </StackPanel>
-                                            </DataTemplate>
-                                        </ComboBox.ItemTemplate>
-                                    </ComboBox>
-                                </Grid>
+                                                  MaxDropDownHeight="255">
+                                    <ComboBox.ItemContainerStyle>
+                                        <Style TargetType="ComboBoxItem">
+                                            <Setter Property="Margin" Value="0 5 0 5"/>
+                                            <EventSetter Event="RequestBringIntoView" Handler="ComboBox_RequestBringIntoView"/>
+                                            <EventSetter Event="KeyDown" Handler="ComboBox_KeyDown"/>
+                                        </Style>
+                                    </ComboBox.ItemContainerStyle>
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="ProjectModel">
+                                            <VirtualizingStackPanel Orientation="Horizontal" Width="300">
+                                                <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                                <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0" />
+                                            </VirtualizingStackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </ComboBox>
+                            </Grid>
 
-                                <ComboBox Grid.Column="1"
+                            <ComboBox Grid.Column="1"
                                                   Margin="10 0 5 0"
                                                   VerticalAlignment="Center"
                                                   HorizontalAlignment="Stretch"
                                                   Foreground="Black"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
                                                   IsTextSearchEnabled="True" IsEditable="False"
-                                                  StaysOpenOnEdit="True"
-                                                  materialDesign:HintAssist.HintOpacity=".26"
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"
                                                   DisplayMemberPath="PointNumStr"   
                                                   MaxDropDownHeight="250">
-                                </ComboBox>
+                            </ComboBox>
 
-                                <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="2">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <TextBox 
+                            <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="2">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBox 
                                                     Text="{Binding TimeEntry,  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                     TextAlignment="Center"
                                                     VerticalContentAlignment="Center"
@@ -330,44 +335,45 @@
                                                     FontWeight="SemiBold" 
                                                     Background="{Binding CellColor}"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter}}">
-                                                <TextBox.Style >
-                                                    <Style TargetType="TextBox">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="Transparent" />
-                                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                                            </Trigger>
-                                                            <Trigger Property="IsFocused" Value="True">
-                                                                <Setter Property="Background" Value="Transparent" />
-                                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBox.Style>
-                                            </TextBox>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <!--<WrapPanel Orientation="Horizontal"/>-->
-                                            <UniformGrid Rows="1"/>
-                                            <!--<StackPanel Orientation="Horizontal"/>-->
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
-                                <TextBlock Grid.Column="3"
+                                            <TextBox.Style >
+                                                <Style TargetType="TextBox">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsFocused" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </TextBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <!--<WrapPanel Orientation="Horizontal"/>-->
+                                        <UniformGrid Rows="1"/>
+                                        <!--<StackPanel Orientation="Horizontal"/>-->
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <TextBlock Grid.Column="3"
                                            Text="{Binding Total}" 
                                            TextAlignment="Center"
                                            VerticalAlignment="Center" 
                                            HorizontalAlignment="Stretch" 
                                             FontSize="14" FontWeight="SemiBold" 
                                            Background="Transparent" Foreground="Gray"/>
-                            </Grid>
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </Grid>
-        </ScrollViewer>
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+            <!--</ScrollViewer>-->
+        </Grid>
+        <!--</ScrollViewer>-->
         <Grid Grid.Row="4" >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>

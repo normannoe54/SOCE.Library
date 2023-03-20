@@ -7,6 +7,7 @@ using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using System.Windows;
 using SOCE.Library.Db;
+using System.Windows.Controls;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -26,19 +27,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private string _password = "";
-        public string Password
-        {
-            get
-            {
-                return _password;
-            }
-            set
-            {
-                _password = value;
-                RaisePropertyChanged(nameof(Password));
-            }
-        }
+        //private string _password = "";
+        //public string Password
+        //{
+        //    get
+        //    {
+        //        return _password;
+        //    }
+        //    set
+        //    {
+        //        _password = value;
+        //        RaisePropertyChanged(nameof(Password));
+        //    }
+        //}
 
         public ICommand GoToForgotPassword { get; set; }
 
@@ -63,15 +64,17 @@ namespace SOCE.Library.UI.ViewModels
             //LoginRequest.Password = "pass123";
             //LoginMessage = "";
             this.GoToForgotPassword = new RelayCommand(IoCLogin.Application.ForgotPassword);
-            this.LoginCommand = new RelayCommand(LoginCom);
+            this.LoginCommand = new RelayCommand<object>(LoginCom);
         }
 
         /// <summary>
         /// Login command
         /// </summary>
         /// <param name="loginrequest"></param>
-        public void LoginCom()
+        public void LoginCom(object parameter)
         {
+            var passwordBox = parameter as PasswordBox;
+            var password = passwordBox.Password;
 
             //IoCCore.Application.CurrentPage = IoCPortal.Application as BaseAI;
 
@@ -87,7 +90,7 @@ namespace SOCE.Library.UI.ViewModels
             string emailinput = Email + "@shirkodonovan.com";
 
             //tbd
-            EmployeeDbModel em = SQLAccess.LoadEmployeeByUserandPassword(emailinput, Password);
+            EmployeeDbModel em = SQLAccess.LoadEmployeeByUserandPassword(emailinput.ToLower(), password);
 
             if (em != null)
             {

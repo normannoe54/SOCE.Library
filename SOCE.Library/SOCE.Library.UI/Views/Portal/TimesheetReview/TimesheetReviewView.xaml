@@ -30,34 +30,39 @@
                 </Grid.ColumnDefinitions>
 
                 <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}" Width="30">
-                    <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center"  Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Width="30" Height="25"  Foreground="Black"/>
                 </Button>
                 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Center">
-                    <TextBlock Text="{Binding MonthYearString}" FontSize="14" FontWeight="SemiBold"/>
-                    <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="14" FontWeight="Regular"/>
+                    <TextBlock Text="{Binding MonthYearString}" FontSize="24" FontWeight="SemiBold"/>
+                    <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="22" FontWeight="Regular"/>
                 </StackPanel>
                 
                 <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}" Width="30">
-                    <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Black" Width="25" Height="25"/>
                 </Button>
                 <Button Grid.Column="3" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}" Width="30">
-                    <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center"  Foreground="Gray"/>
+                    <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center"  Foreground="Black" Width="25" Height="25" />
                 </Button>
 
                 
             </Grid>
 
-            <StackPanel Margin="0 10 0 0" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="[" FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding NumSubmittedEmployees}" FontSize="16" FontWeight="SemiBold" Foreground="Purple" VerticalAlignment="Center"/>
-                <TextBlock Text="|" FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding NumApprovedEmployees}" FontSize="16" FontWeight="SemiBold" Foreground="Green" VerticalAlignment="Center"/>
-                <TextBlock Text="|" FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
-                <TextBlock Text="{Binding NumTotalEmployees}" FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
-                <TextBlock Text="]" FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
-                <TextBlock Text="Employees" FontSize="24" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" Margin="20 0 0 0"/>
-            </StackPanel>
+            <!--<StackPanel Margin="0 10 0 0" Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Width="20" Height="20" BorderBrush="Purple" CornerRadius="1" BorderThickness="1" Margin="1 0 1 0">
+                    <TextBlock Text="{Binding NumSubmittedEmployees}" FontSize="16" FontWeight="SemiBold" Foreground="Purple" VerticalAlignment="Center"/>
+                </Border>
+
+                <Border BorderBrush="Green" CornerRadius="1" BorderThickness="1" Margin="10 0 10 0">
+                    <TextBlock Text="{Binding NumApprovedEmployees}" FontSize="16" FontWeight="SemiBold" Foreground="Green" VerticalAlignment="Center"/>
+                </Border>
+
+                <Border BorderBrush="Black" CornerRadius="1" BorderThickness="1" Margin="10 0 10 0">
+                    <TextBlock Text="{Binding NumTotalEmployees}" FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
+                </Border>-->
+
+            <TextBlock Grid.Row="1" Text="Employees" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" Margin="10 10 0 0"/>
+            <!--</StackPanel>-->
 
             <ScrollViewer Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0 10 0 0">
                 <ItemsControl ItemsSource="{Binding TimesheetSubmissions}">

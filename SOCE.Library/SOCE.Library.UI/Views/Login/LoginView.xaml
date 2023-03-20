@@ -4,7 +4,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SOCE.Library.UI.Views"
-             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              Height="350" Width="300" Background="Transparent">
@@ -34,9 +33,18 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <materialDesign:PackIcon Grid.Column="0" Kind="Lock" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-            <component:BindablePasswordBox Grid.Column="1" Margin="6 0 10 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" BorderBrush="Black" Password="{Binding Password}"/>
+            <PasswordBox Grid.Column="1" Margin="6 0 10 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" BorderBrush="Black" Name="txtPassword">
+                <PasswordBox.InputBindings>
+                    <KeyBinding Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=txtPassword}" Key="Enter" />
+                </PasswordBox.InputBindings>
+            </PasswordBox>
+            <!--<component:BindablePasswordBox Grid.Column="1" Margin="6 0 10 0" materialDesign:HintAssist.Hint="Enter Password" Foreground="Black" BorderBrush="Black" Password="{Binding Password}">
+                <BindablePasswordBox.InputBindings>
+                    <KeyBinding Command="{Binding LoginCommand}" Key="Enter" />
+                </BindablePasswordBox.InputBindings>
+            </component:BindablePasswordBox>-->
         </Grid>
-        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}">
+        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=txtPassword}">
             <Button.Content>
                 <materialDesign:PackIcon Kind="Login" Width="25" Height="25" Foreground="White"/>
             </Button.Content>

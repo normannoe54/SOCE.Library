@@ -1,6 +1,4 @@
-﻿using LiveCharts;
-using LiveCharts.Wpf;
-using SOCE.Library.Db;
+﻿using SOCE.Library.Db;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -8,10 +6,16 @@ using System.Text;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Linq;
-using LiveCharts.Defaults;
 using System.Globalization;
 using System.Collections.Specialized;
 using System.ComponentModel;
+//using CommunityToolkit.Mvvm.ComponentModel;
+using LiveChartsCore;
+using LiveChartsCore.SkiaSharpView;
+using LiveChartsCore.SkiaSharpView.Painting;
+using LiveChartsCore.SkiaSharpView.VisualElements;
+using SkiaSharp;
+using System.Threading.Tasks;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -32,16 +36,16 @@ namespace SOCE.Library.UI.ViewModels
 
         private List<SeriesDataModel> SeriesData = new List<SeriesDataModel>();
 
-        private SeriesCollection _overallData = new SeriesCollection();
-        public SeriesCollection OverallData
-        {
-            get { return _overallData; }
-            set
-            {
-                _overallData = value;
-                RaisePropertyChanged(nameof(OverallData));
-            }
-        }
+        //private ISeries[] _overallData = new ISeries[];
+        //public SeriesCollection OverallData
+        //{
+        //    get { return _overallData; }
+        //    set
+        //    {
+        //        _overallData = value;
+        //        RaisePropertyChanged(nameof(OverallData));
+        //    }
+        //}
 
         private bool _isChartVisible = false;
         public bool IsChartVisible
@@ -82,8 +86,8 @@ namespace SOCE.Library.UI.ViewModels
 
                 if (_projectofInterest != null)
                 {
-                    CollectSubProjects();
-                    LoadGraphData();
+                    _projectofInterest.FormatData(true);
+                    //LoadGraphData();
                 }
 
                 RaisePropertyChanged(nameof(ProjectofInterest));
@@ -98,6 +102,19 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _subprojects = value;
                 RaisePropertyChanged(nameof(SubProjects));
+            }
+        }
+
+        private bool _showActiveProjects = true;
+        public bool ShowActiveProjects
+        {
+            get { return _unLockedSubs; }
+            set
+            {
+                _showActiveProjects = value;
+                LoadProjects();
+
+                RaisePropertyChanged(nameof(ShowActiveProjects));
             }
         }
 
@@ -137,76 +154,6 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _totalHourSpent = 0;
-        public double TotalHourSpent
-        {
-            get
-            {
-                return _totalHourSpent;
-            }
-            set
-            {
-                _totalHourSpent = value;
-                RaisePropertyChanged(nameof(TotalHourSpent));
-            }
-        }
-
-        private double _totalBudgetSpent = 0;
-        public double TotalBudgetSpent
-        {
-            get
-            {
-                return _totalBudgetSpent;
-            }
-            set
-            {
-                _totalBudgetSpent = value;
-                RaisePropertyChanged(nameof(TotalBudgetSpent));
-            }
-        }
-
-        private double _budgetLeft = 0;
-        public double BudgetLeft
-        {
-            get
-            {
-                return _budgetLeft;
-            }
-            set
-            {
-                _budgetLeft = value;
-                RaisePropertyChanged(nameof(BudgetLeft));
-            }
-        }
-
-        private double _totalbudget = 0;
-        public double TotalBudget
-        {
-            get
-            {
-                return _totalbudget;
-            }
-            set
-            {
-                _totalbudget = value;
-                RaisePropertyChanged(nameof(TotalBudget));
-            }
-        }
-
-        private double _estimatedhoursleft = 0;
-        public double EstimatedHoursLeft
-        {
-            get
-            {
-                return _estimatedhoursleft;
-            }
-            set
-            {
-                _estimatedhoursleft = value;
-                RaisePropertyChanged(nameof(EstimatedHoursLeft));
-            }
-        }
-
         private TimeOptionEnum _selectedTimeSpan;
         public TimeOptionEnum SelectedTimeSpan
         {
@@ -217,7 +164,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedTimeSpan = value;
-                FormatData();
+                //FormatData();
                 RaisePropertyChanged(nameof(SelectedTimeSpan));
             }
         }
@@ -232,7 +179,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedDataType = value;
-                FormatData();
+                //FormatData();
                 RaisePropertyChanged(nameof(SelectedDataType));
             }
         }
@@ -247,10 +194,10 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedSubproject = value;
-                if (_selectedSubproject != null)
-                {
-                    LoadGraphData();
-                }
+                //if (_selectedSubproject != null)
+                //{
+                //    LoadGraphData();
+                //}
                 RaisePropertyChanged(nameof(SelectedSubproject));
             }
         }
@@ -262,52 +209,54 @@ namespace SOCE.Library.UI.ViewModels
             Formatter = value => new DateTime((long)value).ToString("yyyy-MM-dd");
             LoadProjects();
 
-            RelevantEmployees.CollectionChanged += this.EmployeesChanged;
+            //RelevantEmployees.CollectionChanged += this.EmployeesChanged;
 
         }
 
-        private void EmployeesChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (INotifyPropertyChanged added in e?.NewItems)
-                {
-                    added.PropertyChanged += ItemModificationOnPropertyChanged;
-                }
-            }
+        //private void EmployeesChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.NewItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.NewItems)
+        //        {
+        //            added.PropertyChanged += ItemModificationOnPropertyChanged;
+        //        }
+        //    }
 
-            if (e.OldItems != null)
-            {
-                foreach (INotifyPropertyChanged added in e?.OldItems)
-                {
-                    added.PropertyChanged -= ItemModificationOnPropertyChanged;
-                }
-            }
-        }
+        //    if (e.OldItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.OldItems)
+        //        {
+        //            added.PropertyChanged -= ItemModificationOnPropertyChanged;
+        //        }
+        //    }
+        //}
 
-        private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            EmployeeVisualModel evm = sender as EmployeeVisualModel;
-            foreach (LineSeries ls in OverallData)
-            {
-                if (ls.Title == evm.Name)
-                {
-                    if (evm.SelectedCurr)
-                    {
-                        ls.Visibility = System.Windows.Visibility.Visible;
-                    }
-                    else
-                    {
-                        ls.Visibility = System.Windows.Visibility.Hidden;
-                    }
-                    break;
-                }
-            }
-        }
+        //private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        //{
+        //    EmployeeVisualModel evm = sender as EmployeeVisualModel;
+        //    foreach (LineSeries<double> ls in OverallData)
+        //    {
+        //        if (ls.Title == evm.Name)
+        //        {
+        //            if (evm.SelectedCurr)
+        //            {
+        //                ls.Visibility = System.Windows.Visibility.Visible;
+        //            }
+        //            else
+        //            {
+        //                ls.Visibility = System.Windows.Visibility.Hidden;
+        //            }
+        //            break;
+        //        }
+        //    }
+        //}
 
         private void LoadProjects()
         {
-            List<ProjectDbModel> dbprojects = SQLAccess.LoadProjects();
+            ProjectList.Clear();
+
+            List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
 
             ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
 
@@ -321,6 +270,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CollectSubProjects()
         {
+
             if (ProjectofInterest == null)
             {
                 return;
@@ -340,191 +290,191 @@ namespace SOCE.Library.UI.ViewModels
             SubProjects = members;
         }
 
-        private void LoadGraphData() //get approved only data
-        {
-            RelevantEmployees.Clear();
-            SeriesData.Clear();
+        //private void LoadGraphData()
+        //{
+        //    RelevantEmployees.Clear();
+        //    SeriesData.Clear();
 
-            List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
-            if (ProjectofInterest != null)
-            {
-                if (SelectedSubproject == null)
-                {
-                    //total
-                    //get all subprojectIds associated with projectId
-                    List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(ProjectofInterest.Id);
+        //    List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
+        //    if (ProjectofInterest != null)
+        //    {
+        //        if (SelectedSubproject == null)
+        //        {
+        //            //total
+        //            //get all subprojectIds associated with projectId
+        //            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(ProjectofInterest.Id);
 
-                    foreach (SubProjectDbModel spdm in subdbmodels)
-                    {
-                        List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
-                        total.AddRange(tmdata);
-                    }
-                }
-                else
-                {
-                    //load by subprojectId
-                    List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(SelectedSubproject.Id);
-                    total.AddRange(tmdata);
-                }
-            }
+        //            foreach (SubProjectDbModel spdm in subdbmodels)
+        //            {
+        //                List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
+        //                total.AddRange(tmdata);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            //load by subprojectId
+        //            List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(SelectedSubproject.Id);
+        //            total.AddRange(tmdata);
+        //        }
+        //    }
 
-            if (total.Count > 0)
-            {
-                //filter by employee Id
-                var grouped = total.OrderBy(x => x.EmployeeId)
-                   .GroupBy(x => x.EmployeeId);
-                //order by date
+        //    if (total.Count > 0)
+        //    {
+        //        //filter by employee Id
+        //        var grouped = total.OrderBy(x => x.EmployeeId)
+        //           .GroupBy(x => x.EmployeeId);
+        //        //order by date
 
-                foreach (var item in grouped)
-                {
-                    //lookup employee
-                    EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
+        //        foreach (var item in grouped)
+        //        {
+        //            //lookup employee
+        //            EmployeeDbModel employee = SQLAccess.LoadEmployeeById(item.Key);
 
-                    if (employee != null)
-                    {
-                        //List<TimesheetRowDbModel> employeetimesheetdata = new List<TimesheetRowDbModel>();
-                        ChartValues<DateTimePoint> values = new ChartValues<DateTimePoint>();
+        //            if (employee != null)
+        //            {
+        //                //List<TimesheetRowDbModel> employeetimesheetdata = new List<TimesheetRowDbModel>();
+        //                ChartValues<DateTimePoint> values = new ChartValues<DateTimePoint>();
 
-                        //order by date
-                        List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
+        //                //order by date
+        //                List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
 
-                        EmployeeVisualModel evm = new EmployeeVisualModel(employee);
-                        evm.SumHours = employeetimesheetdata.Sum(x => x.TimeEntry);
-                        Brush b = RandomColorGenerator();
-                        evm.VisualColor = b;
+        //                EmployeeVisualModel evm = new EmployeeVisualModel(employee);
+        //                evm.SumHours = employeetimesheetdata.Sum(x => x.TimeEntry);
+        //                Brush b = RandomColorGenerator();
+        //                evm.VisualColor = b;
 
-                        SeriesData.Add(new SeriesDataModel(evm, employeetimesheetdata));
-                        RelevantEmployees.Add(evm);
-                    }
-                }
-
-
-
-            }
-            FormatData();
-        }
+        //                SeriesData.Add(new SeriesDataModel(evm, employeetimesheetdata));
+        //                RelevantEmployees.Add(evm);
+        //            }
+        //        }
 
 
-        private void FormatData()
-        {
-            TotalHourSpent = 0;
-            TotalBudgetSpent = 0;
-            TotalBudget = 0;
-            BudgetLeft = 0;
-            EstimatedHoursLeft = 0;
-            OverallData.Clear();
 
-            double averagerate = 0;
+        //    }
+        //    FormatData();
+        //}
 
-            foreach (SeriesDataModel sdm in SeriesData)
-            {
-                LineSeries ls = sdm.CreateLineSeries(SelectedTimeSpan, SelectedDataType);
-                OverallData.Add(ls);
-                TotalHourSpent += sdm.EmployeeVis.SumHours;
-                TotalBudgetSpent += sdm.EmployeeVis.SumHours * sdm.EmployeeVis.Rate;
-                averagerate += sdm.EmployeeVis.Rate;
-            }
 
-            //CreateTotalLine();
+        //private void FormatData()
+        //{
+        //    TotalHourSpent = 0;
+        //    TotalBudgetSpent = 0;
+        //    TotalBudget = 0;
+        //    BudgetLeft = 0;
+        //    EstimatedHoursLeft = 0;
+        //    OverallData.Clear();
 
-            if (ProjectofInterest != null)
-            {
-                if (SelectedSubproject == null)
-                {
-                    TotalBudget = ProjectofInterest.Fee;
-                    BudgetLeft = ProjectofInterest.Fee - TotalBudgetSpent;
-                }
-                else
-                {
-                    TotalBudget = SelectedSubproject.Fee;
-                    BudgetLeft = SelectedSubproject.Fee - TotalBudgetSpent;
-                }
-            }
+        //    double averagerate = 0;
 
-            EstimatedHoursLeft = Math.Max(0, BudgetLeft / (averagerate / SeriesData.Count));
+        //    foreach (SeriesDataModel sdm in SeriesData)
+        //    {
+        //        LineSeries ls = sdm.CreateLineSeries(SelectedTimeSpan, SelectedDataType);
+        //        OverallData.Add(ls);
+        //        TotalHourSpent += sdm.EmployeeVis.SumHours;
+        //        TotalBudgetSpent += sdm.EmployeeVis.SumHours * sdm.EmployeeVis.Rate;
+        //        averagerate += sdm.EmployeeVis.Rate;
+        //    }
 
-            if (OverallData.Count > 0)
-            {
-                IsChartVisible = true;
-            }
-        }
+        //    //CreateTotalLine();
 
-        private void CreateTotalLine()
-        {
-            List<DateTimePoint> values = new List<DateTimePoint>();
+        //    if (ProjectofInterest != null)
+        //    {
+        //        if (SelectedSubproject == null)
+        //        {
+        //            TotalBudget = ProjectofInterest.Fee;
+        //            BudgetLeft = ProjectofInterest.Fee - TotalBudgetSpent;
+        //        }
+        //        else
+        //        {
+        //            TotalBudget = SelectedSubproject.Fee;
+        //            BudgetLeft = SelectedSubproject.Fee - TotalBudgetSpent;
+        //        }
+        //    }
 
-            foreach (LineSeries ls in OverallData)
-            {
-                foreach (DateTimePoint dtp in ls.Values)
-                {
-                    values.Add(dtp);
-                }
-            }
+        //    EstimatedHoursLeft = Math.Max(0, BudgetLeft / (averagerate / SeriesData.Count));
 
-            List<DateTimePoint> mergedList = values.GroupBy(x => x.DateTime).Select(g => new DateTimePoint
-            {
-                DateTime = g.Key,
-                Value = g.Sum(r => r.Value)
-            }).OrderBy(x => x.DateTime).ToList();
+        //    if (OverallData.Count > 0)
+        //    {
+        //        IsChartVisible = true;
+        //    }
+        //}
 
-            //List<TimesheetRowDbModel> employeetimesheetdata = values.OrderBy(x => x.Date).ToList();
+        //private void CreateTotalLine()
+        //{
+        //    List<DateTimePoint> values = new List<DateTimePoint>();
 
-            //Add total
-            EmployeeVisualModel evm = new EmployeeVisualModel();
-            evm.Name = "Total";
-            evm.Rate = 0;
-            evm.VisualColor = Brushes.Black;
-            evm.SelectedCurr = false;
+        //    foreach (LineSeries ls in OverallData)
+        //    {
+        //        foreach (DateTimePoint dtp in ls.Values)
+        //        {
+        //            values.Add(dtp);
+        //        }
+        //    }
 
-            if (RelevantEmployees.Any(x => x.Name == "Total"))
-            {
-                RelevantEmployees[0] = evm;
-            }
-            else
-            {
-                RelevantEmployees.Insert(0, evm);
-            }
+        //    List<DateTimePoint> mergedList = values.GroupBy(x => x.DateTime).Select(g => new DateTimePoint
+        //    {
+        //        DateTime = g.Key,
+        //        Value = g.Sum(r => r.Value)
+        //    }).OrderBy(x => x.DateTime).ToList();
 
-            ChartValues<DateTimePoint> dtpts = new ChartValues<DateTimePoint>();
+        //    //List<TimesheetRowDbModel> employeetimesheetdata = values.OrderBy(x => x.Date).ToList();
 
-            double sumvalue = 0;
-            foreach (DateTimePoint dtp in mergedList)
-            {
-                //if ()
-                sumvalue += dtp.Value;
-                DateTimePoint dtpnew = new DateTimePoint() { DateTime = dtp.DateTime };
-                dtpnew.Value = sumvalue;
-                dtpts.Add(dtpnew);
-            }
+        //    //Add total
+        //    EmployeeVisualModel evm = new EmployeeVisualModel();
+        //    evm.Name = "Total";
+        //    evm.Rate = 0;
+        //    evm.VisualColor = Brushes.Black;
+        //    evm.SelectedCurr = false;
 
-            LineSeries lstot = new LineSeries
-            {
-                Title = evm.Name,
-                Values = dtpts,
-                PointGeometrySize = 10,
-                Stroke = Brushes.Black,
-                Fill = new SolidColorBrush() { Opacity = 0, Color = Brushes.White.Color },
-                StrokeDashArray = new DoubleCollection { 2 },
-            };
+        //    if (RelevantEmployees.Any(x => x.Name == "Total"))
+        //    {
+        //        RelevantEmployees[0] = evm;
+        //    }
+        //    else
+        //    {
+        //        RelevantEmployees.Insert(0, evm);
+        //    }
 
-            OverallData.Add(lstot);
+        //    ChartValues<DateTimePoint> dtpts = new ChartValues<DateTimePoint>();
 
-            ItemModificationOnPropertyChanged(evm, null);
+        //    double sumvalue = 0;
+        //    foreach (DateTimePoint dtp in mergedList)
+        //    {
+        //        //if ()
+        //        sumvalue += dtp.Value;
+        //        DateTimePoint dtpnew = new DateTimePoint() { DateTime = dtp.DateTime };
+        //        dtpnew.Value = sumvalue;
+        //        dtpts.Add(dtpnew);
+        //    }
 
-        }
+        //    LineSeries lstot = new LineSeries
+        //    {
+        //        Title = evm.Name,
+        //        Values = dtpts,
+        //        PointGeometrySize = 10,
+        //        Stroke = Brushes.Black,
+        //        Fill = new SolidColorBrush() { Opacity = 0, Color = Brushes.White.Color },
+        //        StrokeDashArray = new DoubleCollection { 2 },
+        //    };
 
-        private Random r = new Random();
-        /// <summary>
-        /// Create Color
-        /// </summary>
-        /// <returns></returns>
-        private Brush RandomColorGenerator()
-        {
-            Byte[] b = new Byte[3];
-            r.NextBytes(b);
-            Color color = Color.FromRgb(b[0], b[1], b[2]);
-            SolidColorBrush brush = new SolidColorBrush(color);
-            return brush;
-        }
+        //    OverallData.Add(lstot);
+
+        //    ItemModificationOnPropertyChanged(evm, null);
+
+        //}
+
+        //private Random r = new Random();
+        ///// <summary>
+        ///// Create Color
+        ///// </summary>
+        ///// <returns></returns>
+        //private Brush RandomColorGenerator()
+        //{
+        //    Byte[] b = new Byte[3];
+        //    r.NextBytes(b);
+        //    Color color = Color.FromRgb(b[0], b[1], b[2]);
+        //    SolidColorBrush brush = new SolidColorBrush(color);
+        //    return brush;
+        //}
     }
 }
