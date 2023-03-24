@@ -576,7 +576,6 @@ namespace SOCE.Library.UI.ViewModels
 
             ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
 
-
             //Do not include the last layer
             Parallel.For(0, dbprojects.Count, i =>
             {

@@ -189,6 +189,7 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(PercentSpent));
             }
         }
+        public bool globaleditmode = false;
 
         private bool _editRoleFieldState = true;
         public bool EditRoleFieldState
@@ -196,7 +197,7 @@ namespace SOCE.Library.UI
             get { return _editRoleFieldState; }
             set
             {
-                if (!_editRoleFieldState && value)
+                if (!_editRoleFieldState && value && !globaleditmode)
                 {
                     if (Employee == null)
                     {
@@ -206,7 +207,7 @@ namespace SOCE.Library.UI
                     UpdateRolePerSub();
                     Subproject.baseproject.FormatData(false);
                     //need to update sub project.
-                    
+
                 }
                 _editRoleFieldState = value;
                 EditComboRoleFieldState = !_editRoleFieldState;
@@ -272,6 +273,9 @@ namespace SOCE.Library.UI
             }
         }
 
+        public RolePerSubProjectModel()
+        {
+        }
         public RolePerSubProjectModel(SubProjectModel subproject, double overallFee)
         {
             Subproject = subproject;

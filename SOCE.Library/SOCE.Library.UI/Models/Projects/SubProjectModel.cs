@@ -50,6 +50,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private int _numberOrder { get; set; }
+        public int NumberOrder
+        {
+            get
+            {
+                return _numberOrder;
+            }
+            set
+            {
+                _numberOrder = value;
+                RaisePropertyChanged(nameof(NumberOrder));
+            }
+        }
+
         private string _pointNumber { get; set; }
         public string PointNumber
         {
@@ -59,7 +73,21 @@ namespace SOCE.Library.UI
             }
             set
             {
+                //if (!_editSubFieldState && IsAddService)
+                //{
+                //    double doubleout = 0;
+                //    Double.TryParse(value, out doubleout);
+
+                //    if (doubleout < 1 && 0 < doubleout)
+                //    {
+                //        doubleout.ToString();
+                //    }
+                //    else { return; }
+                //}
+                //else
+                //{
                 _pointNumber = value;
+                //}
                 RaisePropertyChanged(nameof(PointNumber));
             }
         }
@@ -314,14 +342,14 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(IsInvoiced));
             }
         }
-
+        public bool globaleditmode = false;
         private bool _editSubFieldState = true;
         public bool EditSubFieldState
         {
             get { return _editSubFieldState; }
             set
             {
-                if (!_editSubFieldState && value)
+                if (!_editSubFieldState && value && !globaleditmode)
                 {
                     //UpdateSubProject();
                     baseproject.UpdateSubProjects(this);
@@ -343,6 +371,21 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _canEdit { get; set; } = true;
+        public bool CanEdit
+        {
+            get
+            {
+                return _canEdit;
+            }
+            set
+            {
+                _canEdit = value;
+                RaisePropertyChanged(nameof(CanEdit));
+
+            }
+        }
+
         private bool _canDelete { get; set; } = false;
         public bool CanDelete
         {
@@ -355,6 +398,34 @@ namespace SOCE.Library.UI
                 _canDelete = value;
                 RaisePropertyChanged(nameof(CanDelete));
 
+            }
+        }
+
+        private bool _isAddService { get; set; }
+        public bool IsAddService
+        {
+            get
+            {
+                return _isAddService;
+            }
+            set
+            {
+                _isAddService = value;
+                RaisePropertyChanged(nameof(IsAddService));
+            }
+        }
+
+        private string _expandedDescription { get; set; }
+        public string ExpandedDescription
+        {
+            get
+            {
+                return _expandedDescription;
+            }
+            set
+            {
+                _expandedDescription = value;
+                RaisePropertyChanged(nameof(ExpandedDescription));
             }
         }
 
@@ -392,6 +463,19 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged("BudgetedFee");
             }
         }
+        private bool _isVisible { get; set; } = true;
+        public bool IsVisible
+        {
+            get
+            {
+                return _isVisible;
+            }
+            set
+            {
+                _isVisible = value;
+                RaisePropertyChanged(nameof(IsVisible));
+            }
+        }
 
         public SubProjectModel()
         {
@@ -417,13 +501,16 @@ namespace SOCE.Library.UI
             ProjectNumber = spm.ProjectId;
             PointNumber = spm.PointNumber;
             Description = spm.Description;
+            ExpandedDescription = spm.ExpandedDescription;
             Fee = spm.Fee;
             IsActive = Convert.ToBoolean(spm.IsActive);
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
             PercentComplete = spm.PercentComplete;
             PercentBudget = spm.PercentBudget;
+            IsAddService = Convert.ToBoolean(spm.IsAdservice);
+            NumberOrder = spm.NumberOrder;
             onstartup = false;
-            isAddProj = false;
+            //isAddProj = false;
 
         }
 
@@ -451,23 +538,27 @@ namespace SOCE.Library.UI
         //    PercentBudget = (Fee / TotalFee) * 100;
         //}
 
-        public void UpdateSubProject()
-        {
-            SubProjectDbModel subproject = new SubProjectDbModel()
-            {
-                Id = Id,
-                ProjectId = ProjectNumber,
-                PointNumber = PointNumber,
-                Description = Description,
-                Fee = Fee,
-                IsActive = IsActive ? 1 : 0,
-                IsInvoiced = IsInvoiced ? 1 : 0,
-                PercentComplete = PercentComplete,
-                PercentBudget = PercentBudget,
-            };
+        //public void UpdateSubProject()
+        //{
+        //    if (Id != 0)
+        //    {
+        //        SubProjectDbModel subproject = new SubProjectDbModel()
+        //        {
+        //            Id = Id,
+        //            ProjectId = ProjectNumber,
+        //            PointNumber = PointNumber,
+        //            Description = Description,
 
-            SQLAccess.UpdateSubProject(subproject);
-        }
+        //            Fee = Fee,
+        //            IsActive = IsActive ? 1 : 0,
+        //            IsInvoiced = IsInvoiced ? 1 : 0,
+        //            PercentComplete = PercentComplete,
+        //            PercentBudget = PercentBudget,
+        //        };
+
+        //        SQLAccess.UpdateSubProject(subproject);
+        //    }       
+        //}
 
         private void RowDataChanged(object sender, NotifyCollectionChangedEventArgs e)
         {

@@ -285,9 +285,9 @@ namespace SOCE.Library.Db
             {
                 cnn.Execute("UPDATE Projects SET ProjectName = @ProjectName, ProjectNumber = @ProjectNumber, ClientId = @ClientId, Fee = @Fee, MarketId = @MarketId,"
                           + "ManagerId = @ManagerId, IsActive = @IsActive, PercentComplete = @PercentComplete, Projectfolder = @Projectfolder, Drawingsfolder = @Drawingsfolder,Architectfolder = @Architectfolder,Plotfolder = @Plotfolder," +
-                          "ProjectStart = @ProjectStart, ProjectEnd = @ProjectEnd, FinalSpent = @FinalSpent, MiscName = @MiscName WHERE Id = @Id",
+                          "ProjectStart = @ProjectStart, ProjectEnd = @ProjectEnd, FinalSpent = @FinalSpent, MiscName = @MiscName, AdserviceFile = @AdserviceFile WHERE Id = @Id",
                         new { project.ProjectName, project.ProjectNumber, project.ClientId, project.Fee, project.MarketId, project.ManagerId, project.IsActive, project.PercentComplete, project.Projectfolder,
-                            project.Drawingsfolder, project.Architectfolder, project.Plotfolder, project.ProjectStart, project.ProjectEnd, project.FinalSpent, project.MiscName, project.Id});
+                            project.Drawingsfolder, project.Architectfolder, project.Plotfolder, project.ProjectStart, project.ProjectEnd, project.FinalSpent, project.MiscName, project.AdserviceFile, project.Id});
             }
         }
 
@@ -357,8 +357,8 @@ namespace SOCE.Library.Db
                 //    " VALUES (@ProjectName, @ProjectNumber, @ClientId, @Fee, @MarketId, @ManagerId, @IsActive, @PercentComplete, @Projectfolder, @Drawingsfolder, @Architectfolder, @Plotfolder)", project);
                 try
                 {
-                    int id = cnn.QuerySingle<int>("INSERT INTO Projects (ProjectName, ProjectNumber, ClientId, Fee, MarketId, ManagerId, IsActive, PercentComplete, Projectfolder,Drawingsfolder,Architectfolder,Plotfolder, ProjectStart, ProjectEnd, FinalSpent, MiscName)" +
-                     " VALUES (@ProjectName, @ProjectNumber, @ClientId, @Fee, @MarketId, @ManagerId, @IsActive, @PercentComplete, @Projectfolder, @Drawingsfolder, @Architectfolder, @Plotfolder, @ProjectStart, @ProjectEnd, @FinalSpent, @MiscName) returning id;", project);
+                    int id = cnn.QuerySingle<int>("INSERT INTO Projects (ProjectName, ProjectNumber, ClientId, Fee, MarketId, ManagerId, IsActive, PercentComplete, Projectfolder,Drawingsfolder,Architectfolder,Plotfolder, ProjectStart, ProjectEnd, FinalSpent, MiscName, AdserviceFile)" +
+                     " VALUES (@ProjectName, @ProjectNumber, @ClientId, @Fee, @MarketId, @ManagerId, @IsActive, @PercentComplete, @Projectfolder, @Drawingsfolder, @Architectfolder, @Plotfolder, @ProjectStart, @ProjectEnd, @FinalSpent, @MiscName, @AdserviceFile) returning id;", project);
                     output = id;
                 }
                 catch
@@ -432,8 +432,8 @@ namespace SOCE.Library.Db
             int output = 0;
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                int id = cnn.QuerySingle<int>("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee, PercentComplete, PercentBudget, IsActive, IsInvoiced)" +
-                    "VALUES (@ProjectId, @PointNumber, @Description, @Fee, @PercentComplete, @PercentBudget, @IsActive, @IsInvoiced) returning id;", subproject);
+                int id = cnn.QuerySingle<int>("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee, PercentComplete, PercentBudget, IsActive, IsInvoiced, ExpandedDescription, IsAdservice, NumberOrder)" +
+                    "VALUES (@ProjectId, @PointNumber, @Description, @Fee, @PercentComplete, @PercentBudget, @IsActive, @IsInvoiced, @ExpandedDescription, @IsAdservice, @NumberOrder) returning id;", subproject);
                 output = id;
             }
             return output;
@@ -445,8 +445,10 @@ namespace SOCE.Library.Db
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE SubProjects SET ProjectId = @ProjectId, PointNumber = @PointNumber, Description = @Description, Fee = @Fee, PercentComplete = @PercentComplete, PercentBudget = @PercentBudget,"
-                          + "IsActive = @IsActive, IsInvoiced = @IsInvoiced WHERE Id = @Id",
-                        new { subproject.ProjectId, subproject.PointNumber, subproject.Description, subproject.Fee, subproject.PercentComplete, subproject.PercentBudget, subproject.IsActive, subproject.IsInvoiced, subproject.Id });
+                          + "IsActive = @IsActive, IsInvoiced = @IsInvoiced, ExpandedDescription = @ExpandedDescription, IsAdservice = @IsAdservice, NumberOrder = @NumberOrder WHERE Id = @Id",
+                        new { subproject.ProjectId, subproject.PointNumber, subproject.Description, subproject.Fee, subproject.PercentComplete, 
+                            subproject.PercentBudget, subproject.IsActive, subproject.IsInvoiced, subproject.ExpandedDescription,
+                            subproject.IsAdservice, subproject.NumberOrder, subproject.Id });
             }
         }
 
@@ -456,6 +458,20 @@ namespace SOCE.Library.Db
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 var output = cnn.Execute("DELETE FROM SubProjects WHERE Id = @id", new { id });
+            }
+        }
+
+        public static void UpdateNumberOrder(int Id, int NumberOrder)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("UPDATE SubProjects SET NumberOrder = @NumberOrder WHERE Id = @Id",
+                        new
+                        {
+                            NumberOrder,
+                            Id
+                        });
             }
         }
         #endregion

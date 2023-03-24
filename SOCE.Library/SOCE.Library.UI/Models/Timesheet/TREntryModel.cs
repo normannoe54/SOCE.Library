@@ -58,11 +58,55 @@ namespace SOCE.Library.UI
                 if (_timeentry != value)
                 {
                     _timeentry = value;
-                    RaisePropertyChanged(nameof(TimeEntry));
 
+                    //if (_timeEntryString != _timeentry.ToString())
+                    //{
+                    //    TimeEntryString = _timeentry.ToString();
+                    //}
+
+                    RaisePropertyChanged(nameof(TimeEntry));
                 }
             }
         }
+
+        //private string _timeEntryString = "0";
+        //public string TimeEntryString
+        //{
+        //    get
+        //    {
+        //        return _timeEntryString;
+        //    }
+        //    set
+        //    {
+        //        if (!string.IsNullOrEmpty(value))
+        //        {
+        //            double num = 0;
+        //            bool isnumeric = double.TryParse(value, out num);
+
+        //            if (isnumeric)
+        //            {
+        //                _timeEntryString = value;
+
+        //                if (_timeEntryString != _timeentry.ToString())
+        //                {
+        //                    _timeEntryString = "0";
+        //                    TimeEntry = Convert.ToDouble(_timeEntryString);
+
+        //                }
+        //            }
+        //            else
+        //            {
+        //                _timeEntryString = "0";
+        //                TimeEntry = 0;
+        //                TimeEntryString = "0";
+        //            }
+        //            RaisePropertyChanged(nameof(TimeEntryString));
+        //        }
+
+        //        RaisePropertyChanged(nameof(TimeEntryString));
+
+        //    }
+        //}
 
         private Brush _cellColor;
         public Brush CellColor

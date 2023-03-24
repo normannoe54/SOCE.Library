@@ -110,6 +110,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _adserviceFile { get; set; }
+        public string AdserviceFile
+        {
+            get
+            {
+                return _adserviceFile;
+            }
+            set
+            {
+                _adserviceFile = value;
+                RaisePropertyChanged(nameof(AdserviceFile));
+            }
+        }
+
         private ClientModel _client;
         public ClientModel Client
         {
@@ -420,6 +434,7 @@ namespace SOCE.Library.UI
             }
         }
 
+
         public int ProjectStart;
 
         public int ProjectEnd;
@@ -611,7 +626,7 @@ namespace SOCE.Library.UI
 
             foreach (SubProjectModel spm in SubProjects)
             {
-                TotalBudget += spm.Fee;             
+                TotalBudget += spm.Fee;
             }
 
             SQLAccess.UpdateFee(Id, TotalBudget);
@@ -647,7 +662,7 @@ namespace SOCE.Library.UI
             }
 
             //catch for no actives
-            if (subinput !=null)
+            if (subinput != null)
             {
                 if (!onehastobeactive)
                 {
@@ -667,7 +682,7 @@ namespace SOCE.Library.UI
                     SQLAccess.UpdateSubProject(subproject);
                 }
             }
-            
+
             UpdateData();
         }
 
@@ -691,12 +706,20 @@ namespace SOCE.Library.UI
             {
                 SubProjects.Clear();
             }
+            else
+            {
+                SubProjectModel allsub = SubProjects.Where(x => x.Description == "All Phases").FirstOrDefault();
+                if(allsub != null)
+                {
+                    SubProjects.Remove(allsub);
+                }
+            }
 
             Formatted = true;
             TotalBudget = Fee;
 
             //List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
-
+            List<RolePerSubProjectModel> allrolesummary = new List<RolePerSubProjectModel>();
             //total
             //get all subprojectIds associated with projectId
             List<SubProjectDbModel> subdbmodels = SQLAccess.LoadAllSubProjectsByProject(Id);
@@ -719,21 +742,21 @@ namespace SOCE.Library.UI
 
                 //if (spdm.IsCurrActive == 1)
                 //{
-                    if (addistrue)
+                if (addistrue)
+                {
+                    spm = new SubProjectModel(spdm, Fee, this);
+                }
+                else
+                {
+
+                    spm = SubProjects.Where(x => x.Id == spdm.Id).FirstOrDefault();
+                    spm.RolesPerSub.Clear();
+                    if (spm == null)
                     {
-                        spm = new SubProjectModel(spdm, Fee, this);
+                        //delete item from database? should never happen
+                        continue;
                     }
-                    else
-                    {
-                
-                        spm = SubProjects.Where(x => x.Id == spdm.Id).FirstOrDefault();
-                        spm.RolesPerSub.Clear();
-                        if (spm == null)
-                        {
-                            //delete item from database? should never happen
-                            continue;
-                        }
-                    }
+                }
                 //}
                 //else
                 //{
@@ -741,7 +764,7 @@ namespace SOCE.Library.UI
                 //}
 
                 List<RolePerSubProjectDbModel> rolesdbmodel = SQLAccess.LoadRolesPerSubProject(spm.Id);
-                
+
                 List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
 
                 if (tmdata.Count != 0)
@@ -761,7 +784,7 @@ namespace SOCE.Library.UI
                             double spentbudget = employeetimesheetdata.Sum(x => x.BudgetSpent);
                             RolePerSubProjectDbModel rpdm = rolesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
                             double rate = rpdm.Rate;
-                     
+
                             double hoursleft = rpdm.BudgetHours - hours;
                             hoursspentpersub += hours;
                             hoursleftpersub += hoursleft;
@@ -778,11 +801,35 @@ namespace SOCE.Library.UI
                                 //rspm.PercentofRegulatedBudget = (rpdm.BudgetHours /regulatedbudgetpersub)*100;
                                 rate = rpdm.Rate;
                                 spm.RolesPerSub.Add(rspm);
-                                
+
+                                RolePerSubProjectModel foundrspm = allrolesummary.Where(x => x.Employee.Id == rspm.Employee.Id).FirstOrDefault();
+
+                                if (foundrspm != null)
+                                {
+                                    foundrspm.SpentHours += hours;
+                                    foundrspm.SpentBudget += spentbudget;
+                                    foundrspm.BudgetedHours += rpdm.BudgetHours;
+                                }
+                                else
+                                {
+
+                                    RolePerSubProjectModel cloned = new RolePerSubProjectModel()
+                                    {
+                                        Rate = rspm.Rate,
+                                        Role = rspm.Role,
+                                        Employee = rspm.Employee,
+                                        BudgetedHours = rspm.BudgetedHours,
+                                        OverallFee = rspm.OverallFee,
+                                        SpentHours = rspm.SpentHours,
+                                        SpentBudget = rspm.SpentBudget,
+                                    };
+                                    allrolesummary.Add(cloned);
+                                }
+
                             }
 
                         }
-                    }     
+                    }
                 }
 
                 foreach (RolePerSubProjectDbModel rspdb in rolesdbmodel)
@@ -799,7 +846,6 @@ namespace SOCE.Library.UI
                         rspm.SpentHours = 0;
                         //rspm.PercentofRegulatedBudget = (rspdb.BudgetHours / regulatedbudgetpersub) * 100;
                         spm.RolesPerSub.Add(rspm);
-
                     }
                 }
 
@@ -813,25 +859,40 @@ namespace SOCE.Library.UI
 
                 //if (spdm.IsCurrActive == 1)
                 //{
-                    if (addistrue)
-                    {
-                        SubProjects.Add(spm);
-                    }
+                if (addistrue)
+                {
+                    SubProjects.Add(spm);
+                }
                 //}
 
                 totalregulatedbudget += regulatedbudgetpersub;
                 hourstotal += hoursspentpersub;
                 hourstotalleft += hoursleftpersub;
                 budgetspent += budgetspentpersub;
-
                 //averagerate += rate * hours;
+            }
+
+            //all phases subphase
+            if (subdbmodels.Count > 0)
+            {
+                SubProjectModel allphases = new SubProjectModel();
+                allphases.Description = "All Phases";
+                allphases.TotalHours = hourstotal + hourstotalleft;
+                allphases.HoursUsed = hourstotal;
+                allphases.HoursLeft = hourstotalleft;
+                allphases.RolesPerSub = new ObservableCollection<RolePerSubProjectModel>(allrolesummary);
+                allphases.RegulatedBudget = totalregulatedbudget;
+                allphases.IsVisible = false;
+                allphases.CanDelete = false;
+                allphases.CanEdit = false;
+                SubProjects.Add(allphases);
             }
 
             TotalRegulatedBudget = totalregulatedbudget;
             HoursSpent = hourstotal;
             HoursLeft = hourstotalleft;
             BudgetSpent = budgetspent;
-            PercentofInvoicedFee = Math.Round((TotalBudget/TotalRegulatedBudget) * 100, 2);
+            PercentofInvoicedFee = Math.Round((TotalBudget / TotalRegulatedBudget) * 100, 2);
             UpdateData();
         }
 
@@ -860,7 +921,7 @@ namespace SOCE.Library.UI
 
         public void CopyProjectFolder()
         {
-            if (Projectfolder!=null)
+            if (Projectfolder != null)
             {
                 Clipboard.SetText(Projectfolder);
             }

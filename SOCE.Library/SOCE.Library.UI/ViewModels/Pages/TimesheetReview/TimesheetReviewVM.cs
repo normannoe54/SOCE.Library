@@ -631,7 +631,7 @@ namespace SOCE.Library.UI.ViewModels
                             Submitted = 1,
                             Approved = Convert.ToInt32(approve),
                             TimeEntry = trentry.TimeEntry
-                        };
+                    };
 
                         SQLAccess.UpdateTimesheetData(dbmodel);
                         //get data that needs to be removed

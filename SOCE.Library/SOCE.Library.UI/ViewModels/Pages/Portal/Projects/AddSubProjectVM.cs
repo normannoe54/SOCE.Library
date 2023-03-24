@@ -36,6 +36,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _expandedDescription;
+        public string ExpandedDescription
+        {
+            get { return _expandedDescription; }
+            set
+            {
+                _expandedDescription = value;
+                RaisePropertyChanged("ExpandedDescription");
+            }
+        }
+
         private double _additionalServicesFee;
         public double AdditionalServicesFee
         {
@@ -69,6 +80,19 @@ namespace SOCE.Library.UI.ViewModels
 
                 _adSelected = value;
                 RaisePropertyChanged("AdSelected");
+
+            }
+        }
+
+        private bool _customSelected = false;
+        public bool CustomSelected
+        {
+            get { return _customSelected; }
+            set
+            {
+
+                _customSelected = value;
+                RaisePropertyChanged("CustomSelected");
 
             }
         }
@@ -266,6 +290,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private double _bigNumOrder = 0;
+        public double BigNumOrder
+        {
+            get { return _bigNumOrder; }
+            set
+            {
+
+                _bigNumOrder = value;
+                RaisePropertyChanged("BigNumOrder");
+
+            }
+        }
+
         private double _latestAdserviceNumber = 0.1;
         public double LatestAdServiceNumber
         {
@@ -276,6 +313,18 @@ namespace SOCE.Library.UI.ViewModels
                 _latestAdserviceNumber = value;
                 RaisePropertyChanged("LatestAdServiceNumber");
 
+            }
+        }
+
+        private string _customAdServiceNumber;
+        public string CustomAdServiceNumber
+        {
+            get { return _customAdServiceNumber; }
+            set
+            {
+
+                _customAdServiceNumber = value;
+                RaisePropertyChanged("CustomAdServiceNumber");
             }
         }
 
@@ -324,7 +373,7 @@ namespace SOCE.Library.UI.ViewModels
 
             //see if CA, CD, P are available
             double pointmax = 0;
-
+            int maxnumberorder = 0;
             foreach(SubProjectModel spm in spms)
             {
                 double num = 0;
@@ -334,9 +383,11 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     pointmax = Math.Max(num, pointmax);
                 }
+                maxnumberorder = Math.Max(spm.NumberOrder, maxnumberorder);
             }
 
             LatestAdServiceNumber = pointmax + 0.1;
+            BigNumOrder = maxnumberorder;
         }
 
         public void AddSubProject()
@@ -349,11 +400,14 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = 0,
                 PercentComplete = 0,
                 PercentBudget = 0,
+                NumberOrder = Convert.ToInt32(BigNumOrder) +1,
                 Fee = 0
             };
 
             if (PhaseSelected)
             {
+                subproject.IsAdservice = 0;
+
                 if (InvEnabled && InvPhase)
                 {
                     subproject.PointNumber = "INV";
@@ -412,6 +466,8 @@ namespace SOCE.Library.UI.ViewModels
             }
             else if (AdSelected)
             {
+                subproject.IsAdservice = 1;
+
                 if (String.IsNullOrEmpty(Description) || LatestAdServiceNumber == 0)
                 {
                     ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
@@ -419,8 +475,29 @@ namespace SOCE.Library.UI.ViewModels
                 }
 
                 subproject.PointNumber = LatestAdServiceNumber.ToString();
+                subproject.ExpandedDescription = ExpandedDescription;
                 subproject.Fee = AdditionalServicesFee;
                 subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee+ AdditionalServicesFee) *100,2);
+                SQLAccess.AddSubProject(subproject);
+
+                //update project overall fee
+                BaseProject.Fee += AdditionalServicesFee;
+                SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee);
+            }
+            else if (CustomSelected)
+            {
+                subproject.IsAdservice = 0;
+
+                if (String.IsNullOrEmpty(Description) || String.IsNullOrEmpty(CustomAdServiceNumber))
+                {
+                    ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                    return;
+                }
+
+                subproject.PointNumber = CustomAdServiceNumber.ToString();
+                subproject.ExpandedDescription = ExpandedDescription;
+                subproject.Fee = AdditionalServicesFee;
+                subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee + AdditionalServicesFee) * 100, 2);
                 SQLAccess.AddSubProject(subproject);
 
                 //update project overall fee
@@ -435,6 +512,8 @@ namespace SOCE.Library.UI.ViewModels
         private void CloseWindow()
         {
             baseViewModel.BaseProject.FormatData(result);
+            baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
+            baseViewModel.Renumber(true);
             baseViewModel.LeftDrawerOpen = false;
             //DialogHost.Close("RootDialog");
         }

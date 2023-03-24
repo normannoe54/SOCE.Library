@@ -160,6 +160,7 @@
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\SubProjectInfoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BudgetEstimateVM.cs" />
     <Compile Include="Models\Projects\ClientModel.cs" />
     <Compile Include="Models\Projects\MarketModel.cs" />
@@ -191,7 +192,7 @@
     <Compile Include="ViewModels\Pages\Login\SignupVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\EmployeeDataVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\AddEmployeeVM.cs" />
-    <Compile Include="ViewModels\Pages\Portal\Employee\AreYouSureVM.cs" />
+    <Compile Include="ViewModels\Popups\AreYouSureVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddClientVM.cs" />
@@ -207,6 +208,7 @@
     <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />
     <Compile Include="ViewModels\Pages\Portal\Timesheet\TimesheetVM.cs" />
     <Compile Include="ViewModels\Pages\TimesheetReview\TimesheetReviewVM.cs" />
+    <Compile Include="ViewModels\Popups\MessageBoxVM.cs" />
     <Compile Include="Views\Login\CodeInsertView.xaml.cs">
       <DependentUpon>CodeInsertView.xaml</DependentUpon>
     </Compile>
@@ -228,7 +230,7 @@
     <Compile Include="Views\Portal\Employee\AddEmployeeView.xaml.cs">
       <DependentUpon>AddEmployeeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Portal\Employee\AreYouSureView.xaml.cs">
+    <Compile Include="Views\Popups\AreYouSureView.xaml.cs">
       <DependentUpon>AreYouSureView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Employee\EmployeeView.xaml.cs">
@@ -245,6 +247,9 @@
     </Compile>
     <Compile Include="Views\Portal\Project\AddProjectView.xaml.cs">
       <DependentUpon>AddProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\SubProjectInfoView.xaml.cs">
+      <DependentUpon>SubProjectInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\AddSubProjectView.xaml.cs">
       <DependentUpon>AddSubProjectView.xaml</DependentUpon>
@@ -337,7 +342,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Portal\Employee\AreYouSureView.xaml">
+    <Page Include="Views\Popups\AreYouSureView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -360,6 +365,10 @@
     <Page Include="Views\Portal\Project\AddProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\SubProjectInfoView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Portal\Project\AddSubProjectView.xaml">
       <SubType>Designer</SubType>

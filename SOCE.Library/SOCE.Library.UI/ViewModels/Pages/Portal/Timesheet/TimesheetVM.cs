@@ -751,7 +751,7 @@ namespace SOCE.Library.UI.ViewModels
                             Approved = 0,
                             TimeEntry = trentry.TimeEntry,
                             BudgetSpent = CurrentEmployee.Rate * trentry.TimeEntry
-                        };
+                    };
 
                         SQLAccess.AddTimesheetData(dbmodel);
                         //get data that needs to be removed

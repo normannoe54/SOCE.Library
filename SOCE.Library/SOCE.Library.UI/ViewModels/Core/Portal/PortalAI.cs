@@ -51,7 +51,7 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged(nameof(LoggedInEmployee));
                 WelcomeMessage = "Welcome " + _loggedInEmployee.FullName;
                 PMVisible = LoggedInEmployee.Status != AuthEnum.Standard;
-                AdminVisible = LoggedInEmployee.Status == AuthEnum.Admin;
+                AdminVisible = LoggedInEmployee.Status == AuthEnum.Admin || LoggedInEmployee.Status == AuthEnum.Principal;
 
             }
         }

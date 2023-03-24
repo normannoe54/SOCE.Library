@@ -132,6 +132,7 @@ namespace SOCE.Library.UI.ViewModels
                                 SQLAccess.DeleteSubProject(sub.Id);
                                 ProjectSummary.SubProjects.Remove(sub);
                                 ProjectSummary.BaseProject.UpdateSubProjects();
+                                ProjectSummary.Renumber(true);
                                 break;
                             }
                         case RolePerSubProjectModel role:

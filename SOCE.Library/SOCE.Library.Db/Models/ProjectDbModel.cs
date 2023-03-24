@@ -34,5 +34,7 @@ namespace SOCE.Library.Db
         public double FinalSpent { get; set; }
 
         public string MiscName { get; set; }
+
+        public string AdserviceFile { get; set; }
     }
 }
