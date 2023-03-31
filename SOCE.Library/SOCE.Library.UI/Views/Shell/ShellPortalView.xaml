@@ -10,141 +10,146 @@
     <!--<Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
     </Window.Resources>-->
-    <Border Padding="20" Background="#F7F6F4">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            
-            <Border CornerRadius="25" >
-                <Border.Background>
-                    <LinearGradientBrush>
-                        <GradientStop Color="#bb6262" Offset="0"/>
-                        <GradientStop Color="#9d3434" Offset="0.8"/>
-                    </LinearGradientBrush>
-                </Border.Background>
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                    </Grid.RowDefinitions>
+    <materialDesign:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsRightDrawerOpen ="{Binding RightDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RightDrawerCloseOnClickAway="True">
+        <materialDesign:DrawerHost.RightDrawerContent >
+            <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <!--<views:AddSubProjectView/>-->
+        </materialDesign:DrawerHost.RightDrawerContent>
+        <Border Padding="20" Background="#F7F6F4">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="220"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-                    <StackPanel Grid.Row="0">
-                        <!--Logo-->
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 30 0 10">
+                <Border CornerRadius="25" >
+                    <Border.Background>
+                        <LinearGradientBrush>
+                            <GradientStop Color="#636466" Offset="0"/>
+                            <GradientStop Color="#636466" Offset="0.8"/>
+                        </LinearGradientBrush>
+                    </Border.Background>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
 
-                            <Grid>
-                                <Border Background="#ffffff" CornerRadius="50" Width="45" Height="45"/>
+                        <StackPanel Grid.Row="0">
+                            <!--Logo-->
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0 30 0 10">
 
-                                <Border Width="45" Height="45" BorderThickness="3" BorderBrush="#ffffff" CornerRadius="50">
-                                    <!--<Border.Effect>
+                                <Grid>
+                                    <Border Background="#ffffff" CornerRadius="50" Width="45" Height="45"/>
+
+                                    <Border Width="45" Height="45" BorderThickness="3" BorderBrush="#ffffff" CornerRadius="50">
+                                        <!--<Border.Effect>
                                         <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
                                     </Border.Effect>-->
-                                    <Image  Source="/SOCE.Library.UI;component/Resources/SOCEIcon.png" />
-                                </Border>
-                            </Grid>
+                                        <Image  Source="/SOCE.Library.UI;component/Resources/SOCEIcon.png" />
+                                    </Border>
+                                </Grid>
 
-                            <TextBlock Text="SOCE" Foreground="#ffffff" FontSize="30" Margin="10 0 0 3">
-                                <TextBlock.Effect>
-                                    <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
-                                </TextBlock.Effect>
-                            </TextBlock>
-                        </StackPanel>
+                                <TextBlock Text="SOCE" Foreground="#ffffff" FontSize="30" Margin="10 0 0 3">
+                                    <TextBlock.Effect>
+                                        <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
+                                    </TextBlock.Effect>
+                                </TextBlock>
+                            </StackPanel>
 
-                        <!--Menu Items-->
-                        <TextBlock Text="Employee Portal" Style="{StaticResource menuTitle}"/>
-                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
+                            <!--Menu Items-->
+                            <TextBlock Text="Employee Portal" Style="{StaticResource menuTitle}"/>
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Home" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
-                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Home">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Home" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Home" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
-                        
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="ClipboardTextPlayOutline" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Timesheet" Style="{StaticResource menuButtonText}"/>
-                            </StackPanel>
-                        </Button>
 
-                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Resources">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="ClipboardTextPlayOutline" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Timesheet" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>
+
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Resources">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ClipboardFileOutline" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Resources" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
 
-                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="LicenseManager">
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="LicenseManager">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ProgressCheck" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="License Manager" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
-                        
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Person" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Employees" Style="{StaticResource menuButtonText}"/>
-                            </StackPanel>
-                        </Button>
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects">
-                            <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Library" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Projects" Style="{StaticResource menuButtonText}"/>
-                            </StackPanel>
-                        </Button>
 
-                        <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Person" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Employees" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Library" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Projects" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>
 
-                        <!--<Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                            <!--<Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="ChartBellCurve" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Project Data" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
 
-                        <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding PrincVisible}">
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects" Visibility="{Binding PrincVisible}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Dollar" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Invoicing" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>-->
 
-                        <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="TimesheetReview" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="TimesheetReview" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Magnify" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>
+
+                        </StackPanel>
+
+                        <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom">
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="Magnify" Style="{StaticResource menuButtonIcon}"/>
-                                <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>
+                                <materialDesign:PackIcon Kind="Logout" Style="{StaticResource menuButtonIcon}"/>
+                                <TextBlock Text="Logout" Style="{StaticResource menuButtonText}"/>
                             </StackPanel>
                         </Button>
-
-                    </StackPanel>
-
-                    <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom">
-                        <StackPanel Orientation="Horizontal">
-                            <materialDesign:PackIcon Kind="Logout" Style="{StaticResource menuButtonIcon}"/>
-                            <TextBlock Text="Logout" Style="{StaticResource menuButtonText}"/>
-                        </StackPanel>
-                    </Button>
+                    </Grid>
+                </Border>
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"  Foreground="{StaticResource SOCERed}" Text="SOCE PORTAL" FontWeight="Bold" FontSize="32" HorizontalAlignment="Center"/>
+                    <TextBlock Grid.Row="1"  Foreground="Gray" Text="{Binding WelcomeMessage}" FontWeight="Bold" FontSize="20" FontStyle="Italic" HorizontalAlignment="Center"/>
+                    <ContentControl Grid.Row="2" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                 </Grid>
-            </Border>
-            <Grid Grid.Column="1">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0"  Foreground="{StaticResource SOCELightRed}" Text="SOCE PORTAL" FontWeight="Bold" FontSize="32" HorizontalAlignment="Center"/>
-                <TextBlock Grid.Row="1"  Foreground="Gray" Text="{Binding WelcomeMessage}" FontWeight="Bold" FontSize="20" FontStyle="Italic" HorizontalAlignment="Center"/>
-                <ContentControl Grid.Row="2" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Grid>
-        </Grid>
-    </Border>
-
+        </Border>
+    </materialDesign:DrawerHost>
 </UserControl>

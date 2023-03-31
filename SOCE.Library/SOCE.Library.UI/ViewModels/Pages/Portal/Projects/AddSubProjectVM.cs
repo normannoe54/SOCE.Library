@@ -514,6 +514,7 @@ namespace SOCE.Library.UI.ViewModels
             baseViewModel.BaseProject.FormatData(result);
             baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
             baseViewModel.Renumber(true);
+            baseViewModel.SelectedProjectPhase = baseViewModel.SubProjects[0];
             baseViewModel.LeftDrawerOpen = false;
             //DialogHost.Close("RootDialog");
         }

@@ -63,7 +63,7 @@ namespace SOCE.Library.UI.ViewModels
                 string code = RandomString(5);
 
                 MimeMessage mailMessage = new MimeMessage();
-                mailMessage.From.Add(new MailboxAddress("Norm", "normnoe@shirkodonovan.com"));
+                mailMessage.From.Add(new MailboxAddress("Norm", "portalhelpdesk@shirkodonovan.com"));
                 mailMessage.To.Add(new MailboxAddress(em.FirstName, emailinput));
                 mailMessage.Subject = "SOCE Portal Reset Password";
                 mailMessage.Body = new TextPart("plain")

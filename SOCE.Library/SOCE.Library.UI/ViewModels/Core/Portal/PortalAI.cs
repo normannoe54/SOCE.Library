@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
+using System.Windows.Controls;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -69,6 +70,32 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged(nameof(WelcomeMessage));
             }
         }
+
+        private bool _rightDrawerOpen = false;
+        public bool RightDrawerOpen
+        {
+            get
+            {
+                return _rightDrawerOpen;
+            }
+            set
+            {
+                _rightDrawerOpen = value;
+                RaisePropertyChanged(nameof(RightDrawerOpen));
+            }
+        }
+
+        private UserControl _rightViewToShow = new UserControl();
+        public UserControl RightViewToShow
+        {
+            get { return _rightViewToShow; }
+            set
+            {
+                _rightViewToShow = value;
+                RaisePropertyChanged(nameof(RightViewToShow));
+            }
+        }
+
 
         private EmployeeVM employeeVM;
         private TimesheetVM timesheetVM;

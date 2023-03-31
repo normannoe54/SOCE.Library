@@ -18,10 +18,10 @@
         </Grid.RowDefinitions>
 
         <!--Page Title-->
-        <TextBlock Text="Time Sheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>
-
+        <!--<TextBlock Text="Time Sheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>-->
+        <TextBlock Text="Time Sheet" Grid.Row="0" Style="{StaticResource PageHeader}"/>
         <!--Seprator-->
-        <Separator Height="1" Grid.Row="1" Background="#DAE2EA" Margin="0 -1 0 10"/>
+        <!--<Separator Height="1" Grid.Row="1" Background="{StaticResource SOCEGray}" Margin="0 -1 0 10"/>-->
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2">
             <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}">
@@ -85,14 +85,14 @@
 
                 <StackPanel Orientation="Vertical"  VerticalAlignment="Bottom" Margin="0 10 0 0">
                     <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Background="Transparent" Foreground="Green" BorderThickness="1" BorderBrush="LightGray"/>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Background="Transparent" Foreground="{StaticResource SOCELightGray}" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="Percent Complete: " FontSize="10" FontWeight="SemiBold"/>
                             <TextBlock Text="{Binding PercentComplete, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Grid>
                     <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}"  Background="Transparent" Foreground="CornflowerBlue" BorderThickness="1" BorderBrush="LightGray"/>
+                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}"  Background="Transparent" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="LightGray"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="Expected Progress:" FontSize="10" FontWeight="SemiBold"/>
                             <TextBlock Text="{Binding ExpectedProgress, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold" materialDesign:TextFieldAssist.SuffixText="%"/>
@@ -107,11 +107,11 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
-                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Gray" BorderThickness="1">
+                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Export" Foreground="{StaticResource SOCELightRed}" VerticalAlignment="Center"/>
+                        <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
 
-                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="{StaticResource SOCELightRed}"/>
+                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
                     </StackPanel>
                 </Button>
                 <TextBlock Grid.Row="1"  Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
@@ -133,10 +133,10 @@
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="Green" HorizontalAlignment="Left">
+                <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="{StaticResource SOCEGreenCompliment}" HorizontalAlignment="Left">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
-                        <TextBlock Text="Add Project"/>
+                        <TextBlock Text="Add Project" FontWeight="SemiBold"/>
                     </StackPanel>
                 </Button>
 
@@ -283,10 +283,15 @@
                                 </Button>
                                 <ComboBox Grid.Column="1"
                                                   Margin="10 0 0 0"
-                                                  VerticalAlignment="Center"
+                                                  VerticalAlignment="Stretch"
                                                   HorizontalAlignment="Stretch"
                                                   Foreground="Black"
+                                                  BorderThickness="0 0 0 1"
+                                                  BorderBrush="{StaticResource SOCELightGray}"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  ToolTip="Select Project"
+                                          
+                                                  VerticalContentAlignment="Center"
                                                   IsTextSearchEnabled="True" IsEditable="False" 
                                                   StaysOpenOnEdit="True"
                                                   SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -303,8 +308,8 @@
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="ProjectModel">
                                             <VirtualizingStackPanel Orientation="Horizontal" Width="300">
-                                                <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
-                                                <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0" />
+                                                <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="5 0 0 0" />
+                                                <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 5 0" />
                                             </VirtualizingStackPanel>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
@@ -313,11 +318,16 @@
 
                             <ComboBox Grid.Column="1"
                                                   Margin="10 0 5 0"
-                                                  VerticalAlignment="Center"
+                                                  VerticalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
                                                   HorizontalAlignment="Stretch"
                                                   Foreground="Black"
+                                                  BorderThickness="0 0 0 1"
+                                                  ToolTip="Select Phase"
+                                                  BorderBrush="{StaticResource SOCELightGray}"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
                                                   IsTextSearchEnabled="True" IsEditable="False"
+                                                  IsEnabled="{Binding ProjectSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"

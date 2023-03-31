@@ -365,10 +365,10 @@ namespace SOCE.Library.UI.ViewModels
                     exinst.WriteRow(6, 3, number);
 
                     string cell = $"{MonthYearString} {DateString}";
-                    exinst.WriteCell(1, count + 2, cell);
+                    exinst.WriteCell(1, 3, cell);
 
                     string name = $"{CurrentEmployee.FullName}";
-                    exinst.WriteCell(3, count + 2, name);
+                    exinst.WriteCell(3, 3, name);
 
                     int basenum = 6;
 
@@ -1044,7 +1044,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 trm.Total = trm.Entries.Sum(x => x.TimeEntry);
             }
-            AutoSave();
+            //AutoSave();
         }
 
         bool currentlyqued = false;
@@ -1054,9 +1054,9 @@ namespace SOCE.Library.UI.ViewModels
             if (!currentlyqued)
             {
                 currentlyqued = true;
-                await Task.Delay(10000);
+                await Task.Delay(30000);
 
-                Task.Run(() =>
+                await Task.Run(() =>
                 {
                     SaveCommand(0);
 

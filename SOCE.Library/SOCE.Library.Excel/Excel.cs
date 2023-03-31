@@ -25,7 +25,7 @@ namespace SOCE.Library.Excel
 
         public void FitColumns()
         {
-            activeworksheet.Columns().AdjustToContents();
+            activeworksheet.Columns().AdjustToContents(1,100,4.5,45);
             document.Save();
         }
 

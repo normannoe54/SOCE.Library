@@ -160,6 +160,8 @@
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\MarketVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\SubProjectInfoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BudgetEstimateVM.cs" />
     <Compile Include="Models\Projects\ClientModel.cs" />
@@ -207,7 +209,7 @@
     <Compile Include="ViewModels\Pages\Portal\ResourcesVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Stores\NavigationStore.cs" />
     <Compile Include="ViewModels\Pages\Portal\Timesheet\TimesheetVM.cs" />
-    <Compile Include="ViewModels\Pages\TimesheetReview\TimesheetReviewVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetReviewVM.cs" />
     <Compile Include="ViewModels\Popups\MessageBoxVM.cs" />
     <Compile Include="Views\Login\CodeInsertView.xaml.cs">
       <DependentUpon>CodeInsertView.xaml</DependentUpon>
@@ -247,6 +249,12 @@
     </Compile>
     <Compile Include="Views\Portal\Project\AddProjectView.xaml.cs">
       <DependentUpon>AddProjectView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\MarketView.xaml.cs">
+      <DependentUpon>MarketView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\ClientView.xaml.cs">
+      <DependentUpon>ClientView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\SubProjectInfoView.xaml.cs">
       <DependentUpon>SubProjectInfoView.xaml</DependentUpon>
@@ -365,6 +373,14 @@
     <Page Include="Views\Portal\Project\AddProjectView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Project\MarketView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Project\ClientView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Portal\Project\SubProjectInfoView.xaml">
       <Generator>MSBuild:Compile</Generator>

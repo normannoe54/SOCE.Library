@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using MaterialDesignThemes.Wpf;
+using System.Reflection;
+using System.IO;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -102,8 +104,26 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand MaximizeWindowCommand { get; private set; }
         public ICommand MinusCommand { get; set; }
 
+        private string _versionNumber = "0";
+        public string VersionNumber
+        {
+            get
+            {
+                return _versionNumber;
+            }
+            set
+            {
+                _versionNumber = value;
+                RaisePropertyChanged("VersionNumber");
+            }
+        }
+
         public CoreAI()
         {
+            //version number
+            //get version number
+            CollectVersionNumber();
+
             GoToLogin();
             CurrentPage = IoCLogin.Application as BaseAI;
             LoginAI login = (LoginAI)CurrentPage;
@@ -115,6 +135,44 @@ namespace SOCE.Library.UI.ViewModels
             DetermineIcon();
         }
 
+        public void CollectVersionNumber()
+        {
+            string codeBase = Assembly.GetExecutingAssembly().CodeBase;
+            UriBuilder uri = new UriBuilder(codeBase);
+            string path = Uri.UnescapeDataString(uri.Path);
+            string directory = Path.GetDirectoryName(path);
+
+            if (!string.IsNullOrEmpty(directory))
+            {
+                string newPath = Path.GetFullPath(Path.Combine(directory, @"..\"));
+
+                string[] files = Directory.GetFiles(newPath);
+                foreach (string file in files)
+                {
+                    if (Path.GetFileName(file) == "VersionChecker.xml")
+                    {
+                        string text = File.ReadAllText(file);
+
+                        int pFrom = text.IndexOf("<version>") + "<version>".Length;
+                        int pTo = text.LastIndexOf("</version>");
+
+                        string result = text.Substring(pFrom, pTo - pFrom);
+
+                        double val=0;
+
+                        bool succ = Double.TryParse(result, out val);
+
+                        if (succ)
+                        {
+                            VersionNumber = val.ToString();
+                        }
+
+                        break;
+                    }
+                }
+            }
+            
+        }
 
         public void GoToLogin()
         {

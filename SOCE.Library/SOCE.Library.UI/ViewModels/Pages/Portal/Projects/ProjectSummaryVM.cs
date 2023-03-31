@@ -176,6 +176,8 @@ namespace SOCE.Library.UI.ViewModels
 
                         }
 
+                        sub.EditSubFieldState = value;
+
                         if (!_globalEditMode && value)
                         {
                             sub.globaleditmode = false;
@@ -185,7 +187,6 @@ namespace SOCE.Library.UI.ViewModels
                             sub.globaleditmode = true;
                         }
 
-                        sub.EditSubFieldState = value;
 
                     }
                 }
@@ -194,6 +195,7 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     BaseProject.FormatData(true);
                     SubProjects = BaseProject.SubProjects;
+                    Renumber(true);
                 }
                 
 

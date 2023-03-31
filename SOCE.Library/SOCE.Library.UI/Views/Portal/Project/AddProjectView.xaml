@@ -67,10 +67,11 @@
                   materialDesign:HintAssist.Hint="Select Client"        
                   ItemsSource="{Binding ClientsAvailable}" 
                   DisplayMemberPath="ClientName" 
+                          MaxDropDownHeight="200"
                   SelectedItem="{Binding Path= ClientInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
+                            <VirtualizingStackPanel MaxWidth="350"/>
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
@@ -79,11 +80,11 @@
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Market"
                   ItemsSource="{Binding MarketsAvailable}" 
-                  DisplayMemberPath="MarketName" 
+                  DisplayMemberPath="MarketName"  MaxDropDownHeight="200"
                   SelectedItem="{Binding Path= MarketInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
+                            <VirtualizingStackPanel MaxWidth="350"/>
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
@@ -91,11 +92,11 @@
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Project Manager"
                   ItemsSource="{Binding PMsAvailable}" 
-                  DisplayMemberPath="FullName" 
+                  DisplayMemberPath="FullName" MaxDropDownHeight="200"
                   SelectedItem="{Binding Path= PMInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
-                            <VirtualizingStackPanel />
+                            <VirtualizingStackPanel MaxWidth="350"/>
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>

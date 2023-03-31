@@ -86,6 +86,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _projectSelected;
+        public bool ProjectSelected
+        {
+            get
+            {
+                return _projectSelected;
+            }
+            set
+            {
+                _projectSelected = value;
+                RaisePropertyChanged(nameof(ProjectSelected));
+            }
+        }
+
         private void SetTotalNew()
         {
             Total = Entries.Sum(i => i.TimeEntry);
@@ -116,7 +130,9 @@ namespace SOCE.Library.UI
 
             SubProjects = members;
             SelectedSubproject = SubProjects[0];
+            ProjectSelected = true;
         }
+
 
 
         public object Clone()

@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
 using SOCE.Library.Db;
@@ -40,22 +41,48 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
         public ICommand GoToAddProject { get; set; }
-        public ICommand GoToAddClient { get; set; }
+        //public ICommand GoToAddClient { get; set; }
         public ICommand GoToAddMarket { get; set; }
         //public ICommand GoToAddSubProject { get; set; }
         public ICommand ArchiveProject { get; set; }
         public ICommand ArchiveMarket { get; set; }
-        public ICommand ArchiveClient { get; set; }
+        //public ICommand ArchiveClient { get; set; }
         public ICommand DeleteSubProject { get; set; }
         public ICommand ClearComboBox { get; set; }
         public ICommand ClearSearchParamters { get; set; }
         public ICommand SearchCommand { get; set; }
         public ICommand ExportDataCommand { get; set; }
         public ICommand GoToOpenProjectSummary { get; set; }
-
+        public ICommand OpenClientCommand { get; set; }
+        public ICommand OpenMarketCommand { get; set; }
         public ICommand AddYearCommand { get; set; }
 
         public ICommand SubtractYearCommand { get; set; }
+
+        private bool _rightDrawerOpen = false;
+        public bool RightDrawerOpen
+        {
+            get
+            {
+                return _rightDrawerOpen;
+            }
+            set
+            {
+                _rightDrawerOpen = value;
+                RaisePropertyChanged(nameof(RightDrawerOpen));
+            }
+        }
+
+        private UserControl _rightViewToShow = new UserControl();
+        public UserControl RightViewToShow
+        {
+            get { return _rightViewToShow; }
+            set
+            {
+                _rightViewToShow = value;
+                RaisePropertyChanged(nameof(RightViewToShow));
+            }
+        }
 
         private bool _sortFilter = false;
         public bool SortFilter
@@ -276,13 +303,14 @@ namespace SOCE.Library.UI.ViewModels
             CurrentEmployee = loggedinEmployee;
 
             this.GoToAddProject = new RelayCommand<object>(this.ExecuteRunAddDialog);
-            this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
+            //this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
             //this.GoToAddSubProject = new RelayCommand<object>(this.ExecuteRunAddSubProjectDialog);
             this.GoToOpenProjectSummary = new RelayCommand<object>(this.ExecuteOpenSubDialog);
-
+            this.OpenClientCommand = new RelayCommand(this.OpenRightDrawerClient);
+            this.OpenMarketCommand = new RelayCommand(this.OpenRightDrawerMarket);
             this.ArchiveProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
-            this.ArchiveClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
+            //this.ArchiveClient = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.ArchiveMarket = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
             this.DeleteSubProject = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
 
@@ -299,6 +327,31 @@ namespace SOCE.Library.UI.ViewModels
 
 
             ShowActiveProjects = true;
+        }
+
+        private void OpenRightDrawerClient()
+        {
+
+            BaseAI CurrentPage = IoCPortal.Application as BaseAI;
+            PortalAI portAI = (PortalAI)CurrentPage;
+
+            ClientView cv = new ClientView();
+            portAI.RightViewToShow = cv;
+            ClientVM cvm = new ClientVM(this, CanAddProject);
+            portAI.RightViewToShow.DataContext = cvm;
+            portAI.RightDrawerOpen = true;
+        }
+
+        private void OpenRightDrawerMarket()
+        {
+            BaseAI CurrentPage = IoCPortal.Application as BaseAI;
+            PortalAI portAI = (PortalAI)CurrentPage;
+
+            MarketView cv = new MarketView();
+            portAI.RightViewToShow = cv;
+            MarketVM cvm = new MarketVM(this, CanAddProject);
+            portAI.RightViewToShow.DataContext = cvm;
+            portAI.RightDrawerOpen = true;
         }
 
         private void ClearInputsandReload()
@@ -431,18 +484,18 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private async void ExecuteRunAddClientDialog(object o)
-        {
-            //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new AddClientView();
+        //private async void ExecuteRunAddClientDialog(object o)
+        //{
+        //    //let's set up a little MVVM, cos that's what the cool kids are doing:
+        //    var view = new AddClientView();
 
-            //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog");
-            //if (result != null)
-            //{
-                LoadClients();
-            //}
-        }
+        //    //show the dialog
+        //    var result = await DialogHost.Show(view, "RootDialog");
+        //    //if (result != null)
+        //    //{
+        //        LoadClients();
+        //    //}
+        //}
 
         private async void ExecuteRunAddMarketDialog(object o)
         {
@@ -568,7 +621,7 @@ namespace SOCE.Library.UI.ViewModels
         //    LoadMarkets();
         //}
 
-        private void LoadProjects()
+        public void LoadProjects()
         {
             List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
 
@@ -606,7 +659,7 @@ namespace SOCE.Library.UI.ViewModels
             NumProjects = Projects.Count;
         }
 
-        private void LoadClients()
+        public void LoadClients()
         {
             List<ClientDbModel> dbclients = SQLAccess.LoadClients();
 
@@ -631,7 +684,7 @@ namespace SOCE.Library.UI.ViewModels
             YearInp--;
         }
 
-        private void LoadMarkets()
+        public void LoadMarkets()
         {
             List<MarketDbModel> dbmarkets = SQLAccess.LoadMarkets();
 

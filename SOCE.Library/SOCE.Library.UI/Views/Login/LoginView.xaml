@@ -25,7 +25,7 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <materialDesign:PackIcon Grid.Column="0" Kind="User" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-            <TextBox Grid.Column="1" Margin="6 0 10 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" BorderBrush="Black" SelectionBrush="Crimson" Text="{Binding Email}" materialDesign:TextFieldAssist.SuffixText="@shirkodonovan.com"/>
+            <TextBox Grid.Column="1" Margin="6 0 10 0" materialDesign:HintAssist.Hint="Email" Foreground="Black" BorderBrush="Black" SelectionBrush="{StaticResource SOCERed}" Text="{Binding Email}" materialDesign:TextFieldAssist.SuffixText="@shirkodonovan.com"/>
         </Grid>
         <Grid Grid.Row="3" Margin="10 10 10 0" >
             <Grid.ColumnDefinitions>
@@ -44,7 +44,8 @@
                 </BindablePasswordBox.InputBindings>
             </component:BindablePasswordBox>-->
         </Grid>
-        <Button Grid.Row="4" HorizontalAlignment ="Center" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=txtPassword}">
+        <Button Grid.Row="4" HorizontalAlignment ="Center" BorderThickness="0" Margin ="0 30 0 0" Width="80" Height="35" Style="{StaticResource MaterialDesignRaisedButton}" 
+                materialDesign:ButtonAssist.CornerRadius="8" Background="{StaticResource SOCERed}" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=txtPassword}">
             <Button.Content>
                 <materialDesign:PackIcon Kind="Login" Width="25" Height="25" Foreground="White"/>
             </Button.Content>

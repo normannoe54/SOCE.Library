@@ -79,11 +79,22 @@
                 <views:ResetPasswordView/>
             </DataTemplate>
 
-            <SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>
-            <SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>
-            <SolidColorBrush x:Key="SOCELightRed" Color="#e36d6d"/>
+            <SolidColorBrush x:Key="SOCERed" Color="#c92127"/>
+            <SolidColorBrush x:Key="SOCEGray" Color="#636466"/>
+            <!--<SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>-->
+            <SolidColorBrush x:Key="SOCELightRed" Color="#e24d52"/>
+            <SolidColorBrush x:Key="SOCELightGray" Color="#898b8d"/>
 
-
+            <SolidColorBrush x:Key="SOCEBlueCompliment" Color="#147975"/>
+            <SolidColorBrush x:Key="SOCEGreenCompliment" Color="#1d9719"/>
+            <SolidColorBrush x:Key="SOCEOrangeCompliment" Color="#c97221"/>
+            
+            <Style x:Key="PageHeader" TargetType="TextBlock">
+                <Setter Property="Foreground" Value="{StaticResource SOCERed}" />
+                <Setter Property="FontSize" Value="32"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+            </Style>
+            
             <!--<Style x:Key="DataGridCellStyle1" TargetType="{x:Type DataGridCell}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="VerticalAlignment" Value="Center" />
@@ -127,11 +138,18 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Background" Value="#F7F6F4" />
-                        <Setter Property="Foreground" Value="DarkRed" />
+                        <Setter Property="Foreground" Value="{StaticResource SOCERed}" />
                     </Trigger>
                 </Style.Triggers>
             </Style>
 
+            <Style x:Key="IconButton" TargetType="materialDesign:PackIcon">
+                <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
+                <Setter Property="Margin" Value="25 0 0 0"/>
+                <Setter Property="Width" Value="18"/>
+                <Setter Property="Height" Value="18"/>
+            </Style>
+            
             <Style x:Key="menuButtonIcon" TargetType="materialDesign:PackIcon">
                 <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
                 <Setter Property="Margin" Value="25 0 0 0"/>

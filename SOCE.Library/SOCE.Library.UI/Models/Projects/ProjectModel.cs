@@ -739,7 +739,7 @@ namespace SOCE.Library.UI
                 double totalbudgethours = 0;
 
                 SubProjectModel spm = null;
-
+               
                 //if (spdm.IsCurrActive == 1)
                 //{
                 if (addistrue)
@@ -757,6 +757,8 @@ namespace SOCE.Library.UI
                         continue;
                     }
                 }
+
+                spm.NumberOrder = spdm.NumberOrder;
                 //}
                 //else
                 //{

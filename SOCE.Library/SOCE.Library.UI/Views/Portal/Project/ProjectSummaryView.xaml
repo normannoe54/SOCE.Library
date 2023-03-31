@@ -472,7 +472,7 @@
                                                      IsEnabled="{Binding Path=DataContext.SelectedProjectPhase.IsVisible, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                                    materialDesign:TextFieldAssist.SuffixText=" hr."/>-->
                                             <TextBox Grid.Column="4" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center"  IsReadOnly="{Binding EditRoleFieldState}"
-                                                     VerticalAlignment="Center" Text="{Binding BudgetedHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" 
+                                                     VerticalAlignment="Center" local:SelectTextOnFocus.Active ="True" Text="{Binding BudgetedHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" 
                                                      materialDesign:TextFieldAssist.SuffixText=" hr."/>
                                             <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center" Text="{Binding PercentSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
