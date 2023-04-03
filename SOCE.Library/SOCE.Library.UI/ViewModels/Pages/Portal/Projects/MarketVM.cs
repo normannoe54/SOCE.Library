@@ -95,38 +95,34 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
-            MarketModel mm = new MarketModel();
-            bool donothing = false;
+            MarketModel mm = (MarketModel)o;
 
-
-            List<ProjectDbModel> project2 = SQLAccess.LoadProjects();
-            List<ProjectDbModel> projmarket = project2.Where(x => x.MarketId == mm.Id).ToList();
+            List<ProjectDbModel> project1 = SQLAccess.LoadProjects();
+            List<ProjectDbModel> projmarket = project1.Where(x => x.MarketId == mm.Id).ToList();
 
             if (projmarket.Count > 0)
             {
-                aysvm.TopLine = "Cannot delete market,";
-                aysvm.BottomLine = "market assigned to existing project";
-                donothing = true;
+                MessageBoxView mbv = new MessageBoxView();
+                MessageBoxVM mbvm = new MessageBoxVM("Cannot delete market");
+                mbvm.SubMessage = "market assigned to existing project";
+                //donothing = true;
 
+                mbv.DataContext = mbvm;
+                var result = await DialogHost.Show(mbv, "RootDialog");
             }
-
-            aysvm = new AreYouSureVM(mm);
-
-            view.DataContext = aysvm;
-            var result = await DialogHost.Show(view, "RootDialog");
-
-            //show the dialog
-
-            aysvm = view.DataContext as AreYouSureVM;
-
-            if (aysvm.Result && !donothing)
+            else
             {
 
-                SQLAccess.DeleteMarket(mm.Id);
-                LoadMarkets();
-
+                YesNoView ynv = new YesNoView();
+                YesNoVM ynvm = new YesNoVM(mm);
+                ynv.DataContext = ynvm;
+                var result = await DialogHost.Show(ynv, "RootDialog");
+                ynvm = ynv.DataContext as YesNoVM;
+                if (ynvm.Result)
+                {
+                    SQLAccess.DeleteMarket(mm.Id);
+                    LoadMarkets();
+                }
             }
         }
     }

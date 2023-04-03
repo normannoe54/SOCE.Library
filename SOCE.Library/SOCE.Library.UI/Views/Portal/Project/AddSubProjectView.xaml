@@ -53,10 +53,10 @@
         </Grid>
 
         <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}" Grid.Row="2" Background="Transparent" Margin="0 10 0 0">
-            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding PhaseSelected}" Background="{StaticResource SOCELighterRed}" Width="90">
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding PhaseSelected}" Background="{StaticResource SOCELightRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Typical&#10;Project&#10;Phases" TextAlignment="Center" Foreground="DarkRed"/>
+                        <TextBlock Text="Typical&#10;Project&#10;Phases" TextAlignment="Center" Foreground="Black"/>
                     </StackPanel>
                 </TabItem.Header>
                 <StackPanel Grid.Row="1" Margin="10 10 0 0" VerticalAlignment="Stretch">
@@ -103,10 +103,10 @@
                     </CheckBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding AdSelected}" Background="{StaticResource SOCELighterRed}" Width="90">
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding AdSelected}" Background="{StaticResource SOCELightRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Add-&#10;Service" TextAlignment="Center" Foreground="DarkRed"/>
+                        <TextBlock Text="Add-&#10;Service" TextAlignment="Center" Foreground="Black"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Grid VerticalAlignment="Stretch" Margin="10 10 0 0">
@@ -141,10 +141,10 @@
                 </Grid>
             </TabItem>
 
-            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding CustomSelected}" Background="{StaticResource SOCELighterRed}" Width="90">
+            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding CustomSelected}" Background="{StaticResource SOCELightRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
-                        <TextBlock Text="Custom" TextAlignment="Center" Foreground="DarkRed"/>
+                        <TextBlock Text="Custom" TextAlignment="Center" Foreground="black"/>
                     </StackPanel>
                 </TabItem.Header>
                 <Grid VerticalAlignment="Stretch" Margin="10 10 0 0">

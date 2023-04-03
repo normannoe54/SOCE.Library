@@ -42,6 +42,21 @@ namespace SOCE.Library.UI
             }
         }
 
+        private StatusEnum _status;
+        public StatusEnum Status
+        {
+            get
+            {
+                return _status;
+            }
+            set
+            {
+                _status = value;
+                RaisePropertyChanged(nameof(Status));
+            }
+        }
+
+
         private bool _approved = false;
         public bool Approved
         {
@@ -52,10 +67,6 @@ namespace SOCE.Library.UI
             set
             {
                 _approved = value;
-
-                Icon = _approved ? MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline: MaterialDesignThemes.Wpf.PackIconKind.AlertOctagonOutline;
-                Iconcolor = _approved ? Brushes.Green : Brushes.Orange;
-                StatusTooltip = _approved ? "Approved" : "In Progress";
                 RaisePropertyChanged(nameof(Approved));
             }
         }
@@ -70,9 +81,6 @@ namespace SOCE.Library.UI
             set
             {
                 _missing = value;
-                SubmittedIcon = _missing ? MaterialDesignThemes.Wpf.PackIconKind.QuestionMark : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
-                SubmittedIconcolor = _missing ? Brushes.Purple : Brushes.Green;
-                SubmittedStatusTooltip = _missing ? "Not Submitted" : "Submitted";
                 RaisePropertyChanged(nameof(Missing));
             }
         }
@@ -99,72 +107,6 @@ namespace SOCE.Library.UI
             }
         }
 
-        private PackIconKind _icon;
-        public PackIconKind Icon
-        {
-            get { return _icon; }
-            set
-            {
-                _icon = value;
-                RaisePropertyChanged(nameof(Icon));
-            }
-        }
-
-        private Brush _iconcolor;
-        public Brush Iconcolor
-        {
-            get { return _iconcolor; }
-            set
-            {
-                _iconcolor = value;
-                RaisePropertyChanged(nameof(Iconcolor));
-            }
-        }
-
-        private Brush _submittedIconcolor;
-        public Brush SubmittedIconcolor
-        {
-            get { return _submittedIconcolor; }
-            set
-            {
-                _submittedIconcolor = value;
-                RaisePropertyChanged(nameof(SubmittedIconcolor));
-            }
-        }
-
-        private PackIconKind _submittedIcon;
-        public PackIconKind SubmittedIcon
-        {
-            get { return _submittedIcon; }
-            set
-            {
-                _submittedIcon = value;
-                RaisePropertyChanged(nameof(SubmittedIcon));
-            }
-        }
-
-
-        private string _statusTooltip;
-        public string StatusTooltip
-        {
-            get { return _statusTooltip; }
-            set
-            {
-                _statusTooltip = value;
-                RaisePropertyChanged(nameof(StatusTooltip));
-            }
-        }
-
-        private string _submittedStatusTooltip;
-        public string SubmittedStatusTooltip
-        {
-            get { return _submittedStatusTooltip; }
-            set
-            {
-                _submittedStatusTooltip = value;
-                RaisePropertyChanged(nameof(StatusTooltip));
-            }
-        }
 
         private bool _selectedCurr;
         public bool SelectedCurr
@@ -215,6 +157,20 @@ namespace SOCE.Library.UI
             OTHours = emdb.OTHours;
             Approved = Convert.ToBoolean(emdb.Approved);
             Missing = false;
+
+            if (Approved)
+            {
+                Status = StatusEnum.Approved;
+            }
+            else if (!Approved && !Missing)
+            {
+                Status = StatusEnum.Submitted;
+            }
+            else
+            {
+                Status = StatusEnum.Incomplete;
+            }
+
             EmailRemind = false;
             SubmittedEnabled = true;
         }
@@ -231,6 +187,7 @@ namespace SOCE.Library.UI
             tsm.Missing = true;
             tsm.EmailRemind = true;
             tsm.SubmittedEnabled = false;
+            tsm.Status = StatusEnum.Incomplete;
             return tsm;
         }
     }

@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SOCE.Library.UI.Views.AreYouSureView"
+﻿<UserControl x:Class="SOCE.Library.UI.Views.YesNoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,10 +14,8 @@
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="0" Orientation="Vertical">
-            <StackPanel Orientation="Horizontal"  HorizontalAlignment="Center">
-                <TextBlock  FontSize="24" Text="{Binding TopLine}" HorizontalAlignment="Center" />
-            </StackPanel>
-            <TextBlock Margin="0 10 0 10" FontSize="24" HorizontalAlignment="Center"  Text="{Binding BottomLine}" />
+            <TextBlock  FontSize="24" Text="{Binding Message}" HorizontalAlignment="Center" Margin="0 0 0 10"/>
+            <TextBlock  FontSize="16" HorizontalAlignment="Center"  Text="{Binding SubMessage}" Visibility="{Binding IsSubVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  />
         </StackPanel>
         <Grid VerticalAlignment="Center" Grid.Row="1" Height="50">
             <Grid.ColumnDefinitions>
@@ -29,7 +27,7 @@
                 <TextBlock Text="YES" FontSize="20"/>
             </Button>
             <Button Grid.Column="2" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}" Margin="0,9">
-                <TextBlock Text="CANCEL" FontSize="20"/>
+                <TextBlock Text="NO" FontSize="20"/>
             </Button>
         </Grid>
     </Grid>

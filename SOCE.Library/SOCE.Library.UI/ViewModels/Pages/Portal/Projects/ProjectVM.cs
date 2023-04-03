@@ -396,17 +396,17 @@ namespace SOCE.Library.UI.ViewModels
         private async void RunExport()
         {
             TimeSpan time = TimeSpan.FromSeconds(Projects.Count * 0.4);
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
+            YesNoView view = new YesNoView();
+            YesNoVM aysvm = new YesNoVM();
 
-            aysvm.TopLine = $"Are you sure you want to export {Projects.Count} projects?";
-            aysvm.BottomLine = $"Estimated time to complete: {time.Minutes} min. {time.Seconds} sec.";
+            aysvm.Message = $"Are you sure you want to export {Projects.Count} projects?";
+            aysvm.SubMessage = $"Estimated time to complete: {time.Minutes} min. {time.Seconds} sec.";
             view.DataContext = aysvm;
 
             //show the dialog
             var Result = await DialogHost.Show(view, "RootDialog");
 
-            AreYouSureVM vm = view.DataContext as AreYouSureVM;
+            YesNoVM vm = view.DataContext as YesNoVM;
             bool resultvm = vm.Result;
 
             if (resultvm)
@@ -512,96 +512,44 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
-            
-            bool donothing = false;
-            switch (o)
+            ProjectModel pm = (ProjectModel)o;
+
+            List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(pm.Id);
+            foreach (SubProjectDbModel spm in subs)
             {
-                case ProjectModel pm:
-                    List<SubProjectDbModel> subs =  SQLAccess.LoadSubProjectsByProject(pm.Id);
-                    aysvm = new AreYouSureVM(pm);
-                    foreach (SubProjectDbModel spm in subs)
-                    {
-                        List<TimesheetRowDbModel> val = SQLAccess.LoadTimeSheetDatabySubId(spm.Id);
+                List<TimesheetRowDbModel> val = SQLAccess.LoadTimeSheetDatabySubId(spm.Id);
 
-                        if (val.Count > 0)
-                        {
-                            aysvm.TopLine = "Cannot delete project,";
-                            aysvm.BottomLine = "Hours already saved to project.";
-                            donothing = true;
-                            break;
-                        }
-                    }
-                    
-                    break;
-                case ClientModel cm:
-                    List<ProjectDbModel> project1 = SQLAccess.LoadProjects();
-                    List<ProjectDbModel> projclient = project1.Where(x => x.ClientId == cm.Id).ToList();
-                    aysvm = new AreYouSureVM(cm);
-
-                    if (projclient.Count>0)
-                    {
-                        aysvm.TopLine = "Cannot delete client,";
-                        aysvm.BottomLine = "client assigned to existing project";
-                        donothing = true;
-                        break;
-                    }
-
-                    break;
-                case MarketModel mm:
-
-                    List<ProjectDbModel> project2 = SQLAccess.LoadProjects();
-                    List<ProjectDbModel> projmarket = project2.Where(x => x.MarketId == mm.Id).ToList();
-
-                    if (projmarket.Count > 0)
-                    {
-                        aysvm.TopLine = "Cannot delete market,";
-                        aysvm.BottomLine = "market assigned to existing project";
-                        donothing = true;
-                        break;
-                    }
-                    aysvm = new AreYouSureVM(mm);
-                    break;
-                default:
-                    return;
-                    // code block
-            }
-
-            view.DataContext = aysvm;
-            var result = await DialogHost.Show(view, "RootDialog");
-
-            //show the dialog
-
-            aysvm = view.DataContext as AreYouSureVM;
-
-            if (aysvm.Result && !donothing)
-            {
-                switch (o)
+                if (val.Count > 0)
                 {
-                    case ProjectModel pm:
-                        SQLAccess.DeleteProject(pm.Id);
+                    MessageBoxView mbv = new MessageBoxView();
+                    MessageBoxVM mbvm = new MessageBoxVM("Cannot delete project");
+                    mbvm.SubMessage = "Hours already saved to project.";
+                    mbv.DataContext = mbvm;
+                    var result = await DialogHost.Show(mbv, "RootDialog");
 
-                        foreach(SubProjectModel spm in pm.SubProjects)
-                        {
-                            SQLAccess.DeleteSubProject(spm.Id);
-                        }
-
-                        LoadProjects();
-                        break;
-                    case ClientModel cm:
-                        SQLAccess.DeleteClient(cm.Id);
-                        LoadClients();
-                        break;
-                    case MarketModel mm:
-                        SQLAccess.DeleteMarket(mm.Id);
-                        LoadMarkets();
-                        break;
-                    default:
-                        // code block
-                        break;
+                    return;
                 }
             }
+
+            YesNoView ynv = new YesNoView();
+            YesNoVM ynvm = new YesNoVM(pm);
+            ynv.DataContext = ynvm;
+
+            var result2 = await DialogHost.Show(ynv, "RootDialog");
+            ynvm = ynv.DataContext as YesNoVM;
+
+            if (ynvm.Result)
+            {
+                SQLAccess.DeleteProject(pm.Id);
+
+                foreach (SubProjectModel spm in pm.SubProjects)
+                {
+                    SQLAccess.DeleteSubProject(spm.Id);
+                }
+
+                LoadProjects();
+            }
+
         }
 
         //private void ClosingEventHandlerProjects(object sender, DialogClosingEventArgs eventArgs)

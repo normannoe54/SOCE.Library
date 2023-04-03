@@ -182,6 +182,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _message = "";
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                RaisePropertyChanged(nameof(Message));
+            }
+        }
+
         private bool _searchFilter = false;
         public bool SearchFilter
         {
@@ -309,12 +320,13 @@ namespace SOCE.Library.UI.ViewModels
         {
             if (trm.Entries.Any(x => x.TimeEntry > 0))
             {
-                AreYouSureView view = new AreYouSureView();
-                AreYouSureVM aysvm = new AreYouSureVM();
-                aysvm.BottomLine = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
+                YesNoView view = new YesNoView();
+                YesNoVM aysvm = new YesNoVM();
+                aysvm.Message = "Are you sure you want to delete";
+                aysvm.SubMessage = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
                 view.DataContext = aysvm;
                 var result = await DialogHost.Show(view, "RootDialog");
-                aysvm = view.DataContext as AreYouSureVM;
+                aysvm = view.DataContext as YesNoVM;
 
                 if (!aysvm.Result)
                 {
@@ -669,12 +681,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void SubmitTimesheet()
         {
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
-            aysvm.TopLine = "submit timesheet?";
+            YesNoView view = new YesNoView();
+            YesNoVM aysvm = new YesNoVM();
+            aysvm.Message = "Submit Time Sheet?";
             view.DataContext = aysvm;
             var result = await DialogHost.Show(view, "RootDialog");
-            aysvm = view.DataContext as AreYouSureVM;
+            aysvm = view.DataContext as YesNoVM;
 
             if (aysvm.Result)
             {
@@ -822,6 +834,7 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             CopiedTimesheetData = Rowdata.ToList();
+            Message = "Timesheet Saved";
         }
 
 
@@ -846,12 +859,12 @@ namespace SOCE.Library.UI.ViewModels
         {
             if (Rowdata.Count == 0)
             {
-                AreYouSureView view = new AreYouSureView();
-                AreYouSureVM aysvm = new AreYouSureVM();
-                aysvm.TopLine = "copy the previous timesheet?";
+                YesNoView view = new YesNoView();
+                YesNoVM aysvm = new YesNoVM();
+                aysvm.Message= "Copy the previous timesheet?";
                 view.DataContext = aysvm;
                 var result = await DialogHost.Show(view, "RootDialog");
-                aysvm = view.DataContext as AreYouSureVM;
+                aysvm = view.DataContext as YesNoVM;
 
                 if (aysvm.Result)
                 {

@@ -145,15 +145,15 @@ namespace SOCE.Library.UI.ViewModels
         {
             EmployeeModel em = o as EmployeeModel;
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM(em);
+            YesNoView view = new YesNoView();
+            YesNoVM aysvm = new YesNoVM(em);
 
             view.DataContext = aysvm;
 
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
 
-            aysvm = view.DataContext as AreYouSureVM;
+            aysvm = view.DataContext as YesNoVM;
 
             if (aysvm.Result)
             {

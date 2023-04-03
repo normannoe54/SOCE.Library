@@ -325,17 +325,17 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void RunExport()
         {
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
+            YesNoView view = new YesNoView();
+            YesNoVM aysvm = new YesNoVM();
 
-            aysvm.TopLine = $"Are you sure you want to export";
-            aysvm.BottomLine = $"[{BaseProject.ProjectNumber}] {BaseProject.ProjectName}";
+            aysvm.Message = $"Are you sure you want to export";
+            aysvm.SubMessage = $"[{BaseProject.ProjectNumber}] {BaseProject.ProjectName}";
             view.DataContext = aysvm;
 
             //show the dialog
             var Result = await DialogHost.Show(view, "RootDialog");
 
-            AreYouSureVM vm = view.DataContext as AreYouSureVM;
+            YesNoVM vm = view.DataContext as YesNoVM;
             bool resultvm = vm.Result;
 
             if (resultvm)
@@ -470,8 +470,8 @@ namespace SOCE.Library.UI.ViewModels
         {
             if (rpsm.Id != 0)
             {
-                LeftViewToShow = new AreYouSureView();
-                AreYouSureVM aysvm = new AreYouSureVM(rpsm, this);
+                LeftViewToShow = new YesNoView();
+                YesNoVM aysvm = new YesNoVM(rpsm, this);
                 LeftViewToShow.DataContext = aysvm;
                 ItemToDelete = rpsm;
                 LeftDrawerOpen = true;
@@ -488,8 +488,8 @@ namespace SOCE.Library.UI.ViewModels
         {
             if (SubProjects.Count > 1)
             {
-                LeftViewToShow = new AreYouSureView();
-                AreYouSureVM aysvm = new AreYouSureVM(spm, this);
+                LeftViewToShow = new YesNoView();
+                YesNoVM aysvm = new YesNoVM(spm, this);
                 LeftViewToShow.DataContext = aysvm;
                 ItemToDelete = spm;
                 LeftDrawerOpen = true;

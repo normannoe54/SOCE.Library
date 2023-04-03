@@ -151,6 +151,7 @@
     <Compile Include="Components\BindablePasswordBox.xaml.cs">
       <DependentUpon>BindablePasswordBox.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Converters\DescriptionConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
     <Compile Include="Converters\InvoicedColorConverter.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
@@ -160,6 +161,7 @@
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="Models\StatusEnum.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\MarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\SubProjectInfoVM.cs" />
@@ -194,7 +196,11 @@
     <Compile Include="ViewModels\Pages\Login\SignupVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\EmployeeDataVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\AddEmployeeVM.cs" />
-    <Compile Include="ViewModels\Popups\AreYouSureVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\TimesheetReview\EmployeeSummaryVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetReviewVM2.cs" />
+    <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetViewerVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\TimesheetReview\ProgressBarVM.cs" />
+    <Compile Include="ViewModels\Popups\YesNoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\LicenseManagerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddClientVM.cs" />
@@ -226,14 +232,20 @@
     <Compile Include="Views\Login\SignupView.xaml.cs">
       <DependentUpon>SignupView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\TimesheetReview\ProgressBarView.xaml.cs">
+      <DependentUpon>ProgressBarView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Popups\MessageBoxView.xaml.cs">
+      <DependentUpon>MessageBoxView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\EmployeeDataView.xaml.cs">
       <DependentUpon>EmployeeDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Employee\AddEmployeeView.xaml.cs">
       <DependentUpon>AddEmployeeView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\Popups\AreYouSureView.xaml.cs">
-      <DependentUpon>AreYouSureView.xaml</DependentUpon>
+    <Compile Include="Views\Popups\YesNoView.xaml.cs">
+      <DependentUpon>YesNoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Employee\EmployeeView.xaml.cs">
       <DependentUpon>EmployeeView.xaml</DependentUpon>
@@ -283,8 +295,17 @@
     <Compile Include="Views\Portal\ResourcesView.xaml.cs">
       <DependentUpon>ResourcesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\TimesheetReview\EmployeeSummaryView.xaml.cs">
+      <DependentUpon>EmployeeSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\TimesheetReview\TimesheetReviewViewv2.xaml.cs">
+      <DependentUpon>TimesheetReviewViewv2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\TimesheetReview\TimesheetReviewView.xaml.cs">
       <DependentUpon>TimesheetReviewView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\TimesheetReview\TimesheetViewerView.xaml.cs">
+      <DependentUpon>TimesheetViewerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Timesheet\TimesheetView.xaml.cs">
       <DependentUpon>TimesheetView.xaml</DependentUpon>
@@ -342,6 +363,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\TimesheetReview\ProgressBarView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Popups\MessageBoxView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\EmployeeDataView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -350,7 +379,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\Popups\AreYouSureView.xaml">
+    <Page Include="Views\Popups\YesNoView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -418,9 +447,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\TimesheetReview\EmployeeSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\TimesheetReview\TimesheetReviewViewv2.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\TimesheetReview\TimesheetReviewView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\TimesheetReview\TimesheetViewerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Timesheet\TimesheetView.xaml">
       <Generator>MSBuild:Compile</Generator>

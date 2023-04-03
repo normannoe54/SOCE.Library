@@ -12,7 +12,40 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class MessageBoxVM : BaseVM
     {
-        public string Message;
+        public string Message { get; set; } = "";
+
+        private bool _isSubVisible = false;
+        public bool IsSubVisible
+        {
+            get
+            {
+                return _isSubVisible;
+            }
+            set
+            {
+                _isSubVisible = value;
+                RaisePropertyChanged(nameof(IsSubVisible));
+            }
+        }
+
+        private string _subMessage = "";
+        public string SubMessage
+        {
+            get
+            {
+                return _subMessage;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    IsSubVisible = true;
+                }
+                _subMessage = value;
+                RaisePropertyChanged(nameof(SubMessage));
+            }
+        }
+
         public ICommand CloseCommand { get; set; }
         public MessageBoxVM(string message)
         {

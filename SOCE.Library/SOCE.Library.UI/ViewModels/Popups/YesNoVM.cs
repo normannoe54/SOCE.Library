@@ -10,76 +10,111 @@ using System.ComponentModel;
 
 namespace SOCE.Library.UI.ViewModels
 {
-    public class AreYouSureVM : BaseVM
+    public class YesNoVM : BaseVM
     {
         public bool Result { get; set; }
 
         private ProjectSummaryVM ProjectSummary { get; set; }
 
-        public string TopLine { get; set; } = "Are you sure you want to delete:";
+        public string Message { get; set; } = "";
 
-        public string BottomLine { get; set; }
+        private bool _isSubVisible = false;
+        public bool IsSubVisible
+        {
+            get
+            {
+                return _isSubVisible;
+            }
+            set
+            {
+                _isSubVisible = value;
+                RaisePropertyChanged(nameof(IsSubVisible));
+            }
+        }
+
+        private string _subMessage = "";
+        public string SubMessage
+        {
+            get
+            {
+                return _subMessage;
+            }
+            set
+            {
+                if (!string.IsNullOrEmpty(value))
+                {
+                    IsSubVisible = true;
+                }
+                _subMessage = value;
+                RaisePropertyChanged(nameof(SubMessage));
+            }
+        }
+
         public ICommand YesCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
-        public AreYouSureVM()
+        public YesNoVM()
         {
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
         }
 
-        public AreYouSureVM(EmployeeModel em)
+        public YesNoVM(EmployeeModel em)
         {
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            TopLine = "Are you sure you want to archive:";
-            BottomLine = em.FirstName + " " + em.LastName;
+            Message = "Are you sure you want to delete:";
+            SubMessage = em.FirstName + " " + em.LastName;
         }
 
-        public AreYouSureVM(ClientModel cm)
+        public YesNoVM(ClientModel cm)
         {
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            BottomLine = cm.ClientName;
-            TopLine = "Are you sure you want to archive:";
+            Message = "Are you sure you want to delete:";
+            SubMessage = cm.ClientName;
         }
 
-        public AreYouSureVM(MarketModel mm)
+        public YesNoVM(MarketModel mm)
         {
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            BottomLine = mm.MarketName;
+            Message = "Are you sure you want to delete:";
+            SubMessage = mm.MarketName;
         }
 
-        public AreYouSureVM(SubProjectModel spm, ProjectSummaryVM psm)
+        public YesNoVM(SubProjectModel spm, ProjectSummaryVM psm)
         {
             ProjectSummary = psm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            BottomLine = $"Phase: {spm.PointNumber}";
+            Message = "Are you sure you want to delete:";
+            SubMessage = $"Phase: {spm.PointNumber}";
         }
 
-        public AreYouSureVM(RolePerSubProjectModel rpspm, ProjectSummaryVM psm)
+        public YesNoVM(RolePerSubProjectModel rpspm, ProjectSummaryVM psm)
         {
             ProjectSummary = psm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
             string description = GetEnumDescription((DefaultRoleEnum)rpspm.Role);
-            BottomLine = $"Role: {description} {Environment.NewLine}Employee: {rpspm.Employee.FullName}";
+            Message = "Are you sure you want to delete:";
+            SubMessage = $"Role: {description} {Environment.NewLine}Employee: {rpspm.Employee.FullName}";
         }
 
-        public AreYouSureVM(ProjectModel pm)
+        public YesNoVM(ProjectModel pm)
         {
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
-            BottomLine = pm.ProjectName;
+            Message = "Are you sure you want to delete:";
+            SubMessage = pm.ProjectName;
         }
 
         private string GetEnumDescription(Enum value)

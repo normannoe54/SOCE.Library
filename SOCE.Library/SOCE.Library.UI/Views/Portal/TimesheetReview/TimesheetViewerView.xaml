@@ -1,17 +1,15 @@
-﻿<UserControl x:Class="SOCE.Library.UI.Views.TimesheetView"
+﻿<UserControl x:Class="SOCE.Library.UI.Views.TimesheetViewerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:sys="clr-namespace:System;assembly=mscorlib"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SOCE.Library.UI"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
-    <Grid Grid.Column="1" Margin="30 10 40 20">
+
+    <Grid Margin="0 10 40 20">
         <Grid.RowDefinitions>
-            <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="auto"/>
@@ -19,129 +17,83 @@
 
         <!--Page Title-->
         <!--<TextBlock Text="Time Sheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>-->
-
-        <TextBlock Grid.Row="0" Text="Time Sheet"  Style="{StaticResource PageHeader}" HorizontalAlignment="Left"/>
-        <TextBlock Grid.Row="0" FontSize="16" FontWeight="DemiBold" Foreground="{StaticResource SOCERed}"  VerticalAlignment="bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding Message, NotifyOnTargetUpdated=True}">
-            <TextBlock.Triggers>
-                <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                    <BeginStoryboard>
-                        <Storyboard>
-                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
-                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:2" Value="1"/>
-                                <EasingDoubleKeyFrame KeyTime="0:0:3" Value="0"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
-                    </BeginStoryboard>
-                </EventTrigger>
-            </TextBlock.Triggers>
-        </TextBlock>
-        <!--Seprator-->
-        <!--<Separator Height="1" Grid.Row="1" Background="{StaticResource SOCEGray}" Margin="0 -1 0 10"/>-->
-
-        <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2">
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="{StaticResource SOCEGray}"/>
-                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Previous"  Foreground="{StaticResource SOCEGray}"/>
-                </StackPanel>
-            </Button>
-            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Current" Margin="0 0 10 0"  Foreground="{StaticResource SOCEGray}"/>
-                    <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="{StaticResource SOCEGray}"/>
-                </StackPanel>
-            </Button>
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}">
-                <StackPanel Orientation="Horizontal">
-                    <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="{StaticResource SOCEGray}"/>
-                    <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="{StaticResource SOCEGray}"/>
-                </StackPanel>
-            </Button>
-        </StackPanel>
-
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-
-            <!--Counter Title-->
-            <StackPanel Grid.Column="0" Orientation="Vertical">
-
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
-                        <ColumnDefinition Width="*"/>
-                    </Grid.ColumnDefinitions>
-
-                    <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
-                        <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
-                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" VerticalAlignment="Center"/>
-                        <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding SearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                            <ToggleButton.Content>
-                                <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Number" Kind="Pound" VerticalAlignment="Center" HorizontalAlignment="Center" Height="15" Width="15"/>
-                            </ToggleButton.Content>
-                            <materialDesign:ToggleButtonAssist.OnContent>
-                                <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Name" Kind="AlphaN" VerticalAlignment="Center" HorizontalAlignment="Center"  Height="25" Width="25" Padding="0"/>
-                            </materialDesign:ToggleButtonAssist.OnContent>
-                        </ToggleButton>
-                    </StackPanel>
-
-                    <Border Grid.Column="1" Width="110" CornerRadius="3" BorderThickness="1" BorderBrush="Black" Margin="20 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="2">
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="Due in:" FontSize="14" FontWeight="Regular" FontStyle="Italic"/>
-                            <TextBlock Text="{Binding DueDateValue}" FontSize="14" FontWeight="SemiBold" Margin="7 0 0 0"/>
-                            <TextBlock Text=" days" FontSize="14" FontWeight="Regular" FontStyle="Italic"/>
-                        </StackPanel>
-                    </Border>
-                </Grid>
-
-
-                <StackPanel Orientation="Vertical"  VerticalAlignment="Bottom" Margin="0 10 0 0">
-                    <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Background="Transparent" Foreground="{StaticResource SOCELightGray}" BorderThickness="1" BorderBrush="{StaticResource SOCELightGray}"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="Percent Complete: " FontSize="10" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding PercentComplete, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold"/>
-                        </StackPanel>
-                    </Grid>
-                    <Grid>
-                        <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding ExpectedProgress}"  Background="Transparent" Foreground="{StaticResource SOCELightRed}" BorderThickness="1" BorderBrush="{StaticResource SOCELightGray}"/>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
-                            <TextBlock Text="Expected Progress:" FontSize="10" FontWeight="SemiBold"/>
-                            <TextBlock Text="{Binding ExpectedProgress, StringFormat=' {0}%'}" FontSize="10" FontWeight="SemiBold" materialDesign:TextFieldAssist.SuffixText="%"/>
-                        </StackPanel>
-                    </Grid>
-                </StackPanel>
-            </StackPanel >
-
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="0" HorizontalAlignment="Left">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
-                <Button Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
-                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Black" BorderThickness="1">
+                <Button Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding BackToSummaryCommand}" 
+                        HorizontalAlignment="Stretch" VerticalAlignment="Center"  Height="30" BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
-
-                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                        <materialDesign:PackIcon  Kind="ArrowLeft" VerticalAlignment="Center"  Width="20" Height="20" Foreground="Black"/>
+                        <TextBlock Margin="5 0 0 0" Text="Back To Summary" Foreground="black" VerticalAlignment="Center" FontSize="16"/>
                     </StackPanel>
                 </Button>
-                <TextBlock Grid.Row="1"  Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 0 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+                <TextBlock Grid.Row="1" Text="Time Sheet Viewer"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}"/>
+                
             </Grid>
+            <Grid Grid.Column="1" HorizontalAlignment="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="150" Margin="0 0 20 0">
+                    <Border.Style>
+                        <Style TargetType="{x:Type Border}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding SubmittedTimesheet.Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Incomplete">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SOCERed}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SubmittedTimesheet.Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Submitted">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SOCEGray}"/>
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding SubmittedTimesheet.Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Approved">
+                                    <Setter Property="BorderBrush" Value="{StaticResource SOCEGreenCompliment}"/>
+                                </DataTrigger>
+                                <!-- etc -->
+                            </Style.Triggers>
+                        </Style>
+                    </Border.Style>
+                    <TextBlock  FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock.Style>
+                            <Style TargetType="{x:Type TextBlock}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding SubmittedTimesheet.Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Incomplete">
+                                        <Setter Property="Text" Value="Incomplete" />
+                                        <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SubmittedTimesheet.Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Submitted">
+                                        <Setter Property="Text" Value="Submitted" />
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEGray}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding SubmittedTimesheet.Status, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Approved">
+                                        <Setter Property="Text" Value="Approved" />
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEGreenCompliment}"/>
+                                    </DataTrigger>
+                                    <!-- etc -->
+                                </Style.Triggers>
+                            </Style>
+                        </TextBlock.Style>
+                    </TextBlock>
+                </Border>
+                <TextBlock Grid.Row="1" Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 10 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                
+            </Grid>
+
+            <!--</Grid>-->
         </Grid>
         <!--<ScrollViewer >-->
-        <Grid Grid.Row="3" Margin="0 5 0 0">
+        <Grid Grid.Row="1" Margin="0 5 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-
 
             <Grid Background="Transparent" Grid.Row="0" >
                 <Grid.ColumnDefinitions>
@@ -149,14 +101,7 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
-
-                <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="{StaticResource SOCEGreenCompliment}" HorizontalAlignment="Left">
-                    <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
-                        <TextBlock Text="Add Project" FontWeight="SemiBold"/>
-                    </StackPanel>
-                </Button>
-
+                <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding SubmittedTimesheet.Employee.FullName}" FontSize="18" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left" Width="250"/>
                 <ItemsControl Grid.Column="1" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Height="40">
                     <ItemsControl.Resources>
                         <local:DatetoStringConverter x:Key="DatetoString"/>
@@ -183,7 +128,7 @@
                     </ItemsControl.ItemsPanel>
                 </ItemsControl>
 
-                <TextBlock Grid.Column="2"
+                <TextBlock Grid.Column="2" Margin="10 0 10 0"
                              Text="Total" 
                              TextAlignment="Center"
                              VerticalAlignment="Center" 
@@ -192,6 +137,7 @@
                              Foreground="Black"/>
 
             </Grid>
+
 
 
             <Grid Background="Transparent"  Grid.Row="1" >
@@ -203,7 +149,7 @@
 
                 <TextBlock Grid.Column="0"
                                Text="Total:" 
-                               Padding="10"
+                               Padding="0 10 10 10"
                                TextAlignment="Left"
                                VerticalAlignment="Center" 
                                HorizontalAlignment="Stretch" 
@@ -283,22 +229,22 @@
                     <DataTemplate>
                         <Grid >
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="330"/>
-                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="370"/>
+                                <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="60"/>
                             </Grid.ColumnDefinitions>
-                            <Grid Grid.Column="0">
+                            <Grid Grid.Column="0" HorizontalAlignment="Stretch">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}" ToolTip="Remove">
-                                    <Button.Content>
-                                        <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="20"/>
-                                    </Button.Content>
-                                </Button>
-                                <ComboBox Grid.Column="1"
+                                <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding Project.ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" />
+                                <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding Project.ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 5 0" />
+                            </Grid>
+                            <TextBox Grid.Column="1" IsReadOnly="True" Text="{Binding SelectedSubproject.PointNumStr, Mode=OneWay}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="10 0 5 0" />
+
+                            <!--<ComboBox Grid.Column="1"
                                                   Margin="0 0 0 0"
                                                   VerticalAlignment="Stretch"
                                                   HorizontalAlignment="Stretch"
@@ -318,8 +264,10 @@
                                     <ComboBox.ItemContainerStyle>
                                         <Style TargetType="ComboBoxItem">
                                             <Setter Property="Margin" Value="0 5 0 5"/>
-                                            <EventSetter Event="RequestBringIntoView" Handler="ComboBox_RequestBringIntoView"/>
-                                            <EventSetter Event="KeyDown" Handler="ComboBox_KeyDown"/>
+                                            -->
+                            <!--<EventSetter Event="RequestBringIntoView" Handler="ComboBox_RequestBringIntoView"/>
+                                            <EventSetter Event="KeyDown" Handler="ComboBox_KeyDown"/>-->
+                            <!--
                                         </Style>
                                     </ComboBox.ItemContainerStyle>
                                     <ComboBox.ItemTemplate>
@@ -330,10 +278,10 @@
                                             </VirtualizingStackPanel>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
-                                </ComboBox>
-                            </Grid>
+                                </ComboBox>-->
 
-                            <ComboBox Grid.Column="1"
+
+                            <!--<ComboBox Grid.Column="1"
                                                   Margin="10 0 5 0"
                                                   VerticalAlignment="Stretch"
                                                   VerticalContentAlignment="Center"
@@ -344,13 +292,13 @@
                                                   BorderBrush="{StaticResource SOCELightGray}"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
                                                   IsTextSearchEnabled="True" IsEditable="False"
-                                                  IsEnabled="{Binding ProjectSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"
                                                   DisplayMemberPath="PointNumStr"   
                                                   MaxDropDownHeight="250">
-                            </ComboBox>
+                            </ComboBox>-->
 
                             <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="2">
                                 <ItemsControl.ItemTemplate>
@@ -358,6 +306,7 @@
                                         <TextBox 
                                                     Text="{Binding TimeEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                     TextAlignment="Center"
+                                            IsReadOnly="True"
                                                     VerticalContentAlignment="Center"
                                                     local:SelectTextOnFocus.Active = "True"
                                                     FontWeight="SemiBold" 
@@ -403,35 +352,31 @@
             <!--</ScrollViewer>-->
         </Grid>
         <!--</ScrollViewer>-->
-        <Grid Grid.Row="4" >
+        <Grid Grid.Row="2" Margin="0 10 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" IsEnabled="{Binding CanPressButton}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding CopyPreviousCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
-                <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="ContentCopy" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                    <TextBlock Text="Copy from Previous"/>
-                </StackPanel>
-            </Button>
-
             <StackPanel Orientation="Horizontal" Grid.Column="2">
-                <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <Button Width="100" IsEnabled="{Binding IsButtonEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding DenyTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
                     <Button.CommandParameter>
-                        <s:Int32>0</s:Int32>
+                        <s:Boolean>False</s:Boolean>
                     </Button.CommandParameter>
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                        <TextBlock Text="Save"/>
+                        <materialDesign:PackIcon Kind="Denied" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                        <TextBlock Text="Deny"/>
                     </StackPanel>
                 </Button>
 
-                <Button IsEnabled="{Binding IsSubEditable}" Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubmitTimeSheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <Button IsEnabled="{Binding IsButtonEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="110" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding ApproveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                    <Button.CommandParameter>
+                        <s:Boolean>True</s:Boolean>
+                    </Button.CommandParameter>
                     <StackPanel Orientation="Horizontal">
-                        <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                        <TextBlock Text="Submit"/>
+                        <materialDesign:PackIcon Kind="CheckBold" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                        <TextBlock Text="Approve"/>
                     </StackPanel>
                 </Button>
             </StackPanel>

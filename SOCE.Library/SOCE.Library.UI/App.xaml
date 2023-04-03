@@ -49,8 +49,8 @@
                 <views:TimesheetView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodels:TimesheetReviewVM}">
-                <views:TimesheetReviewView/>
+            <DataTemplate DataType="{x:Type viewmodels:TimesheetReviewVM2}">
+                <views:TimesheetReviewViewv2/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">
@@ -78,7 +78,7 @@
             <DataTemplate DataType="{x:Type viewmodels:ResetPasswordVM}">
                 <views:ResetPasswordView/>
             </DataTemplate>
-
+            
             <SolidColorBrush x:Key="SOCERed" Color="#c92127"/>
             <SolidColorBrush x:Key="SOCEGray" Color="#636466"/>
             <!--<SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>-->
@@ -88,7 +88,7 @@
             <SolidColorBrush x:Key="SOCEBlueCompliment" Color="#147975"/>
             <SolidColorBrush x:Key="SOCEGreenCompliment" Color="#1d9719"/>
             <SolidColorBrush x:Key="SOCEOrangeCompliment" Color="#c97221"/>
-            
+            <SolidColorBrush x:Key="SOCELightGreenCompliment" Color="#1d9719"/>
             <Style x:Key="PageHeader" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource SOCERed}" />
                 <Setter Property="FontSize" Value="32"/>

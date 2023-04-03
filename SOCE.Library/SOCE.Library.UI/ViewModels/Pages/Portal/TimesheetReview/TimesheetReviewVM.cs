@@ -465,7 +465,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private List<EmployeeModel> LoadActiveEmployees()
         {
-            List<EmployeeDbModel> dbemployees = SQLAccess.LoadAllEmployees();
+            List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
 
             List<EmployeeModel> members = new List<EmployeeModel>();
 

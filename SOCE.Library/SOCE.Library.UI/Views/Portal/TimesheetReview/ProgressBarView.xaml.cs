@@ -17,11 +17,11 @@ using SOCE.Library.UI.ViewModels;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for AreYouSure.xaml
+    /// Interaction logic for ExportConfirmView.xaml
     /// </summary>
-    public partial class AreYouSureView : UserControl
+    public partial class ProgressBarView : UserControl
     {
-        public AreYouSureView()
+        public ProgressBarView()
         {
             InitializeComponent();
         }

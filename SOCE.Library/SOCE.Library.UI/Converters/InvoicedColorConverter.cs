@@ -14,7 +14,6 @@ namespace SOCE.Library.UI
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-
             if (value is bool)
             {
                 if ((bool)value == false)

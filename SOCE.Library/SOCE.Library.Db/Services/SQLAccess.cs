@@ -158,20 +158,20 @@ namespace SOCE.Library.Db
             }
         }
 
-        public static List<EmployeeDbModel> LoadAllEmployees()
-        {
-            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
-            {
-                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees", new DynamicParameters());
-                return output.ToList();
-            }
-        }
+        //public static List<EmployeeDbModel> LoadAllEmployees()
+        //{
+        //    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+        //    {
+        //        var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees", new DynamicParameters());
+        //        return output.ToList();
+        //    }
+        //}
 
         public static EmployeeDbModel LoadEmployeeByUserandPassword(string email, string password)
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Email = @email AND Password = @password", new { email, password });
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Email = @email AND Password = @password AND IsActive = 1", new { email, password });
                 return output.FirstOrDefault();
             }
         }
@@ -180,7 +180,7 @@ namespace SOCE.Library.Db
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Email = @email", new { email});
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE Email = @email AND IsActive = 1", new { email});
                 return output.FirstOrDefault();
             }
         }
@@ -228,7 +228,7 @@ namespace SOCE.Library.Db
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE AuthId > 0");
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE AuthId > 0 AND IsActive = 1");
                 return output.ToList();
             }
         }

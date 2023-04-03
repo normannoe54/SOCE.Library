@@ -87,7 +87,7 @@ namespace SOCE.Library.UI.ViewModels
             AdServiceNumber = Convert.ToDouble(sub.PointNumber);
 
             //do stuff
-            CloseWindow();
+            //CloseWindow();
         }
         private bool result = false;
         private void SaveSubProject()
@@ -117,7 +117,14 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            baseViewModel.BaseProject.FormatData(result);
+            if (result)
+            {
+                baseViewModel.BaseProject.FormatData(true);
+                baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
+                SubProjectModel sub = baseViewModel.SubProjects.Where(x => x.Id == SubProject.Id).FirstOrDefault();
+                baseViewModel.SelectedProjectPhase = sub;
+            }
+            
             baseViewModel.LeftDrawerOpen = false;
             //DialogHost.Close("RootDialog");
         }

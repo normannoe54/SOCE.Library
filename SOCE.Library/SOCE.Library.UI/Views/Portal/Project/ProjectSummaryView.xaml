@@ -318,8 +318,16 @@
                             <RowDefinition Height="40"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        <VirtualizingStackPanel Orientation="Horizontal">
-                            <Button Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right" 
+                        <!--<Button Grid.Row="0" HorizontalAlignment="Right" Background="Transparent" BorderBrush="Transparent" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Foreground="Black"
+                                            Command="{Binding CheckHoursCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" ToolTip="Show Hours" >
+                            <Button.Content>
+                                <Border CornerRadius="3" Background="Transparent" Padding="0">
+                                    <materialDesign:PackIcon  Kind="ChartLine" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="28" Width="28"/>
+                                </Border>
+                            </Button.Content>
+                        </Button>-->
+                        <VirtualizingStackPanel Grid.Row="0" Orientation="Horizontal">
+                            <Button  Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right" 
                                     Width="32" Height="32" Background="Transparent" BorderBrush="Transparent" ToolTip="Add service Information" Command="{Binding OpenAdCommand}" 
                                     Visibility="{Binding SelectedProjectPhase.IsAddService, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <materialDesign:PackIcon Kind="AlphaABox" Padding="0" Width="32" Height="32" Foreground="Black"/>

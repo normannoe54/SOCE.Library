@@ -96,34 +96,33 @@ namespace SOCE.Library.UI.ViewModels
         private async void ExecuteRunDeleteDialog(object o)
         {
             ClientModel cm = (ClientModel)o;
-            AreYouSureView view = new AreYouSureView();
-            AreYouSureVM aysvm = new AreYouSureVM();
-
-            bool donothing = false;
 
             List<ProjectDbModel> project1 = SQLAccess.LoadProjects();
             List<ProjectDbModel> projclient = project1.Where(x => x.ClientId == cm.Id).ToList();
-            aysvm = new AreYouSureVM(cm);
 
             if (projclient.Count > 0)
             {
-                aysvm.TopLine = "Cannot delete client,";
-                aysvm.BottomLine = "client assigned to existing project";
-                donothing = true;
+                MessageBoxView mbv = new MessageBoxView();
+                MessageBoxVM mbvm = new MessageBoxVM("Cannot delete client");
+                mbvm.SubMessage = "client assigned to existing project";
+                //donothing = true;
+
+                mbv.DataContext = mbvm;
+                var result = await DialogHost.Show(mbv, "RootDialog");
             }
-
-            // code block
-            view.DataContext = aysvm;
-            var result = await DialogHost.Show(view, "RootDialog");
-
-            //show the dialog
-            aysvm = view.DataContext as AreYouSureVM;
-
-            if (aysvm.Result && !donothing)
+            else
             {
 
-                SQLAccess.DeleteClient(cm.Id);
-                LoadClients();
+                YesNoView ynv = new YesNoView();
+                YesNoVM ynvm = new YesNoVM(cm);
+                ynv.DataContext = ynvm;
+                var result = await DialogHost.Show(ynv, "RootDialog");
+                ynvm = ynv.DataContext as YesNoVM;
+                if (ynvm.Result)
+                {
+                    SQLAccess.DeleteClient(cm.Id);
+                    LoadClients();
+                }
             }
         }
     }
