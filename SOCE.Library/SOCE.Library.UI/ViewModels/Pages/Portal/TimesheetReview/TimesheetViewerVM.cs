@@ -145,8 +145,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public TimesheetReviewVM2 basevm;
-        public TimesheetViewerVM(TimesheetReviewVM2 vmbase, TimesheetSubmissionModel tsm, DateTime startdate, DateTime enddate)
+        public TimesheetReviewVM basevm { get; set; }
+        public TimesheetViewerVM(TimesheetReviewVM vmbase, TimesheetSubmissionModel tsm)
         {
             basevm = vmbase;
             SubmittedTimesheet = tsm;
@@ -155,7 +155,7 @@ namespace SOCE.Library.UI.ViewModels
             this.DenyTimesheetCommand = new RelayCommand<bool>(ReportTimesheet);
             this.BackToSummaryCommand = new RelayCommand(BackToSummary);
             SelectedEmployee = tsm.Employee;
-            basevm.UpdateDates(startdate);
+            basevm.UpdateDates(basevm.firstdate);
             LoadTimesheetData(tsm.Employee);
         }
 
@@ -194,7 +194,7 @@ namespace SOCE.Library.UI.ViewModels
             List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, em.Id);
 
             var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
-
+            List<TimesheetRowModel> trms = new List<TimesheetRowModel>();
             foreach (var item in groupedlist)
             {
                 TimesheetRowDbModel subitem = item.First();
@@ -231,6 +231,13 @@ namespace SOCE.Library.UI.ViewModels
                     dateinc = dateinc.AddDays(1);
                 }
                 trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
+                trms.Add(trm);
+            }
+
+            List<TimesheetRowModel> trmadjusted = trms?.OrderByDescending(x => x.Project.ProjectNumber).ToList();
+
+            foreach (TimesheetRowModel trm in trmadjusted)
+            {
                 Rowdata.Add(trm);
             }
 
@@ -363,7 +370,7 @@ namespace SOCE.Library.UI.ViewModels
 
                         };
 
-                        //SendEmailMessage(txt, SubmittedTimesheet.Employee, "SOCE Portal Timesheet Denied");
+                        SendEmailMessage(txt, SubmittedTimesheet.Employee, "SOCE Portal Timesheet Denied");
 
                     }
                     else
@@ -430,21 +437,22 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-    private async void SendEmailMessage(TextPart textbody, EmployeeModel employeetosendto, string subject)
-    {
-        SmtpClient client = new SmtpClient();
+        private async void SendEmailMessage(TextPart textbody, EmployeeModel employeetosendto, string subject)
+        {
+            SmtpClient client = new SmtpClient();
 
-        client.Connect("smtp-mail.outlook.com", 587, false);
-        client.AuthenticationMechanisms.Remove("XOAUTH2");
-        client.Authenticate("normnoe@shirkodonovan.com", "Barry553");
-        MimeMessage mailMessage = new MimeMessage();
-        mailMessage.From.Add(new MailboxAddress("Norm", "normnoe@shirkodonovan.com"));
-        mailMessage.To.Add(new MailboxAddress(employeetosendto.FirstName, employeetosendto.Email));
-        mailMessage.Subject = subject;
-        mailMessage.Body = textbody;
+            client.Connect("smtp-mail.outlook.com", 587, false);
+            client.AuthenticationMechanisms.Remove("XOAUTH2");
+            client.Authenticate("normnoe@shirkodonovan.com", "Jules0714!");
+            MimeMessage mailMessage = new MimeMessage();
+            mailMessage.From.Add(new MailboxAddress("Portal Help Desk", "portalhelpdesk@shirkodonovan.com"));
+            mailMessage.To.Add(new MailboxAddress(employeetosendto.FirstName, employeetosendto.Email));
+            mailMessage.Subject = subject;
+            mailMessage.Body = textbody;
 
-        await client.SendAsync(mailMessage);
-        client.Disconnect(true);
+
+            await client.SendAsync(mailMessage);
+            client.Disconnect(true);
+        }
     }
-}
 }

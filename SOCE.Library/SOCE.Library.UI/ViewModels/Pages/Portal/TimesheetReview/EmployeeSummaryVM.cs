@@ -38,10 +38,9 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand ApproveAllCommand { get; set; }
         public ICommand EmailReminder { get; set; }
 
-        public DateTime stinput;
-        public DateTime einput;
-        public TimesheetReviewVM2 basevm;
-        public EmployeeSummaryVM(TimesheetReviewVM2 vmbase)
+        public TimesheetReviewVM basevm;
+
+        public EmployeeSummaryVM(TimesheetReviewVM vmbase)
         {
             this.OpenTimesheetSubmission = new RelayCommand<TimesheetSubmissionModel>(OpenTimeSheet);
             this.EmailReminder = new RelayCommand<TimesheetSubmissionModel>(SendEmail);
@@ -114,14 +113,14 @@ namespace SOCE.Library.UI.ViewModels
 
         private void OpenTimeSheet(TimesheetSubmissionModel timesheetsubmission)
         {
-            TimesheetViewerVM tvvm = new TimesheetViewerVM(basevm, timesheetsubmission, stinput, einput);
+            TimesheetViewerVM tvvm = new TimesheetViewerVM(basevm, timesheetsubmission);
             basevm.ReviewVM = tvvm;
         }
 
         private void SendEmail(TimesheetSubmissionModel tsm)
         {
-            string MonthYearString = $"{stinput.ToString("MMMM")} {stinput.Year}";
-            string DateString = $"[{stinput.Day} - {einput.Day}]";
+            string MonthYearString = $"{basevm.firstdate.ToString("MMMM")} {basevm.firstdate.Year}";
+            string DateString = $"[{basevm.firstdate.Day} - {basevm.lastdate.Day}]";
             TextPart txt = new TextPart("plain")
             {
                 Text = $"Hello {tsm.Employee.FirstName}, {Environment.NewLine}" +
@@ -188,7 +187,7 @@ namespace SOCE.Library.UI.ViewModels
             client.AuthenticationMechanisms.Remove("XOAUTH2");
             client.Authenticate("normnoe@shirkodonovan.com", "Barry553");
             MimeMessage mailMessage = new MimeMessage();
-            mailMessage.From.Add(new MailboxAddress("Norm", "normnoe@shirkodonovan.com"));
+            mailMessage.From.Add(new MailboxAddress("Portal Help Desk", "portalhelpdesk@shirkodonovan.com"));
             mailMessage.To.Add(new MailboxAddress(employeetosendto.FirstName, employeetosendto.Email));
             mailMessage.Subject = subject;
             mailMessage.Body = textbody;

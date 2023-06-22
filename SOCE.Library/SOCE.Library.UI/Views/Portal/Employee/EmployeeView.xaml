@@ -36,21 +36,21 @@
 
         <Grid Grid.Row="3" Margin="0 20 0 0">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="135"/>
                 <ColumnDefinition Width="180"/>
-                <ColumnDefinition Width="220"/>
-                <ColumnDefinition Width="120"/>
+                <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="150"/>
-                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition Width="300"/>
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition Width="75"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Name" />
-            <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Title"/>
-            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Permissions"/>
-            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Role"/>
-            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Email"/>
+            <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Name" />
+            <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Title"/>
+            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Permissions"/>
+            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Role"/>
+            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Email"/>
             <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Extension"/>
             <VirtualizingStackPanel Grid.Column="7" Visibility="{Binding RateTitleVisible, Converter={StaticResource BooleanToVisibilityConverter}}" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" >
                 <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding ShowRates, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -63,7 +63,7 @@
                 </ToggleButton>
                 <TextBlock  FontSize="14" FontWeight="SemiBold" Text="Rate"/>
             </VirtualizingStackPanel>
-            
+
         </Grid>
 
         <ItemsControl ItemsSource="{Binding Employees}"  HorizontalAlignment="Stretch" Grid.Row="4" Margin="5 20 5 5">
@@ -73,7 +73,7 @@
                       Padding="{TemplateBinding Padding}"
                       Focusable="False">
                         <ItemsPresenter />
-                    </ScrollViewer>     
+                    </ScrollViewer>
                 </ControlTemplate>
             </ItemsControl.Template>
 
@@ -86,82 +86,94 @@
 
             <ItemsControl.ItemTemplate>
                 <DataTemplate>
-                    <Expander Background="{Binding BorderColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsExpanded="{Binding CanExpand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="exp1" >
-                        <Expander.Header>
-                            <Grid Margin="0 5 0 0">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80"/>
-                                    <ColumnDefinition Width="180"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="400"/>
-                                    <ColumnDefinition Width="150"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="75"/>
-                                </Grid.ColumnDefinitions>
-                                <VirtualizingStackPanel Orientation="Horizontal" Grid.Column="0">
-                                    <Button HorizontalAlignment="Left" IsEnabled="{Binding CanEditorDelete}"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent" Foreground="white"
+                    <!--<Expander  IsExpanded="{Binding CanExpand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="exp1" >
+                        <Expander.Header>-->
+                    <Grid Margin="0 10 0 10" Background="{Binding BorderColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="180"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="400"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="200"/>
+                            <ColumnDefinition Width="75"/>
+                        </Grid.ColumnDefinitions>
+                        <VirtualizingStackPanel Orientation="Horizontal" Grid.Column="0">
+                            <Button HorizontalAlignment="Left" IsEnabled="{Binding CanEditorDelete}"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent" Foreground="white"
                                             Command="{Binding Path=DataContext.DeleteEmployee, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
-                                        <Button.Content>
-                                            <Border CornerRadius="4" Background="{StaticResource SOCERed}" Height="26" Width="26" >
-                                                <materialDesign:PackIcon Kind="TrashCan" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                            </Border>
-                                        </Button.Content>
-                                    </Button>
-                                    <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"               
+                                <Button.Content>
+                                    <Border CornerRadius="4" Background="{StaticResource SOCERed}" Height="26" Width="26" >
+                                        <materialDesign:PackIcon Kind="TrashCan" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                    </Border>
+                                </Button.Content>
+                            </Button>
+                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"               
                                       Foreground="white" Background="Transparent" BorderBrush="Transparent"
                                       IsEnabled="{Binding CanEditorDelete}"
                                       IsChecked="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                        <ToggleButton.Content>
-                                            <Border CornerRadius="4" Background="{StaticResource SOCEGreenCompliment}" ToolTip="Save" Height="26" Width="26">
-                                                <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                            </Border>
-                                        </ToggleButton.Content>
-                                        <materialDesign:ToggleButtonAssist.OnContent>
-                                            <Border CornerRadius="4" Background="{StaticResource SOCEOrangeCompliment}" ToolTip="Edit" Height="26" Width="26">
-                                                <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-                                            </Border>
-                                        </materialDesign:ToggleButtonAssist.OnContent>
-                                    </ToggleButton>
-                                </VirtualizingStackPanel>
-                                <VirtualizingStackPanel Grid.Column="1" HorizontalAlignment="Left" Orientation="Horizontal" Margin="10 0 0 0">
-                                    <TextBox  IsReadOnly="{Binding EditFieldState}"  Text="{Binding FirstName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                    <TextBox Margin="3 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding LastName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
-                                <TextBox Grid.Column="2" MinWidth="125" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Title}" TextAlignment="Left" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center"/>
-                                <ComboBox Grid.Column="3" Margin="10 0 0 0" FontSize="14"
+                                <ToggleButton.Content>
+                                    <Border CornerRadius="4" Background="{StaticResource SOCEGreenCompliment}" ToolTip="Save" Height="26" Width="26">
+                                        <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                    </Border>
+                                </ToggleButton.Content>
+                                <materialDesign:ToggleButtonAssist.OnContent>
+                                    <Border CornerRadius="4" Background="{StaticResource SOCEOrangeCompliment}" ToolTip="Edit" Height="26" Width="26">
+                                        <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                                    </Border>
+                                </materialDesign:ToggleButtonAssist.OnContent>
+                            </ToggleButton>
+                            <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
+                                     IsEnabled="{Binding IsEditable}"  Command="{Binding Path=DataContext.GoToEmployeeInfoCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Open" Foreground="White">
+                                <Button.Content>
+                                    <Border CornerRadius="3" Background="{StaticResource SOCEBlueCompliment}" Height="26" Width="26">
+                                        <materialDesign:PackIcon  Kind="Download" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20"/>
+                                    </Border>
+                                </Button.Content>
+                            </Button>
+                        </VirtualizingStackPanel>
+                        <Grid Grid.Column="1" HorizontalAlignment="Left" Margin="10 0 0 0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0"  IsReadOnly="{Binding EditFieldState}"  Text="{Binding FirstName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                                <TextBox Grid.Column="1" Margin="3 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Stretch" Text="{Binding LastName}" TextAlignment="Center" FontSize="16" FontWeight="Bold" VerticalAlignment="Center"/>
+                            </Grid>
+                            <TextBox Grid.Column="2" MinWidth="125" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Title}" TextAlignment="Left" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                        <ComboBox Grid.Column="3" Margin="10 0 0 0" FontSize="14"
                                   IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                   ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:AuthEnum}}}" 
                                   DisplayMemberPath="Description" 
                                   SelectedValue="{Binding Status}"  
                                   SelectedValuePath="Value"/>
-                                <ComboBox Grid.Column="4" Margin="10 0 0 0" FontSize="14"
+                        <ComboBox Grid.Column="4" Margin="10 0 0 0" FontSize="14"
                                   IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                   ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
                                   DisplayMemberPath="Description" 
                                   SelectedValue="{Binding DefaultRole}"  
                                   SelectedValuePath="Value"/>
-                                <VirtualizingStackPanel Margin="50 0 0 0" Grid.Column="5" Orientation="Horizontal">
-                                    <materialDesign:PackIcon  Margin="10 0 0 0" Background="Transparent" Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding EmailForward}" TextAlignment="Center" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center"/>
-                                    <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="14" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
+                        <VirtualizingStackPanel Margin="50 0 0 0" Grid.Column="5" Orientation="Horizontal">
+                            <materialDesign:PackIcon  Margin="10 0 0 0" Background="Transparent" Foreground="Black" Kind="EmailOutline" VerticalAlignment="Center"/>
+                            <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding EmailForward}" TextAlignment="Center" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center"/>
+                            <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text="@shirkodonovan.com" TextAlignment="Center" FontSize="14" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
+                        </VirtualizingStackPanel>
 
-                                <VirtualizingStackPanel Margin="10 0 0 0" Grid.Column="6" Orientation="Horizontal">
-                                    <materialDesign:PackIcon Foreground="Black" Kind="PhoneOutline" VerticalAlignment="Center"/>
-                                    <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="EXT." TextAlignment="Center" FontSize="14" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Extension}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
+                        <VirtualizingStackPanel Margin="10 0 0 0" Grid.Column="6" Orientation="Horizontal">
+                            <materialDesign:PackIcon Foreground="Black" Kind="PhoneOutline" VerticalAlignment="Center"/>
+                            <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="EXT." TextAlignment="Center" FontSize="14" VerticalAlignment="Center"/>
+                            <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}" HorizontalAlignment="Left" Text="{Binding Extension}" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
+                        </VirtualizingStackPanel>
 
-                                <VirtualizingStackPanel Margin="20 0 0 0" Grid.Column="7" Orientation="Horizontal" Visibility="{Binding RateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
-                                    <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="Rate:" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
-                                    <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}"  HorizontalAlignment="Left" Text="{Binding Rate}" TextAlignment="Center" 
+                        <VirtualizingStackPanel Margin="20 0 0 0" Grid.Column="7" Orientation="Horizontal" Visibility="{Binding RateVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <TextBlock Margin="2 0 0 0" HorizontalAlignment="Left" Text="Rate:" TextAlignment="Center" FontSize="16" VerticalAlignment="Center"/>
+                            <TextBox Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}"  HorizontalAlignment="Left" Text="{Binding Rate}" TextAlignment="Center" 
                                              FontSize="16" VerticalAlignment="Center" materialDesign:TextFieldAssist.PrefixText="$"/>
-                                    <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text=" / hr." TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
-                                </VirtualizingStackPanel>
-                            </Grid>
-                        </Expander.Header>
+                            <TextBlock Margin="1 0 0 0" HorizontalAlignment="Left" Text=" / hr." TextAlignment="Center" FontSize="16" FontWeight="Thin" FontStyle="Italic" VerticalAlignment="Center"/>
+                        </VirtualizingStackPanel>
+                    </Grid>
+                    <!--</Expander.Header>
                         <Grid Margin="15 0 15 15" Visibility="{Binding ElementName=exp1, Path=IsExpanded, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -373,7 +385,7 @@
                                 </Grid>
                             </materialDesign:Card>
                         </Grid>
-                    </Expander>
+                    </Expander>-->
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
         </ItemsControl>

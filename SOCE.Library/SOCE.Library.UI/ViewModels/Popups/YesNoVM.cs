@@ -148,6 +148,7 @@ namespace SOCE.Library.UI.ViewModels
         {
             if (ProjectSummary == null)
             {
+                bool val = DialogHost.IsDialogOpen("RootDialog");
                 DialogHost.Close("RootDialog");
             }
             else

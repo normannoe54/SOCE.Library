@@ -119,9 +119,14 @@ namespace SOCE.Library.UI.ViewModels
         {
             if (result)
             {
-                baseViewModel.BaseProject.FormatData(true);
-                baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
                 SubProjectModel sub = baseViewModel.SubProjects.Where(x => x.Id == SubProject.Id).FirstOrDefault();
+                sub.PointNumber = AdServiceNumber.ToString();
+                sub.Description = Description;
+                sub.Fee = AdditionalServicesFee;
+                sub.ExpandedDescription = ExpandedDescription;
+                baseViewModel.BaseProject.SubProjects = baseViewModel.SubProjects;
+                baseViewModel.BaseProject.UpdateSubProjects();
+                baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
                 baseViewModel.SelectedProjectPhase = sub;
             }
             

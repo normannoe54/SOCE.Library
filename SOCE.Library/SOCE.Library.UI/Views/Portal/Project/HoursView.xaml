@@ -6,60 +6,126 @@
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:local="clr-namespace:SOCE.Library.UI"
              xmlns:views="clr-namespace:SOCE.Library.UI.Views"
+             xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             Background="Transparent">
+             Background="Transparent" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
     <Grid>
-        <lvc:CartesianChart Grid.Column="1" Series="{Binding OverallData}" Visibility="{Binding IsChartVisible, Converter = {StaticResource BooleanToVisibilityConverter}}" LegendPosition="Hidden" ZoomMode="X">
-        <!--<lvc:CartesianChart.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="580"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <VirtualizingStackPanel  Grid.Column="0" Margin="10 0 0 0" Orientation="Horizontal">
+                <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold"  Text="{Binding BaseProject.ProjectName}"/>
+                <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="24" FontWeight="SemiBold" Margin="10 0 0 0" Text="{Binding BaseProject.ProjectNumber, StringFormat='[{0}]'}"/>
+            </VirtualizingStackPanel>
+            <ComboBox Grid.Column="1" Margin="40 0 0 0" Width="400" VerticalAlignment="Center" HorizontalAlignment="Stretch" Foreground="Black"
+                                      Background="Transparent"
+                                      Style="{StaticResource MaterialDesignComboBox}"
+                                      FontSize="24" FontWeight="SemiBold"
+                                      IsTextSearchEnabled="True" IsEditable="False" StaysOpenOnEdit="True"
+                                      materialDesign:HintAssist.Hint="   Select Phase"   
+                                      SelectedItem="{Binding SelectedProjectPhase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      ItemsSource="{Binding SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      TextSearch.TextPath="Description"
+                                      DisplayMemberPath="Description"   
+                                      MaxDropDownHeight="250"/>
+        </Grid>
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0 20 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <lvc:CartesianChart Grid.Column="0" Series="{Binding OverallData, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                                LegendPosition="Hidden" ZoomMode="Both" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}" 
+                                DrawMarginFrame="{Binding Frame}" TooltipFindingStrategy="CompareAllTakeClosest">
+            </lvc:CartesianChart>
 
-                    <Style TargetType="lvc:LineSeries">
-                        <Setter Property="PointGeometrySize" Value="1"/>
-                        <Setter Property="LineSmoothness" Value="0"/>
-                    </Style>
-                    <Style TargetType="lvc:Axis">
-                        <Setter Property="ShowLabels" Value="True"></Setter>
-                        <Setter Property="IsEnabled" Value="False"></Setter>
-                    </Style>
-                </lvc:CartesianChart.Resources>-->
-    </lvc:CartesianChart>
+            <ItemsControl Grid.Column="1" ItemsSource="{Binding RelevantEmployees}" Margin="0 20 30 0" HorizontalAlignment="Stretch" Foreground="Black" >
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="local:EmployeeVisualModel">
+                        <Border x:Name="Border" Padding="8" HorizontalAlignment="Stretch">
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+                                <Grid Grid.Row="0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <CheckBox Grid.Column="0" Width="15" Height="15" Background="{Binding VisualColor}" IsChecked="{Binding SelectedCurr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBlock Grid.Column="1" Margin="10 0 0 0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
+                                    <TextBlock Grid.Column="2" Text="{Binding SumHours,StringFormat =' {0} hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Thin" FontStyle="Italic" FontSize="14"/>
+                                </Grid>
+                                <TextBlock Grid.Row="2" Text="{Binding Rate,StringFormat='${0}/hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="10" Foreground="Gray"/>
+                            </Grid>
+                        </Border>
+                        <DataTemplate.Triggers>
+                            <DataTrigger Binding="{Binding SelectedCurr, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="{DynamicResource MaterialDesignSelection}" />
+                            </DataTrigger>
+                        </DataTemplate.Triggers>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
 
-    <ListBox Margin="10 0 10 0" Grid.Column="2" ItemsSource="{Binding RelevantEmployees}"
-                     SelectionMode="Multiple">
-        <ListBox.ItemContainerStyle>
-            <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignListBoxItem}">
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True" >
-                        <Setter Property="Foreground" Value="{Binding VisualColor}"/>
-                    </Trigger>
-                </Style.Triggers>
-                <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
-                <Setter Property="IsSelected" Value="{Binding SelectedCurr, Mode=TwoWay}" />
-            </Style>
-        </ListBox.ItemContainerStyle>
-        <ListBox.ItemTemplate>
-            <DataTemplate DataType="local:EmployeeVisualModel">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="*"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Rectangle Grid.Column="0" Width="15" Height="15" RadiusX="5" RadiusY="5" Fill="{Binding VisualColor}"/>
-                        <TextBlock Grid.Column="1" Margin="10 0 0 0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
-                        <TextBlock Grid.Column="2" Text="{Binding SumHours,StringFormat =' {0} hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Thin" FontStyle="Italic" FontSize="14"/>
-                    </Grid>
-                    <TextBlock Grid.Row="2" Text="{Binding Rate,StringFormat='${0}/hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="10" Foreground="Gray"/>
-                </Grid>
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+
+
+            <!--<ListBox Grid.Column="1" ItemsSource="{Binding RelevantEmployees}" Margin="0 0 30 0"
+                     SelectionMode="Multiple" HorizontalAlignment="Stretch" Foreground="Black" Focusable="True">
+                <ListBox.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListBoxItem}" BasedOn="{StaticResource MaterialDesignListBoxItem}">
+                        --><!--<Style.Triggers>
+                            <Trigger Property="IsSelected" Value="True" >
+                                <Setter Property="Foreground" Value="{Binding VisualColor}"/>
+                            </Trigger>
+                        </Style.Triggers>--><!--
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch"/>
+                        <Setter Property="IsSelected" Value="{Binding SelectedCurr, Mode=TwoWay}"/>
+                    </Style>
+                </ListBox.ItemContainerStyle>
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="local:EmployeeVisualModel">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="Auto"/>
+                            </Grid.RowDefinitions>
+                            <Grid Grid.Row="0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Rectangle Grid.Column="0" Width="15" Height="15" RadiusX="5" RadiusY="5" Fill="{Binding VisualColor}"/>
+                                <TextBlock Grid.Column="1" Margin="10 0 0 0" Text="{Binding Name}" VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold"/>
+                                <TextBlock Grid.Column="2" Text="{Binding SumHours,StringFormat =' {0} hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Right" TextWrapping="Wrap" FontWeight="Thin" FontStyle="Italic" FontSize="14"/>
+                            </Grid>
+                            <TextBlock Grid.Row="2" Text="{Binding Rate,StringFormat='${0}/hr.'}" VerticalAlignment="Center"  HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="10" Foreground="Gray"/>
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>-->
+        </Grid>
     </Grid>
 </UserControl>

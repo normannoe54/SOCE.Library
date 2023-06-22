@@ -620,7 +620,7 @@ namespace SOCE.Library.UI
 
         //}
 
-        public void UpdateSubProjects(SubProjectModel subinput = null)
+        public void UpdateSubProjects()
         {
             TotalBudget = 0;
 
@@ -650,40 +650,51 @@ namespace SOCE.Library.UI
                     Description = spm.Description,
                     Fee = spm.Fee,
                     IsActive = spm.IsActive ? 1 : 0,
-                    IsInvoiced = spm.IsInvoiced ? 1 : 0,
                     PercentComplete = spm.PercentComplete,
                     PercentBudget = spm.PercentBudget,
+                    IsInvoiced = spm.IsInvoiced ? 1 : 0,
+                    ExpandedDescription = spm.ExpandedDescription,
+                    IsAdservice = spm.IsAddService ? 1 : 0,
+                    NumberOrder = spm.NumberOrder
                 };
 
                 SQLAccess.UpdateSubProject(subproject);
 
-                onehastobeactive = onehastobeactive || spm.IsActive;
+                onehastobeactive = onehastobeactive || (spm.IsActive || !spm.EditSubFieldState);
 
             }
 
             //catch for no actives
-            if (subinput != null)
-            {
-                if (!onehastobeactive)
-                {
-                    subinput.IsActive = true;
-                    SubProjectDbModel subproject = new SubProjectDbModel()
-                    {
-                        Id = subinput.Id,
-                        ProjectId = subinput.ProjectNumber,
-                        PointNumber = subinput.PointNumber,
-                        Description = subinput.Description,
-                        Fee = subinput.Fee,
-                        IsActive = 1,
-                        IsInvoiced = subinput.IsInvoiced ? 1 : 0,
-                        PercentComplete = subinput.PercentComplete,
-                        PercentBudget = subinput.PercentBudget,
-                    };
-                    SQLAccess.UpdateSubProject(subproject);
-                }
-            }
-
+            //if (subinput != null)
+            //{
+            //    //if (!onehastobeactive)
+            //    //{
+            //        SubProjectDbModel subproject = new SubProjectDbModel()
+            //        {
+            //            Id = subinput.Id,
+            //            ProjectId = subinput.ProjectNumber,
+            //            PointNumber = subinput.PointNumber,
+            //            Description = subinput.Description,
+            //            Fee = subinput.Fee,
+            //            IsActive = subinput.IsActive ? 1 : 0,
+            //            PercentComplete = subinput.PercentComplete,
+            //            PercentBudget = subinput.PercentBudget,
+            //            IsInvoiced = subinput.IsInvoiced ? 1 : 0,
+            //            ExpandedDescription = subinput.ExpandedDescription,
+            //            IsAdservice = subinput.IsAddService ? 1 : 0,
+            //            NumberOrder = subinput.NumberOrder
+            //        };
+            //        SQLAccess.UpdateSubProject(subproject);
+            //    //}
+            //}
             UpdateData();
+
+
+            if (!onehastobeactive)
+            {
+                IsActive = false;
+                UpdateProjectModel();
+            }
         }
 
         public void LoadSubProjects()
@@ -709,20 +720,27 @@ namespace SOCE.Library.UI
             else
             {
                 SubProjectModel allsub = SubProjects.Where(x => x.Description == "All Phases").FirstOrDefault();
-                if(allsub != null)
+                if (allsub != null)
                 {
-                    SubProjects.Remove(allsub);
+                    allsub.RolesPerSub.Clear();
+                    //SubProjects.Remove(allsub);
                 }
             }
 
             Formatted = true;
-            TotalBudget = Fee;
 
             //List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
             List<RolePerSubProjectModel> allrolesummary = new List<RolePerSubProjectModel>();
             //total
             //get all subprojectIds associated with projectId
             List<SubProjectDbModel> subdbmodels = SQLAccess.LoadAllSubProjectsByProject(Id);
+            //foreach (SubProjectDbModel sub in subdbmodels)
+            //{
+            //    totalfee += sub.Fee;
+            //}                
+
+            //Fee = totalfee;
+            TotalBudget = Fee;
 
             double hourstotal = 0;
             double hourstotalleft = 0;
@@ -739,7 +757,7 @@ namespace SOCE.Library.UI
                 double totalbudgethours = 0;
 
                 SubProjectModel spm = null;
-               
+
                 //if (spdm.IsCurrActive == 1)
                 //{
                 if (addistrue)
@@ -748,9 +766,11 @@ namespace SOCE.Library.UI
                 }
                 else
                 {
-
                     spm = SubProjects.Where(x => x.Id == spdm.Id).FirstOrDefault();
-                    spm.RolesPerSub.Clear();
+                    spm.Fee = spdm.Fee;
+                    spm.Constructor(spdm);
+
+                    //spm.RolesPerSub.Clear();
                     if (spm == null)
                     {
                         //delete item from database? should never happen
@@ -766,7 +786,6 @@ namespace SOCE.Library.UI
                 //}
 
                 List<RolePerSubProjectDbModel> rolesdbmodel = SQLAccess.LoadRolesPerSubProject(spm.Id);
-
                 List<TimesheetRowDbModel> tmdata = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
 
                 if (tmdata.Count != 0)
@@ -781,75 +800,148 @@ namespace SOCE.Library.UI
                         {
                             //order by date
                             List<TimesheetRowDbModel> employeetimesheetdata = item.OrderBy(x => x.Date).ToList();
-
                             double hours = employeetimesheetdata.Sum(x => x.TimeEntry);
                             double spentbudget = employeetimesheetdata.Sum(x => x.BudgetSpent);
-                            RolePerSubProjectDbModel rpdm = rolesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
-                            double rate = rpdm.Rate;
+                            RolePerSubProjectModel rspm = null;
 
-                            double hoursleft = rpdm.BudgetHours - hours;
-                            hoursspentpersub += hours;
-                            hoursleftpersub += hoursleft;
-                            budgetspentpersub += spentbudget;
-                            regulatedbudgetpersub += rpdm.BudgetHours * rate;
-                            totalbudgethours += rpdm.BudgetHours;
-
-                            //get rate
-                            if (rpdm != null)
+                            if (addistrue)
                             {
-                                RolePerSubProjectModel rspm = new RolePerSubProjectModel(rpdm.Id, rpdm.Rate, (DefaultRoleEnum)rpdm.Role, rpdm.EmployeeId, spm, rpdm.BudgetHours, spm.Fee);
-                                rspm.SpentHours = hours;
-                                rspm.SpentBudget = spentbudget;
-                                //rspm.PercentofRegulatedBudget = (rpdm.BudgetHours /regulatedbudgetpersub)*100;
-                                rate = rpdm.Rate;
-                                spm.RolesPerSub.Add(rspm);
+                                RolePerSubProjectDbModel rpdm = rolesdbmodel.Where(x => x.EmployeeId == employee.Id).FirstOrDefault();
 
-                                RolePerSubProjectModel foundrspm = allrolesummary.Where(x => x.Employee.Id == rspm.Employee.Id).FirstOrDefault();
-
-                                if (foundrspm != null)
+                                if (rpdm != null)
                                 {
-                                    foundrspm.SpentHours += hours;
-                                    foundrspm.SpentBudget += spentbudget;
-                                    foundrspm.BudgetedHours += rpdm.BudgetHours;
+                                    rspm = new RolePerSubProjectModel(rpdm.Id, rpdm.Rate, (DefaultRoleEnum)rpdm.Role, rpdm.EmployeeId, spm, rpdm.BudgetHours, spm.Fee);
+                                    spm.RolesPerSub.Add(rspm);
                                 }
                                 else
                                 {
 
-                                    RolePerSubProjectModel cloned = new RolePerSubProjectModel()
+                                    RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
                                     {
-                                        Rate = rspm.Rate,
-                                        Role = rspm.Role,
-                                        Employee = rspm.Employee,
-                                        BudgetedHours = rspm.BudgetedHours,
-                                        OverallFee = rspm.OverallFee,
-                                        SpentHours = rspm.SpentHours,
-                                        SpentBudget = rspm.SpentBudget,
+                                        SubProjectId = spm.Id,
+                                        EmployeeId = employee.Id,
+                                        Role = employee.DefaultRoleId,
+                                        Rate = employee.Rate,
+                                        BudgetHours = 0
                                     };
-                                    allrolesummary.Add(cloned);
-                                }
+                                    int id = SQLAccess.AddRolesPerSubProject(rpp);
 
+                                    if (id != 0)
+                                    {
+                                        rspm = new RolePerSubProjectModel(id, employee.Rate, (DefaultRoleEnum)employee.DefaultRoleId, employee.Id, spm, 0, spm.Fee);
+                                        spm.RolesPerSub.Add(rspm);
+                                    }
+
+                                    //for debugging purposes only
+                                }
+                            }
+                            else
+                            {
+                                rspm = spm.RolesPerSub.Where(x => x.Employee.Id == employee.Id).FirstOrDefault();
+
+                                if (rspm == null)
+                                {
+                                    //for debugging purposes only
+                                }
                             }
 
+                            rspm.SpentHours = hours;
+                            rspm.SpentBudget = spentbudget;
+                            double hoursleft = rspm.BudgetedHours - hours;
+                            hoursspentpersub += hours;
+                            //hoursleftpersub += hoursleft;
+                            budgetspentpersub += spentbudget;
+                            //regulatedbudgetpersub += rspm.BudgetedHours * rspm.Rate;
+                            //totalbudgethours += rspm.BudgetedHours;
+
+                            RolePerSubProjectModel foundrspm = allrolesummary.Where(x => x.Employee.Id == rspm.Employee.Id).FirstOrDefault();
+
+                            if (foundrspm != null)
+                            {
+                                foundrspm.SpentHours += hours;
+                                foundrspm.SpentBudget += spentbudget;
+                                //foundrspm.BudgetedHours += rspm.BudgetedHours;
+                            }
+                            else
+                            {
+
+                                RolePerSubProjectModel cloned = new RolePerSubProjectModel()
+                                {
+                                    Id = rspm.Id,
+                                    Rate = rspm.Rate,
+                                    Role = rspm.Role,
+                                    Employee = rspm.Employee,
+                                    BudgetedHours = 0,
+                                    OverallFee = rspm.OverallFee,
+                                    SpentHours = rspm.SpentHours,
+                                    SpentBudget = rspm.SpentBudget,
+                                    CanDelete = false,
+                                };
+                                allrolesummary.Add(cloned);
+                            }
                         }
                     }
                 }
 
+                if (!IsActive)
+                {
+                    spm.CanEdit = false;
+                }          
+
                 foreach (RolePerSubProjectDbModel rspdb in rolesdbmodel)
                 {
                     RolePerSubProjectModel rpdm = spm.RolesPerSub.Where(x => x.Employee.Id == rspdb.EmployeeId).FirstOrDefault();
+                    hoursleftpersub += rspdb.BudgetHours;
+                    regulatedbudgetpersub += rspdb.BudgetHours * rspdb.Rate;
+                    totalbudgethours += rspdb.BudgetHours;
 
                     if (rpdm == null)
                     {
-                        hoursleftpersub += rspdb.BudgetHours;
-                        regulatedbudgetpersub += rspdb.BudgetHours * rspdb.Rate;
-                        totalbudgethours += rspdb.BudgetHours;
-                        //add
                         RolePerSubProjectModel rspm = new RolePerSubProjectModel(rspdb.Id, rspdb.Rate, (DefaultRoleEnum)rspdb.Role, rspdb.EmployeeId, spm, rspdb.BudgetHours, spm.Fee);
+
                         rspm.SpentHours = 0;
-                        //rspm.PercentofRegulatedBudget = (rspdb.BudgetHours / regulatedbudgetpersub) * 100;
                         spm.RolesPerSub.Add(rspm);
                     }
+
+                    RolePerSubProjectModel rpdmall = allrolesummary.Where(x => x.Employee.Id == rspdb.EmployeeId).FirstOrDefault();
+
+                    if (rpdmall == null)
+                    {
+                        RolePerSubProjectModel rspmnew = new RolePerSubProjectModel(rspdb.Id, rspdb.Rate, (DefaultRoleEnum)rspdb.Role, rspdb.EmployeeId, spm, rspdb.BudgetHours, spm.Fee);
+                        rspmnew.CanDelete = false;
+                        allrolesummary.Add(rspmnew);
+                    }
+                    else
+                    {
+                        rpdmall.BudgetedHours += rspdb.BudgetHours;
+                    }
                 }
+
+                //List<RolePerSubProjectDbModel> unaccountedFor = new List<RolePerSubProjectDbModel>();
+
+                //foreach (RolePerSubProjectDbModel rspdb in rolesdbmodel)
+                //{
+                //    if (!allrolesummary.Any(x => x.Employee.Id == rspdb.EmployeeId))
+                //    {
+                //        unaccountedFor.Add(rspdb);
+                //    }
+                //}
+
+                //foreach (RolePerSubProjectDbModel rspdb in rolesdbmodel)
+                //{
+                //    RolePerSubProjectModel rpdm = spm.RolesPerSub.Where(x => x.Employee.Id == rspdb.EmployeeId).FirstOrDefault();
+
+                //    RolePerSubProjectModel rpdmall = allrolesummary.Where(x => x.Employee.Id == rspdb.EmployeeId).FirstOrDefault();
+
+                //if (rpdmall == null)
+                //{
+                //    RolePerSubProjectModel rspm = new RolePerSubProjectModel(rspdb.Id, rspdb.Rate, (DefaultRoleEnum)rspdb.Role, rspdb.EmployeeId, spm, rspdb.BudgetHours, spm.Fee);
+                //    allrolesummary.Add(rspm);
+                //}
+                //else
+                //{
+                //    rpdmall.BudgetedHours += rspdb.BudgetHours;
+                //}
 
                 spm.HoursUsed = hoursspentpersub;
                 spm.HoursLeft = hoursleftpersub;
@@ -863,6 +955,7 @@ namespace SOCE.Library.UI
                 //{
                 if (addistrue)
                 {
+                    spm.baseproject = this;
                     SubProjects.Add(spm);
                 }
                 //}
@@ -875,20 +968,35 @@ namespace SOCE.Library.UI
             }
 
             //all phases subphase
-            if (subdbmodels.Count > 0)
+            if (addistrue)
             {
-                SubProjectModel allphases = new SubProjectModel();
-                allphases.Description = "All Phases";
-                allphases.TotalHours = hourstotal + hourstotalleft;
-                allphases.HoursUsed = hourstotal;
-                allphases.HoursLeft = hourstotalleft;
-                allphases.RolesPerSub = new ObservableCollection<RolePerSubProjectModel>(allrolesummary);
-                allphases.RegulatedBudget = totalregulatedbudget;
-                allphases.IsVisible = false;
-                allphases.CanDelete = false;
-                allphases.CanEdit = false;
-                SubProjects.Add(allphases);
+                if (subdbmodels.Count > 0)
+                {
+                    SubProjectModel allphases = new SubProjectModel();
+                    allphases.Description = "All Phases";
+                    allphases.TotalHours = hourstotal + hourstotalleft;
+                    allphases.HoursUsed = hourstotal;
+                    allphases.HoursLeft = hourstotalleft;
+                    allphases.RolesPerSub = new ObservableCollection<RolePerSubProjectModel>(allrolesummary);
+                    allphases.RegulatedBudget = totalregulatedbudget;
+                    allphases.IsVisible = false;
+                    allphases.CanDelete = false;
+                    allphases.CanEdit = false;
+                    allphases.baseproject = this;
+                    allphases.CanAdd = false;
+                    SubProjects.Add(allphases);
+                }
             }
+            else
+            {
+                SubProjectModel allsub = SubProjects.Where(x => x.Description == "All Phases").FirstOrDefault();
+                if (allsub != null)
+                {
+                    allsub.RolesPerSub = new ObservableCollection<RolePerSubProjectModel> (allrolesummary);
+                }
+            }
+
+            //update project fee?
 
             TotalRegulatedBudget = totalregulatedbudget;
             HoursSpent = hourstotal;
@@ -1040,6 +1148,83 @@ namespace SOCE.Library.UI
 
         public void UpdateProject()
         {
+            ProjectDbModel existingproject = SQLAccess.LoadProjectsById(Id);
+            ProjectDbModel project = UpdateProjectModel();
+
+            if (existingproject.IsActive != project.IsActive)
+            {
+                FormatData(true);
+
+                if (!IsActive)
+                {
+                    foreach (SubProjectModel sub in SubProjects)
+                    {
+                        if (sub.IsActive)
+                        {
+                            sub.IsActive = false;
+                            SubProjectDbModel subproject = new SubProjectDbModel()
+                            {
+                                Id = sub.Id,
+                                ProjectId = sub.ProjectNumber,
+                                PointNumber = sub.PointNumber,
+                                Description = sub.Description,
+                                Fee = sub.Fee,
+                                IsActive = 0,
+                                PercentComplete = sub.PercentComplete,
+                                PercentBudget = sub.PercentBudget,
+                                IsInvoiced = sub.IsInvoiced ? 1 : 0,
+                                ExpandedDescription = sub.ExpandedDescription,
+                                IsAdservice = sub.IsAddService ? 1 : 0,
+                                NumberOrder = sub.NumberOrder
+
+                            };
+                            SQLAccess.UpdateSubProject(subproject);
+                        }
+                    }
+                }
+                else
+                {
+                    bool foundone = false;
+                    //check if one is active
+                    foreach (SubProjectModel sub in SubProjects)
+                    {
+                        if (sub.IsActive)
+                        {
+                            foundone = true;
+                            break;
+                        }
+                    }
+                    if (!foundone)
+                    {
+                        if (SubProjects.Count > 1)
+                        {
+                            SubProjectModel subnew = SubProjects[SubProjects.Count - 2];
+                            subnew.IsActive = true;
+                            SubProjectDbModel subproject = new SubProjectDbModel()
+                            {
+                                Id = subnew.Id,
+                                ProjectId = subnew.ProjectNumber,
+                                PointNumber = subnew.PointNumber,
+                                Description = subnew.Description,
+                                Fee = subnew.Fee,
+                                IsActive = 1,
+                                PercentComplete = subnew.PercentComplete,
+                                PercentBudget = subnew.PercentBudget,
+                                IsInvoiced = subnew.IsInvoiced ? 1 : 0,
+                                ExpandedDescription = subnew.ExpandedDescription,
+                                IsAdservice = subnew.IsAddService ? 1 : 0,
+                                NumberOrder = subnew.NumberOrder
+
+                            };
+                            SQLAccess.UpdateSubProject(subproject);
+                        }
+                    }
+                }
+            }
+        }
+
+        private ProjectDbModel UpdateProjectModel()
+        {
             ProjectDbModel project = new ProjectDbModel()
             {
                 Id = Id,
@@ -1059,8 +1244,8 @@ namespace SOCE.Library.UI
                 ProjectEnd = ProjectEnd,
                 FinalSpent = FinalSpent
             };
-
             SQLAccess.UpdateProjects(project);
+            return project;
         }
 
         public object Clone()

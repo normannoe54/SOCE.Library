@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,11 +16,11 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for TimesheetView.xaml
+    /// Interaction logic for ProjectSummaryView.xaml
     /// </summary>
-    public partial class TimesheetReviewViewv2 : UserControl
+    public partial class BaseProjectSummaryView : UserControl
     {
-        public TimesheetReviewViewv2()
+        public BaseProjectSummaryView()
         {
             InitializeComponent();
         }

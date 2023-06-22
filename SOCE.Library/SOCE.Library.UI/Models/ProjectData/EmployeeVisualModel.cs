@@ -19,8 +19,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private Brush _visualColor;
-        public Brush VisualColor
+        private SolidColorBrush _visualColor;
+        public SolidColorBrush VisualColor
         {
             get { return _visualColor; }
             set

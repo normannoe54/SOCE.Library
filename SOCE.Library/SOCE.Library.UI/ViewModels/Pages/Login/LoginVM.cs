@@ -92,6 +92,8 @@ namespace SOCE.Library.UI.ViewModels
             //tbd
             EmployeeDbModel em = SQLAccess.LoadEmployeeByUserandPassword(emailinput.ToLower(), password);
 
+            //EmployeeDbModel em = SQLAccess.LoadEmployeeByUser(emailinput.ToLower());
+
             if (em != null)
             {
                 EmployeeModel employee = new EmployeeModel(em);

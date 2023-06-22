@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SOCE.Library.UI.Views.ProjectSummaryView"
+﻿<UserControl x:Class="SOCE.Library.UI.Views.AdServiceManagerView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -352,7 +352,7 @@
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Button Grid.Column="0" IsEnabled="{Binding SelectedProjectPhase.IsActive}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Foreground="Black" Background="Transparent" 
+                            <Button Grid.Column="0" IsEnabled="{Binding BaseProject.IsActive}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Foreground="Black" Background="Transparent" 
                                 BorderBrush="Transparent" Command="{Binding AddRoleCommand}" ToolTip="Add Role">
                                 <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0"/>
                             </Button>
@@ -366,7 +366,7 @@
                             <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent of&#10;Planned Budget" TextAlignment="Center" />
                         </Grid>
 
-                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
                             <ItemsControl.Resources>
                                 <local:InvoicedColorConverter x:Key="valueconverter"/>
                             </ItemsControl.Resources>
@@ -386,7 +386,7 @@
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="Transparent"
+                                    <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="Transparent" 
                                             IsEnabled="{Binding Path=BaseProject.ActiveProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                         <Grid Margin="0 5 0 5">
                                             <Grid.ColumnDefinitions>

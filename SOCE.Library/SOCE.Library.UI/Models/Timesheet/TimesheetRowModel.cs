@@ -18,8 +18,8 @@ namespace SOCE.Library.UI
         public ProjectModel Project
         {
             get
-            {      
-                return _project; 
+            {
+                return _project;
             }
             set
             {
@@ -31,7 +31,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ObservableCollection<SubProjectModel> _subprojects;
+        private ObservableCollection<SubProjectModel> _subprojects = new ObservableCollection<SubProjectModel>();
         public ObservableCollection<SubProjectModel> SubProjects
         {
             get { return _subprojects; }
@@ -57,7 +57,7 @@ namespace SOCE.Library.UI
         }
 
         private ObservableCollection<TREntryModel> _entries = new ObservableCollection<TREntryModel>();
-        public ObservableCollection<TREntryModel> Entries 
+        public ObservableCollection<TREntryModel> Entries
         {
             get
             {
@@ -70,7 +70,7 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(Entries));
             }
         }
-       
+
 
         private double _total;
         public double Total
@@ -86,7 +86,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _projectSelected;
+        private bool _projectSelected = false;
         public bool ProjectSelected
         {
             get
@@ -129,7 +129,13 @@ namespace SOCE.Library.UI
             }
 
             SubProjects = members;
-            SelectedSubproject = SubProjects[0];
+            try
+            {
+                SelectedSubproject = SubProjects[0];
+            }
+            catch
+            {
+            }
             ProjectSelected = true;
         }
 
@@ -138,21 +144,22 @@ namespace SOCE.Library.UI
         public object Clone()
         {
             ObservableCollection<SubProjectModel> spms = new ObservableCollection<SubProjectModel>();
-            foreach(SubProjectModel spm in SubProjects)
+
+            foreach (SubProjectModel spm in SubProjects)
             {
-                spms.Add((SubProjectModel)spm.Clone());
+                spms.Add((SubProjectModel)spm?.Clone());
             }
 
             ObservableCollection<TREntryModel> trs = new ObservableCollection<TREntryModel>();
             foreach (TREntryModel tr in Entries)
             {
-                trs.Add((TREntryModel)tr.Clone());
+                trs.Add((TREntryModel)tr?.Clone());
             }
 
             TimesheetRowModel trm = new TimesheetRowModel()
             {
-                Project = (ProjectModel)this.Project.Clone(),
-                SelectedSubproject = (SubProjectModel)this.SelectedSubproject.Clone(),
+                Project = (ProjectModel)this.Project?.Clone(),
+                SelectedSubproject = (SubProjectModel)this.SelectedSubproject?.Clone(),
                 SubProjects = spms,
                 Entries = trs
             };

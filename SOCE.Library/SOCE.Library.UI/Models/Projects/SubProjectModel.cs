@@ -329,6 +329,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _canAdd { get; set; } = true;
+        public bool CanAdd
+        {
+            get
+            {
+                return _canAdd;
+            }
+            set
+            {
+                _canAdd = value;
+                RaisePropertyChanged(nameof(CanAdd));
+            }
+        }
+
         private bool _isInvoiced { get; set; }
         public bool IsInvoiced
         {
@@ -351,10 +365,27 @@ namespace SOCE.Library.UI
             {
                 if (!_editSubFieldState && value && !globaleditmode)
                 {
-                    //UpdateSubProject();
-                    baseproject.UpdateSubProjects(this);
+                    _editSubFieldState = value;
+                    baseproject.UpdateSubProjects();
                 }
-                _editSubFieldState = value;
+                else if (_editSubFieldState && !value && !globaleditmode)
+                {
+                    if (Id != 0)
+                    {
+                        foreach (SubProjectModel sub in baseproject.SubProjects)
+                        {
+                            if (sub.Id != Id)
+                            {
+                                sub.EditSubFieldState = !value;
+                            }
+                        }
+                    }
+                    _editSubFieldState = value;
+                }
+                else
+                {
+                    _editSubFieldState = value;
+                }
                 ComboSubFieldState = !_editSubFieldState;
                 RaisePropertyChanged(nameof(EditSubFieldState));
             }
@@ -506,7 +537,7 @@ namespace SOCE.Library.UI
             IsActive = Convert.ToBoolean(spm.IsActive);
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
             PercentComplete = spm.PercentComplete;
-            PercentBudget = spm.PercentBudget;
+            //PercentBudget = spm.PercentBudget;
             IsAddService = Convert.ToBoolean(spm.IsAdservice);
             NumberOrder = spm.NumberOrder;
             onstartup = false;

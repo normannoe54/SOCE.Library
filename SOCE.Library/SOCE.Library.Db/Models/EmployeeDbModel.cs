@@ -28,7 +28,11 @@ namespace SOCE.Library.Db
         public double Rate { get; set; }
         public int IsActive { get; set; }
         public int StartDate { get; set; }
-        public double HoursPerWeek { get; set; }
+        public double MondayHours { get; set; }
+        public double TuesdayHours { get; set; }
+        public double WednesdayHours { get; set; }
+        public double ThursdayHours { get; set; }
+        public double FridayHours { get; set; }
         public string FullName
         {
             get

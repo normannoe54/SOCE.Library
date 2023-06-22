@@ -18,6 +18,7 @@
         Identifier="RootDialog"
         DialogTheme="Light">
             <Grid>
+                
                 <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right">
                     <TextBlock Text="Version:" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center"/>
                     <TextBlock Text="{Binding VersionNumber}" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center" Margin="5 0 30 0"/>

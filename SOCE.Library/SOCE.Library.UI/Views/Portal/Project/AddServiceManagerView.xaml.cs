@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for ProjectDataView.xaml
+    /// Interaction logic for ProjectSummaryView.xaml
     /// </summary>
-    public partial class ProjectDataView : UserControl
+    public partial class AdServiceManagerView : UserControl
     {
-        public ProjectDataView()
+        public AdServiceManagerView()
         {
             InitializeComponent();
         }

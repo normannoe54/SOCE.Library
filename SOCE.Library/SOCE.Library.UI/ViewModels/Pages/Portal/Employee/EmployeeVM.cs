@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
@@ -32,8 +33,7 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToAddEmployee { get; set; }
 
         public ICommand DeleteEmployee { get; set; }
-        public ICommand GoToTimesheetCommand { get; set; }
-
+        public ICommand GoToEmployeeInfoCommand { get; set; }
 
         private bool _canAddEmployee = false;
         public bool CanAddEmployee
@@ -111,17 +111,25 @@ namespace SOCE.Library.UI.ViewModels
 
             this.GoToAddEmployee = new RelayCommand<object>(this.ExecuteRunAddDialog);
             this.DeleteEmployee = new RelayCommand<object>(this.ExecuteRunDeleteDialog);
-            this.GoToTimesheetCommand = new RelayCommand<object>(GoToTimesheet);
+            this.GoToEmployeeInfoCommand = new RelayCommand<object>(GoToEmployeeSummary);
             LoadEmployees();
         }
 
-        public void GoToTimesheet(object o)
+        public async void GoToEmployeeSummary(object o)
         {
-            TimesheetSubmissionModel tsm = (TimesheetSubmissionModel)o;
-            BaseAI CurrentPage = IoCPortal.Application as BaseAI;
-            PortalAI portAI = (PortalAI)CurrentPage;
-            portAI.GoToTimesheetByDate(tsm.Date);
 
+            EmployeeModel em = (EmployeeModel)o;
+            em.CollectTimesheetSubmission();
+            em.IsEditable = true;
+            //let's set up a little MVVM, cos that's what the cool kids are doing:
+            var view = new EmployeeInfoView();
+            var vm = new EmployeeInfoVM(em);
+            view.DataContext = vm;
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
+
+            em.EditFieldState = true;
+            em.IsEditable = false;
         }
 
         private async void ExecuteRunAddDialog(object o)
@@ -176,6 +184,15 @@ namespace SOCE.Library.UI.ViewModels
 
                 //members.Add(em);
                 Employees.Add(em);
+            }
+
+            var index = Employees.ToList().FindIndex(x => x.Id == CurrentEmployee.Id);
+
+            if (index != -1)
+            {
+                var item = Employees[index];
+                Employees[index] = Employees[0];
+                Employees[0] = item;
             }
         }
 

@@ -99,7 +99,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private EmployeeVM employeeVM;
         private TimesheetVM timesheetVM;
-        private TimesheetReviewVM2 timesheetReviewVM;
+        private TimesheetReviewVM timesheetReviewVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
         private PortalPage currentPage;
@@ -122,7 +122,7 @@ namespace SOCE.Library.UI.ViewModels
             LoggedInEmployee = employee;
             employeeVM = new EmployeeVM(employee);
             timesheetVM = new TimesheetVM(employee);
-            timesheetReviewVM = new TimesheetReviewVM2(employee);
+            timesheetReviewVM = new TimesheetReviewVM(employee);
             //projectDataVM = new ProjectDataVM(employee);
             projectVM = new ProjectVM(employee);
         }
@@ -147,7 +147,8 @@ namespace SOCE.Library.UI.ViewModels
                     break;
                 case PortalPage.Timesheet:
                     timesheetVM.LoadCurrentTimesheet(DateTime.Now);
-                    timesheetVM.SearchFilter = false;
+                    timesheetVM.Message = "";
+                    //timesheetVM.SearchFilter = false;
                     CurrentPage = timesheetVM;
                     break;
                 case PortalPage.TimesheetReview:

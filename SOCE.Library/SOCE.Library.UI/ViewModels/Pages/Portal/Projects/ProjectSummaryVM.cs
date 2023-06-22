@@ -74,8 +74,23 @@ namespace SOCE.Library.UI.ViewModels
             get { return _selectedProjectPhase; }
             set
             {
-                _selectedProjectPhase = value;
+                if ((_selectedProjectPhase != null || !string.IsNullOrEmpty(_selectedProjectPhase?.PointNumber)) && GlobalEditMode)
+                {
 
+                    foreach (RolePerSubProjectModel rpspm in _selectedProjectPhase.RolesPerSub)
+                    {
+                        if (!rpspm.EditRoleFieldState)
+                        {
+                            rpspm.EditRoleFieldState = true;
+                        }
+                    }
+                    if (!_selectedProjectPhase.EditSubFieldState)
+                    {
+                        _selectedProjectPhase.EditSubFieldState = true;
+                    }
+                }
+
+                _selectedProjectPhase = value;
                 //Employees = BaseEmployees;
                 ////set stuff
                 //foreach (RolePerSubProjectModel role in _selectedProjectPhase.RolesPerSub)
@@ -156,70 +171,57 @@ namespace SOCE.Library.UI.ViewModels
                     SubProjectModel sub = SubProjects[i];
                     if (sub.CanEdit)
                     {
-
                         //List<RolePerSubProjectModel> rolesinp = sub.RolesPerSub.OrderBy(x => x.Id).ToList();
                         for (int j = 0; j < sub.RolesPerSub.Count; j++)
                         {
                             RolePerSubProjectModel role = sub.RolesPerSub[j];
-                            role.EditRoleFieldState = value;
 
-                            if (!_globalEditMode && value)
+                            if (value)
                             {
-                                role.globaleditmode = false;
-                                role.UpdateRolePerSub();
+                                if (role.Employee != null)
+                                {
+                                    role.EditRoleFieldState = value;
+                                    role.globaleditmode = false;
+                                    role.UpdateRolePerSub();
+                                }
                             }
                             else
                             {
                                 role.globaleditmode = true;
+                                role.EditRoleFieldState = value;
                             }
-
 
                         }
 
-                        sub.EditSubFieldState = value;
-
-                        if (!_globalEditMode && value)
+                        if (value)
                         {
+                            sub.EditSubFieldState = value;
                             sub.globaleditmode = false;
                         }
                         else
                         {
                             sub.globaleditmode = true;
+                            sub.EditSubFieldState = value;
                         }
-
 
                     }
                 }
 
-                if (!_globalEditMode && value)
+                if (value)
                 {
-                    BaseProject.FormatData(true);
+                    BaseProject.UpdateSubProjects();
+                    BaseProject.FormatData(false);
                     SubProjects = BaseProject.SubProjects;
                     Renumber(true);
+
+                    if (SelectedProjectPhase == null)
+                    {
+                        SelectedProjectPhase = SubProjects.Where(x => x.Description.ToUpper() == "ALL PHASES").FirstOrDefault();
+                    }
                 }
-                
 
-                //}
-                //else
-                //{
-                //    for (int i = 0; i < SubProjects.Count; i++)
-                //    {
-                //        SubProjectModel sub = SubProjects[i];
-                //        if (sub.CanEdit)
-                //        {
-                //            for (int j = 0; j < sub.RolesPerSub.Count; j++)
-                //            {
-                //                RolePerSubProjectModel role = sub.RolesPerSub[j];
-                //                role.EditRoleFieldState = false;
-                //            }
-                //            sub.EditSubFieldState = false;
-
-                //        }
-                //    }
-                //}
 
                 _globalEditMode = value;
-                SelectedProjectPhase = SubProjects[id];
                 RaisePropertyChanged("GlobalEditMode");
             }
         }
@@ -399,7 +401,7 @@ namespace SOCE.Library.UI.ViewModels
             if (ind > 0)
             {
                 SubProjects.Move(ind, ind - 1);
-                sub.NumberOrder=ind - 1;
+                sub.NumberOrder = ind - 1;
                 Renumber(false);
             }
 
@@ -412,7 +414,7 @@ namespace SOCE.Library.UI.ViewModels
             if (ind < SubProjects.Count - 1)
             {
                 SubProjects.Move(ind, ind + 1);
-                sub.NumberOrder=ind + 1;
+                sub.NumberOrder = ind + 1;
                 Renumber(false);
             }
 
@@ -444,7 +446,7 @@ namespace SOCE.Library.UI.ViewModels
                     }
                     else
                     {
-                        num =  i ;
+                        num = i;
                     }
 
                     SQLAccess.UpdateNumberOrder(sub.Id, num);
@@ -498,6 +500,7 @@ namespace SOCE.Library.UI.ViewModels
         }
         private void AddRole()
         {
+            GlobalEditMode = true;
             if (SelectedProjectPhase != null)
             {
                 RolePerSubProjectModel rpspm = new RolePerSubProjectModel(SelectedProjectPhase, SelectedProjectPhase.Fee);
@@ -510,7 +513,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void OpenAd()
         {
-            GlobalEditMode = true;
+            //GlobalEditMode = true;
             LeftViewToShow = new SubProjectInfoView();
             SubProjectInfoVM subvminfo = new SubProjectInfoVM(SelectedProjectPhase, this);
             LeftViewToShow.DataContext = subvminfo;

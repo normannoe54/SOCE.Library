@@ -13,6 +13,31 @@ namespace SOCE.Library.DbBatch
     {
         static void Main(string[] args)
         {
+            //RunProgram();
+            RunBudgetProgram();
+        }
+
+        public static void RunBudgetProgram()
+        {
+            List<EmployeeDbModel> employees = SQLAccess.LoadEmployees();
+            List<TimesheetRowDbModel> time = SQLAccess.LoadAllTimeSheetData();
+
+            foreach(TimesheetRowDbModel trm in time)
+            {
+                if (trm.BudgetSpent <= 0)
+                {
+                    EmployeeDbModel emdb = employees.Where(x => x.Id == trm.EmployeeId).FirstOrDefault();
+
+                    if (emdb != null)
+                    {
+                        trm.BudgetSpent = emdb.Rate * trm.TimeEntry;
+                        SQLAccess.UpdateTimesheetData(trm);
+                    }
+                }
+            }
+        }
+        public static void RunProgram()
+        {
             List<ClientSummary> clientsumamry = new List<ClientSummary>();
 
             List<EmployeeDbModel> employees = SQLAccess.LoadEmployees();
@@ -67,7 +92,7 @@ namespace SOCE.Library.DbBatch
 
             StringBuilder csv = new StringBuilder();
 
-            foreach(ClientSummary clientsum in clientsumamry)
+            foreach (ClientSummary clientsum in clientsumamry)
             {
                 string newLine = string.Format($"{clientsum.client.ClientNumber.ToString()}, {clientsum.client.ClientName}, {clientsum.hours}, {clientsum.budget}");
                 csv.AppendLine(newLine);

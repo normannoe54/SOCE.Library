@@ -15,14 +15,14 @@
             <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <!--<views:AddSubProjectView/>-->
         </materialDesign:DrawerHost.RightDrawerContent>
-        <Border Padding="20" Background="#F7F6F4">
+        <Border Padding="0" Background="#F7F6F4">
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="220"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
 
-                <Border CornerRadius="25" >
+                <Border>
                     <Border.Background>
                         <LinearGradientBrush>
                             <GradientStop Color="#636466" Offset="0"/>
@@ -139,6 +139,14 @@
                         </Button>
                     </Grid>
                 </Border>
+
+                <!--<Button Grid.Column="1" Margin="20 10 0 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}" VerticalAlignment="Top" HorizontalAlignment="Left">
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="Feedback" VerticalAlignment="Center" Foreground="Black"/>
+                        <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Feedback" Margin="0 0 10 0"  Foreground="Black"/>
+                    </StackPanel>
+                </Button>-->
+
                 <Grid Grid.Column="1">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>

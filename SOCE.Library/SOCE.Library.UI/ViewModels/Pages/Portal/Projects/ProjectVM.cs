@@ -458,12 +458,18 @@ namespace SOCE.Library.UI.ViewModels
             ProjectModel pm = (ProjectModel)o;
 
             //let's set up a little MVVM, cos that's what the cool kids are doing:
-            var view = new ProjectSummaryView();
-            ProjectSummaryVM vm = new ProjectSummaryVM(pm, CurrentEmployee);
+            //var view = new ProjectSummaryView();
+            //ProjectSummaryVM vm = new ProjectSummaryVM(pm, CurrentEmployee);
+            //view.DataContext = vm;
+            ////show the dialog
+            //var result = await DialogHost.Show(view, "RootDialog");
+
+
+            var view = new BaseProjectSummaryView();
+            BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee,pm, ViewEnum.ProjectSummary);
             view.DataContext = vm;
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
-
         }
 
 

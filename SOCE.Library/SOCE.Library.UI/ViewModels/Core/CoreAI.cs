@@ -52,6 +52,7 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _windowType = value;
+                DetermineIcon();
                 RaisePropertyChanged(nameof(WindowType));
             }
         }
@@ -216,8 +217,6 @@ namespace SOCE.Library.UI.ViewModels
             {
                 WindowType = WindowState.Maximized;
             }
-
-            DetermineIcon();
         }
 
         private void DetermineIcon()

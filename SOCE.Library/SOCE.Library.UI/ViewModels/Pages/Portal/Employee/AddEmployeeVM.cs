@@ -185,13 +185,13 @@ namespace SOCE.Library.UI.ViewModels
 
 
             EmployeeDbModel employee = new EmployeeDbModel()
-            {   FirstName = FirstNameInp, 
-                LastName = LastNameInp, 
-                Title = TitleInp, 
-                AuthId = (int)SelectedAuthorization, 
+            { FirstName = FirstNameInp,
+                LastName = LastNameInp,
+                Title = TitleInp,
+                AuthId = (int)SelectedAuthorization,
                 DefaultRoleId = (int)SelectedDefaultRole,
-                Email = EmailInp + "@shirkodonovan.com", 
-                PhoneNumber = PhoneNumberInp, 
+                Email = EmailInp + "@shirkodonovan.com",
+                PhoneNumber = PhoneNumberInp,
                 Extension = ExtensionInp,
                 Rate = BillableRate,
                 PTORate = YearlyPTO,
@@ -199,7 +199,12 @@ namespace SOCE.Library.UI.ViewModels
                 Password = TemporaryPassInp,
                 HolidayHours = HolidayHours,
                 IsActive = 1,
-                StartDate = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd"))
+                StartDate = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd")),
+                MondayHours = 9,
+                TuesdayHours = 9,
+                WednesdayHours = 9,
+                ThursdayHours = 9,
+                FridayHours = 4,
             };
 
             SQLAccess.AddEmployee(employee);

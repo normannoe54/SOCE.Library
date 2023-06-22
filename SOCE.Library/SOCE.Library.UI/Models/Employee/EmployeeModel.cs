@@ -466,30 +466,128 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool IsEditable;
-
-        private bool _canExpand = false;
-        public bool CanExpand
+        private double _mondayHours;
+        public double MondayHours
         {
-            get
-            {
-                return _canExpand;
-            }
+            get { return _mondayHours; }
             set
             {
-                
+                _mondayHours = value;
                 if (IsEditable)
                 {
-                    _canExpand = value;
-                    RaisePropertyChanged(nameof(CanExpand));
+                    TotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
+                }
+                RaisePropertyChanged(nameof(MondayHours));
+            }
+        }
 
-                    if (value && !Formatted)
-                    {
-                        CollectTimesheetSubmission();
-                    }
+        private double _tuesdayHours;
+        public double TuesdayHours
+        {
+            get { return _tuesdayHours; }
+            set
+            {
+                _tuesdayHours = value;
+                if (IsEditable)
+                {
+                    TotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
+                }
+                RaisePropertyChanged(nameof(TuesdayHours));
+            }
+        }
+
+        private double _wednesdayHours;
+        public double WednesdayHours
+        {
+            get { return _wednesdayHours; }
+            set
+            {
+                _wednesdayHours = value;
+                if (IsEditable)
+                {
+                    TotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
+                }
+                RaisePropertyChanged(nameof(WednesdayHours));
+            }
+        }
+
+        private double _thursdayHours;
+        public double ThursdayHours
+        {
+            get { return _thursdayHours; }
+            set
+            {
+                _thursdayHours = value;
+                if (IsEditable)
+                {
+                    TotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
+                }
+                RaisePropertyChanged(nameof(ThursdayHours));
+            }
+        }
+
+        private double _fridayHours;
+        public double FridayHours
+        {
+            get { return _fridayHours; }
+            set
+            {
+                _fridayHours = value;
+
+                if (IsEditable)
+                {
+                    TotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
+                }
+                RaisePropertyChanged(nameof(FridayHours));
+            }
+        }
+
+        private double _totalHours;
+        public double TotalHours
+        {
+            get { return _totalHours; }
+            set
+            {
+                _totalHours = value;
+                RaisePropertyChanged(nameof(TotalHours));
+            }
+        }
+
+        private bool _isEditable;
+        public bool IsEditable
+        {
+            get { return _isEditable; }
+            set
+            {
+                _isEditable = value;
+                if (_isEditable)
+                {
+                    TotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
                 }
             }
         }
+        //private bool _canExpand = false;
+        //public bool CanExpand
+        //{
+        //    get
+        //    {
+        //        return _canExpand;
+        //    }
+        //    set
+        //    {
+
+        //        if (IsEditable)
+        //        {
+        //            _canExpand = value;
+        //            RaisePropertyChanged(nameof(CanExpand));
+
+        //            if (value && !Formatted)
+        //            {
+        //                CollectTimesheetSubmission();
+        //            }
+        //        }
+        //    }
+        //}
 
         private Brush _borderColor = Brushes.Transparent;
         public Brush BorderColor
@@ -542,9 +640,12 @@ namespace SOCE.Library.UI
             PTOCarryover = emdb.PTOCarryover;
             PTORate = emdb.PTORate;
 
-            HoursPerWeek = emdb.HoursPerWeek;
+            MondayHours = emdb.MondayHours;
+            TuesdayHours = emdb.TuesdayHours;
+            WednesdayHours = emdb.WednesdayHours;
+            ThursdayHours = emdb.ThursdayHours;
+            FridayHours = emdb.FridayHours;
             SickRate = emdb.SickRate;
-
             HolidayHours = emdb.HolidayHours;
         }
 
@@ -656,7 +757,11 @@ namespace SOCE.Library.UI
                 HolidayHours = HolidayHours,
                 //SickHours = SickHours,
                 SickRate = SickRate,
-                HoursPerWeek = HoursPerWeek,
+                MondayHours = MondayHours,
+                TuesdayHours = TuesdayHours,
+                WednesdayHours = WednesdayHours,
+                ThursdayHours = ThursdayHours,
+                FridayHours = FridayHours,
                 IsActive = 1
             };
 

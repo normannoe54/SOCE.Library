@@ -59,8 +59,8 @@
                     </TextBlock>
                 </Grid>
 
-                <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
-                <TextBox IsEnabled="{Binding IsProjectNumEnabled}"  Grid.Row="4" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+                <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16" MaxLength="34"/>
+                <TextBox IsEnabled="{Binding IsProjectNumEnabled}"  Grid.Row="4" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" MaxLength="6"/>
                 <TextBox  Grid.Row="5" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp,StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
                 <ComboBox Grid.Row="2" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
@@ -75,7 +75,7 @@
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
-                <TextBox Grid.Row="3" Visibility="{Binding IsClientInputVisible}" materialDesign:HintAssist.Hint="Type Client Name" Text="{Binding MiscClientInput}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16"/>
+                <TextBox Grid.Row="3" Visibility="{Binding IsClientInputVisible}" materialDesign:HintAssist.Hint="Type Client Name" Text="{Binding MiscClientInput}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16" MaxLength="34"/>
                 <ComboBox Grid.Row="6" Margin="0 8 0 0" FontSize="16"
                   Style="{StaticResource MaterialDesignFloatingHintComboBox}"
                   materialDesign:HintAssist.Hint="Select Market"

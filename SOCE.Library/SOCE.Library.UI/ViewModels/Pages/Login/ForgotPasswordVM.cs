@@ -81,7 +81,7 @@ namespace SOCE.Library.UI.ViewModels
                     //Have tried both false and true    
                     client.Connect("smtp-mail.outlook.com", 587, false);
                     client.AuthenticationMechanisms.Remove("XOAUTH2");
-                    client.Authenticate("normnoe@shirkodonovan.com", "Barry553");
+                    client.Authenticate("normnoe@shirkodonovan.com", "Jules0714!");
                     await client.SendAsync(mailMessage);
                     client.Disconnect(true);
                 }

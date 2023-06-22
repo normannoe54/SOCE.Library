@@ -39,9 +39,6 @@
             <!--<DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
                 <views:LicenseManagerView/>
             </DataTemplate>-->
-            <!--<DataTemplate DataType="{x:Type viewmodels:ProjectDataVM}">
-                <views:ProjectDataView/>
-            </DataTemplate>-->
             <!--<DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
                 <views:ResourcesView/>
             </DataTemplate>-->
@@ -49,8 +46,8 @@
                 <views:TimesheetView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodels:TimesheetReviewVM2}">
-                <views:TimesheetReviewViewv2/>
+            <DataTemplate DataType="{x:Type viewmodels:TimesheetReviewVM}">
+                <views:TimesheetReviewView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">

@@ -143,7 +143,7 @@ namespace SOCE.Library.UI
                 _spentHours = value;
                 //SpentBudget = _spentHours * Rate;
 
-                if (SpentHours ==0)
+                if (SpentHours == 0)
                 {
                     SpentBudget = 0;
                 }
@@ -154,7 +154,23 @@ namespace SOCE.Library.UI
                 }
 
                 PercentSpent = (_spentHours / BudgetedHours) * 100;
-                CanDelete = _spentHours == 0;
+
+                if (Subproject != null)
+                {
+                    if ((Subproject?.Description == "All Phases") || (!Subproject.baseproject.IsActive))
+                    {
+                        CanDelete = false;
+                    }
+                    else
+                    {   
+                        CanDelete = _spentHours == 0;
+                    }
+                }
+                else
+                {
+                    CanDelete = false;
+                }
+
                 RaisePropertyChanged(nameof(SpentHours));
 
             }
@@ -207,8 +223,29 @@ namespace SOCE.Library.UI
                     UpdateRolePerSub();
                     Subproject.baseproject.FormatData(false);
                     //need to update sub project.
-
                 }
+                else if (_editRoleFieldState && !value && !globaleditmode)
+                {
+                    if (Id != 0)
+                    {
+                        //foreach (SubProjectModel sub in Subproject.baseproject.SubProjects)
+                        //{
+
+                        if (!string.IsNullOrEmpty(Subproject.PointNumber))
+                        {
+                            foreach (RolePerSubProjectModel role in Subproject.RolesPerSub)
+                            {
+                                if (role.Id != Id)
+                                {
+                                    role.EditRoleFieldState = !value;
+                                }
+                            }
+
+
+                        }
+                    }
+                }
+
                 _editRoleFieldState = value;
                 EditComboRoleFieldState = !_editRoleFieldState;
 
@@ -303,6 +340,7 @@ namespace SOCE.Library.UI
 
         public void UpdateRolePerSub()
         {
+
             RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
             {
                 Id = Id,
@@ -313,9 +351,10 @@ namespace SOCE.Library.UI
                 BudgetHours = BudgetedHours
             };
 
-            if (Id ==0)
+            if (Id == 0)
             {
-                SQLAccess.AddRolesPerSubProject(rpp);
+                int val = SQLAccess.AddRolesPerSubProject(rpp);
+                Id = val;
             }
             else
             {
