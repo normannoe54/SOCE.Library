@@ -367,15 +367,15 @@ namespace SOCE.Library.UI.ViewModels
 
                     for (int i = 0; i < count - 2; i++)
                     {
-                        exinst.InsertBlankColumns(i + 3);
+                        exinst.InsertBlankColumns(i + 4);
                     }
 
                     List<string> dates = new List<string>();
                     List<double> number = new List<double>();
 
                     //write column formula
-                    char cval = 'C';
-                    char finalval = 'B';
+                    char cval = 'D';
+                    char finalval = 'C';
 
                     foreach (TREntryModel ent1 in Rowdata[0].Entries)
                     {
@@ -384,23 +384,26 @@ namespace SOCE.Library.UI.ViewModels
                         finalval++;
                     }
 
-                    exinst.WriteRow(5, 3, dates);
-                    exinst.WriteRow(6, 3, number);
+                    exinst.WriteRow(5, 4, dates);
+                    exinst.WriteRow(6, 4, number);
 
                     string cell = $"{MonthYearString} {DateString}";
-                    exinst.WriteCell(1, 3, cell);
+                    exinst.WriteCell(1, 4, cell);
 
                     string name = $"{CurrentEmployee.FullName}";
-                    exinst.WriteCell(3, 3, name);
+                    exinst.WriteCell(3, 4, name);
 
                     int basenum = 6;
 
-                    foreach (TimesheetRowModel trm in Rowdata)
+                    List<TimesheetRowModel> exportedtime = Rowdata.ToList().OrderBy(x => x.Project.ProjectNumber.ToString().Substring(2)).ThenBy(x=> x.Project.ProjectNumber).ToList();
+
+                    foreach (TimesheetRowModel trm in exportedtime)
                     {
                         List<object> rowinputs = new List<object>();
-                        string projectname = $"[{trm.SelectedSubproject.PointNumber}]  {trm.Project.ProjectName}";
+                        //string projectname = $"[{trm.SelectedSubproject.PointNumber}]  {trm.Project.ProjectName}";
                         rowinputs.Add(trm.Project.ProjectNumber);
-                        rowinputs.Add(projectname);
+                        rowinputs.Add(trm.SelectedSubproject.PointNumber);
+                        rowinputs.Add(trm.Project.ProjectName);
 
                         foreach (TREntryModel ent in trm.Entries)
                         {
@@ -411,18 +414,19 @@ namespace SOCE.Library.UI.ViewModels
 
                         basenum++;
 
-                        string formula = $"SUM(C{basenum}: {finalval}{basenum})";
-                        exinst.WriteFormula(basenum, count + 3, formula);
+                        string formula = $"SUM(D{basenum}: {finalval}{basenum})";
+                        exinst.WriteFormula(basenum, count + 4, formula);
                     }
 
                     for (int i = 0; i < count + 1; i++)
                     {
                         string formula = $"SUM({cval}7:{cval}{basenum})";
-                        exinst.WriteFormula(basenum + 1, i + 3, formula);
+                        exinst.WriteFormula(basenum + 1, i + 4, formula);
                         cval++;
                     }
-
-                    exinst.FitColumns();
+                    exinst.RotateTextVertical(5, 2);
+                    exinst.CenterCell(5, 3);
+                    exinst.SaveDocument();
                 }
 
                 Process.Start(pathDownload);

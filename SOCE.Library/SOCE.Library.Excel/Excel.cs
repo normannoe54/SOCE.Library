@@ -29,6 +29,11 @@ namespace SOCE.Library.Excel
             document.Save();
         }
 
+        public void SaveDocument()
+        {
+            document.Save();
+        }
+
         public void InsertBlankColumns(int column)
         {
             IXLColumn colnew = activeworksheet.Column(column);
@@ -64,9 +69,28 @@ namespace SOCE.Library.Excel
         public void WriteCell(int row, int column, string cellvalue)
         {
             activeworksheet.Cell(row, column).Value = cellvalue;
+            //activeworksheet.Cell(row, column).Comment.Style.Alignment.SetHorizontal(XLDrawingHorizontalAlignment.Left);
 
             //document.Save();
         }
+
+        public void CenterCell(int row, int column)
+        {
+            activeworksheet.Cell(row, column).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+        }
+
+        public void RotateTextVertical(int row, int column)
+        {
+            activeworksheet.Cell(row, column).Style.Alignment.SetTextRotation(90);
+        }
+
+        //public void WriteCellLeft(int row, int column, string cellvalue)
+        //{
+        //    activeworksheet.Cell(row, column).Value = cellvalue;
+        //    activeworksheet.Cell(row, column).Comment.Style.Alignment.SetHorizontal(XLDrawingHorizontalAlignment.Left);
+
+        //    //document.Save();
+        //}
 
         public void WriteFormula(int row, int column, string cellvalue)
         {
