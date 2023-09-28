@@ -8,9 +8,24 @@ using SOCE.Library.Db;
 
 namespace SOCE.Library.UI
 {
-    public class RolePerSubProjectModel : PropertyChangedBase
+    public class RolePerSubProjectModel : PropertyChangedBase, ICloneable
     {
         public int Id { get; set; }
+
+        private ObservableCollection<SDEntryModel> _entries = new ObservableCollection<SDEntryModel>();
+        public ObservableCollection<SDEntryModel> Entries
+        {
+            get
+            {
+                return _entries;
+            }
+            set
+            {
+                _entries = value;
+                //SetTotalNew();
+                RaisePropertyChanged(nameof(Entries));
+            }
+        }
 
         private SubProjectModel _subproject { get; set; }
         public SubProjectModel Subproject
@@ -26,7 +41,21 @@ namespace SOCE.Library.UI
             }
         }
 
-        private EmployeeModel _employee { get; set; }
+        private ObservableCollection<EmployeeModel> _employeeList { get; set; } = new ObservableCollection<EmployeeModel>();
+        public ObservableCollection<EmployeeModel> EmployeeList
+        {
+            get
+            {
+                return _employeeList;
+            }
+            set
+            {
+                _employeeList = value;
+                RaisePropertyChanged(nameof(EmployeeList));
+            }
+        }
+
+        private EmployeeModel _employee { get; set; } = new EmployeeModel();
         public EmployeeModel Employee
         {
             get
@@ -41,6 +70,48 @@ namespace SOCE.Library.UI
                     Rate = Employee.Rate;
                 }
                 RaisePropertyChanged(nameof(Employee));
+            }
+        }
+
+        private EmployeeModel _employeeWrapper { get; set; } 
+        public EmployeeModel EmployeeWrapper
+        {
+            get
+            {
+                return _employeeWrapper;
+            }
+            set
+            {
+
+                RolePerSubProjectModel role = Subproject.RolesPerSub.Where(x => x.Employee.Id == value.Id).FirstOrDefault();
+
+                if (role!= null && role?.Id > 0)
+                {
+                    Id = role.Id;
+                    BudgetedHours = role.BudgetedHours;
+                }
+                else
+                {
+                    Id = 0;
+                }
+
+                Employee = value;
+                _employeeWrapper = value;
+                RaisePropertyChanged(nameof(EmployeeWrapper));
+            }
+        }
+
+        private double _total;
+        public double Total
+        {
+            get
+            {
+                return _total;
+            }
+            set
+            {
+                _total = value;
+                RaisePropertyChanged(nameof(Total));
             }
         }
 
@@ -360,6 +431,39 @@ namespace SOCE.Library.UI
             {
                 SQLAccess.UpdateRolesPerSubProject(rpp);
             }
+        }
+
+        public object Clone()
+        {
+
+            ObservableCollection<SDEntryModel> trs = new ObservableCollection<SDEntryModel>();
+            foreach (SDEntryModel tr in Entries)
+            {
+                trs.Add((SDEntryModel)tr?.Clone());
+            }
+
+            RolePerSubProjectModel trm = new RolePerSubProjectModel()
+            {
+                Id = this.Id,
+                Role = this.Role,
+                //Subproject = (SubProjectModel)this.Subproject?.Clone(),
+                //Rate = this.Rate,
+                //BudgetedHours = this.BudgetedHours,
+                //PercentofBudget = this.PercentofBudget,
+                //PercentofRegulatedBudget = this.PercentofRegulatedBudget,
+                //OverallFee = this.OverallFee,
+                //SpentHours = this.SpentHours,
+                //SpentBudget = this.SpentBudget,
+                //PercentSpent = this.PercentSpent,
+                Employee = (EmployeeModel)this.Employee?.Clone(),
+                Entries = trs
+            };
+
+
+            return trm;
+            //return MemberwiseClone();
+            //return new RolePerSubProjectModel() {
+            //    Date = this.Date, TimeEntry = this.TimeEntry, Id = this.Id };
         }
 
     }

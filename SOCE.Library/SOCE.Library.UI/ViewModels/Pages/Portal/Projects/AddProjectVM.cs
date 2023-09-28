@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using SOCE.Library.UI.Views;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -45,6 +46,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _projectNumberInp = value;
                 RaisePropertyChanged("ProjectNumberInp");
+            }
+        }
+
+        private DateTime? _dueDateInp;
+        public DateTime? DueDateInp
+        {
+            get { return _dueDateInp; }
+            set
+            {
+                _dueDateInp = value;
+                RaisePropertyChanged("DueDateInp");
             }
         }
 
@@ -473,8 +485,8 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             SetSubs();
-            CAPhase = true;
             CDPhase = true;
+            CAPhase = true;
             MarketsAvailable = TotalMark;
             ClientsAvailable = TotalClients;
             PMsAvailable = TotalPMs;
@@ -558,7 +570,7 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 5,
                 Fee = 0,
-                isAddProj =true
+                isAddProj = true
             };
             clientdevproj.SetCollectionChanged();
             BudgetEstimateVM CLDevVM = new BudgetEstimateVM(clientdevproj, 0);
@@ -622,7 +634,7 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 80,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
             };
             cdproj.SetCollectionChanged();
             BudgetEstimateVM CDVM = new BudgetEstimateVM(cdproj, 0);
@@ -698,7 +710,14 @@ namespace SOCE.Library.UI.ViewModels
                         ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
                         return;
                     }
-                }       
+                }
+            }
+
+            int? duedatevar = null;
+
+            if (DueDateInp != null)
+            {
+                duedatevar = (int)long.Parse(DueDateInp?.ToString("yyyyMMdd"));
             }
 
             ProjectDbModel project = new ProjectDbModel
@@ -709,6 +728,7 @@ namespace SOCE.Library.UI.ViewModels
                 MarketId = MarketInp.Id,
                 ManagerId = PMInp.Id,
                 Fee = TotalFeeInp,
+                DueDate = duedatevar,
                 PercentComplete = 0,
                 IsActive = 1,
                 Projectfolder = "",
@@ -727,10 +747,31 @@ namespace SOCE.Library.UI.ViewModels
                 return;
             }
 
+            List<string> phases = new List<string>();
+
             foreach (BudgetEstimateView bev in Roles)
             {
-                //add subproject then add roles
                 BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                phases.Add(bevm.SelectedProjectPhase.PointNumber);
+
+            }
+
+            int idrun = 0;
+
+            foreach (BudgetEstimateView bev in Roles)
+            {
+                BudgetEstimateVM bevm = (BudgetEstimateVM)bev.DataContext;
+                int activephase = 0;
+
+                if (bevm.SelectedProjectPhase.PointNumber == "CD")
+                {
+                    activephase = 1;
+                }
+                else if (!phases.Contains("CD") && idrun == 0)
+                {
+                    activephase = 1;
+                }
+
                 SubProjectDbModel sub = new SubProjectDbModel()
                 {
                     ProjectId = id,
@@ -741,6 +782,7 @@ namespace SOCE.Library.UI.ViewModels
                     IsInvoiced = 0,
                     PercentComplete = 0,
                     PercentBudget = bevm.SelectedProjectPhase.PercentBudget,
+                    IsScheduleActive = activephase
                 };
 
                 int subid = SQLAccess.AddSubProject(sub);
@@ -760,6 +802,8 @@ namespace SOCE.Library.UI.ViewModels
                         SQLAccess.AddRolesPerSubProject(role);
                     }
                 }
+
+                idrun++;
             }
 
             result = true;

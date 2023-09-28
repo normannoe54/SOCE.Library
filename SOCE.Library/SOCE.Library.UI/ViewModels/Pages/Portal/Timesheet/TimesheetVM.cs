@@ -663,10 +663,21 @@ namespace SOCE.Library.UI.ViewModels
 
                 trm.SelectedSubproject = subpmnew;
 
-                foreach (TimesheetRowDbModel trdm in item)
+                item.ToList().RemoveAll(x => x == null);
+
+                List<TimesheetRowDbModel> distincts = item.ToList().GroupBy(x => x.Date).Select(y => y.First()).ToList();
+                var duplicates = item.Except(distincts).ToList();
+
+                foreach (TimesheetRowDbModel trdm in duplicates)
                 {
-                    DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                    trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry });
+                    SQLAccess.DeleteTimesheetData(trdm.Id);
+                }
+
+                foreach (TimesheetRowDbModel trdm in distincts)
+                {
+
+                        DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                        trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry });
                 }
 
                 DateTime dateinc = datestart;
@@ -1073,9 +1084,7 @@ namespace SOCE.Library.UI.ViewModels
             MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
 
-
             BaseHours = basehours;
-
 
             DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
             DateTime enddate = DateSummary.Last().Value;

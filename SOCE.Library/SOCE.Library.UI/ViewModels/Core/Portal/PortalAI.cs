@@ -100,6 +100,7 @@ namespace SOCE.Library.UI.ViewModels
         private EmployeeVM employeeVM;
         private TimesheetVM timesheetVM;
         private TimesheetReviewVM timesheetReviewVM;
+        private ProjectScheduleVM projectScheduleVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
         private PortalPage currentPage;
@@ -123,6 +124,7 @@ namespace SOCE.Library.UI.ViewModels
             employeeVM = new EmployeeVM(employee);
             timesheetVM = new TimesheetVM(employee);
             timesheetReviewVM = new TimesheetReviewVM(employee);
+            projectScheduleVM = new ProjectScheduleVM(employee);
             //projectDataVM = new ProjectDataVM(employee);
             projectVM = new ProjectVM(employee);
         }
@@ -154,13 +156,14 @@ namespace SOCE.Library.UI.ViewModels
                 case PortalPage.TimesheetReview:
                     CurrentPage = timesheetReviewVM;
                     break;
-                case PortalPage.ProjectData:
-                    //CurrentPage = projectDataVM;
+                case PortalPage.ProjectSchedule:
+                    CurrentPage = projectScheduleVM;
                     break;
                 //case PortalPage.LicenseManager:
                 //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);
                 //    break;
                 case PortalPage.Projects:
+                    projectVM.Reload();
                     CurrentPage = projectVM;
                     break;
             }

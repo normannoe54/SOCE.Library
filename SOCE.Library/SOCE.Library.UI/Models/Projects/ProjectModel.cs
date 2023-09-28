@@ -2,16 +2,20 @@
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SOCE.Library.Db;
 using SOCE.Library.UI.ViewModels;
+using SOCE.Library.UI.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.Globalization;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace SOCE.Library.UI
 {
@@ -28,6 +32,8 @@ namespace SOCE.Library.UI
         //        RaisePropertyChanged(nameof(RatePerProject));
         //    }
         //}
+
+
 
         private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
         public ObservableCollection<SubProjectModel> SubProjects
@@ -96,6 +102,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _remarks { get; set; }
+        public string Remarks
+        {
+            get
+            {
+                return _remarks;
+            }
+            set
+            {
+                _remarks = value;
+                RaisePropertyChanged(nameof(Remarks));
+            }
+        }
+
         private double _fee { get; set; }
         public double Fee
         {
@@ -107,6 +127,93 @@ namespace SOCE.Library.UI
             {
                 _fee = value;
                 RaisePropertyChanged(nameof(Fee));
+            }
+        }
+
+        private SchedulingEnum _schedulingValue { get; set; }
+        public SchedulingEnum SchedulingValue
+        {
+            get
+            {
+                return _schedulingValue;
+            }
+            set
+            {
+                //bool returnvalue = true;
+                //if (!allowedtomakechanges)
+                //{
+                //    if (value == SchedulingEnum.H)
+                //    {
+                //        IsOnHold = true;
+                //        foreach (SubProjectModel sub in SubProjects)
+                //        {
+                //            sub.IsScheduleActive = false;
+                //        }
+
+                //    }
+                //    else if (value == SchedulingEnum.CA)
+                //    {
+                //        SubProjectModel subcontainingCA = SubProjects.Where(x => x.PointNumber == "CA").FirstOrDefault();
+
+                //        bool containsCA = SubProjects.Where(x => x.PointNumber == "CA").Count() > 0;
+
+                //        if (containsCA)
+                //        {
+                //            foreach (SubProjectModel sub in SubProjects)
+                //            {
+                //                sub.IsScheduleActive = sub.PointNumber == "CA" ? true : false;
+                //            }
+                //        }
+                //        else
+                //        {
+                //            YesNoView view = new YesNoView();
+                //            YesNoVM aysvm = new YesNoVM();
+
+                //            aysvm.Message = $"CA Phase does not exist";
+                //            aysvm.SubMessage = $"Would you like to add one?";
+                //            view.DataContext = aysvm;
+
+                //            //show the dialog
+                //            var Result = DialogHost.Show(view, "RootDialog");
+
+                //            YesNoVM vm = view.DataContext as YesNoVM;
+                //            bool resultvm = vm.Result;
+
+                //            returnvalue = resultvm;
+                //            if (resultvm)
+                //            {
+                //                double numorder = SubProjects.Max(x => x.NumberOrder);
+                //                SubProjectDbModel subproject = new SubProjectDbModel
+                //                {
+                //                    ProjectId = Id,
+                //                    Description = "Construction Administration",
+                //                    IsActive = 1,
+                //                    IsInvoiced = 0,
+                //                    PercentComplete = 0,
+                //                    PercentBudget = 0,
+                //                    NumberOrder = Convert.ToInt32(numorder) + 1,
+                //                    Fee = 0
+                //                };
+                //                SQLAccess.AddSubProject(subproject);
+                //            } //show ui and ask user for stuff
+                //        }
+                //    }
+                //    else if (value == SchedulingEnum.A)
+                //    {
+                //        //popup box asking which subproject is the active one.
+                //    }
+
+                //    UpdateProject();
+                //    UpdateSubProjects();
+                //}
+
+                //if (returnvalue)
+                //{
+                _schedulingValue = value;
+                //}
+
+                RaisePropertyChanged(nameof(SchedulingValue));
+
             }
         }
 
@@ -193,6 +300,17 @@ namespace SOCE.Library.UI
 
                 _isActive = value;
                 RaisePropertyChanged(nameof(IsActive));
+            }
+        }
+
+        private DateTime? _dueDate;
+        public DateTime? DueDate
+        {
+            get { return _dueDate; }
+            set
+            {
+                _dueDate = value;
+                RaisePropertyChanged(nameof(DueDate));
             }
         }
 
@@ -286,6 +404,17 @@ namespace SOCE.Library.UI
                 //ComboFieldState = !_editFieldState;
 
                 RaisePropertyChanged(nameof(EditFieldState));
+            }
+        }
+
+        private bool _isOnHold = false;
+        public bool IsOnHold
+        {
+            get { return _isOnHold; }
+            set
+            {
+                _isOnHold = value;
+                RaisePropertyChanged(nameof(IsOnHold));
             }
         }
 
@@ -417,6 +546,42 @@ namespace SOCE.Library.UI
             }
         }
 
+        private PackIconKind _iconForListButton = PackIconKind.Lock;
+        public PackIconKind IconForListButton
+        {
+            get
+            {
+                return _iconForListButton;
+            }
+            set
+            {
+                _iconForListButton = value;
+                RaisePropertyChanged(nameof(IconForListButton));
+            }
+        }
+
+        private Brush _colorForListButton = Brushes.Orange;
+        public Brush ColorForListButton
+        {
+            get { return _colorForListButton; }
+            set
+            {
+                _colorForListButton = value;
+                RaisePropertyChanged(nameof(ColorForListButton));
+            }
+        }
+
+        private string _tooltipforList = "Locked";
+        public string TooltipforList
+        {
+            get { return _tooltipforList; }
+            set
+            {
+                _tooltipforList = value;
+                RaisePropertyChanged(nameof(TooltipforList));
+            }
+        }
+
         private bool IsEditable;
 
         private bool _canDelete { get; set; } = false;
@@ -434,17 +599,30 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _editList = true;
+        public bool EditList
+        {
+            get { return _editList; }
+            set
+            {
+                _editList = value;
+
+                RaisePropertyChanged(nameof(EditList));
+            }
+        }
 
         public int ProjectStart;
 
         public int ProjectEnd;
 
         public double FinalSpent;
-
+        public bool sourcevalue = true;
         #region project
         public ICommand CopyProjectFolderCommand { get; set; }
         public ICommand SelectProjectFolderCommand { get; set; }
         public ICommand OpenProjectFolderCommand { get; set; }
+
+        public ICommand ButtonPress { get; set; }
         #endregion
 
         #region arch
@@ -468,6 +646,7 @@ namespace SOCE.Library.UI
         #region constructors
         public ProjectModel()
         {
+
         }
 
         public ProjectModel(ProjectDbModel pm, bool iseditable = true, bool filter = false)
@@ -487,6 +666,11 @@ namespace SOCE.Library.UI
             ProjectEnd = pm.ProjectEnd;
             FinalSpent = pm.FinalSpent;
 
+            if (pm?.DueDate != null && pm?.DueDate != 0)
+            {
+                DueDate = DateTime.ParseExact(pm.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+
             //EmployeeDbModel emdbm = SQLAccess.LoadEmployeeById(pm.ManagerId);
             //EmployeeModel em = new EmployeeModel(emdbm);
             //ProjectManager = em;
@@ -503,6 +687,7 @@ namespace SOCE.Library.UI
             Drawingsfolder = pm.Drawingsfolder;
             Architectfolder = pm.Architectfolder;
             Plotfolder = pm.Plotfolder;
+            IsOnHold = Convert.ToBoolean(pm.IsOnHold);
             TotalBudget = Fee;
             //FormatData();
             onstartup = true;
@@ -519,9 +704,17 @@ namespace SOCE.Library.UI
             Id = pm.Id;
             ProjectName = pm.ProjectName;
             ProjectNumber = pm.ProjectNumber;
+            IsOnHold = Convert.ToBoolean(pm.IsOnHold);
             //SearchText = String.Format("{0} {1}", ProjectNumber.ToString(), ProjectName);
             Fee = pm.Fee;
+
+            if (pm?.DueDate != null && pm?.DueDate != 0)
+            {
+                DueDate = DateTime.ParseExact(pm.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+
             IsActive = Convert.ToBoolean(pm.IsActive);
+            SearchText = ProjectNumber.ToString();
             //PercentComplete = pm.PercentComplete;
             //ProjectStart = pm.ProjectStart;
             //ProjectEnd = pm.ProjectEnd;
@@ -533,6 +726,7 @@ namespace SOCE.Library.UI
 
         private void Constructor()
         {
+            this.ButtonPress = new RelayCommand(this.RunButtonPress);
             this.CopyProjectFolderCommand = new RelayCommand(this.CopyProjectFolder);
             this.SelectProjectFolderCommand = new RelayCommand(this.SelectProjectFolder);
             this.OpenProjectFolderCommand = new RelayCommand(this.OpenProjectFolder);
@@ -548,9 +742,155 @@ namespace SOCE.Library.UI
             this.CopyPlotFolderCommand = new RelayCommand(this.CopyPlotFolder);
             this.SelectPlotFolderCommand = new RelayCommand(this.SelectPlotFolder);
             this.OpenPlotFolderCommand = new RelayCommand(this.OpenPlotFolder);
+
             onstartup = false;
         }
         #endregion
+
+        private async void RunButtonPress()
+        {
+            bool makechange = true;
+            if (EditList)
+            {
+                ColorForListButton = Brushes.Green;
+                IconForListButton = PackIconKind.ContentSave;
+                TooltipforList = "Save Changes";
+            }
+            else
+            {
+                if (SchedulingValue == SchedulingEnum.H)
+                {
+                    IsOnHold = true;
+                    foreach (SubProjectModel sub in SubProjects)
+                    {
+                        sub.IsScheduleActive = false;
+                    }
+
+                }
+                else if (SchedulingValue == SchedulingEnum.CA)
+                {
+                    SubProjectModel subcontainingCA = SubProjects.Where(x => x.PointNumber == "CA").FirstOrDefault();
+
+                    bool containsCA = SubProjects.Where(x => x.PointNumber == "CA").Count() > 0;
+
+                    if (containsCA)
+                    {
+                        foreach (SubProjectModel sub in SubProjects)
+                        {
+                            sub.IsScheduleActive = sub.PointNumber == "CA" ? true : false;
+                        }
+                    }
+                    else
+                    {
+                        YesNoView view = new YesNoView();
+                        YesNoVM aysvm = new YesNoVM();
+
+                        aysvm.Message = $"CA Phase does not exist";
+                        aysvm.SubMessage = $"Would you like to add one?";
+                        view.DataContext = aysvm;
+
+                        //show the dialog
+                        var Result = await DialogHost.Show(view, "RootDialog");
+
+                        YesNoVM vm = view.DataContext as YesNoVM;
+                        bool resultvm = vm.Result;
+                        makechange = resultvm;
+                        if (resultvm)
+                        {
+                            IsOnHold = false;
+                            double numorder = SubProjects.Select(x => x.NumberOrder).Max();
+                            SubProjectDbModel subproject = new SubProjectDbModel
+                            {
+                                ProjectId = Id,
+                                PointNumber = "CA",
+                                Description = "Construction Administration",
+                                IsActive = 1,
+                                IsInvoiced = 0,
+                                PercentComplete = 0,
+                                PercentBudget = 0,
+                                IsScheduleActive = 1,
+                                NumberOrder = Convert.ToInt32(numorder) + 1,
+                                Fee = 0
+                            };
+                            SQLAccess.AddSubProject(subproject);
+
+                            foreach (SubProjectModel sub in SubProjects)
+                            {
+                                sub.IsScheduleActive = false;
+                            }
+                        } //show ui and ask user for stuff
+                    }
+                }
+                else if (SchedulingValue == SchedulingEnum.A)
+                {
+                    double count = SubProjects.Where(x => x.PointNumber != "CA").Count();
+
+                    if (count > 1)
+                    {
+                        SelectionBoxView view = new SelectionBoxView();
+                        SelectionBoxVM aysvm = new SelectionBoxVM();
+
+                        aysvm.Message = $"More than 1 possible active phase";
+                        aysvm.SubMessage = $"Select the active phase";
+                        aysvm.SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x=>x.PointNumber != "CA").ToList());
+                        view.DataContext = aysvm;
+
+                        //show the dialog
+                        var Result = await DialogHost.Show(view, "RootDialog");
+
+                        SelectionBoxVM vm = view.DataContext as SelectionBoxVM;
+                        bool resultvm = vm.Result;
+                        makechange = resultvm;
+                        if (resultvm && vm.SelectedSubproject != null)
+                        {
+                            IsOnHold = false;
+                            foreach (SubProjectModel sub in SubProjects)
+                            {
+                                sub.IsScheduleActive = false;
+                            }
+
+                            vm.SelectedSubproject.IsScheduleActive = true;  
+
+                        } //show ui and ask user for stuff
+                        //ask which phase is active
+                    }
+                    else if (count == 1)
+                    {
+                        makechange = true;
+                        IsOnHold = false;
+                        foreach (SubProjectModel sub in SubProjects)
+                        {
+                            if (sub.PointNumber != "CA")
+                            {
+                                sub.IsScheduleActive = true;
+                            }
+                            else
+                            {
+                                sub.IsScheduleActive = false;
+                            }
+                        }
+                    }
+                }
+
+                if (makechange)
+                {
+                    UpdateProjectModel();
+                    UpdateSubProjects();
+                    LoadSubProjects();
+
+                    ColorForListButton = Brushes.Orange;
+                    IconForListButton = PackIconKind.Lock;
+                    TooltipforList = "Locked";
+                }
+            }
+
+            if (makechange)
+            {
+                EditList = !EditList;
+            }
+
+        }
+
 
         //private void RatesChanged(object sender, NotifyCollectionChangedEventArgs e)
         //{
@@ -620,7 +960,77 @@ namespace SOCE.Library.UI
 
         //}
 
-        public void UpdateSubProjects()
+        //private SchedulingEnum RunCAAsyncMethod(SchedulingEnum value)
+        //{
+
+        //    if (!allowedtomakechanges)
+        //    {
+        //        if (value == SchedulingEnum.H)
+        //        {
+        //            IsOnHold = true;
+        //            foreach (SubProjectModel sub in SubProjects)
+        //            {
+        //                sub.IsScheduleActive = false;
+        //            }
+
+        //        }
+        //        else if (value == SchedulingEnum.CA)
+        //        {
+        //            SubProjectModel subcontainingCA = SubProjects.Where(x => x.PointNumber == "CA").FirstOrDefault();
+
+        //            bool containsCA = SubProjects.Where(x => x.PointNumber == "CA").Count() > 0;
+
+        //            if (containsCA)
+        //            {
+        //                foreach (SubProjectModel sub in SubProjects)
+        //                {
+        //                    sub.IsScheduleActive = sub.PointNumber == "CA" ? true : false;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                YesNoView view = new YesNoView();
+        //                YesNoVM aysvm = new YesNoVM();
+
+        //                aysvm.Message = $"CA Phase does not exist";
+        //                aysvm.SubMessage = $"Would you like to add one?";
+        //                view.DataContext = aysvm;
+
+        //                //show the dialog
+        //                var Result = DialogHost.Show(view, "RootDialog");
+
+        //                YesNoVM vm = view.DataContext as YesNoVM;
+        //                bool resultvm = vm.Result;
+
+        //                if (resultvm)
+        //                {
+        //                    double numorder = SubProjects.Max(x => x.NumberOrder);
+        //                    SubProjectDbModel subproject = new SubProjectDbModel
+        //                    {
+        //                        ProjectId = Id,
+        //                        Description = "Construction Administration",
+        //                        IsActive = 1,
+        //                        IsInvoiced = 0,
+        //                        PercentComplete = 0,
+        //                        PercentBudget = 0,
+        //                        NumberOrder = Convert.ToInt32(numorder) + 1,
+        //                        Fee = 0
+        //                    };
+        //                    SQLAccess.AddSubProject(subproject);
+        //                } //show ui and ask user for stuff
+        //            }
+        //        }
+        //        else if (value == SchedulingEnum.A)
+        //        {
+        //            //popup box asking which subproject is the active one.
+        //        }
+
+        //        UpdateProject();
+        //        UpdateSubProjects();
+        //    }
+        //}
+
+        public bool UpdateSubProjects()
         {
             TotalBudget = 0;
 
@@ -634,13 +1044,38 @@ namespace SOCE.Library.UI
             Fee = TotalBudget;
             //update total budget
             bool onehastobeactive = false;
+
+            //bool onehastobeinprogress = false;
             //turn off item mo
+
+            //if (!IsOnHold && (SubProjects.Where(x => x.IsScheduleActive == true).Count() == 0) && (SubProjects.Count > 0))
+            //{
+            //    SubProjects[0].IsScheduleActive = true;
+            //}
+            bool isonescheduleactive = false;
+
+            int minnum = SubProjects.Select(x => x.NumberOrder).Min();
+
             foreach (SubProjectModel spm in SubProjects)
             {
                 //spm.PropertyChanged -= SubItemModificationOnPropertyChanged;
                 spm.TotalFee = TotalBudget;
                 spm.UpdatePercents();
                 //spm.UpdatePercentBudget();
+                int? datefinal = null;
+                //if (spm.DueDate != null)
+                //{
+                //    datefinal = (int)long.Parse(spm.DueDate?.ToString("yyyyMMdd"));
+                //}
+
+                if (IsOnHold && spm.IsScheduleActive)
+                {
+                    spm.IsScheduleActive = false;
+                }
+                else if (!IsOnHold && SubProjects.Where(x=>x.IsScheduleActive == true).Count() == 0 && spm.NumberOrder == minnum)
+                {
+                    spm.IsScheduleActive = true;
+                }
 
                 SubProjectDbModel subproject = new SubProjectDbModel()
                 {
@@ -655,14 +1090,21 @@ namespace SOCE.Library.UI
                     IsInvoiced = spm.IsInvoiced ? 1 : 0,
                     ExpandedDescription = spm.ExpandedDescription,
                     IsAdservice = spm.IsAddService ? 1 : 0,
-                    NumberOrder = spm.NumberOrder
+                    NumberOrder = spm.NumberOrder,
+                    IsScheduleActive = spm.IsScheduleActive ? 1 : 0
+
                 };
 
                 SQLAccess.UpdateSubProject(subproject);
 
                 onehastobeactive = onehastobeactive || (spm.IsActive || !spm.EditSubFieldState);
-
+                isonescheduleactive = onehastobeactive || spm.IsScheduleActive;
+                //if (!IsOnHold)
+                //{
+                //    onehastobeinprogress = onehastobeinprogress || (spm.IsScheduleActive || !spm.EditSubFieldState);
+                //}
             }
+
 
             //catch for no actives
             //if (subinput != null)
@@ -689,12 +1131,25 @@ namespace SOCE.Library.UI
             //}
             UpdateData();
 
+            //if (SubProjects.Where(x => x.IsScheduleActive == true).Count() > 0 && IsOnHold)
+            //{
+            //    IsOnHold = false;
+            //    UpdateProjectModel();
+            //}
 
             if (!onehastobeactive)
             {
                 IsActive = false;
                 UpdateProjectModel();
             }
+
+
+            //if (!onehastobeinprogress)
+            //{
+            //     = false;
+            //    UpdateProjectModel();
+            //}
+            return IsOnHold;
         }
 
         public void LoadSubProjects()
@@ -886,7 +1341,7 @@ namespace SOCE.Library.UI
                 if (!IsActive)
                 {
                     spm.CanEdit = false;
-                }          
+                }
 
                 foreach (RolePerSubProjectDbModel rspdb in rolesdbmodel)
                 {
@@ -944,7 +1399,7 @@ namespace SOCE.Library.UI
                 //}
 
                 spm.HoursUsed = hoursspentpersub;
-                spm.HoursLeft = hoursleftpersub;
+                spm.HoursLeft = hoursleftpersub - hoursspentpersub;
                 spm.FeeUsed = budgetspentpersub;
                 spm.FeeLeft = regulatedbudgetpersub - spm.FeeUsed;
                 spm.RegulatedBudget = regulatedbudgetpersub;
@@ -992,7 +1447,7 @@ namespace SOCE.Library.UI
                 SubProjectModel allsub = SubProjects.Where(x => x.Description == "All Phases").FirstOrDefault();
                 if (allsub != null)
                 {
-                    allsub.RolesPerSub = new ObservableCollection<RolePerSubProjectModel> (allrolesummary);
+                    allsub.RolesPerSub = new ObservableCollection<RolePerSubProjectModel>(allrolesummary);
                 }
             }
 
@@ -1175,8 +1630,8 @@ namespace SOCE.Library.UI
                                 IsInvoiced = sub.IsInvoiced ? 1 : 0,
                                 ExpandedDescription = sub.ExpandedDescription,
                                 IsAdservice = sub.IsAddService ? 1 : 0,
-                                NumberOrder = sub.NumberOrder
-
+                                NumberOrder = sub.NumberOrder,
+                                IsScheduleActive = 0,
                             };
                             SQLAccess.UpdateSubProject(subproject);
                         }
@@ -1213,8 +1668,8 @@ namespace SOCE.Library.UI
                                 IsInvoiced = subnew.IsInvoiced ? 1 : 0,
                                 ExpandedDescription = subnew.ExpandedDescription,
                                 IsAdservice = subnew.IsAddService ? 1 : 0,
-                                NumberOrder = subnew.NumberOrder
-
+                                NumberOrder = subnew.NumberOrder,
+                                IsScheduleActive = subnew.IsScheduleActive ? 1 : 0
                             };
                             SQLAccess.UpdateSubProject(subproject);
                         }
@@ -1225,11 +1680,19 @@ namespace SOCE.Library.UI
 
         private ProjectDbModel UpdateProjectModel()
         {
+            int? duedatevar = null;
+
+            if (DueDate != null)
+            {
+                duedatevar = (int)long.Parse(DueDate?.ToString("yyyyMMdd"));
+            }
+
             ProjectDbModel project = new ProjectDbModel()
             {
                 Id = Id,
                 ProjectName = ProjectName,
                 ProjectNumber = ProjectNumber,
+                DueDate = duedatevar,
                 ClientId = Client.Id,
                 MarketId = Market.Id,
                 ManagerId = ProjectManager.Id,
@@ -1242,7 +1705,8 @@ namespace SOCE.Library.UI
                 Plotfolder = Plotfolder,
                 ProjectStart = ProjectStart,
                 ProjectEnd = ProjectEnd,
-                FinalSpent = FinalSpent
+                FinalSpent = FinalSpent,
+                IsOnHold = Convert.ToInt32(IsOnHold)
             };
             SQLAccess.UpdateProjects(project);
             return project;
@@ -1255,6 +1719,7 @@ namespace SOCE.Library.UI
                 Id = this.Id,
                 ProjectName = this.ProjectName,
                 ProjectNumber = this.ProjectNumber,
+                DueDate = this.DueDate,
                 Client = this.Client,
                 Fee = this.Fee,
                 Market = this.Market,
@@ -1265,6 +1730,8 @@ namespace SOCE.Library.UI
                 Drawingsfolder = this.Drawingsfolder,
                 Architectfolder = this.Architectfolder,
                 Plotfolder = this.Plotfolder,
+                Remarks = this.Remarks,
+                IsOnHold = this.IsOnHold
             };
         }
 

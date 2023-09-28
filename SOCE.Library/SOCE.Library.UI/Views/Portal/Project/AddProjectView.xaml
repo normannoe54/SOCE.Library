@@ -32,6 +32,7 @@
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
 
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0">
@@ -100,13 +101,18 @@
                         </ItemsPanelTemplate>
                     </ComboBox.ItemsPanel>
                 </ComboBox>
-                <CheckBox Grid.Row="8" IsChecked="{Binding EstimateHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SOCERed}" Margin="0 20 0 0">
+
+                <DatePicker Grid.Row="8" materialDesign:HintAssist.Hint="Specify Due Date"  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
+                                            FontWeight="Regular" FontSize="16" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0 15 0 0"
+                                            SelectedDate="{Binding Path=DueDateInp,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                
+                <CheckBox Grid.Row="9" IsChecked="{Binding EstimateHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SOCERed}" Margin="0 20 0 0">
                     <CheckBox.Content>
                         <TextBlock Text="Create Hours Projection" FontSize="14"/>
                     </CheckBox.Content>
                 </CheckBox>
 
-                <Grid Grid.Row="9">
+                <Grid Grid.Row="10">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto"/>

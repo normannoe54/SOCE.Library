@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -14,11 +16,11 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for EmployeeDataView.xaml
+    /// Interaction logic for WeeklyScheduleView.xaml
     /// </summary>
-    public partial class EmployeeDataView : UserControl
+    public partial class ProjectListView : UserControl
     {
-        public EmployeeDataView()
+        public ProjectListView()
         {
             InitializeComponent();
         }

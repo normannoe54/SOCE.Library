@@ -312,7 +312,7 @@
                             <Grid Grid.Column="0">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
                                 <Grid Grid.Column="0" >
                                     <Grid.ColumnDefinitions>
@@ -403,7 +403,11 @@
                                     </ComboBox.IsEnabled>
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="SubProjectModel">
-                                            <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Center" FontSize="14" FontWeight="Regular" ToolTip="{Binding Description}"/>
+                                            <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                                <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Center" FontSize="14" FontWeight="Regular" ToolTip="{Binding Description}"/>
+                                                <materialDesign:PackIcon Kind="Star" VerticalAlignment="Center" Margin="5 0 0 0" Width="10" Height="10" Foreground="Black"
+                                                                 ToolTip="Current Phase" Visibility="{Binding IsScheduleActive, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                                            </VirtualizingStackPanel>
                                         </DataTemplate>
                                     </ComboBox.ItemTemplate>
                                 </ComboBox>

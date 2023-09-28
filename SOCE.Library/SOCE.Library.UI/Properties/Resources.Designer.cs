@@ -73,9 +73,29 @@ namespace SOCE.Library.UI.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] PMSchedule {
+            get {
+                object obj = ResourceManager.GetObject("PMSchedule", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] ProjectDataExport {
             get {
                 object obj = ResourceManager.GetObject("ProjectDataExport", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] ProjectList {
+            get {
+                object obj = ResourceManager.GetObject("ProjectList", resourceCulture);
                 return ((byte[])(obj));
             }
         }
@@ -96,6 +116,16 @@ namespace SOCE.Library.UI.Properties {
         internal static byte[] TimesheetBase {
             get {
                 object obj = ResourceManager.GetObject("TimesheetBase", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] WeeklySchedule {
+            get {
+                object obj = ResourceManager.GetObject("WeeklySchedule", resourceCulture);
                 return ((byte[])(obj));
             }
         }

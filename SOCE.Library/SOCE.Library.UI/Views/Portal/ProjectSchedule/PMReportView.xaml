@@ -1,0 +1,213 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.PMReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="10 10 30 10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" Text="Project Manager Report"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}" />
+        <Grid Grid.Row="1" Margin="0 15 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <ComboBox Grid.Column="0" materialDesign:HintAssist.Hint="Select PM" Width="300" 
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Left"
+                              Foreground="Black"
+                      FontSize="18"
+                      IsEditable="False"
+                      FontWeight="SemiBold"
+                              Style="{StaticResource MaterialDesignComboBox}"
+                              SelectedItem="{Binding SelectedPM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding ProjectManagers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextSearch.TextPath="FullName"
+                              IsTextSearchEnabled="True"
+                              StaysOpenOnEdit="True"  
+                              MaxDropDownHeight="250"
+                              DisplayMemberPath="FullName">
+                <ComboBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel MaxWidth="300"/>
+                    </ItemsPanelTemplate>
+                </ComboBox.ItemsPanel>
+            </ComboBox>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+                <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}" >
+                    <StackPanel Orientation="Horizontal">
+                        <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Black"/>
+                        <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Previous"  Foreground="Black"/>
+                    </StackPanel>
+                </Button>
+                <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Current" Margin="0 0 10 0"  Foreground="Black"/>
+                        <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Black"/>
+                    </StackPanel>
+                </Button>
+                <!--<Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}">
+                    <StackPanel Orientation="Horizontal">
+                        <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Black"/>
+                        <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Black"/>
+                    </StackPanel>
+                </Button>-->
+            </StackPanel>
+
+            <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding PrintCommand}"  Margin="0 0 15 0"
+                        HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" BorderBrush="Black" BorderThickness="1">
+                <StackPanel Orientation="Horizontal">
+                    <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
+
+                    <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+
+
+        <Grid Grid.Row="2" Margin="0 30 0 0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" Margin="0 10 15 10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="300"/>
+                    <ColumnDefinition Width="160"/>
+                    <ColumnDefinition Width="70"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="Project Name" TextAlignment="Left" Foreground="{StaticResource SOCERed}"/>
+                <TextBlock Grid.Column="1" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="Project Number" TextAlignment="Center"  Foreground="{StaticResource SOCERed}"/>
+                <TextBlock Grid.Column="2" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="Phase" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
+                <TextBlock Grid.Column="3" FontSize="16" FontWeight="SemiBold" VerticalAlignment="Center" Text="Employees" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
+                <ItemsControl Grid.Column="4" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch">
+                    <ItemsControl.Resources>
+                        <local:DatetoStringFullConverter x:Key="DatetoStringFullConverter"/>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Value, Converter={StaticResource DatetoStringFullConverter}}"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center" 
+                                               FontSize="16" FontWeight="SemiBold"
+                                               Foreground="{StaticResource SOCERed}">
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+            </Grid>
+            <ItemsControl ItemsSource="{Binding PMReportItems}"  
+                      Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ItemsControl.Resources>
+                    <local:TableColorConverter x:Key="valueconverter"/>
+                </ItemsControl.Resources>
+
+                <ItemsControl.Template>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+                            <ItemsPresenter/>
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ItemsControl.Template>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" BorderThickness="2" VerticalAlignment="Stretch" Margin="0 0 0 -2">
+                            <Grid Margin="0 10 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="300"/>
+                                    <ColumnDefinition Width="160"/>
+                                    <ColumnDefinition Width="70"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Border BorderBrush="Black"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0 0 2 0" Margin="0 -10 0 -10">
+                                    <TextBlock FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Left" Margin="5 0 0 0"
+                                   VerticalAlignment="Center" Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Border>
+
+                                <Border BorderBrush="Black"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0 0 2 0" Margin="0 -10 0 -10">
+                                    <TextBlock FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" Text="{Binding ProjectNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Border>
+
+                                <Border BorderBrush="Black"  Grid.Column="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0 0 2 0" Margin="0 -10 0 -10">
+                                    <TextBlock FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Center"
+                                   VerticalAlignment="Center" Text="{Binding PhaseName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                </Border>
+
+                                <ItemsControl ItemsSource="{Binding EmployeeSummary}" HorizontalAlignment="Stretch" Grid.Column="3" VerticalAlignment="Center">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Grid HorizontalAlignment="Stretch">
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="200"/>
+                                                    <ColumnDefinition Width="*"/>
+                                                </Grid.ColumnDefinitions>
+                                                <TextBlock  Grid.Column="0"
+                                                    Text="{Binding EmployeeName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    TextAlignment="Center"
+                                                    VerticalAlignment="Center"
+                                                    FontWeight="SemiBold"
+                                                    FontSize="16">
+                                                </TextBlock>
+                                                <ItemsControl Grid.Column="1" ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" VerticalAlignment="Center" >
+                                                    <ItemsControl.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <TextBlock
+                                                                Grid.Column="0" 
+                                                                Text="{Binding TimeEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                                TextAlignment="Center" 
+                                                                VerticalAlignment="Center" 
+                                                                FontWeight="SemiBold" 
+                                                                FontSize="16"
+                                                                Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                            </TextBlock>
+                                                        </DataTemplate>
+                                                    </ItemsControl.ItemTemplate>
+                                                    <ItemsControl.ItemsPanel>
+                                                        <ItemsPanelTemplate>
+                                                            <UniformGrid Rows="1"/>
+                                                        </ItemsPanelTemplate>
+                                                    </ItemsControl.ItemsPanel>
+                                                </ItemsControl>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                    <!--<ItemsControl.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            --><!--<WrapPanel Orientation="Horizontal"/>--><!--
+                                            <UniformGrid Rows="1"/>
+                                            --><!--<StackPanel Orientation="Horizontal"/>--><!--
+                                        </ItemsPanelTemplate>
+                                    </ItemsControl.ItemsPanel>-->
+                                </ItemsControl>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+        </Grid>
+    </Grid>
+</UserControl>

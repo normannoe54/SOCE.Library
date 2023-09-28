@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Globalization;
 using System.Text;
 using System.Windows.Media;
 using SOCE.Library.Db;
@@ -267,7 +268,7 @@ namespace SOCE.Library.UI
 
                 foreach (RolePerSubProjectModel rspm in RolesPerSub)
                 {
-                    rspm.PercentofRegulatedBudget = ((rspm.BudgetedHours * rspm.Rate) / _regulatedBudget)*100;
+                    rspm.PercentofRegulatedBudget = ((rspm.BudgetedHours * rspm.Rate) / _regulatedBudget) * 100;
                 }
 
                 RaisePropertyChanged(nameof(RegulatedBudget));
@@ -305,13 +306,41 @@ namespace SOCE.Library.UI
                     rspm.OverallFee = Fee;
                 }
 
-                if (RolesPerSub.Count>0)
+                if (RolesPerSub.Count > 0)
                 {
                     UpdatePercentAllocated();
                 }
 
                 //PercentBudget = (Fee / TotalFee) * 100;
                 RaisePropertyChanged(nameof(Fee));
+            }
+        }
+
+        private bool _isScheduleActive { get; set; }
+        public bool IsScheduleActive
+        {
+            get
+            {
+                return _isScheduleActive;
+            }
+            set
+            {
+                _isScheduleActive = value;
+
+                if (_isScheduleActive)
+                {
+                    if (baseproject != null)
+                    {
+                        foreach (SubProjectModel sub in baseproject.SubProjects)
+                        {
+                            if (sub.Id != Id)
+                            {
+                                sub.IsScheduleActive = false;
+                            }
+                        }
+                    }
+                }
+                RaisePropertyChanged(nameof(IsScheduleActive));
             }
         }
 
@@ -387,6 +416,7 @@ namespace SOCE.Library.UI
                     _editSubFieldState = value;
                 }
                 ComboSubFieldState = !_editSubFieldState;
+
                 RaisePropertyChanged(nameof(EditSubFieldState));
             }
         }
@@ -522,7 +552,7 @@ namespace SOCE.Library.UI
         {
             TotalFee = totalfee;
             baseproject = pm;
-            Constructor(spm);  
+            Constructor(spm);
         }
 
 
@@ -540,9 +570,10 @@ namespace SOCE.Library.UI
             //PercentBudget = spm.PercentBudget;
             IsAddService = Convert.ToBoolean(spm.IsAdservice);
             NumberOrder = spm.NumberOrder;
+            IsScheduleActive = Convert.ToBoolean(spm.IsScheduleActive);
+
             onstartup = false;
             //isAddProj = false;
-
         }
 
         public void SetCollectionChanged()
@@ -633,11 +664,12 @@ namespace SOCE.Library.UI
 
         public object Clone()
         {
-            return new SubProjectModel() 
-            { Id = this.Id, 
-                ProjectNumber = this.ProjectNumber, 
-                PointNumber = this.PointNumber, 
-                Description = this.Description, 
+            return new SubProjectModel()
+            {
+                Id = this.Id,
+                ProjectNumber = this.ProjectNumber,
+                PointNumber = this.PointNumber,
+                Description = this.Description,
                 IsActive = this.IsActive,
                 IsInvoiced = this.IsInvoiced,
                 Fee = this.Fee

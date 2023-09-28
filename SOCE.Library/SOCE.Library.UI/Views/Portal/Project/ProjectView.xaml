@@ -52,150 +52,6 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <!--<Grid Grid.Column="1" Margin="10 0 0 0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="3*"/>
-                    <RowDefinition Height="2*"/>
-                </Grid.RowDefinitions>
-
-                -->
-            <!--Total in progress projects-->
-            <!--
-                <materialDesign:Card Grid.Row="0">
-                    <Grid Margin="5">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Clients:" FontSize="24" FontWeight="SemiBold"  Foreground="{StaticResource SOCELightRed}" HorizontalAlignment="Left"/>
-                            <Button Grid.Column="1" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignRaisedButton}" Foreground="White" BorderThickness="0" Background="ForestGreen" Command="{Binding GoToAddClient}" HorizontalAlignment="Right">
-                                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0" ToolTip="Add Client"/>
-                            </Button>
-                        </Grid>
-
-                        <ItemsControl ItemsSource="{Binding Clients}" HorizontalAlignment="Stretch" Grid.Row="3" Margin="5 20 5 5">
-
-                            <ItemsControl.Template>
-                                <ControlTemplate>
-                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
-                                        <ItemsPresenter />
-                                    </ScrollViewer>
-                                </ControlTemplate>
-                            </ItemsControl.Template>
-
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Background="Transparent" IsEnabled="{Binding Path=DataContext.CanAddProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Margin="0 5 0 0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="5">
-                                            <Button HorizontalAlignment="Left" Height="20" Width="20" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
-                                                    Command="{Binding Path=DataContext.ArchiveClient, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
-                                                <Button.Content>
-                                                    <materialDesign:PackIcon Foreground="Black" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Button.Content>
-                                            </Button>
-                                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Foreground="Black"
-                                                          IsChecked="{Binding EditFieldClientsState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderBrush="Transparent">
-                                                <ToggleButton.Content>
-                                                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
-                                                </ToggleButton.Content>
-                                                <materialDesign:ToggleButtonAssist.OnContent>
-                                                    <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Edit"/>
-                                                </materialDesign:ToggleButtonAssist.OnContent>
-                                            </ToggleButton>
-                                        </VirtualizingStackPanel>
-                                        <TextBox Grid.Column="1" Margin="3 0 0 0" IsReadOnly="{Binding EditFieldClientsState}" HorizontalAlignment="Center" Text="{Binding ClientNumber}" TextAlignment="Center" FontSize="14" FontWeight="Regular" VerticalAlignment="Center"
-                                                 materialDesign:TextFieldAssist.PrefixText="(" materialDesign:TextFieldAssist.SuffixText=")"/>
-                                        <TextBox Grid.Column="2" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldClientsState}" HorizontalAlignment="Stretch" Text="{Binding ClientName}" TextAlignment="Left" FontSize="14" FontWeight="Regular" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Grid>
-                </materialDesign:Card>
-
-                <materialDesign:Card Grid.Row="1" Margin="0 30 0 0">
-                    <Grid Margin="15">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="auto"/>
-                            <RowDefinition Height="*"/>
-                        </Grid.RowDefinitions>
-                        <Grid Grid.Row="0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="Auto"/>
-                                <ColumnDefinition Width="*"/>
-                            </Grid.ColumnDefinitions>
-                            <TextBlock Text="Markets:" FontSize="24" FontWeight="SemiBold"  Foreground="{StaticResource SOCELightRed}" HorizontalAlignment="Left"/>
-                            <Button Grid.Column="1" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignRaisedButton}" BorderThickness="0" Foreground="White" Background="ForestGreen" Command="{Binding GoToAddMarket}" HorizontalAlignment="Right">
-                                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0" ToolTip="Add Client"/>
-                            </Button>
-                        </Grid>
-                        <ItemsControl ItemsSource="{Binding Markets}" HorizontalAlignment="Stretch" Grid.Row="3" Margin="5 20 5 5">
-
-                            <ItemsControl.Template>
-                                <ControlTemplate>
-                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
-                                        <ItemsPresenter />
-                                    </ScrollViewer>
-                                </ControlTemplate>
-                            </ItemsControl.Template>
-
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid Background="Transparent" IsEnabled="{Binding Path=DataContext.CanAddProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" Margin="0 5 0 0">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="Auto"/>
-                                            <ColumnDefinition Width="*"/>
-                                        </Grid.ColumnDefinitions>
-
-                                        <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="5">
-                                            <Button HorizontalAlignment="Left" Height="20" Width="20" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
-                                                    Command="{Binding Path=DataContext.ArchiveMarket, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Archive">
-                                                <Button.Content>
-                                                    <materialDesign:PackIcon Foreground="Black" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                                </Button.Content>
-                                            </Button>
-                                            <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Foreground="Black" Background="Transparent" BorderBrush="Transparent"
-                                                          IsChecked="{Binding EditFieldMarketState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                                <ToggleButton.Content>
-                                                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
-                                                </ToggleButton.Content>
-                                                <materialDesign:ToggleButtonAssist.OnContent>
-                                                    <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Edit"/>
-                                                </materialDesign:ToggleButtonAssist.OnContent>
-                                            </ToggleButton>
-                                        </StackPanel>
-
-                                        <TextBox Grid.Column="1" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldMarketState}" HorizontalAlignment="Stretch" Text="{Binding MarketName}" TextAlignment="Left" FontSize="14" FontWeight="Regular" VerticalAlignment="Center"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </Grid>
-                </materialDesign:Card>
-            </Grid>-->
 
             <Grid Grid.Column="0">
                 <Grid.RowDefinitions>
@@ -408,12 +264,13 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="50"/>
                         <ColumnDefinition Width="140"/>
-                        <ColumnDefinition Width="400"/>
+                        <ColumnDefinition Width="300"/>
                         <ColumnDefinition Width="95"/>
                         <ColumnDefinition Width="250"/>
                         <ColumnDefinition Width="170"/>
                         <ColumnDefinition Width="140"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Active" Margin="-15 0 0 0"/>
@@ -436,15 +293,16 @@
                     <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Client" Margin="10 0 0 0"/>
                     <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Market" Margin="10 0 0 0"/>
                     <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="PM" Margin="10 0 0 0"/>
-                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="% Complete?"/>
-                    <TextBlock Grid.Column="8" FontSize="14" Margin="0 0 20 0" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Directory"/>
+                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Due Date"/>
+                    <TextBlock Grid.Column="8" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="% Complete?"/>
+                    <TextBlock Grid.Column="9" FontSize="14" Margin="0 0 20 0" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Directory"/>
                 </Grid>
 
                 <!--<ScrollViewer Grid.Row="4" Margin="0 0 5 5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">-->
                 <!--<ScrollViewer.Resources>
                     <local:InvoicedColorConverter x:Key="valueconverter"/>
                 </ScrollViewer.Resources>-->
-                <ItemsControl Grid.Row="4" Margin="0 0 5 5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Projects}" BorderBrush="Black" BorderThickness="1">
+                <ItemsControl Grid.Row="4" Margin="5,0,0,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Projects}" BorderBrush="Black" BorderThickness="1">
                     <ItemsControl.Template>
                         <ControlTemplate>
                             <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
@@ -469,12 +327,13 @@
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="50"/>
                                     <ColumnDefinition Width="140"/>
-                                    <ColumnDefinition Width="400"/>
+                                    <ColumnDefinition Width="300"/>
                                     <ColumnDefinition Width="95"/>
-                                    <ColumnDefinition Width="250"/>
-                                    <ColumnDefinition Width="170"/>
+                                    <ColumnDefinition Width="230"/>
+                                    <ColumnDefinition Width="150"/>
                                     <ColumnDefinition Width="140"/>
-                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="120"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
 
@@ -581,7 +440,11 @@
                                     </ComboBox.ItemsPanel>
                                 </ComboBox>
 
-                                <TextBox Grid.Column="7"
+                                <DatePicker Grid.Column="7"  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
+                                            FontWeight="Regular" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20 0 10 0"
+                                            SelectedDate="{Binding Path=DueDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                
+                                <TextBox Grid.Column="8"
                                                  materialDesign:TextFieldAssist.SuffixText="%"
                                                  Margin="10 0 20 0" 
                                                  IsReadOnly="{Binding EditFieldState}" 
@@ -596,7 +459,7 @@
 
                                 <!--#region Folder Buttons-->
 
-                                <Grid Grid.Column="8" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 50 0">
+                                <Grid Grid.Column="9" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 0 50 0">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="*"/>
                                         <ColumnDefinition Width="*"/>

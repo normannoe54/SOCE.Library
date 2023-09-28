@@ -101,11 +101,16 @@
                             </Button>
                             <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Library" Style="{StaticResource menuButtonIcon}"/>
+                                    <materialDesign:PackIcon Kind="EventsCheck" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Projects" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
-
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectSchedule">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Reschedule" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Project Schedule" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>
                             <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                             <!--<Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">

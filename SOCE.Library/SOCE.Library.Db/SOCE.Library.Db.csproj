@@ -55,6 +55,7 @@
     <Compile Include="Models\MarketDbModel.cs" />
     <Compile Include="Models\ProjectDbModel.cs" />
     <Compile Include="Models\RolesPerSubProjectDbModel.cs" />
+    <Compile Include="Models\SchedulingDataDbModel.cs" />
     <Compile Include="Models\SubProjectDbModel.cs" />
     <Compile Include="Models\TimesheetRowDbModel.cs" />
     <Compile Include="Models\TimesheetSubmissionDbModel.cs" />

@@ -8,7 +8,7 @@ using SOCE.Library.Db;
 
 namespace SOCE.Library.UI
 {
-    public class EmployeeModel : PropertyChangedBase
+    public class EmployeeModel : PropertyChangedBase, ICloneable
     {
         private ObservableCollection<TimesheetSubmissionModel> _timesheetSubmissions;
         public ObservableCollection<TimesheetSubmissionModel> TimesheetSubmissions
@@ -21,8 +21,18 @@ namespace SOCE.Library.UI
             }
         }
 
+        private ObservableCollection<SDEntryModel> _entries = new ObservableCollection<SDEntryModel>();
+        public ObservableCollection<SDEntryModel> Entries
+        {
+            get { return _entries; }
+            set
+            {
+                _entries = value;
+                RaisePropertyChanged(nameof(Entries));
+            }
+        }
 
-        private int _id;
+        private int _id = 0;
         public int Id
         {
             get { return _id; }
@@ -33,7 +43,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private string _firstName;
+        private string _firstName ="";
         public string FirstName
         {
             get { return _firstName; }
@@ -44,7 +54,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private string _lastName;
+        private string _lastName = "";
         public string LastName
         {
             get { return _lastName; }
@@ -600,6 +610,17 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _scheduledTotalHours = 0;
+        public double ScheduledTotalHours
+        {
+            get { return _scheduledTotalHours; }
+            set
+            {
+                _scheduledTotalHours = value;
+                RaisePropertyChanged(nameof(ScheduledTotalHours));
+            }
+        }
+
         public bool Formatted = false;
 
         private bool _isActive;
@@ -645,6 +666,7 @@ namespace SOCE.Library.UI
             WednesdayHours = emdb.WednesdayHours;
             ThursdayHours = emdb.ThursdayHours;
             FridayHours = emdb.FridayHours;
+            ScheduledTotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
             SickRate = emdb.SickRate;
             HolidayHours = emdb.HolidayHours;
         }
@@ -792,6 +814,35 @@ namespace SOCE.Library.UI
                 hash = hash * 23 + LastName.GetHashCode();
                 return hash;
             }
+        }
+
+        public object Clone()
+        {
+            return new EmployeeModel()
+            {
+                Id = this.Id
+                //FirstName = this.FirstName,
+                //LastName = this.LastName,
+                //Status = this.Status,
+                //Title = this.Title,
+                //Email = this.Email,
+                //PhoneNumber = this.PhoneNumber,
+                //Extension = this.Extension,
+                //Rate = this.Rate,
+                //PTORate = this.PTORate,
+                ////PTOHours = PTOHours
+                //DefaultRole = this.DefaultRole,
+                //PTOCarryover = this.PTOCarryover,
+                //HolidayHours = this.HolidayHours,
+                ////SickHours = SickHours,
+                //SickRate = this.SickRate,
+                //MondayHours = this.MondayHours,
+                //TuesdayHours = this.TuesdayHours,
+                //WednesdayHours = this.WednesdayHours,
+                //ThursdayHours = this.ThursdayHours,
+                //FridayHours = this.FridayHours,
+                //IsActive = this.IsActive
+            };
         }
 
     }

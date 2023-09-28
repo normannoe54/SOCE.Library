@@ -1,0 +1,29 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.IndividualSingleView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <Grid Margin="16" MinWidth="350">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <TextBlock  Grid.Row="0" FontSize="24" Text="Specify the Report:" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin ="15" FontWeight="SemiBold"/>
+        <Button BorderBrush="Black" BorderThickness="1" Margin ="15" Grid.Row="1" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding PrintIndividualCommand}">
+            <TextBlock Text="PRINT INVIDUAL" FontSize="20" VerticalAlignment="Center"/>
+        </Button>
+        <Button BorderBrush="Black" BorderThickness="1" Margin ="15" Grid.Row="2" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding PrintFullReportCommand}">
+            <TextBlock Text="PRINT FULL REPORT" FontSize="20" VerticalAlignment="Center"/>
+        </Button>
+        <Button BorderBrush="Black" BorderThickness="1" Margin ="15" Grid.Row="3" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+            <TextBlock Text="CANCEL" FontSize="20" VerticalAlignment="Center"/>
+        </Button>
+    </Grid>
+</UserControl>

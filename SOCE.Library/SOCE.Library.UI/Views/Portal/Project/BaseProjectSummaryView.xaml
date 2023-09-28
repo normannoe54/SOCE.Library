@@ -10,7 +10,7 @@
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             Background="Transparent" Width="1250" Height="650">
+             Background="Transparent" Width="1330" Height="650">
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type viewmodels:ProjectSummaryVM}">

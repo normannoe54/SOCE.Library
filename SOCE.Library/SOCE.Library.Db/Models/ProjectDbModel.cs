@@ -19,6 +19,9 @@ namespace SOCE.Library.Db
         public int ManagerId { get; set; }
 
         public int IsActive { get; set; }
+        public int IsOnHold { get; set; }
+
+        public int? DueDate { get; set; }
 
         public double PercentComplete { get; set; }
 
@@ -34,6 +37,8 @@ namespace SOCE.Library.Db
         public double FinalSpent { get; set; }
 
         public string MiscName { get; set; }
+
+        public string Remarks { get; set; }
 
         public string AdserviceFile { get; set; }
     }

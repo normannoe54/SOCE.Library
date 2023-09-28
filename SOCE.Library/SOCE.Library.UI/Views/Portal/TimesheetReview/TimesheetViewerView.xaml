@@ -81,7 +81,7 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </Border>
-                <TextBlock Grid.Row="1" Text="{Binding BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 10 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="1" Text="{Binding basevm.BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 10 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 
             </Grid>
 

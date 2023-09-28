@@ -215,7 +215,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private int? _yearInp=2022;
+        private int? _yearInp = 2022;
         public int? YearInp
         {
             get { return _yearInp; }
@@ -259,7 +259,7 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged(nameof(DateTimeSelection));
             }
         }
-        
+
 
         private bool _showActiveProjects { get; set; } = true;
         public bool ShowActiveProjects
@@ -329,6 +329,13 @@ namespace SOCE.Library.UI.ViewModels
             ShowActiveProjects = true;
         }
 
+        public void Reload()
+        {
+            LoadProjectManagers();
+            LoadProjects();
+            ShowActiveProjects = true;
+        }
+
         private void OpenRightDrawerClient()
         {
 
@@ -375,7 +382,7 @@ namespace SOCE.Library.UI.ViewModels
             }
             else
             {
-                Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x=>x.IsActive == true).ToList());
+                Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive == true).ToList());
             }
             SortProjects(SortFilter);
         }
@@ -443,7 +450,7 @@ namespace SOCE.Library.UI.ViewModels
                 pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
             }
 
-            if (!ShowActiveProjects  && YearInp != null)
+            if (!ShowActiveProjects && YearInp != null)
             {
                 string yearinpstr = YearInp.ToString();
                 pmnew = pmnew.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList();
@@ -466,7 +473,7 @@ namespace SOCE.Library.UI.ViewModels
 
 
             var view = new BaseProjectSummaryView();
-            BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee,pm, ViewEnum.ProjectSummary);
+            BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee, pm, ViewEnum.ProjectSummary);
             view.DataContext = vm;
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
@@ -512,7 +519,7 @@ namespace SOCE.Library.UI.ViewModels
             var result = await DialogHost.Show(view, "RootDialog");
             //if (result != null)
             //{
-                LoadMarkets();
+            LoadMarkets();
             //}
         }
 
@@ -588,19 +595,19 @@ namespace SOCE.Library.UI.ViewModels
             {
                 ProjectDbModel pdb = dbprojects[i];
 
-            //if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
-            //{
+                //if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
+                //{
                 ProjectModel pm = new ProjectModel(pdb, IsEditable);
-                    EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
-                    ClientModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
-                    MarketModel mm = Markets.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
+                EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
+                ClientModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
+                MarketModel mm = Markets.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
 
-                    pm.ProjectManager = em;
-                    pm.Client = cm;
-                    pm.Market = mm;
+                pm.ProjectManager = em;
+                pm.Client = cm;
+                pm.Market = mm;
 
 
-                    ProjectArray[i] = pm;
+                ProjectArray[i] = pm;
                 //}
             }
             );
@@ -608,7 +615,7 @@ namespace SOCE.Library.UI.ViewModels
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();
             AllProjects = ProjectArray.ToList();
             Projects = new ObservableCollection<ProjectModel>(ProjectArray.ToList());
-            
+
             //List<ProjectModel> activeprojects = Projects.Where(x => x.IsActive == true).ToList();
             NumProjects = Projects.Count;
         }

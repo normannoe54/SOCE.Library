@@ -120,7 +120,7 @@ namespace SOCE.Library.UI.ViewModels
 
             EmployeeModel em = (EmployeeModel)o;
             em.CollectTimesheetSubmission();
-            em.IsEditable = true;
+            //em.IsEditable = true;
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new EmployeeInfoView();
             var vm = new EmployeeInfoVM(em);
@@ -129,7 +129,7 @@ namespace SOCE.Library.UI.ViewModels
             var result = await DialogHost.Show(view, "RootDialog");
 
             em.EditFieldState = true;
-            em.IsEditable = false;
+            //em.IsEditable = false;
         }
 
         private async void ExecuteRunAddDialog(object o)

@@ -12,7 +12,6 @@ namespace SOCE.Library.Db
         public string Description { get; set; }
         public double Fee { get; set; }
         public int IsActive { get; set; }
-
         public double PercentComplete { get; set; }
         public double PercentBudget { get; set; }
         public int IsInvoiced { get; set; }
@@ -21,6 +20,8 @@ namespace SOCE.Library.Db
 
         public int IsAdservice { get; set; }
         public int NumberOrder { get; set; }
+
+        public int IsScheduleActive { get; set; }
 
     }
 }

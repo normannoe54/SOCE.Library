@@ -106,11 +106,9 @@ namespace SOCE.Library.UI.ViewModels
 
         public TimesheetReviewVM(EmployeeModel loggedinEmployee)
         {
-            UpdateDates(DateTime.Now);
-
-            //IsButtonEditable = false;
             CurrentEmployee = loggedinEmployee;
-
+            UpdateDates(DateTime.Now);
+            
             CurrentTimesheet();
 
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
@@ -138,23 +136,39 @@ namespace SOCE.Library.UI.ViewModels
 
             int diff = (lastdate - firstdate).Days;
             List<DateWrapper> dates = new List<DateWrapper>();
-            int workdays = 0;
-
+            double basehours = 0;
             for (int i = 0; i <= diff; i++)
             {
                 DateTime dt = firstdate.AddDays(i);
                 dates.Add(new DateWrapper(dt.Date));
 
-                if (!(dt.DayOfWeek == DayOfWeek.Saturday) && !(dt.DayOfWeek == DayOfWeek.Sunday))
+                if (dt.DayOfWeek == DayOfWeek.Friday)
                 {
-                    workdays++;
+                    basehours += CurrentEmployee.FridayHours;
+                }
+                else if (dt.DayOfWeek == DayOfWeek.Thursday)
+                {
+                    basehours += CurrentEmployee.ThursdayHours;
+                }
+                else if (dt.DayOfWeek == DayOfWeek.Wednesday)
+                {
+                    basehours += CurrentEmployee.WednesdayHours;
+                }
+                else if (dt.DayOfWeek == DayOfWeek.Tuesday)
+                {
+                    basehours += CurrentEmployee.TuesdayHours;
+                }
+                else if (dt.DayOfWeek == DayOfWeek.Monday)
+                {
+                    basehours += CurrentEmployee.MondayHours;
                 }
             }
 
             DateSummary = new ObservableCollection<DateWrapper>(dates);
+            BaseHours = basehours;
+            DateSummary = new ObservableCollection<DateWrapper>(dates);
             MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
             DateString = $"[{firstdate.Day} - {lastdate.Day}]";
-            BaseHours = workdays * 9;
             //DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
             DateTime enddate = DateSummary.Last().Value;
             int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays, 0));

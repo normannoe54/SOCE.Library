@@ -8,14 +8,14 @@ namespace SOCE.Library.UI
     {
         public static DateTime StartOfWeek(this DateTime dt, DayOfWeek startOfWeek)
         {
-            DateTime thisWeekStart = dt.AddDays(-(int)dt.DayOfWeek);
-            return thisWeekStart;
+            int diff = (7 + (dt.DayOfWeek - startOfWeek)) % 7;
+            return dt.AddDays(-1 * diff).Date;
         }
 
-        public static DateTime EndOfWeek(this DateTime dt, DayOfWeek startOfWeek)
-        {
-            DateTime thisWeekStart = dt.AddDays(-(int)dt.DayOfWeek);
-            return thisWeekStart;
-        }
+        //public static DateTime EndOfWeek(this DateTime dt, DayOfWeek startOfWeek)
+        //{
+        //    DateTime thisWeekStart = dt.AddDays(-(int)dt.DayOfWeek);
+        //    return thisWeekStart;
+        //}
     }
 }

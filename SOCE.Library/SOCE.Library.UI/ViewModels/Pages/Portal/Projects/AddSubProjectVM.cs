@@ -446,6 +446,7 @@ namespace SOCE.Library.UI.ViewModels
                 if (CDPhase && CDEnabled)
                 {
                     subproject.PointNumber = "CD";
+                    subproject.IsScheduleActive = 1;
                     subproject.Description = "Construction Document";
                     SQLAccess.AddSubProject(subproject);
                 }
@@ -513,7 +514,8 @@ namespace SOCE.Library.UI.ViewModels
         {
             baseViewModel.BaseProject.FormatData(result);
             baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
-            baseViewModel.Renumber(true);
+            baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
+            //baseViewModel.Renumber(true);
             baseViewModel.SelectedProjectPhase = baseViewModel.SubProjects[0];
             baseViewModel.LeftDrawerOpen = false;
             //DialogHost.Close("RootDialog");

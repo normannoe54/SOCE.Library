@@ -112,6 +112,61 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _chipName = "";
+        public string ChipName
+        {
+            get { return _chipName; }
+            set
+            {
+                _chipName = value;
+                RaisePropertyChanged("ChipName");
+            }
+        }
+
+        private bool _isOnHoldChecked;
+        public bool IsOnHoldChecked
+        {
+            get { return _isOnHoldChecked; }
+            set
+            {
+
+                if (value)
+                {
+                    ChipName = "ON HOLD";
+                }
+                else
+                {
+                    ChipName = "IN PROGRESS";
+                }
+
+                if (value != _isOnHoldChecked)
+                {
+                    BaseProject.IsOnHold = value;
+                    BaseProject.UpdateProject();
+
+                    if (value)
+                    {
+                        foreach(SubProjectModel sub in SubProjects)
+                        {
+                            if (sub.IsScheduleActive)
+                            {
+                                sub.IsScheduleActive = false;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        SubProjects[0].IsScheduleActive = true;
+                    }
+                    BaseProject.SubProjects = SubProjects;
+                    BaseProject.UpdateSubProjects();
+                }
+
+                _isOnHoldChecked = value;
+                RaisePropertyChanged("IsOnHoldChecked");
+            }
+        }
+
         private bool _leftDrawerOpen = false;
         public bool LeftDrawerOpen
         {
@@ -211,8 +266,8 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     BaseProject.UpdateSubProjects();
                     BaseProject.FormatData(false);
-                    SubProjects = BaseProject.SubProjects;
-                    Renumber(true);
+                    SubProjects = BaseProject.SubProjects.Renumber(true);
+                    //Renumber(true);
 
                     if (SelectedProjectPhase == null)
                     {
@@ -320,9 +375,10 @@ namespace SOCE.Library.UI.ViewModels
             if (SubProjects.Count > 0)
             {
                 SelectedProjectPhase = SubProjects[0];
-                Renumber(true);
+                SubProjects = SubProjects.Renumber(true);
             }
 
+            IsOnHoldChecked = pm.IsOnHold;
         }
 
         private async void RunExport()
@@ -402,7 +458,8 @@ namespace SOCE.Library.UI.ViewModels
             {
                 SubProjects.Move(ind, ind - 1);
                 sub.NumberOrder = ind - 1;
-                Renumber(false);
+                SubProjects =  SubProjects.Renumber(false);
+
             }
 
         }
@@ -415,58 +472,58 @@ namespace SOCE.Library.UI.ViewModels
             {
                 SubProjects.Move(ind, ind + 1);
                 sub.NumberOrder = ind + 1;
-                Renumber(false);
+                SubProjects = SubProjects.Renumber(false);
             }
 
         }
 
-        public void Renumber(bool firstload)
-        {
-            bool toggle0 = false;
-            SubProjectModel Lastitem = null;
-            List<SubProjectModel> subs = new List<SubProjectModel>();
-            for (int i = 0; i < SubProjects.Count; i++)
-            {
-                SubProjectModel sub = SubProjects[i];
+        //public void Renumber(bool firstload)
+        //{
+        //    bool toggle0 = false;
+        //    SubProjectModel Lastitem = null;
+        //    List<SubProjectModel> subs = new List<SubProjectModel>();
+        //    for (int i = 0; i < SubProjects.Count; i++)
+        //    {
+        //        SubProjectModel sub = SubProjects[i];
 
-                if (sub.Id != 0)
-                {
-                    int num = 0;
-                    if (firstload)
-                    {
-                        if (sub.NumberOrder == 0 && !toggle0)
-                        {
-                            num = 0;
-                            toggle0 = true;
-                        }
-                        else
-                        {
-                            num = sub.NumberOrder == 0 ? i : sub.NumberOrder;
-                        }
-                    }
-                    else
-                    {
-                        num = i;
-                    }
+        //        if (sub.Id != 0)
+        //        {
+        //            int num = 0;
+        //            if (firstload)
+        //            {
+        //                if (sub.NumberOrder == 0 && !toggle0)
+        //                {
+        //                    num = 0;
+        //                    toggle0 = true;
+        //                }
+        //                else
+        //                {
+        //                    num = sub.NumberOrder == 0 ? i : sub.NumberOrder;
+        //                }
+        //            }
+        //            else
+        //            {
+        //                num = i;
+        //            }
 
-                    SQLAccess.UpdateNumberOrder(sub.Id, num);
-                    sub.NumberOrder = num;
-                    subs.Add(sub);
-                }
-                else
-                {
-                    Lastitem = sub;
-                }
-            }
+        //            SQLAccess.UpdateNumberOrder(sub.Id, num);
+        //            sub.NumberOrder = num;
+        //            subs.Add(sub);
+        //        }
+        //        else
+        //        {
+        //            Lastitem = sub;
+        //        }
+        //    }
 
-            //SubProjects.ToList().Sort((x1, x2) =>  x1.NumberOrder - x2.NumberOrder );
-            SubProjects = new ObservableCollection<SubProjectModel>(subs.OrderBy(x => x.NumberOrder).ToList());
+        //    //SubProjects.ToList().Sort((x1, x2) =>  x1.NumberOrder - x2.NumberOrder );
+        //    SubProjects = new ObservableCollection<SubProjectModel>(subs.OrderBy(x => x.NumberOrder).ToList());
 
-            if (Lastitem != null)
-            {
-                SubProjects.Add(Lastitem);
-            }
-        }
+        //    if (Lastitem != null)
+        //    {
+        //        SubProjects.Add(Lastitem);
+        //    }
+        //}
 
         private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)
         {

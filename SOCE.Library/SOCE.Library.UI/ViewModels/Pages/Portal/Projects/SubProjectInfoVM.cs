@@ -105,8 +105,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = Convert.ToInt32(SubProject.IsInvoiced),
                 ExpandedDescription = ExpandedDescription,
                 IsAdservice = Convert.ToInt32(SubProject.IsAddService),
-                NumberOrder = SubProject.NumberOrder
-
+                NumberOrder = SubProject.NumberOrder,
+                IsScheduleActive = Convert.ToInt32(SubProject.IsScheduleActive)
             };
 
             SQLAccess.UpdateSubProject(subupdate);

@@ -193,15 +193,30 @@
     <Compile Include="Converters\InvoicedColorConverter.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
     <Compile Include="Helpers\SelectTextOnFocus.cs" />
+    <Compile Include="Helpers\StaticMethods\SubProjectHelpers.cs" />
     <Compile Include="Helpers\TimesheetTextBox.cs" />
     <Compile Include="Models\Employee\DefaultRoleEnum.cs" />
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="Models\ProjectSchedule\PMScheduleIndModel.cs" />
+    <Compile Include="Models\ProjectSchedule\ProjectScheduleViewEnum.cs" />
+    <Compile Include="Models\ProjectSchedule\SchedulingEnum.cs" />
+    <Compile Include="Models\ProjectSchedule\SDEntryModel.cs" />
+    <Compile Include="Models\ProjectSchedule\PMScheduleModel.cs" />
+    <Compile Include="Models\ProjectSchedule\WeeklyScheduleModel.cs" />
     <Compile Include="Models\Projects\ViewEnum.cs" />
+    <Compile Include="Models\ResultEnum.cs" />
     <Compile Include="Models\StatusEnum.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeInfoVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\EmployeeScheduleSummaryVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\IndividualSingleVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\PMScheduleVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectListVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\WeeklyScheduleVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ScheduleWeekVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectScheduleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\MarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BaseProjectSummaryVM.cs" />
@@ -241,6 +256,7 @@
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetReviewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetViewerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\ProgressBarVM.cs" />
+    <Compile Include="ViewModels\Popups\SelectionBoxVM.cs" />
     <Compile Include="ViewModels\Popups\YesNoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddClientVM.cs" />
@@ -271,8 +287,26 @@
     <Compile Include="Views\Login\SignupView.xaml.cs">
       <DependentUpon>SignupView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Popups\IndividualSingleView.xaml.cs">
+      <DependentUpon>IndividualSingleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Popups\SelectionBoxView.xaml.cs">
+      <DependentUpon>SelectionBoxView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\Employee\EmployeeInfoView.xaml.cs">
       <DependentUpon>EmployeeInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\PMReportView.xaml.cs">
+      <DependentUpon>PMReportView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\EmployeeSummaryScheduleView.xaml.cs">
+      <DependentUpon>EmployeeSummaryScheduleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\ProjectListView.xaml.cs">
+      <DependentUpon>ProjectListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\WeeklyScheduleView.xaml.cs">
+      <DependentUpon>WeeklyScheduleView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\BaseProjectSummaryView.xaml.cs">
       <DependentUpon>BaseProjectSummaryView.xaml</DependentUpon>
@@ -288,9 +322,6 @@
     </Compile>
     <Compile Include="Views\Popups\MessageBoxView.xaml.cs">
       <DependentUpon>MessageBoxView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\Portal\EmployeeDataView.xaml.cs">
-      <DependentUpon>EmployeeDataView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Employee\AddEmployeeView.xaml.cs">
       <DependentUpon>AddEmployeeView.xaml</DependentUpon>
@@ -358,6 +389,12 @@
     <Compile Include="Views\Portal\Timesheet\TimesheetView.xaml.cs">
       <DependentUpon>TimesheetView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\ProjectScheduleView.xaml.cs">
+      <DependentUpon>ProjectScheduleView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\ScheduleWeekView.xaml.cs">
+      <DependentUpon>ScheduleWeekView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Shell\ShellLoginView.xaml.cs">
       <DependentUpon>ShellLoginView.xaml</DependentUpon>
     </Compile>
@@ -378,7 +415,6 @@
     <Compile Include="Converters\MarkupExtensions\EnumerationExtension.cs" />
     <Compile Include="Converters\TableColorConverter.cs" />
     <Compile Include="DateTime\DateEnum.cs" />
-    <Compile Include="DateTime\DateHelpers.cs" />
     <Compile Include="DateTime\DateTimeExt.cs" />
     <Compile Include="Helpers\DataGridHelper.cs" />
     <Compile Include="Helpers\ExpressionHelpers.cs" />
@@ -411,9 +447,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Popups\IndividualSingleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Popups\SelectionBoxView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Portal\Employee\EmployeeInfoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\PMReportView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\EmployeeSummaryScheduleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\ProjectListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\WeeklyScheduleView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Project\BaseProjectSummaryView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -432,10 +492,6 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Popups\MessageBoxView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\Portal\EmployeeDataView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -527,6 +583,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\ProjectSchedule\ProjectScheduleView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\ScheduleWeekView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Shell\ShellLoginView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -558,6 +622,10 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="Resources\ScheduleBase.xlsx" />
+    <EmbeddedResource Include="Resources\ProjectList.xlsx" />
+    <EmbeddedResource Include="Resources\PMSchedule.xlsx" />
+    <EmbeddedResource Include="Resources\WeeklySchedule.xlsx" />
     <Resource Include="license.txt" />
     <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Resources\ProjectDataExport.xlsx" />
@@ -572,9 +640,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <Content Include="DemoDB.db">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

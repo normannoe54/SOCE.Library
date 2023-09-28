@@ -30,20 +30,41 @@
             <!--<DataTemplate DataType="{x:Type viewmodels:EmployeeDataVM}">
                 <views:EmployeeDataView/>
             </DataTemplate>-->
+            
             <DataTemplate DataType="{x:Type viewmodels:EmployeeVM}">
                 <views:EmployeeView/>
             </DataTemplate>
+            
             <!--<DataTemplate DataType="{x:Type viewmodels:HomeViewVM}">
                 <views:HomeView/>
             </DataTemplate>-->
+            
             <!--<DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
                 <views:LicenseManagerView/>
+            
             </DataTemplate>-->
             <!--<DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
                 <views:ResourcesView/>
+            
             </DataTemplate>-->
             <DataTemplate DataType="{x:Type viewmodels:TimesheetVM}">
                 <views:TimesheetView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:PMScheduleVM}">
+            <views:PMReportView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:ScheduleWeekVM}">
+                <views:ScheduleWeekView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:WeeklyScheduleVM}">
+                <views:WeeklyScheduleView/>
+            </DataTemplate>
+
+            <DataTemplate DataType="{x:Type viewmodels:ProjectScheduleVM}">
+                <views:ProjectScheduleView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:TimesheetReviewVM}">
@@ -53,6 +74,7 @@
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">
                 <views:ShellPortalView/>
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewmodels:LoginAI}">
                 <views:ShellLoginView/>
             </DataTemplate>
@@ -60,22 +82,31 @@
             <DataTemplate DataType="{x:Type viewmodels:LoginVM}">
                 <views:LoginView/>
             </DataTemplate>
+            
             <!--<DataTemplate DataType="{x:Type viewmodels:SignupVM}">
                 <views:SignupView/>
             </DataTemplate>-->
+            
             <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
                 <views:ForgotPasswordView/>
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewmodels:CodeInsertVM}">
                 <views:CodeInsertView/>
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewmodels:ProjectVM}">
                 <views:ProjectView/>
             </DataTemplate>
+            
             <DataTemplate DataType="{x:Type viewmodels:ResetPasswordVM}">
                 <views:ResetPasswordView/>
             </DataTemplate>
-            
+
+            <DataTemplate DataType="{x:Type viewmodels:ProjectListVM}">
+                <views:ProjectListView/>
+            </DataTemplate>
+
             <SolidColorBrush x:Key="SOCERed" Color="#c92127"/>
             <SolidColorBrush x:Key="SOCEGray" Color="#636466"/>
             <!--<SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>-->
@@ -86,6 +117,7 @@
             <SolidColorBrush x:Key="SOCEGreenCompliment" Color="#1d9719"/>
             <SolidColorBrush x:Key="SOCEOrangeCompliment" Color="#c97221"/>
             <SolidColorBrush x:Key="SOCELightGreenCompliment" Color="#1d9719"/>
+            
             <Style x:Key="PageHeader" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource SOCERed}" />
                 <Setter Property="FontSize" Value="32"/>
@@ -107,7 +139,6 @@
                     </Setter.Value>
                 </Setter>
             </Style>-->
-
 
             <Style x:Key="menuTitle" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="#ffffff" />
@@ -159,6 +190,45 @@
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="20 0 0 2"/>
             </Style>
+
+            <Style x:Key="StarCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
+                <Setter Property="Control.Template">
+                    <Setter.Value>
+                        <ControlTemplate TargetType="{x:Type CheckBox}">
+                            <Grid>
+                                <materialDesign:PackIcon Kind="Star" x:Name="star" Width="18" Height="18" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                <materialDesign:PackIcon Kind="StarBorder" Width="18" Height="18" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                            </Grid>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsChecked" Value="False">
+                                    <Setter TargetName="star" Property="Foreground" Value="Transparent"/>
+                                </Trigger>
+                                <Trigger Property="IsChecked" Value="True">
+                                    <Setter TargetName="star" Property="Foreground" Value="orange"/>
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Setter.Value>
+                </Setter>
+                <!--<Style.Triggers>
+                    <Trigger Property="IsChecked" Value="True">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="Foreground" Value="Transparent"/>
+                    </Trigger>
+                    <Trigger Property="IsChecked" Value="False">
+                        <Setter Property="Background" Value="Transparent"/>
+                        <Setter Property="BorderThickness" Value="1"/>
+                        <Setter Property="VerticalContentAlignment" Value="Center"/>
+                        <Setter Property="FontSize" Value="10"/>
+                    </Trigger>
+                </Style.Triggers>-->
+                <!--<Setter Property="materialDesign:ToggleButtonAssist.OnContent">
+                    <Setter.Value>
+                        <materialDesign:PackIcon Kind="Circle" FlowDirection="LeftToRight" />
+                    </Setter.Value>
+                </Setter>-->
+            </Style>
+
         </ResourceDictionary>
     </Application.Resources>
 </Application>

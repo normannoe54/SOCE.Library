@@ -128,7 +128,33 @@ namespace SOCE.Library.UI
                 }
             }
 
-            SubProjects = members;
+            members.Renumber(true);
+            int idofscheduleactive = 0;
+            bool stuffhappened = false;
+
+            foreach (SubProjectModel sub in members)
+            {
+                if (sub.IsScheduleActive)
+                {
+                    stuffhappened = true;
+                    idofscheduleactive = members.IndexOf(sub);
+                    //members = new ObservableCollection<SubProjectModel>(newlist);
+                    break;
+                }
+            }
+
+            
+            if (stuffhappened)
+            {
+                List<SubProjectModel> newsubs = members.ToList();
+                newsubs.MoveItemAtIndexToFront(idofscheduleactive);
+                SubProjects = new ObservableCollection<SubProjectModel>(newsubs);
+            }
+            else
+            {
+                SubProjects = members;
+            }
+
             try
             {
                 SelectedSubproject = SubProjects[0];

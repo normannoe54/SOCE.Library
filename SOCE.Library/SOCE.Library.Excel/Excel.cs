@@ -61,22 +61,65 @@ namespace SOCE.Library.Excel
 
         public void WriteRow<T>(int row, int startingcell, List<T> values)
         {
-            IXLRange rangeWithStrings = activeworksheet.Cell(row, startingcell).InsertData(values, true);
+
+            IXLCell cell= activeworksheet.Cell(row, startingcell);
+            IXLRange rangeWithStrings = cell.InsertData(values, true);
+            //IXLRange rangeWithStrings = activeworksheet.Cell(row, startingcell).InsertData(values, true);
 
             //document.Save();
+        }
+
+        public void MakeRowBold(int row, int startingcell, int lastcell)
+        {
+            for (int i = 0; i < lastcell; i++ )
+            {
+                IXLCell cell = activeworksheet.Cell(row, startingcell + i);
+                cell.Style.Font.Bold = true;
+            }
+
+        }
+
+        public void MakeRowDoubleBorderedTopandBot(int row, int startingcell, int lastcell)
+        {
+            for (int i = 0; i < lastcell; i++)
+            {
+                IXLCell cell = activeworksheet.Cell(row, startingcell + i);
+                cell.Style.Border.BottomBorder = XLBorderStyleValues.Double;
+            }
+        }
+
+        public void MakeRowGray(int row, int startingcell, int lastcell)
+        {
+            for (int i = 0; i < lastcell; i++)
+            {
+                IXLCell cell = activeworksheet.Cell(row, startingcell + i);
+                cell.Style.Fill.BackgroundColor = XLColor.DarkGray;
+            }
+        }
+
+        public void MakeRowItalic(int row, int startingcell, int lastcell)
+        {
+            for (int i = 0; i < lastcell; i++)
+            {
+                IXLCell cell = activeworksheet.Cell(row, startingcell + i);
+                cell.Style.Font.Italic = true;
+            }
         }
 
         public void WriteCell(int row, int column, string cellvalue)
         {
             activeworksheet.Cell(row, column).Value = cellvalue;
-            //activeworksheet.Cell(row, column).Comment.Style.Alignment.SetHorizontal(XLDrawingHorizontalAlignment.Left);
 
-            //document.Save();
         }
 
         public void CenterCell(int row, int column)
         {
             activeworksheet.Cell(row, column).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Center);
+        }
+
+        public void LeftCell(int row, int column)
+        {
+            activeworksheet.Cell(row, column).Style.Alignment.SetHorizontal(XLAlignmentHorizontalValues.Left);
         }
 
         public void RotateTextVertical(int row, int column)

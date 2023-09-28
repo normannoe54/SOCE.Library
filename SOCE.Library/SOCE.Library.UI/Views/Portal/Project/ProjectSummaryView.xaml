@@ -66,6 +66,7 @@
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="20" FontWeight="SemiBold" Text="Project Phases" />
@@ -80,7 +81,25 @@
 
                         <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0"/>
                     </Button>
-                    <Border Grid.Column="2" Margin="0 0 70 5" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="130">
+                    <CheckBox Grid.Column="3"  Margin="40 0 0 0" Width="120"
+                              IsChecked="{Binding IsOnHoldChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" BorderBrush="Black" FontSize="16" FontWeight="SemiBold" 
+                              Content="{Binding ChipName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <CheckBox.Style>
+                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignFilterChipCheckBox}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked"  Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEGray}"/>
+                                    </Trigger>
+                                    <!-- etc -->
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
+                    </CheckBox>
+
+                    <Border Grid.Column="3" Margin="0 0 100 5" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="130">
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Style.Triggers>
@@ -117,7 +136,7 @@
                 <Grid Grid.Row="2" HorizontalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="25"/>
-                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="65"/>
                         <ColumnDefinition Width="75"/>
                         <ColumnDefinition Width="160"/>
                         <ColumnDefinition Width="70"/>
@@ -125,13 +144,13 @@
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="55"/>
-                        <ColumnDefinition Width="55"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="75"/>
                         <ColumnDefinition Width="75"/>
                         <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="50"/>
+                        <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Phase" />
@@ -176,22 +195,22 @@
                                 <Grid Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="25"/>
-                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="65"/>
                                         <ColumnDefinition Width="75"/>
                                         <ColumnDefinition Width="160"/>
+                                        <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="70"/>
                                         <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="55"/>
                                         <ColumnDefinition Width="10"/>
                                         <ColumnDefinition Width="55"/>
-                                        <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="70"/>
+                                        <ColumnDefinition Width="75"/>
+                                        <ColumnDefinition Width="75"/>
                                         <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="50"/>
+                                        <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
                                     <VirtualizingStackPanel Grid.Column="0"  Orientation="Vertical" HorizontalAlignment="Center">
@@ -224,6 +243,10 @@
                                                 <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </materialDesign:ToggleButtonAssist.OnContent>
                                         </ToggleButton>
+                                        <CheckBox  IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                                   Style="{StaticResource StarCheckBox}" IsChecked="{Binding IsScheduleActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                   HorizontalAlignment="Center" Background="DarkGray" ToolTip="Select Active Phase" />
+
                                     </VirtualizingStackPanel>
 
                                     <TextBox Grid.Column="2" IsReadOnly="{Binding EditSubFieldState}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PointNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.PrefixText="[" materialDesign:TextFieldAssist.SuffixText="]"/>
@@ -233,6 +256,7 @@
                                     <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentofInvoicedFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
                                     <TextBlock Grid.Column="7" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
                                     <TextBox Grid.Column="8" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%"/>
+                                    
                                     <TextBlock Grid.Column="9" FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}"/>
                                     <TextBlock Grid.Column="10" FontWeight="SemiBold" FontSize="12" 
                                            HorizontalAlignment="Center" VerticalAlignment="Center" 
@@ -247,8 +271,8 @@
                                     <TextBlock Grid.Column="13" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding FeeUsed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
                                     <TextBlock Grid.Column="14" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding FeeLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
                                     <TextBlock Grid.Column="15" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
-                                    <CheckBox Grid.Column="16" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray" />
-                                    <CheckBox Grid.Column="17" IsEnabled="{Binding ComboSubFieldState}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
+                                    <CheckBox Grid.Column="16" IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray" />
+                                    <CheckBox Grid.Column="17" IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>
