@@ -34,15 +34,15 @@
                         <TextBlock Margin="5 0 0 0" Text="Back To Summary" Foreground="black" VerticalAlignment="Center" FontSize="16"/>
                     </StackPanel>
                 </Button>
-                <TextBlock Grid.Row="1" Text="Time Sheet Viewer"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}"/>
-                
+                <TextBlock Grid.Row="1" Text="Time Sheet Viewer" HorizontalAlignment="Left" VerticalAlignment="Center" FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}"/>
             </Grid>
             <Grid Grid.Column="1" HorizontalAlignment="Right">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                <Border Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="150" Margin="0 0 20 0">
+                <Border Grid.Row="0" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="150" Margin="5 0 5 0">
                     <Border.Style>
                         <Style TargetType="{x:Type Border}">
                             <Style.Triggers>
@@ -81,8 +81,15 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </Border>
-                <TextBlock Grid.Row="1" Text="{Binding basevm.BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="0 10 20 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                
+                <TextBlock Grid.Row="1" Text="{Binding basevm.BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="5 10 5 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <Button Grid.Row="2" HorizontalAlignment="Stretch" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
+                            VerticalAlignment="Center"  Height="30" Margin="5 5 5 5" BorderBrush="Black" BorderThickness="1">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
+
+                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                    </StackPanel>
+                </Button>
             </Grid>
 
             <!--</Grid>-->

@@ -9,8 +9,8 @@ namespace SOCE.Library.UI
 {
     public enum SchedulingEnum
     {
-        [Description("A")]
-        A,
+        [Description("D")]
+        D,
 
         [Description("CA")]
         CA,

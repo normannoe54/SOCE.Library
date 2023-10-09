@@ -175,31 +175,35 @@ namespace SOCE.Library.UI.ViewModels
                 clients.Add(new ClientModel(cdbm));
             }
 
+            List<ProjectDbModel> projectsdb = SQLAccess.LoadActiveProjects(true);
             List<ProjectModel> projects = new List<ProjectModel>();
 
             foreach (SubProjectDbModel sub in subdbs)
             {
-                ProjectDbModel pdb = SQLAccess.LoadProjectsById(sub.ProjectId);
-                ProjectModel pm = new ProjectModel(pdb, true);
-                EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
-                ClientModel cm = clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
-                MarketModel mm = members.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
+                ProjectDbModel pdb = projectsdb.Where(x => x.Id == sub.ProjectId).FirstOrDefault();
 
-                pm.ProjectManager = em;
-                pm.Client = cm;
-                pm.Market = mm;
-
-                if (sub.PointNumber == "CA")
+                if (pdb != null)
                 {
-                    pm.SchedulingValue = SchedulingEnum.CA;
-                }
-                else
-                {
-                    pm.SchedulingValue = SchedulingEnum.A;
-                }
-                pm.LoadSubProjects();
-                projects.Add(pm);
+                    ProjectModel pm = new ProjectModel(pdb, true);
+                    EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
+                    ClientModel cm = clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
+                    MarketModel mm = members.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
 
+                    pm.ProjectManager = em;
+                    pm.Client = cm;
+                    pm.Market = mm;
+
+                    if (sub.PointNumber == "CA")
+                    {
+                        pm.SchedulingValue = SchedulingEnum.CA;
+                    }
+                    else
+                    {
+                        pm.SchedulingValue = SchedulingEnum.D;
+                    }
+                    pm.LoadSubProjects();
+                    projects.Add(pm);
+                }
             }
 
             foreach (ProjectDbModel proj in projdbs)

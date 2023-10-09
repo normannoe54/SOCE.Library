@@ -15,7 +15,7 @@ namespace SOCE.Library.UI.ViewModels
         public bool Result { get; set; }
 
         private ProjectSummaryVM ProjectSummary { get; set; }
-
+        private AddServiceVM AddServiceSummary { get; set; }
         public string Message { get; set; } = "";
 
         private bool _isSubVisible = false;
@@ -97,6 +97,16 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = $"Phase: {spm.PointNumber}";
         }
 
+        public YesNoVM(SubProjectModel spm, AddServiceVM psm)
+        {
+            AddServiceSummary = psm;
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+            Message = "Are you sure you want to delete:";
+            SubMessage = $"Add-Service: {spm.PointNumber}";
+        }
+
         public YesNoVM(RolePerSubProjectModel rpspm, ProjectSummaryVM psm)
         {
             ProjectSummary = psm;
@@ -146,10 +156,29 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            if (ProjectSummary == null)
+            if (ProjectSummary == null && AddServiceSummary == null)
             {
                 bool val = DialogHost.IsDialogOpen("RootDialog");
                 DialogHost.Close("RootDialog");
+            }
+            else if (AddServiceSummary != null)
+            {
+                SubProjectModel itemtodelete = (SubProjectModel)AddServiceSummary.ItemToDelete;
+
+                if (Result)
+                {
+                    foreach (RolePerSubProjectModel rpspm in itemtodelete.RolesPerSub)
+                    {
+                        SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
+                    }
+
+                    SQLAccess.DeleteSubProject(itemtodelete.Id);
+                    AddServiceSummary.SubProjects.Remove(itemtodelete);
+                    AddServiceSummary.BaseProject.UpdateSubProjects();
+                    AddServiceSummary.SubProjects.Renumber(true);
+                    AddServiceSummary.ItemToDelete = null;
+                    AddServiceSummary.LeftDrawerOpen = false;
+                }
             }
             else
             {
@@ -188,7 +217,7 @@ namespace SOCE.Library.UI.ViewModels
                 }
                 ProjectSummary.ItemToDelete = null;
                 ProjectSummary.LeftDrawerOpen = false;
-                
+
             }
         }
     }

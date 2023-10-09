@@ -39,6 +39,34 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _nameOfClient { get; set; }
+        public string NameOfClient
+        {
+            get
+            {
+                return _nameOfClient;
+            }
+            set
+            {
+                _nameOfClient = value;
+                RaisePropertyChanged(nameof(NameOfClient));
+            }
+        }
+
+        private string _clientAddress { get; set; }
+        public string ClientAddress
+        {
+            get
+            {
+                return _clientAddress;
+            }
+            set
+            {
+                _clientAddress = value;
+                RaisePropertyChanged(nameof(ClientAddress));
+            }
+        }
+
         private bool _editFieldClientsState = true;
         public bool EditFieldClientsState
         {
@@ -55,6 +83,22 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _makingChanges = false;
+        public bool MakingChanges
+        {
+            get { return _makingChanges; }
+            set
+            {
+                if (_makingChanges && !value)
+                {
+                    UpdateClient();
+                }
+                _makingChanges = value;
+
+                RaisePropertyChanged(nameof(MakingChanges));
+            }
+        }
+
         public ClientModel()
         { }
 
@@ -63,6 +107,8 @@ namespace SOCE.Library.UI
             Id = cdbm.Id;
             ClientName = cdbm.ClientName;
             ClientNumber = cdbm.ClientNumber;
+            ClientAddress = cdbm.ClientAddress;
+            NameOfClient = cdbm.NameOfClient;
         }
 
         public void UpdateClient()
@@ -71,7 +117,9 @@ namespace SOCE.Library.UI
             {
                 Id = Id,
                 ClientName = ClientName,
-                ClientNumber = ClientNumber
+                ClientNumber = ClientNumber,
+                ClientAddress = ClientAddress,
+                NameOfClient = NameOfClient
             };
 
             SQLAccess.UpdateClient(client);
@@ -81,7 +129,7 @@ namespace SOCE.Library.UI
         {
             ClientModel cm = (ClientModel)obj;
 
-            if (cm== null)
+            if (cm == null)
             {
                 return false;
             }

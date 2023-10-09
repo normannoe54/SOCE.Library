@@ -217,6 +217,8 @@
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\WeeklyScheduleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ScheduleWeekVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectScheduleVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddServiceVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddAddServiceVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\MarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BaseProjectSummaryVM.cs" />
@@ -308,8 +310,14 @@
     <Compile Include="Views\Portal\ProjectSchedule\WeeklyScheduleView.xaml.cs">
       <DependentUpon>WeeklyScheduleView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\Project\AddAddServiceView.xaml.cs">
+      <DependentUpon>AddAddServiceView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\Project\BaseProjectSummaryView.xaml.cs">
       <DependentUpon>BaseProjectSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\ClientInfoView.xaml.cs">
+      <DependentUpon>ClientInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\HoursView.xaml.cs">
       <DependentUpon>HoursView.xaml</DependentUpon>
@@ -475,7 +483,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Portal\Project\AddAddServiceView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\Project\BaseProjectSummaryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Project\ClientInfoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

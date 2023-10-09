@@ -665,6 +665,7 @@ namespace SOCE.Library.UI
             ProjectStart = pm.ProjectStart;
             ProjectEnd = pm.ProjectEnd;
             FinalSpent = pm.FinalSpent;
+            Remarks = pm.Remarks;
 
             if (pm?.DueDate != null && pm?.DueDate != 0)
             {
@@ -683,6 +684,7 @@ namespace SOCE.Library.UI
             //MarketModel mm = new MarketModel(mdbm);
             //Market = mm;
 
+            Remarks = pm.Remarks;
             Projectfolder = pm.Projectfolder;
             Drawingsfolder = pm.Drawingsfolder;
             Architectfolder = pm.Architectfolder;
@@ -821,7 +823,7 @@ namespace SOCE.Library.UI
                         } //show ui and ask user for stuff
                     }
                 }
-                else if (SchedulingValue == SchedulingEnum.A)
+                else if (SchedulingValue == SchedulingEnum.D)
                 {
                     double count = SubProjects.Where(x => x.PointNumber != "CA").Count();
 
@@ -1088,11 +1090,17 @@ namespace SOCE.Library.UI
                     PercentComplete = spm.PercentComplete,
                     PercentBudget = spm.PercentBudget,
                     IsInvoiced = spm.IsInvoiced ? 1 : 0,
+                    SubStart = spm.DateInitiated != null ? (int)long.Parse(spm.DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
+                    SubEnd = spm.DateInvoiced != null ? (int)long.Parse(spm.DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
+                    NameOfClient = spm.NameOfClient,
+                    IsBillable = spm.IsBillable == null ? (int?)null : Convert.ToInt32(spm.IsBillable),
                     ExpandedDescription = spm.ExpandedDescription,
                     IsAdservice = spm.IsAddService ? 1 : 0,
                     NumberOrder = spm.NumberOrder,
+                    ClientCompanyName = spm.ClientCompanyName,
+                    ClientAddress = spm.ClientAddress,
+                    EmployeeIdSigned = spm.EmployeeIdSigned,
                     IsScheduleActive = spm.IsScheduleActive ? 1 : 0
-
                 };
 
                 SQLAccess.UpdateSubProject(subproject);
@@ -1614,7 +1622,7 @@ namespace SOCE.Library.UI
                 {
                     foreach (SubProjectModel sub in SubProjects)
                     {
-                        if (sub.IsActive)
+                        if (sub.Id != 0)
                         {
                             sub.IsActive = false;
                             SubProjectDbModel subproject = new SubProjectDbModel()
@@ -1625,12 +1633,19 @@ namespace SOCE.Library.UI
                                 Description = sub.Description,
                                 Fee = sub.Fee,
                                 IsActive = 0,
+                                SubStart = sub.DateInitiated != null ? (int)long.Parse(sub.DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
+                                SubEnd = sub.DateInvoiced != null ? (int)long.Parse(sub.DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
+                                NameOfClient = sub.NameOfClient,
+                                IsBillable = sub.IsBillable  == null ? (int?) null : Convert.ToInt32(sub.IsBillable),
                                 PercentComplete = sub.PercentComplete,
                                 PercentBudget = sub.PercentBudget,
                                 IsInvoiced = sub.IsInvoiced ? 1 : 0,
                                 ExpandedDescription = sub.ExpandedDescription,
                                 IsAdservice = sub.IsAddService ? 1 : 0,
                                 NumberOrder = sub.NumberOrder,
+                                ClientCompanyName = sub.ClientCompanyName,
+                                ClientAddress = sub.ClientAddress,
+                                EmployeeIdSigned = sub.EmployeeIdSigned,
                                 IsScheduleActive = 0,
                             };
                             SQLAccess.UpdateSubProject(subproject);
@@ -1639,11 +1654,18 @@ namespace SOCE.Library.UI
                 }
                 else
                 {
+                    bool foundoneschedule = false;
                     bool foundone = false;
                     //check if one is active
                     foreach (SubProjectModel sub in SubProjects)
                     {
                         if (sub.IsActive)
+                        {
+                            foundone = true;
+                            break;
+                        }
+
+                        if (sub.IsScheduleActive)
                         {
                             foundone = true;
                             break;
@@ -1663,13 +1685,54 @@ namespace SOCE.Library.UI
                                 Description = subnew.Description,
                                 Fee = subnew.Fee,
                                 IsActive = 1,
+                                SubStart = subnew.DateInitiated != null ? (int)long.Parse(subnew.DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
+                                SubEnd = subnew.DateInvoiced != null ? (int)long.Parse(subnew.DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
+                                NameOfClient = subnew.NameOfClient,
+                                IsBillable = subnew.IsBillable == null ? (int?)null : Convert.ToInt32(subnew.IsBillable),
                                 PercentComplete = subnew.PercentComplete,
                                 PercentBudget = subnew.PercentBudget,
                                 IsInvoiced = subnew.IsInvoiced ? 1 : 0,
                                 ExpandedDescription = subnew.ExpandedDescription,
                                 IsAdservice = subnew.IsAddService ? 1 : 0,
                                 NumberOrder = subnew.NumberOrder,
+                                ClientCompanyName = subnew.ClientCompanyName,
+                                ClientAddress = subnew.ClientAddress,
+                                EmployeeIdSigned = subnew.EmployeeIdSigned,
                                 IsScheduleActive = subnew.IsScheduleActive ? 1 : 0
+                            };
+                            SQLAccess.UpdateSubProject(subproject);
+                        }
+                    }
+
+                    if (!foundoneschedule)
+                    {
+                        if (SubProjects.Count > 1)
+                        {
+                            SubProjectModel subnew = SubProjects[SubProjects.Count - 2];
+                            subnew.IsScheduleActive = true;
+                            SubProjectDbModel subproject = new SubProjectDbModel()
+                            {
+                                Id = subnew.Id,
+                                ProjectId = subnew.ProjectNumber,
+                                PointNumber = subnew.PointNumber,
+                                Description = subnew.Description,
+                                Fee = subnew.Fee,
+                                IsActive = 1,
+                                SubStart = subnew.DateInitiated != null ? (int)long.Parse(subnew.DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
+                                SubEnd = subnew.DateInvoiced != null ? (int)long.Parse(subnew.DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
+                                NameOfClient = subnew.NameOfClient,
+                                IsBillable = subnew.IsBillable == null ? (int?)null : Convert.ToInt32(subnew.IsBillable),
+                                PercentComplete = subnew.PercentComplete,
+                                PercentBudget = subnew.PercentBudget,
+                                IsInvoiced = subnew.IsInvoiced ? 1 : 0,
+                                ExpandedDescription = subnew.ExpandedDescription,
+                                IsAdservice = subnew.IsAddService ? 1 : 0,
+                                NumberOrder = subnew.NumberOrder,
+                                ClientCompanyName = subnew.ClientCompanyName,
+                                ClientAddress = subnew.ClientAddress,
+                                EmployeeIdSigned = subnew.EmployeeIdSigned,
+                                IsScheduleActive = subnew.IsScheduleActive ? 1 : 0
+                                
                             };
                             SQLAccess.UpdateSubProject(subproject);
                         }
@@ -1686,6 +1749,11 @@ namespace SOCE.Library.UI
             {
                 duedatevar = (int)long.Parse(DueDate?.ToString("yyyyMMdd"));
             }
+            int pmid = 0;
+            if (ProjectManager != null)
+            {
+                pmid = ProjectManager.Id;
+            }
 
             ProjectDbModel project = new ProjectDbModel()
             {
@@ -1695,7 +1763,7 @@ namespace SOCE.Library.UI
                 DueDate = duedatevar,
                 ClientId = Client.Id,
                 MarketId = Market.Id,
-                ManagerId = ProjectManager.Id,
+                ManagerId = pmid,
                 Fee = Fee,
                 IsActive = IsActive ? 1 : 0,
                 PercentComplete = PercentComplete,
@@ -1706,6 +1774,7 @@ namespace SOCE.Library.UI
                 ProjectStart = ProjectStart,
                 ProjectEnd = ProjectEnd,
                 FinalSpent = FinalSpent,
+                Remarks = Remarks,
                 IsOnHold = Convert.ToInt32(IsOnHold)
             };
             SQLAccess.UpdateProjects(project);

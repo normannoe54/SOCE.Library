@@ -12,8 +12,8 @@ namespace SOCE.Library.UI
         [Description("Project Summary")]
         ProjectSummary,
 
-        //[Description("Add Service")]
-        //AddService,
+        [Description("Add Service")]
+        AddService,
 
         [Description("Timeline")]
         Timeline,

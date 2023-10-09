@@ -107,8 +107,8 @@ namespace SOCE.Library.Db
             {
                 try
                 {
-                    int id = cnn.QuerySingle<int>("INSERT INTO Clients (ClientName, ClientNumber, IsActive)" +
-                    "VALUES (@ClientName, @ClientNumber, @IsActive) returning id", client);
+                    int id = cnn.QuerySingle<int>("INSERT INTO Clients (ClientName, ClientNumber, NameOfClient, ClientAddress, IsActive)" +
+                    "VALUES (@ClientName, @ClientNumber, @NameOfClient, @ClientAddress, @IsActive) returning id", client);
 
                     output = id;
                 }
@@ -143,7 +143,7 @@ namespace SOCE.Library.Db
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("UPDATE Clients SET ClientName = @ClientName AND ClientNumber = @ClientNumber WHERE Id = @Id", new { client.ClientName, client.Id });
+                cnn.Execute("UPDATE Clients SET ClientName = @ClientName, ClientNumber = @ClientNumber, NameOfClient = @NameOfClient, ClientAddress = @ClientAddress WHERE Id = @Id", new { client.ClientName, client.ClientNumber, client.NameOfClient, client.ClientAddress, client.Id });
             }
         }
         #endregion
@@ -228,7 +228,7 @@ namespace SOCE.Library.Db
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE AuthId > 0 AND IsActive = 1");
+                var output = cnn.Query<EmployeeDbModel>("SELECT * FROM Employees WHERE AuthId > 1 AND IsActive = 1");
                 return output.ToList();
             }
         }
@@ -340,6 +340,15 @@ namespace SOCE.Library.Db
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 var output = cnn.Query<ProjectDbModel>("SELECT * FROM Projects WHERE IsActive = @active", new {active});
+                return output.ToList();
+            }
+        }
+
+        public static List<ProjectDbModel> LoadActiveNonHoldProjects()
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<ProjectDbModel>("SELECT * FROM Projects WHERE IsActive = 1 AND IsOnHold = 0");
                 return output.ToList();
             }
         }
@@ -464,8 +473,8 @@ namespace SOCE.Library.Db
             int output = 0;
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                int id = cnn.QuerySingle<int>("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee, PercentComplete, PercentBudget, IsActive, IsInvoiced, ExpandedDescription, IsAdservice, NumberOrder, IsScheduleActive)" +
-                                                              "VALUES (@ProjectId, @PointNumber, @Description, @Fee, @PercentComplete, @PercentBudget, @IsActive, @IsInvoiced, @ExpandedDescription, @IsAdservice, @NumberOrder, @IsScheduleActive) returning id;", subproject);
+                int id = cnn.QuerySingle<int>("INSERT INTO SubProjects (ProjectId, PointNumber, Description, Fee, PercentComplete, PercentBudget, IsActive, IsInvoiced, ExpandedDescription, IsAdservice, NumberOrder, IsScheduleActive, IsBillable, SubStart, SubEnd, NameOfClient, ClientCompanyName, ClientAddress, EmployeeIdSigned )" +
+                                                              "VALUES (@ProjectId, @PointNumber, @Description, @Fee, @PercentComplete, @PercentBudget, @IsActive, @IsInvoiced, @ExpandedDescription, @IsAdservice, @NumberOrder, @IsScheduleActive, @IsBillable, @SubStart, @SubEnd, @NameOfClient, @ClientCompanyName, @ClientAddress, @EmployeeIdSigned) returning id;", subproject);
                 output = id;
             }
             return output;
@@ -479,7 +488,8 @@ namespace SOCE.Library.Db
                 using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
                 {
                     cnn.Execute("UPDATE SubProjects SET ProjectId = @ProjectId, PointNumber = @PointNumber, Description = @Description, Fee = @Fee, PercentComplete = @PercentComplete, PercentBudget = @PercentBudget,"
-                              + "IsActive = @IsActive, IsInvoiced = @IsInvoiced, ExpandedDescription = @ExpandedDescription, IsAdservice = @IsAdservice, NumberOrder = @NumberOrder, IsScheduleActive = @IsScheduleActive WHERE Id = @Id",
+                              + "IsActive = @IsActive, IsInvoiced = @IsInvoiced, ExpandedDescription = @ExpandedDescription, IsAdservice = @IsAdservice, NumberOrder = @NumberOrder, IsScheduleActive = @IsScheduleActive,"
+                              + "IsBillable = @IsBillable, SubStart = @SubStart, SubEnd = @SubEnd, NameOfClient = @NameOfClient, ClientCompanyName = @ClientCompanyName, ClientAddress = @ClientAddress, EmployeeIdSigned = @EmployeeIdSigned WHERE Id = @Id",
                             new
                             {
                                 subproject.ProjectId,
@@ -494,6 +504,13 @@ namespace SOCE.Library.Db
                                 subproject.IsAdservice,
                                 subproject.NumberOrder,
                                 subproject.IsScheduleActive,
+                                subproject.IsBillable,
+                                subproject.SubStart,
+                                subproject.SubEnd,
+                                subproject.NameOfClient,
+                                subproject.ClientCompanyName,
+                                subproject.ClientAddress,
+                                subproject.EmployeeIdSigned,
                                 subproject.Id
                             });
                 }

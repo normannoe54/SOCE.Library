@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="SOCE.Library.UI.Views.ClientView"
+﻿<UserControl x:Class="SOCE.Library.UI.Views.ClientInfoView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -11,9 +11,6 @@
              Width="485" Background="White">
 
     <Grid VerticalAlignment="Stretch"  Margin="20 20 20 10">
-        <Grid.Resources>
-            <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
-        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="50"/>
             <RowDefinition Height="auto"/>
@@ -28,7 +25,9 @@
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <TextBlock Text="Clients:" FontSize="24" FontWeight="SemiBold"  Foreground="Black" HorizontalAlignment="Left"/>
             <Button Grid.Column="1" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" BorderBrush="Black" BorderThickness="1"
@@ -81,60 +80,12 @@
                                     <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Edit"/>
                                 </materialDesign:ToggleButtonAssist.OnContent>
                             </ToggleButton>
-
-                            <materialDesign:PopupBox Height="20" Width="20"  Padding="0" 
-                                                                 Background="Transparent" BorderBrush="Transparent" Foreground="Black"
-                                                                         Style="{StaticResource MaterialDesignMultiFloatingActionAccentPopupBox}"
-                                                                         PlacementMode="TopAndAlignLeftEdges" StaysOpen="True" IsPopupOpen="{Binding MakingChanges, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                <materialDesign:PopupBox.ToggleContent>
-                                    <materialDesign:PackIcon Kind="InfoCircle" Width="20" Height="20"/>
-                                </materialDesign:PopupBox.ToggleContent>
-                                <materialDesign:PopupBox.ToggleCheckedContent>
-                                    <materialDesign:PackIcon Kind="InfoCircle"  Width="20" Height="20"/>
-                                </materialDesign:PopupBox.ToggleCheckedContent>
-
-
-                                <Border Background="{StaticResource SOCELightGreenCompliment}" CornerRadius="4" BorderThickness="2" BorderBrush="Black" Width="300">
-                                    <Grid Margin="5">
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="Auto"/>
-                                            <RowDefinition Height="Auto"/>
-                                        </Grid.RowDefinitions>
-
-                                        <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Margin="0 0 0 6" Text="Contact:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
-                                            <TextBox Grid.Column="1" Margin="10 0 0 0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" Text="{Binding NameOfClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Default Contact"/>
-                                        </Grid>
-                                        <Grid  HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="1" Margin="0 5 0 0">
-                                            <Grid.ColumnDefinitions>
-                                                <ColumnDefinition Width="Auto"/>
-                                                <ColumnDefinition Width="*"/>
-                                            </Grid.ColumnDefinitions>
-                                            <TextBlock Margin="0 0 0 6" Text="Address:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
-                                            <TextBox Grid.Column="1" Margin="10 0 0 0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" Text="{Binding ClientAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Default Address"/>
-                                        </Grid>
-
-                                    </Grid>
-
-                                </Border>
-
-
-                            </materialDesign:PopupBox>
-
-                            <!--<Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
+                            <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
                                     Height="20" Width="20" Command="{Binding Path=DataContext.GoToOpenClientSummary, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Open" Foreground="Black">
                                 <Button.Content>
                                     <materialDesign:PackIcon  Kind="Download" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
                                 </Button.Content>
-                            </Button>-->
-                            
-                            
+                            </Button>
                         </VirtualizingStackPanel>
                         <TextBox Grid.Column="1" Margin="3 0 0 0" IsReadOnly="{Binding EditFieldClientsState}" HorizontalAlignment="Center" Text="{Binding ClientNumber}" TextAlignment="Center" FontSize="14" FontWeight="Regular" VerticalAlignment="Center"
                                                  materialDesign:TextFieldAssist.PrefixText="(" materialDesign:TextFieldAssist.SuffixText=")"/>

@@ -95,6 +95,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _canSeeNext = false;
+        public bool CanSeeNext
+        {
+            get { return _canSeeNext; }
+            set
+            {
+                _canSeeNext = value;
+                RaisePropertyChanged(nameof(CanSeeNext));
+            }
+        }
+
         private ObservableCollection<SDEntryModel> _totals = new ObservableCollection<SDEntryModel>();
         public ObservableCollection<SDEntryModel> Totals
         {
@@ -330,7 +341,16 @@ namespace SOCE.Library.UI.ViewModels
             Totals.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = total7 });
             Totals.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = total8 });
 
+            DateTime Curr = DateTime.Now.AddDays(-1);
 
+            if (DateSummary[0].Value > Curr)
+            {
+                CanSeeNext = false;
+            }
+            else
+            {
+                CanSeeNext = true;
+            }
         }
     }
 }

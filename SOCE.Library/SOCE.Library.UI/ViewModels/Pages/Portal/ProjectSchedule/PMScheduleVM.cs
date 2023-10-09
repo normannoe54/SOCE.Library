@@ -87,6 +87,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _canSeeNext = false;
+        public bool CanSeeNext
+        {
+            get { return _canSeeNext; }
+            set
+            {
+                _canSeeNext = value;
+                RaisePropertyChanged(nameof(CanSeeNext));
+            }
+        }
+
         public PMScheduleVM(EmployeeModel employee)
         {
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
@@ -304,7 +315,15 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             ProjectManagers = members;
-            SelectedPM = ProjectManagers.Where(x => x.Id == curremployee.Id).FirstOrDefault();
+            EmployeeModel em = ProjectManagers.Where(x => x.Id == curremployee.Id).FirstOrDefault();
+            if (em == null)
+            {
+                SelectedPM = ProjectManagers[0];
+            }
+            else
+            {
+                SelectedPM = em;
+            }
         }
 
         private List<PMScheduleModel> LoadPMSchedule(EmployeeModel selectedpm, DateWrapper firstdate)
@@ -344,6 +363,17 @@ namespace SOCE.Library.UI.ViewModels
                         pmschedmod.EmployeeSummary.Add(pmnew);
                     }
                 }
+            }
+
+            DateTime Curr = DateTime.Now.AddDays(-1);
+
+            if (DateSummary[0].Value > Curr)
+            {
+                CanSeeNext = false;
+            }
+            else
+            {
+                CanSeeNext = true;
             }
 
             return pms;

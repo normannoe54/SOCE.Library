@@ -1,0 +1,110 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.AddAddServiceView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="Transparent" Width="485" >
+
+    <Grid Margin="16" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height ="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="New Add-Service" FontSize="24" />
+            <TextBlock Margin="20 0 0 0" Grid.Column="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <VirtualizingStackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Grid.Column="0" materialDesign:HintAssist.Hint="Project Name" Text="{Binding BaseProject.ProjectName}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" />
+                <TextBlock Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding BaseProject.ProjectNumber, StringFormat= ' [{0}]'}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" HorizontalAlignment="Left"/>
+            </VirtualizingStackPanel>
+        </Grid>
+
+        <Grid VerticalAlignment="Stretch" Margin="10 10 0 0" Grid.Row="2" Background="Transparent" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" Text="Next Add-service point number:" VerticalAlignment="Bottom"/>
+                <TextBox Grid.Column="1" Width="30" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding LatestAdServiceNumber}" VerticalAlignment="Center"  MaxLength="4"/>
+            </Grid>
+            
+            <TextBox materialDesign:HintAssist.Hint="Client" Text="{Binding ClientCompanyNameInp}" Grid.Row="1"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Contact" Text="{Binding NameOfClientInp}" Grid.Row="2"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Client Address" Text="{Binding ClientAddressInp}" Grid.Row="3"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
+
+            <TextBox materialDesign:HintAssist.Hint="Title" Text="{Binding Description}" Grid.Row="4"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
+
+            <TextBox TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0 10 0 0" Grid.Row="5"
+                             AcceptsReturn="True" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" materialDesign:HintAssist.Hint="Scope of Work" Text="{Binding ExpandedDescription}"/>
+
+            <!--<TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding ExpandedDescription}" 
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>-->
+            <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Grid.Row="6" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$"
+                             Margin="0 8 0 0"/>
+        </Grid>
+
+        
+
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0" HorizontalAlignment="Center">
+            <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddSubProjectCommand}">
+                <TextBlock Text="ACCEPT"/>
+            </Button>
+            <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+                <TextBlock Text="CANCEL"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

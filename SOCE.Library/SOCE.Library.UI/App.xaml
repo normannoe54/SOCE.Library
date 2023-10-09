@@ -51,6 +51,10 @@
                 <views:TimesheetView/>
             </DataTemplate>
 
+            <DataTemplate DataType="{x:Type viewmodels:AddServiceVM}">
+                <views:AddServiceManagerView/>
+            </DataTemplate>
+
             <DataTemplate DataType="{x:Type viewmodels:PMScheduleVM}">
             <views:PMReportView/>
             </DataTemplate>

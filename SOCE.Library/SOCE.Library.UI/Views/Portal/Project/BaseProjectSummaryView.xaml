@@ -10,7 +10,7 @@
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             Background="Transparent" Width="1330" Height="650">
+             Background="Transparent" Width="1300" Height="650">
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type viewmodels:ProjectSummaryVM}">
@@ -21,7 +21,7 @@
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid Margin="10">
+    <Grid >
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="2" >
             <materialDesign:PopupBox  Width="40" Height="40">
                 <ListBox ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:ViewEnum}}}"
@@ -33,7 +33,7 @@
                 <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
             </Button>
         </StackPanel>
-        <ContentControl Content="{Binding SelectedVM, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="top" HorizontalAlignment="Stretch" Panel.ZIndex="1"/>
+        <ContentControl Margin="10" Content="{Binding SelectedVM, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="top" HorizontalAlignment="Stretch" Panel.ZIndex="1"/>
       
     </Grid>
 </UserControl>

@@ -59,12 +59,41 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedProject = value;
+
+                //CollectSubProjects();
+
                 _selectedProject.FormatData(true);
 
-                SubProjects = _selectedProject.SubProjects.Renumber(true);
-                SubProjects.RemoveAt(SubProjects.Count - 1);
+                List<SubProjectModel> SubProjectstemp = _selectedProject.SubProjects.Renumber(true).ToList();
+                SubProjectstemp.RemoveAt(SubProjectstemp.Count - 1);
+                List<SubProjectModel> SubProjectsNew = SubProjectstemp.Where(x => x.IsActive).ToList();
+                int idofscheduleactive = 0;
+                bool stuffhappened = false;
 
-                SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x => x.IsActive).ToList());
+                foreach (SubProjectModel sub in SubProjectsNew)
+                {
+                    if (sub.IsScheduleActive)
+                    {
+                        stuffhappened = true;
+                        idofscheduleactive = SubProjectsNew.IndexOf(sub);
+                        //members = new ObservableCollection<SubProjectModel>(newlist);
+                        break;
+                    }
+                }
+
+
+                if (stuffhappened)
+                {
+                    List<SubProjectModel> newsubs = SubProjectsNew.ToList();
+                    newsubs.MoveItemAtIndexToFront(idofscheduleactive);
+                    SubProjects = new ObservableCollection<SubProjectModel>(newsubs);
+                }
+                else
+                {
+                    SubProjects = new ObservableCollection<SubProjectModel>(SubProjectsNew);
+                }
+
+                //SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x => x.IsActive).ToList());
 
 
                 if (SubProjects.Count > 0)
@@ -155,6 +184,28 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _message = "";
+        public string Message
+        {
+            get { return _message; }
+            set
+            {
+                _message = value;
+                RaisePropertyChanged(nameof(Message));
+            }
+        }
+
+        private bool _messageVisible = false;
+        public bool MessageVisible
+        {
+            get { return _messageVisible; }
+            set
+            {
+                _messageVisible = value;
+                RaisePropertyChanged(nameof(MessageVisible));
+            }
+        }
+
         private bool _isEditableItems = false;
         public bool IsEditableItems
         {
@@ -169,7 +220,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        
+
         private bool _canDeleteSchedule = false;
         public bool CanDeleteSchedule
         {
@@ -181,6 +232,25 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _canDeleteSchedule = value;
                 RaisePropertyChanged(nameof(CanDeleteSchedule));
+            }
+        }
+
+        private bool _searchFilter = false;
+        public bool SearchFilter
+        {
+            get { return _searchFilter; }
+            set
+            {
+                _searchFilter = value;
+
+                //if (_searchFilter)
+                //{
+                foreach (ProjectModel pm in ProjectList)
+                {
+                    pm.SearchText = _searchFilter ? pm.ProjectName : pm.ProjectNumber.ToString();
+                }
+                //}
+                RaisePropertyChanged(nameof(SearchFilter));
             }
         }
 
@@ -250,17 +320,13 @@ namespace SOCE.Library.UI.ViewModels
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             this.OpenEmployeeSummary = new RelayCommand(OpenRightDrawer);
-            SchedulingItems.CollectionChanged +=  RowDataChanged;
+            SchedulingItems.CollectionChanged += RowDataChanged;
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
 
             List<EmployeeModel> totalemployees = new List<EmployeeModel>();
 
             foreach (EmployeeDbModel employeenew in employeesDb)
             {
-                if (employeesDb == null)
-                {
-                    bool test = false;
-                }
                 totalemployees.Add(new EmployeeModel(employeenew));
             }
 
@@ -343,9 +409,11 @@ namespace SOCE.Library.UI.ViewModels
         private void SaveData()
         {
             DateTime starttime = DateTime.Now;
-
+            MessageVisible = true;
             try
             {
+
+
                 //deleting
                 foreach (RolePerSubProjectModel ctrm in CopiedSchedulingItems)
                 {
@@ -385,7 +453,7 @@ namespace SOCE.Library.UI.ViewModels
                     double hour8 = trm.Entries[7].TimeEntry;
 
 
-                    if (trm.Employee != null && trm.Employee.Id != 0 || (hour1 != 0 && hour2 != 0 && hour3 !=0 && hour4 != 0 && hour5 != 0 && hour6 != 0 && hour7 != 0 && hour8 != 0))
+                    if (trm.Employee != null && trm.Employee.Id != 0 || (hour1 != 0 && hour2 != 0 && hour3 != 0 && hour4 != 0 && hour5 != 0 && hour6 != 0 && hour7 != 0 && hour8 != 0))
                     {
                         if (trm.Id == 0)
                         {
@@ -431,11 +499,20 @@ namespace SOCE.Library.UI.ViewModels
                 //SubProjects.RemoveAt(SubProjects.Count - 1);
                 //SelectedSubproject = SelectedProject.SubProjects.Where(x => x.Id == id).FirstOrDefault();
                 //CollectEmployeeSummary();
+                double diffInSeconds = 0;
+                do
+                {
+                    diffInSeconds = (DateTime.Now - starttime).TotalSeconds;
 
+                } while (diffInSeconds < 2);
+
+                Message = "Schedule Saved";
+                MessageVisible = false;
             }
             catch
             {
-
+                Message = "Something went Wrong";
+                MessageVisible = false;
             }
         }
 
@@ -634,7 +711,7 @@ namespace SOCE.Library.UI.ViewModels
                 role.Entries.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = item.Hours7 });
                 role.Entries.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = item.Hours8 });
 
-                role.Total = item.Hours1 + item.Hours2 + item.Hours3+ item.Hours4 + item.Hours5 + item.Hours6 + item.Hours7 + item.Hours8 ;
+                role.Total = item.Hours1 + item.Hours2 + item.Hours3 + item.Hours4 + item.Hours5 + item.Hours6 + item.Hours7 + item.Hours8;
                 SchedulingItems.Add(role);
 
                 CopiedSchedulingItems.Add((RolePerSubProjectModel)role.Clone());
@@ -669,10 +746,6 @@ namespace SOCE.Library.UI.ViewModels
 
             foreach (EmployeeDbModel edbm in PMs)
             {
-                if (edbm == null)
-                {
-                    bool test = false;
-                }
                 members.Add(new EmployeeModel(edbm));
             }
 
@@ -681,7 +754,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void LoadProjects()
         {
-            List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(true);
+            List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveNonHoldProjects();
 
             ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
 
@@ -692,17 +765,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 ProjectDbModel pdb = dbprojects[i];
 
-            //if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
-            //{
-            ProjectModel pm = new ProjectModel(pdb);
+                //if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
+                //{
+                ProjectModel pm = new ProjectModel(pdb);
                 EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
 
                 pm.ProjectManager = em;
 
 
                 ProjectArray[i] = pm;
-            //}
-        }
+                //}
+            }
             );
 
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();

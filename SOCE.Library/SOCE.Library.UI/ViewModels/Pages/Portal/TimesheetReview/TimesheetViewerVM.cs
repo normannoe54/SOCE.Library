@@ -16,6 +16,7 @@ using MaterialDesignThemes.Wpf;
 using SOCE.Library.UI.Views;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Diagnostics;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -64,6 +65,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand NextCommand { get; set; }
 
         public ICommand CurrentCommand { get; set; }
+
+        public ICommand ExportToExcel { get; set; }
 
         private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
         public ObservableCollection<TimesheetRowModel> Rowdata
@@ -154,6 +157,7 @@ namespace SOCE.Library.UI.ViewModels
             this.ApproveTimesheetCommand = new RelayCommand<bool>(ReportTimesheet);
             this.DenyTimesheetCommand = new RelayCommand<bool>(ReportTimesheet);
             this.BackToSummaryCommand = new RelayCommand(BackToSummary);
+            this.ExportToExcel = new RelayCommand(ExportCurrentTimesheetToExcel);
             SelectedEmployee = tsm.Employee;
             basevm.UpdateDates(basevm.firstdate);
             LoadTimesheetData(tsm.Employee);
@@ -276,6 +280,93 @@ namespace SOCE.Library.UI.ViewModels
                     TotalHeader.Add(new DoubleWrapper(0));
                 }
                 Total = 0;
+            }
+        }
+
+        private void ExportCurrentTimesheetToExcel()
+        {
+            //do stuff
+            //save down to downloads
+            try
+            {
+                string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                string pathDownload = Path.Combine(pathUser, "Downloads\\TimeSheet.xlsx");
+                File.WriteAllBytes(pathDownload, Properties.Resources.TimesheetBase);
+                Excel.Excel exinst = new Excel.Excel(pathDownload);
+
+                if (Rowdata.Count > 0)
+                {
+                    TimesheetRowModel trmfirst = Rowdata[0];
+                    int count = trmfirst.Entries.Count;
+
+                    for (int i = 0; i < count - 2; i++)
+                    {
+                        exinst.InsertBlankColumns(i + 4);
+                    }
+
+                    List<string> dates = new List<string>();
+                    List<double> number = new List<double>();
+
+                    //write column formula
+                    char cval = 'D';
+                    char finalval = 'C';
+
+                    foreach (TREntryModel ent1 in Rowdata[0].Entries)
+                    {
+                        dates.Add(ent1.Date.DayOfWeek.ToString().Substring(0, 1));
+                        number.Add(ent1.Date.Day);
+                        finalval++;
+                    }
+
+                    exinst.WriteRow(5, 4, dates);
+                    exinst.WriteRow(6, 4, number);
+
+                    string cell = $"{basevm.MonthYearString} {basevm.DateString}";
+                    exinst.WriteCell(1, 4, cell);
+
+                    string name = $"{SelectedEmployee.FullName}";
+                    exinst.WriteCell(3, 4, name);
+
+                    int basenum = 6;
+
+                    List<TimesheetRowModel> exportedtime = Rowdata.ToList().OrderBy(x => x.Project.ProjectNumber.ToString().Substring(2)).ThenBy(x => x.Project.ProjectNumber).ToList();
+
+                    foreach (TimesheetRowModel trm in exportedtime)
+                    {
+                        List<object> rowinputs = new List<object>();
+                        //string projectname = $"[{trm.SelectedSubproject.PointNumber}]  {trm.Project.ProjectName}";
+                        rowinputs.Add(trm.Project.ProjectNumber);
+                        rowinputs.Add(trm.SelectedSubproject.PointNumber);
+                        rowinputs.Add(trm.Project.ProjectName);
+
+                        foreach (TREntryModel ent in trm.Entries)
+                        {
+                            rowinputs.Add(ent.TimeEntry);
+                        }
+
+                        exinst.InsertRowBelow(basenum, rowinputs);
+
+                        basenum++;
+
+                        string formula = $"SUM(D{basenum}: {finalval}{basenum})";
+                        exinst.WriteFormula(basenum, count + 4, formula);
+                    }
+
+                    for (int i = 0; i < count + 1; i++)
+                    {
+                        string formula = $"SUM({cval}7:{cval}{basenum})";
+                        exinst.WriteFormula(basenum + 1, i + 4, formula);
+                        cval++;
+                    }
+                    exinst.RotateTextVertical(5, 2);
+                    exinst.CenterCell(5, 3);
+                    exinst.SaveDocument();
+                }
+
+                Process.Start(pathDownload);
+            }
+            catch
+            {
             }
         }
 

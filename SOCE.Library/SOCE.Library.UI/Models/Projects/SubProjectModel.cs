@@ -538,6 +538,98 @@ namespace SOCE.Library.UI
             }
         }
 
+        private DateTime? _dateInitiated;
+        public DateTime? DateInitiated
+        {
+            get { return _dateInitiated; }
+            set
+            {
+                _dateInitiated = value;
+                RaisePropertyChanged(nameof(DateInitiated));
+            }
+        }
+
+        private DateTime? _dateInvoiced;
+        public DateTime? DateInvoiced
+        {
+            get { return _dateInvoiced; }
+            set
+            {
+                _dateInvoiced = value;
+                RaisePropertyChanged(nameof(DateInvoiced));
+            }
+        }
+
+        private bool? _isBillable { get; set; } = true;
+        public bool? IsBillable
+        {
+            get
+            {
+                return _isBillable;
+            }
+            set
+            {
+                _isBillable = value;
+                RaisePropertyChanged(nameof(IsBillable));
+            }
+        }
+
+        private string _nameOfClient { get; set; }
+        public string NameOfClient
+        {
+            get
+            {
+                return _nameOfClient;
+            }
+            set
+            {
+                _nameOfClient = value;
+                RaisePropertyChanged(nameof(NameOfClient));
+            }
+        }
+
+        private string _clientAddress { get; set; }
+        public string ClientAddress
+        {
+            get
+            {
+                return _clientAddress;
+            }
+            set
+            {
+                _clientAddress = value;
+                RaisePropertyChanged(nameof(ClientAddress));
+            }
+        }
+
+        private string _clientCompanyName { get; set; }
+        public string ClientCompanyName
+        {
+            get
+            {
+                return _clientCompanyName;
+            }
+            set
+            {
+                _clientCompanyName = value;
+                RaisePropertyChanged(nameof(ClientCompanyName));
+            }
+        }
+
+        private int _employeeIdSigned { get; set; }
+        public int EmployeeIdSigned
+        {
+            get
+            {
+                return _employeeIdSigned;
+            }
+            set
+            {
+                _employeeIdSigned = value;
+                RaisePropertyChanged(nameof(EmployeeIdSigned));
+            }
+        }
+
         public SubProjectModel()
         {
             onstartup = false;
@@ -565,7 +657,23 @@ namespace SOCE.Library.UI
             ExpandedDescription = spm.ExpandedDescription;
             Fee = spm.Fee;
             IsActive = Convert.ToBoolean(spm.IsActive);
+            IsBillable = Convert.ToBoolean(spm.IsBillable);
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
+            NameOfClient = spm.NameOfClient;
+            ClientCompanyName = spm.ClientCompanyName;
+            ClientAddress = spm.ClientAddress;
+            EmployeeIdSigned = spm.EmployeeIdSigned;
+
+            if (spm?.SubStart != null && spm?.SubStart != 0)
+            {
+                DateInitiated = DateTime.ParseExact(spm.SubStart.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+
+            if (spm?.SubEnd != null && spm?.SubEnd != 0)
+            {
+                DateInvoiced = DateTime.ParseExact(spm.SubEnd.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+
             PercentComplete = spm.PercentComplete;
             //PercentBudget = spm.PercentBudget;
             IsAddService = Convert.ToBoolean(spm.IsAdservice);

@@ -12,7 +12,40 @@
             <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Scheduling Plan"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}" />
+        <Grid Grid.Row="0" Margin="0 15 0 0" >
+            <StackPanel Orientation="Horizontal">
+                <TextBlock  Text="Scheduling Plan"  FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" />
+                <ToggleButton VerticalAlignment="Center" Margin="20 0 0 0" HorizontalAlignment="Left"  Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding SearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ToggleButton.Content>
+                        <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Number" Kind="Pound" VerticalAlignment="Center" HorizontalAlignment="Center" Height="15" Width="15"/>
+                    </ToggleButton.Content>
+                    <materialDesign:ToggleButtonAssist.OnContent>
+                        <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Name" Kind="AlphaN" VerticalAlignment="Center" HorizontalAlignment="Center"  Height="25" Width="25" Padding="0"/>
+                    </materialDesign:ToggleButtonAssist.OnContent>
+                </ToggleButton>
+            </StackPanel>
+            <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="bottom" Visibility="{Binding MessageVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                <ProgressBar Value="75" Style="{StaticResource MaterialDesignCircularProgressBar}" Margin="0 0 10 0" IsIndeterminate="True" Foreground="{StaticResource SOCEBlueCompliment}"/>
+                <TextBlock FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCEBlueCompliment}"  VerticalAlignment="Bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="Saving..."/>
+            </StackPanel>
+            <TextBlock FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCEBlueCompliment}"  VerticalAlignment="bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding Message}" 
+                   Visibility="{Binding MessageVisible, Converter={StaticResource InverseBoolToVisConverter}, Mode=TwoWay, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:2" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:3" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -312,12 +345,13 @@
                                 <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Black"/>
                             </StackPanel>
                         </Button>
-                        <!--<Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}">
+                        <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}" 
+                                Visibility="{Binding IsEditableItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource InverseBoolToVisConverter}}">
                             <StackPanel Orientation="Horizontal">
                                 <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Black"/>
                                 <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Black"/>
                             </StackPanel>
-                        </Button>-->
+                        </Button>
                     </StackPanel>
 
                     <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenEmployeeSummary}" BorderBrush="Black"

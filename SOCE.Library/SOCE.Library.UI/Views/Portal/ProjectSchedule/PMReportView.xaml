@@ -55,12 +55,13 @@
                         <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Black"/>
                     </StackPanel>
                 </Button>
-                <!--<Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}">
+                <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}"
+                        Visibility="{Binding CanSeeNext, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel Orientation="Horizontal">
                         <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Black"/>
                         <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Black"/>
                     </StackPanel>
-                </Button>-->
+                </Button>
             </StackPanel>
 
             <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding PrintCommand}"  Margin="0 0 15 0"

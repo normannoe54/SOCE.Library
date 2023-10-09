@@ -37,6 +37,9 @@ namespace SOCE.Library.UI.ViewModels
                         HoursVM Hoursvm = new HoursVM(BaseProject, CurrentEmployee);
                         SelectedVM = Hoursvm;
                         break;
+                    //case ViewEnum.AddService:
+                    //    SelectedVM = new AddServiceVM(BaseProject, CurrentEmployee);
+                    //    break;
                     default:
                         break;
                 }

@@ -129,8 +129,8 @@ namespace SOCE.Library.UI.ViewModels
             //check if any data exists after monday of the week
             //if not copy all from last week
 
-
-            DateTime thisMonday = DateTime.Today.StartOfWeek(DayOfWeek.Monday);
+            DateTime NextMonday = DateTime.Today.AddDays(7);
+            DateTime thisMonday = NextMonday.StartOfWeek(DayOfWeek.Tuesday);
             //int daysUntilMonday = ((int)DayOfWeek.Monday - (int)DateTime.Today.DayOfWeek) % 7;
             //DateTime nextMonday = DateTime.Today.AddDays(daysUntilMonday);
             List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByAboveDate(thisMonday);

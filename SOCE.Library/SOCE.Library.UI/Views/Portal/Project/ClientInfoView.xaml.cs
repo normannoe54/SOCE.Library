@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SOCE.Library.UI.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,11 +17,11 @@ using System.Windows.Shapes;
 namespace SOCE.Library.UI.Views
 {
     /// <summary>
-    /// Interaction logic for ProjectSummaryView.xaml
+    /// Interaction logic for AddProjectView.xaml
     /// </summary>
-    public partial class AddServiceManagerView : UserControl
+    public partial class ClientInfoView : UserControl
     {
-        public AddServiceManagerView()
+        public ClientInfoView()
         {
             InitializeComponent();
         }
