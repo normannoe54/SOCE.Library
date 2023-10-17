@@ -17,7 +17,7 @@
         </Grid.RowDefinitions>
         <TextBlock  Grid.Row="0" FontSize="24" Text="Specify the Report:" VerticalAlignment="Bottom" HorizontalAlignment="Center" Margin ="15" FontWeight="SemiBold"/>
         <Button BorderBrush="Black" BorderThickness="1" Margin ="15" Grid.Row="1" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding PrintIndividualCommand}">
-            <TextBlock Text="PRINT INVIDUAL" FontSize="20" VerticalAlignment="Center"/>
+            <TextBlock Text="PRINT INDIVIDUAL" FontSize="20" VerticalAlignment="Center"/>
         </Button>
         <Button BorderBrush="Black" BorderThickness="1" Margin ="15" Grid.Row="2" Foreground="{StaticResource SOCERed}" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding PrintFullReportCommand}">
             <TextBlock Text="PRINT FULL REPORT" FontSize="20" VerticalAlignment="Center"/>

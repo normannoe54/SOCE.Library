@@ -85,10 +85,10 @@
             </Grid.RowDefinitions>
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="620"/>
+                    <ColumnDefinition Width="700"/>
                     <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="100"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Text="Totals" TextAlignment="Right" Margin="0 0 60 0"  Foreground="black"/>
                 <ItemsControl ItemsSource="{Binding Totals}" HorizontalAlignment="Stretch" Grid.Column="2" VerticalAlignment="Center" >
@@ -114,12 +114,12 @@
             </Grid>
             <Grid Grid.Row="1" Margin="0 10 15 10">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="300"/>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="80"/>
                     <ColumnDefinition Width="160"/>
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="80"/>
@@ -144,7 +144,7 @@
                                 <TextBlock Text="{Binding Value, Converter={StaticResource DatetoStringFullConverter}}"
                                                TextAlignment="Center"
                                                VerticalAlignment="Bottom" 
-                                               FontSize="14" FontWeight="Bold"
+                                               FontSize="12" FontWeight="Bold"
                                                Foreground="{StaticResource SOCERed}">
                                 </TextBlock>
                             </Grid>
@@ -176,12 +176,12 @@
                         <Border BorderBrush="Black" BorderThickness="2" VerticalAlignment="Stretch" Margin="0 0 0 -2">
                             <Grid Margin="0 10 0 10">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="300"/>
                                     <ColumnDefinition Width="100"/>
                                     <ColumnDefinition Width="60"/>
                                     <ColumnDefinition Width="60"/>
                                     <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="80"/>
                                     <ColumnDefinition Width="160"/>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="80"/>

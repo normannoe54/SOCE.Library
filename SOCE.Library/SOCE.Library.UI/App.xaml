@@ -34,7 +34,11 @@
             <DataTemplate DataType="{x:Type viewmodels:EmployeeVM}">
                 <views:EmployeeView/>
             </DataTemplate>
-            
+
+            <DataTemplate DataType="{x:Type viewmodels:NetworkSearchVM}">
+                <views:NetworkSearchView/>
+            </DataTemplate>
+
             <!--<DataTemplate DataType="{x:Type viewmodels:HomeViewVM}">
                 <views:HomeView/>
             </DataTemplate>-->

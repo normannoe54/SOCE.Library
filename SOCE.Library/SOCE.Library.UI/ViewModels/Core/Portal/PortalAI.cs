@@ -101,6 +101,7 @@ namespace SOCE.Library.UI.ViewModels
         private TimesheetVM timesheetVM;
         private TimesheetReviewVM timesheetReviewVM;
         private ProjectScheduleVM projectScheduleVM;
+        private NetworkSearchVM networkSearchVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
         private PortalPage currentPage;
@@ -127,6 +128,7 @@ namespace SOCE.Library.UI.ViewModels
             projectScheduleVM = new ProjectScheduleVM(employee);
             //projectDataVM = new ProjectDataVM(employee);
             projectVM = new ProjectVM(employee);
+            networkSearchVM = new NetworkSearchVM(employee);
         }
 
         public void RefreshViews()
@@ -158,6 +160,9 @@ namespace SOCE.Library.UI.ViewModels
                     break;
                 case PortalPage.ProjectSchedule:
                     CurrentPage = projectScheduleVM;
+                    break;
+                case PortalPage.NetworkSearch:
+                    CurrentPage = networkSearchVM;
                     break;
                 //case PortalPage.LicenseManager:
                 //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);

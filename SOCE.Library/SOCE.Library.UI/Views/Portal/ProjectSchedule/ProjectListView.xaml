@@ -10,42 +10,124 @@
     <Grid Margin="10 10 30 10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
-            <RowDefinition Height="auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <TextBlock Grid.Row="0" Text="Project List"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}" />
-
-        <Grid Grid.Row="1" Margin="0 15 0 0">
+        <Grid Grid.Row="0">
             <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
-            <StackPanel Orientation="Horizontal" Grid.Column="0" VerticalAlignment="Bottom">
-                <TextBlock Text="Number of Projects:" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
-                <TextBlock Margin="10 0 0 0" Text="{Binding ProjectNumber}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
-            </StackPanel>
-
-            <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right">
-                <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ReloadCommand}"  Margin="0 0 15 0"
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0" Text="Project List"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}" />
+                <StackPanel Grid.Row="1" Orientation="Horizontal"  Margin="0 20 0 0" VerticalAlignment="Center">
+                    <TextBlock Text="Number of Projects:" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                    <TextBlock Margin="10 0 0 0" Text="{Binding ProjectNumber}" FontSize="18" FontWeight="SemiBold" VerticalAlignment="Center"/>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="0 20 0 0">
+                    <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ReloadCommand}"  Margin="0 0 15 0"
                         IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" BorderBrush="Black" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Reload" Foreground="black" VerticalAlignment="Center"/>
+                            <materialDesign:PackIcon Margin="5 0 0 0" Kind="Reload" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                        </StackPanel>
+                    </Button>
+                    <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding PrintCommand}"  Margin="0 0 15 0"
+                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" BorderBrush="Black" BorderThickness="1">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
+                            <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                        </StackPanel>
+                    </Button>
+                </StackPanel>
+            </Grid>
+            <Grid Grid.Column="1" HorizontalAlignment="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="200"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Grid.Row="0" Text="PM" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold" Margin="0 0 20 0"/>
+                <ComboBox Grid.Column="1" Grid.Row="0" materialDesign:HintAssist.Hint="Select One"  
+                              Margin="0 0 0 0"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Stretch"
+                              materialDesign:TextFieldAssist.HasClearButton="True"
+                              Foreground="Black"
+                              Style="{StaticResource MaterialDesignComboBox}"
+                              SelectedItem="{Binding SelectedPM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding ProjectManagers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextSearch.TextPath="FullName"
+                              IsTextSearchEnabled="True" IsEditable="False" 
+                              StaysOpenOnEdit="True"                         
+                              MaxDropDownHeight="250"
+                              DisplayMemberPath="FullName">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel MaxWidth="300"/>
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <TextBlock Grid.Column="0" Grid.Row="1" Text="Client" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold" Margin="0 10 20 0"/>
+                <ComboBox Grid.Column="1" Grid.Row="1" materialDesign:HintAssist.Hint="Select One"  
+                              Margin="0 10 0 0"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Stretch"
+                              materialDesign:TextFieldAssist.HasClearButton="True"
+                              Foreground="Black"
+                              Style="{StaticResource MaterialDesignComboBox}"
+                              SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Clients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextSearch.TextPath="ClientName"
+                              IsTextSearchEnabled="True" IsEditable="False" 
+                              StaysOpenOnEdit="True"                         
+                              MaxDropDownHeight="250"
+                              DisplayMemberPath="ClientName">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel MaxWidth="300"/>
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <TextBox Text="{Binding SearchableText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" Margin="0 10 0 0"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         materialDesign:HintAssist.Hint="Seach by Name or #">
+                    <TextBox.InputBindings>
+                        <KeyBinding Command="{Binding SearchCommand}"  Key="Enter"/>
+                    </TextBox.InputBindings>
+                </TextBox>
+            </Grid>
+            <Grid Grid.Column="2" HorizontalAlignment="Right">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="*"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
+                <Button Grid.Row="0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding ClearSearchParamters}" BorderThickness="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" 
+                                Height="Auto" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10 10 10 20" ToolTip="Clear" >
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Reload" Foreground="black" VerticalAlignment="Center"/>
-                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Reload" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                        <materialDesign:PackIcon  Kind="Clear" VerticalAlignment="Center"  Width="25" Height="25"/>
                     </StackPanel>
                 </Button>
-                <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding PrintCommand}"  Margin="0 0 15 0"
-                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" BorderBrush="Black" BorderThickness="1">
+                <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SearchCommand}" BorderThickness="0"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10 0" ToolTip="Search">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
-
-                        <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export Current" Foreground="Black"/>
+                        <materialDesign:PackIcon Kind="Search"  VerticalAlignment="Center"  Width="20" Height="20"/>
                     </StackPanel>
                 </Button>
-            </StackPanel>
-           
+            </Grid>
         </Grid>
-
-
+        
         <Grid Grid.Row="2" Margin="0 30 0 0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>

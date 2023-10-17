@@ -432,7 +432,7 @@ namespace SOCE.Library.UI.ViewModels
 
             if (SelectedPM != null)
             {
-                pmnew = pmnew.Where(x => x.ProjectManager.Id == SelectedPM.Id).ToList();
+                pmnew = pmnew.Where(x => x.ProjectManager?.Id == SelectedPM.Id).ToList();
             }
 
             if (SelectedClient != null)

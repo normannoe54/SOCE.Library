@@ -52,6 +52,8 @@ namespace SOCE.Library.UI
             }
         }
 
+        public int PhaseId { get; set; }
+
         private ObservableCollection<PMScheduleIndModel> _employeeSummary = new ObservableCollection<PMScheduleIndModel>();
         public ObservableCollection<PMScheduleIndModel> EmployeeSummary
         {

@@ -5,8 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:SOCE.Library.UI"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:ie="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
+    <!--<UserControl.InputBindings>
+        <KeyBinding Command="{Binding OpenEmployeeSummary}" Key="h"/>
+    </UserControl.InputBindings>-->
     <Grid Margin="0 10 30 10">
         <Grid.RowDefinitions>
             <RowDefinition Height="auto"/>
@@ -15,14 +19,12 @@
         <Grid Grid.Row="0" Margin="0 15 0 0" >
             <StackPanel Orientation="Horizontal">
                 <TextBlock  Text="Scheduling Plan"  FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" />
-                <ToggleButton VerticalAlignment="Center" Margin="20 0 0 0" HorizontalAlignment="Left"  Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding SearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <ToggleButton.Content>
-                        <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Number" Kind="Pound" VerticalAlignment="Center" HorizontalAlignment="Center" Height="15" Width="15"/>
-                    </ToggleButton.Content>
-                    <materialDesign:ToggleButtonAssist.OnContent>
-                        <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Name" Kind="AlphaN" VerticalAlignment="Center" HorizontalAlignment="Center"  Height="25" Width="25" Padding="0"/>
-                    </materialDesign:ToggleButtonAssist.OnContent>
-                </ToggleButton>
+                <Button VerticalAlignment="Center" Margin="20 0 0 0" HorizontalAlignment="Left" Foreground="Black" BorderBrush="Black" BorderThickness="2" Style="{StaticResource MaterialDesignFlatButton}" Height="22" Width="50"                     
+                        Padding="0" Background="Transparent" Command="{Binding ClearSelectedProjectCommand}" Visibility="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}" >
+                    <Border CornerRadius="3" HorizontalAlignment="Stretch" Padding="0" VerticalAlignment="Center">
+                        <TextBlock Text="CLEAR" FontSize="12" />
+                    </Border>
+                </Button>
             </StackPanel>
             <StackPanel  Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="bottom" Visibility="{Binding MessageVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <ProgressBar Value="75" Style="{StaticResource MaterialDesignCircularProgressBar}" Margin="0 0 10 0" IsIndeterminate="True" Foreground="{StaticResource SOCEBlueCompliment}"/>
@@ -71,7 +73,9 @@
                             <RowDefinition Height="Auto"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
-                        --><!--<Border Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{StaticResource SOCELightGray}" BorderThickness="0 0 0 1.5">--><!--
+                        -->
+            <!--<Border Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderBrush="{StaticResource SOCELightGray}" BorderThickness="0 0 0 1.5">-->
+            <!--
                         <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="200"/>
@@ -84,7 +88,9 @@
                                 </ItemsControl.Resources>
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        --><!--<Border BorderBrush="{StaticResource SOCELightGray}" BorderThickness="1.5 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">--><!--
+                                        -->
+            <!--<Border BorderBrush="{StaticResource SOCELightGray}" BorderThickness="1.5 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">-->
+            <!--
                                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="*" />
@@ -97,7 +103,9 @@
                                                Foreground="{StaticResource SOCERed}">
                                             </TextBlock>
                                         </Grid>
-                                        --><!--</Border>--><!--
+                                        -->
+            <!--</Border>-->
+            <!--
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                                 <ItemsControl.ItemsPanel>
@@ -168,12 +176,14 @@
                 <Grid.RowDefinitions>
                     <RowDefinition Height="auto"/>
                     <RowDefinition Height="auto"/>
-                    <RowDefinition Height="auto"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="auto"/>
                 </Grid.RowDefinitions>
 
                 <Grid Grid.Row="0" HorizontalAlignment="Stretch"  Margin="0 15 0 0">
+                    <Grid.Resources>
+                        <local:IsNullColorConverter x:Key="IsNullColorConverter"/>
+                    </Grid.Resources>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="160"/>
@@ -183,28 +193,36 @@
                         <ColumnDefinition Width="180"/>
                     </Grid.ColumnDefinitions>
 
-                    <ComboBox Grid.Column="0"
+                    <local:MyCustomComboBox Grid.Column="0" x:Name="combo"
                       VerticalAlignment="Stretch"
                       HorizontalAlignment="Stretch"
                       Foreground="Black"   
                       FontSize="16"
-                      BorderThickness="0 0 0 1"
-                      BorderBrush="{StaticResource SOCELightGray}"
+                      BorderThickness="0 0 0 1.5"
+                      BorderBrush="{Binding SelectedProject, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsNullColorConverter}}"
                       VerticalContentAlignment="Center"
-                      IsTextSearchEnabled="True" IsEditable="False" 
+                      IsEditable="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                      FontWeight="DemiBold"
+                      IsDropDownOpen="{Binding ComboOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       StaysOpenOnEdit="True"
+                      IsTextSearchEnabled="False"
+                      TextSearch.TextPath="CombinedName" 
                       SelectedItem="{Binding Path=SelectedProject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                       ItemsSource="{Binding Path=ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                      TextSearch.TextPath="SearchText"
-                      MaxDropDownHeight="255" SelectionChanged="ComboBox_SelectionChanged">
-                        <ComboBox.Resources>
+                      MaxDropDownHeight="255">
+                        <ie:Interaction.Triggers>
+                            <ie:EventTrigger EventName="KeyUp">
+                                <ie:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  CommandParameter="{Binding ElementName=combo, Path=Text}"/>
+                            </ie:EventTrigger>
+                        </ie:Interaction.Triggers>
+                        <!--<ComboBox.Resources>
                             <Style TargetType="{x:Type materialDesign:SmartHint}">
                                 <Setter Property="VerticalAlignment" Value="Center"/>
                                 <Setter Property="Foreground" Value="Black"/>
                                 <Setter Property="FontWeight" Value="Bold"/>
                                 <Setter Property="FontSize" Value="16"/>
                             </Style>
-                        </ComboBox.Resources>
+                        </ComboBox.Resources>-->
                         <ComboBox.Style>
                             <Style TargetType="{x:Type ComboBox}"  BasedOn="{StaticResource MaterialDesignDataGridComboBox}">
                                 <Style.Triggers>
@@ -219,22 +237,22 @@
                                 </Style.Triggers>
                             </Style>
                         </ComboBox.Style>
-                        <ComboBox.ItemContainerStyle>
+                        <!--<ComboBox.ItemContainerStyle>
                             <Style TargetType="ComboBoxItem">
                                 <Setter Property="Margin" Value="0 5 0 5"/>
                                 <EventSetter Event="RequestBringIntoView" Handler="ComboBox_RequestBringIntoView"/>
                                 <EventSetter Event="KeyDown" Handler="ComboBox_KeyDown"/>
                             </Style>
-                        </ComboBox.ItemContainerStyle>
+                        </ComboBox.ItemContainerStyle>-->
                         <ComboBox.ItemTemplate>
                             <DataTemplate DataType="ProjectModel">
-                                <VirtualizingStackPanel Orientation="Horizontal">
+                                <VirtualizingStackPanel Orientation="Horizontal" >
                                     <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="16" FontWeight="Regular" Margin="5 0 0 0" />
-                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="16" FontWeight="DemiBold" Margin="5 0 5 0" />
+                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="16" FontWeight="DemiBold" Margin="5 0 5 0" materialDesign:TextFieldAssist.HasClearButton="True"/>
                                 </VirtualizingStackPanel>
                             </DataTemplate>
                         </ComboBox.ItemTemplate>
-                    </ComboBox>
+                    </local:MyCustomComboBox>
                     <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="20 0 0 0">
                         <TextBlock  Text="Phase"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Bottom" Margin="0 0 0 2"/>
                         <ComboBox Margin="10 0 0 0" Width="80"
@@ -258,7 +276,7 @@
                                         <materialDesign:PackIcon Kind="Star" VerticalAlignment="Center" Margin="5 0 0 0" Width="10" Height="10" Foreground="Black"
                                                                  ToolTip="Current Phase" Visibility="{Binding IsScheduleActive, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     </VirtualizingStackPanel>
-                                    
+
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
@@ -267,12 +285,12 @@
                         <TextBlock  Text="Client #"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
                         <TextBox  Text="{Binding ClientNumber}" FontSize="16" Foreground="Black" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
                     </StackPanel>-->
-                    
+
                     <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center" Margin="20 0 0 0">
                         <TextBlock  Text="Project Manager"  FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCEGray}" VerticalAlignment="Center"/>
                         <TextBox Foreground="{StaticResource SOCEGray}"  Text="{Binding SelectedProject.ProjectManager.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="16" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
                     </StackPanel>
-                    
+
                     <StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Center" Margin="20 0 0 0">
                         <TextBlock  Text="Percent Complete"  FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCEGray}" VerticalAlignment="Center"/>
                         <TextBox Foreground="{StaticResource SOCEGray}"  Text="{Binding SelectedSubproject.PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}" FontSize="16" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
@@ -355,110 +373,117 @@
                     </StackPanel>
 
                     <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenEmployeeSummary}" BorderBrush="Black"
-                         VerticalAlignment="Bottom" HorizontalAlignment="Right"  BorderThickness="1" HorizontalContentAlignment="Center"  Margin="0 0 10 0" Width="175" >
+                         VerticalAlignment="Bottom" HorizontalAlignment="Right"  BorderThickness="2" HorizontalContentAlignment="Center"  Margin="0 0 10 0" Width="175" >
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                             <TextBlock Text="Show Summary" VerticalAlignment="Center" Margin="0 0 20 0"/>
                             <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Width="20" Height="20"/>
                         </StackPanel>
                     </Button>
                 </Grid>
-                
 
-                <Grid Background="Transparent"  Grid.Row="2"  Margin="0 15 0 0" >
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="250"/>
-                        <ColumnDefinition Width="120"/>
-                        <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
-
-
-                    <Button Grid.Column="0"  IsEnabled="{Binding IsEditableItems}"
-                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Foreground="{StaticResource SOCERed}" Background="Transparent"
+                    <Grid Grid.Column="0">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto"/>
+                            <RowDefinition Height="*"/>
+                        </Grid.RowDefinitions>
+                        <Grid Background="Transparent"  Margin="0 15 0 0" Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="250"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Grid.Column="0"  IsEnabled="{Binding IsEditableItems}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                Foreground="{StaticResource SOCERed}" Background="Transparent"
                                 BorderBrush="Transparent" Command="{Binding AddRoleCommand}" ToolTip="Add Role">
-                        <materialDesign:PackIcon Kind="PlusBoxOutline" VerticalAlignment="Center" Padding="0" Height="30" Width="30"/>
-                    </Button>
-                    <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Text="Employee" TextAlignment="Left" Margin="10 0 0 0" Foreground="{StaticResource SOCERed}"/>
-                    <TextBlock Grid.Column="2" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10 0 0 0" Text="Hours Spent&#10;To Date" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
-                    <TextBlock Grid.Column="3" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10 0 0 0" Text="Hours&#10;Budgeted" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
+                                <materialDesign:PackIcon Kind="PlusBoxOutline" VerticalAlignment="Center" Padding="0" Height="30" Width="30"/>
+                            </Button>
+                            <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Text="Employee" TextAlignment="Left" Margin="10 0 0 0" Foreground="{StaticResource SOCERed}"/>
+                            <TextBlock Grid.Column="2" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10 0 0 0" Text="Hours Spent&#10;To Date" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
+                            <TextBlock Grid.Column="3" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10 0 0 0" Text="Hours&#10;Budgeted" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
 
 
-                    <ItemsControl Grid.Column="4" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Margin="0 0 10 0">
-                        <ItemsControl.Resources>
-                            <local:DatetoStringFullConverter x:Key="DatetoStringFullConverter"/>
-                        </ItemsControl.Resources>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <TextBlock Text="{Binding Value, Converter={StaticResource DatetoStringFullConverter}}"
+                            <ItemsControl Grid.Column="4" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Margin="0 0 10 0">
+                                <ItemsControl.Resources>
+                                    <local:DatetoStringFullConverter x:Key="DatetoStringFullConverter"/>
+                                </ItemsControl.Resources>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Text="{Binding Value, Converter={StaticResource DatetoStringFullConverter}}"
                                                TextAlignment="Center"
                                                VerticalAlignment="Center" 
-                                               FontSize="14" FontWeight="Bold"
+                                               FontSize="12" FontWeight="Bold"
                                                Foreground="{StaticResource SOCERed}">
-                                    </TextBlock>
-                                </Grid>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <UniformGrid Rows="1"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                    </ItemsControl>
+                                            </TextBlock>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <UniformGrid Rows="1"/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
 
-                    <TextBlock Grid.Column="6" Margin="0 0 20 0"
+                            <TextBlock Grid.Column="6" Margin="0 0 20 0"
                              Text="Total" 
                              TextAlignment="Center"
                              VerticalAlignment="Center" 
                              HorizontalAlignment="Stretch" 
                              FontSize="14" FontWeight="Bold"
                              Foreground="{StaticResource SOCERed}"/>
-                </Grid>
+                        </Grid>
 
-                <ItemsControl ItemsSource="{Binding SchedulingItems}"  IsEnabled="{Binding IsEditableItems}"
-                      Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
-                    <ItemsControl.Resources>
-                        <local:TableColorConverter x:Key="valueconverter"/>
-                    </ItemsControl.Resources>
+                        <ItemsControl ItemsSource="{Binding SchedulingItems}"  IsEnabled="{Binding IsEditableItems}"
+                      Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <ItemsControl.Resources>
+                                <local:TableColorConverter x:Key="valueconverter"/>
+                            </ItemsControl.Resources>
 
-                    <ItemsControl.Template>
-                        <ControlTemplate>
-                            <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
-                                <ItemsPresenter />
-                            </ScrollViewer>
-                        </ControlTemplate>
-                    </ItemsControl.Template>
+                            <ItemsControl.Template>
+                                <ControlTemplate>
+                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>
 
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Grid Margin="0 5 0 5">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="100"/>
-                                    <ColumnDefinition Width="250"/>
-                                    <ColumnDefinition Width="120"/>
-                                    <ColumnDefinition Width="120"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="60"/>
-                                </Grid.ColumnDefinitions>
-                                <!--<VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0">-->
-                                <Button Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="30" Width="30"
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid Margin="0 5 0 5">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="100"/>
+                                            <ColumnDefinition Width="250"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="120"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="60"/>
+                                        </Grid.ColumnDefinitions>
+                                        <!--<VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0">-->
+                                        <Button Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="30" Width="30"
                                     IsEnabled="{Binding Path=DataContext.CanDeleteSchedule, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" 
                                     Command="{Binding Path=DataContext.DeleteRole, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
-                                    <Button.Content>
-                                        <materialDesign:PackIcon Height="25" Width="25" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
-                                    </Button.Content>
-                                </Button>
-                                <!--<ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Background="Transparent" Foreground="Black" Height="30" Width="30" 
+                                            <Button.Content>
+                                                <materialDesign:PackIcon Height="25" Width="25" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Button.Content>
+                                        </Button>
+                                        <!--<ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Background="Transparent" Foreground="Black" Height="30" Width="30" 
                                                               IsChecked="{Binding EditRoleFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                               IsEnabled="{Binding Path=DataContext.SelectedProjectPhase.CanEdit, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" >
                                 <ToggleButton.Content>
@@ -468,9 +493,9 @@
                                     <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" Height="25" Width="25"/>
                                 </materialDesign:ToggleButtonAssist.OnContent>
                             </ToggleButton>-->
-                                <!--</VirtualizingStackPanel>-->
+                                        <!--</VirtualizingStackPanel>-->
 
-                                <!--<Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20"  Margin="10 0 0 0"
+                                        <!--<Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20"  Margin="10 0 0 0"
                                     Command="{Binding Path=DataContext.RemoveRoleCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
                                             <Button.Content>
                                                 <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
@@ -478,36 +503,36 @@
                                         </Button>-->
 
 
-                                <!--<TextBlock Grid.Column="1" FontWeight="Regular" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16 0 0 2"
+                                        <!--<TextBlock Grid.Column="1" FontWeight="Regular" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16 0 0 2"
                                                        Text="{Binding Employee.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                        Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
-                                <ComboBox Grid.Column="1" Margin="10 0 0 0" FontSize="16" 
+                                        <ComboBox Grid.Column="1" Margin="10 0 0 0" FontSize="16" 
                                                       ItemsSource="{Binding Path=EmployeeList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                       DisplayMemberPath="FullName" MaxDropDownHeight="200" SelectedItem="{Binding Path = EmployeeWrapper, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                    <ComboBox.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <VirtualizingStackPanel />
-                                        </ItemsPanelTemplate>
-                                    </ComboBox.ItemsPanel>
-                                </ComboBox>
-                                <!--<ComboBox Grid.Column="2" Margin="20 0 0 0" FontSize="16"
+                                            <ComboBox.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <VirtualizingStackPanel />
+                                                </ItemsPanelTemplate>
+                                            </ComboBox.ItemsPanel>
+                                        </ComboBox>
+                                        <!--<ComboBox Grid.Column="2" Margin="20 0 0 0" FontSize="16"
                                                   IsEnabled="{Binding EditComboRoleFieldState}"
                                       ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
                                       DisplayMemberPath="Description"
                                       SelectedValue="{Binding Role}"  
                                       SelectedValuePath="Value"/>-->
-                                <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="16" HorizontalAlignment="Center" 
+                                        <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="16" HorizontalAlignment="Center" 
                                    VerticalAlignment="Center" Text="{Binding SpentHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}"/>
 
-                                <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="16" HorizontalAlignment="Center" 
+                                        <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="16" HorizontalAlignment="Center" 
                                    VerticalAlignment="Center"
                                    Text="{Binding BudgetedHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" />
 
-                                <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="4"  Margin="10 -5 10 -5"
+                                        <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="4"  Margin="10 -5 10 -5"
                                       IsEnabled="{Binding Path=DataContext.CanDeleteSchedule, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
-                                    <ItemsControl.ItemTemplate>
-                                        <DataTemplate>
-                                            <local:TimesheetTextBox
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <local:TimesheetTextBox
                                             Text="{Binding TimeEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     TextAlignment="Center"
                                                     VerticalContentAlignment="Center"
@@ -518,34 +543,34 @@
                                                                  RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource InvertBooleanConverter}}"
                                                     MaxLength="4"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                                                <!--Background="{Binding CellColor}"
+                                                        <!--Background="{Binding CellColor}"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">-->
-                                                <TextBox.Style >
-                                                    <Style TargetType="TextBox">
-                                                        <Style.Triggers>
-                                                            <Trigger Property="IsMouseOver" Value="True">
-                                                                <Setter Property="Background" Value="Transparent" />
-                                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                                            </Trigger>
-                                                            <Trigger Property="IsFocused" Value="True">
-                                                                <Setter Property="Background" Value="Transparent" />
-                                                                <Setter Property="BorderBrush" Value="Transparent" />
-                                                            </Trigger>
-                                                        </Style.Triggers>
-                                                    </Style>
-                                                </TextBox.Style>
-                                            </local:TimesheetTextBox>
-                                        </DataTemplate>
-                                    </ItemsControl.ItemTemplate>
-                                    <ItemsControl.ItemsPanel>
-                                        <ItemsPanelTemplate>
-                                            <!--<WrapPanel Orientation="Horizontal"/>-->
-                                            <UniformGrid Rows="1"/>
-                                            <!--<StackPanel Orientation="Horizontal"/>-->
-                                        </ItemsPanelTemplate>
-                                    </ItemsControl.ItemsPanel>
-                                </ItemsControl>
-                                <TextBlock Grid.Column="5"
+                                                        <TextBox.Style >
+                                                            <Style TargetType="TextBox">
+                                                                <Style.Triggers>
+                                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                                        <Setter Property="Background" Value="Transparent" />
+                                                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                                                    </Trigger>
+                                                                    <Trigger Property="IsFocused" Value="True">
+                                                                        <Setter Property="Background" Value="Transparent" />
+                                                                        <Setter Property="BorderBrush" Value="Transparent" />
+                                                                    </Trigger>
+                                                                </Style.Triggers>
+                                                            </Style>
+                                                        </TextBox.Style>
+                                                    </local:TimesheetTextBox>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <!--<WrapPanel Orientation="Horizontal"/>-->
+                                                    <UniformGrid Rows="1"/>
+                                                    <!--<StackPanel Orientation="Horizontal"/>-->
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                        </ItemsControl>
+                                        <TextBlock Grid.Column="5"
                                            Text="{Binding Total}" 
                                            TextAlignment="Center"
                                            VerticalAlignment="Center" 
@@ -553,12 +578,123 @@
                                             FontSize="16" FontWeight="SemiBold" 
                                            Background="Transparent" Foreground="Black"/>
 
-                            </Grid>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+                                    </Grid>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
 
-                <Grid Grid.Row="4" Margin="0 20 0 0" >
+                    </Grid>
+
+
+
+
+
+                    <Border Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="320" Margin="20 20 0 0"
+                            BorderThickness="2" BorderBrush="Black" CornerRadius="3">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Border BorderBrush="Black" BorderThickness="0 0 0 2" Grid.Row="0">
+                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="170"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBlock Text="Employee"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"  Grid.Column="0" Margin="5 0 0 0"/>
+                                    <ItemsControl Grid.Column="1" ItemsSource="{Binding EmployeeDateSummary}" HorizontalAlignment="Stretch" Margin="0 0 5 0">
+                                        <ItemsControl.Resources>
+                                            <local:DatetoStringPartialConverter x:Key="DatetoStringPartialConverter"/>
+                                        </ItemsControl.Resources>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Text="{Binding Value, Converter={StaticResource DatetoStringPartialConverter}}" Margin="5 0 5 0"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center" 
+                                                               HorizontalAlignment="Center"
+                                               FontSize="14" FontWeight="Bold"
+                                               Foreground="Black">
+                                                    </TextBlock>
+                                                </Grid>
+                                                <!--</Border>-->
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <UniformGrid Rows="1"/>
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
+                                    </ItemsControl>
+                                </Grid>
+                            </Border>
+                            
+
+                            <ItemsControl ItemsSource="{Binding Employees, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  Margin="0 10 0 0" 
+                                      Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                                <ItemsControl.Resources>
+                                    <local:InvoicedColorConverter x:Key="valueconverter"/>
+                                </ItemsControl.Resources>
+
+                                <ItemsControl.Template>
+                                    <ControlTemplate>
+                                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+                                            <ItemsPresenter />
+                                        </ScrollViewer>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0 5 0 5">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="170"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <TextBox IsReadOnly="True" Grid.Column="0" Margin="5 0 0 0"  Text="{Binding FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                                             FontSize="14" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+
+                                            <ItemsControl Grid.Column="1" ItemsSource="{Binding Entries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
+                                                <ItemsControl.ItemTemplate>
+                                                    <DataTemplate>
+                                                        <TextBox
+                                                    Text="{Binding TimeEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    TextAlignment="Center"
+                                                    Foreground="{Binding CellColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    VerticalContentAlignment="Center"
+                                                    FontWeight="SemiBold" 
+                                                    Margin="5 0 0 0"
+                                                    FontSize="14"
+                                                    IsReadOnly="True">
+                                                        </TextBox>
+                                                    </DataTemplate>
+                                                </ItemsControl.ItemTemplate>
+                                                <ItemsControl.ItemsPanel>
+                                                    <ItemsPanelTemplate>
+                                                        <UniformGrid Rows="1"/>
+                                                    </ItemsPanelTemplate>
+                                                </ItemsControl.ItemsPanel>
+                                            </ItemsControl>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+
+                    </Border>
+                </Grid>
+
+                <Grid Grid.Row="3" Margin="0 20 0 0" >
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -580,4 +716,5 @@
             </Grid>
         </Grid>
     </Grid>
+
 </UserControl>

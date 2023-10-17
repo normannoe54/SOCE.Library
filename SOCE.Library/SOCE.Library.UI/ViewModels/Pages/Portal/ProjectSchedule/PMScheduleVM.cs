@@ -351,15 +351,15 @@ namespace SOCE.Library.UI.ViewModels
                     pmnew.Entries.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = dbmodel.Hours8 });
 
 
-                    if (!pms.Any(x=>x.ProjectNumber == project.ProjectNumber))
+                    if (!pms.Any(x=>x.PhaseId == sub.Id))
                     {
-                        PMScheduleModel pmschedmod = new PMScheduleModel() { ProjectNumber = project.ProjectNumber, PhaseName = sub.PointNumber, ProjectName = project.ProjectName };
+                        PMScheduleModel pmschedmod = new PMScheduleModel() { ProjectNumber = project.ProjectNumber, PhaseName = sub.PointNumber, PhaseId = sub.Id, ProjectName = project.ProjectName };
                         pmschedmod.EmployeeSummary.Add(pmnew);
                         pms.Add(pmschedmod);
                     }
                     else
                     {
-                        PMScheduleModel pmschedmod = pms.Where(x => x.ProjectNumber == project.ProjectNumber).FirstOrDefault();
+                        PMScheduleModel pmschedmod = pms.Where(x => x.PhaseId == sub.Id).FirstOrDefault();
                         pmschedmod.EmployeeSummary.Add(pmnew);
                     }
                 }

@@ -140,19 +140,21 @@ namespace SOCE.Library.UI.ViewModels
                 //copy all
                 List<SchedulingDataDbModel> previousweekschedulingdata = SQLAccess.LoadSchedulingDataByDate(thisMonday.AddDays(-7));
 
-
                 foreach(SchedulingDataDbModel sched in previousweekschedulingdata)
                 {
-                    sched.Date = (int)long.Parse(thisMonday.ToString("yyyyMMdd"));
-                    sched.Hours1 = sched.Hours2;
-                    sched.Hours2 = sched.Hours3;
-                    sched.Hours3 = sched.Hours4;
-                    sched.Hours4 = sched.Hours5;
-                    sched.Hours5 = sched.Hours6;
-                    sched.Hours6 = sched.Hours7;
-                    sched.Hours7 = sched.Hours8;
+                    if (sched.Hours2 != 0 && sched.Hours3 != 0 && sched.Hours4 != 0 && sched.Hours5 != 0 && sched.Hours6 != 0 && sched.Hours7 != 0)
+                    {
+                        sched.Date = (int)long.Parse(thisMonday.ToString("yyyyMMdd"));
+                        sched.Hours1 = sched.Hours2;
+                        sched.Hours2 = sched.Hours3;
+                        sched.Hours3 = sched.Hours4;
+                        sched.Hours4 = sched.Hours5;
+                        sched.Hours5 = sched.Hours6;
+                        sched.Hours6 = sched.Hours7;
+                        sched.Hours7 = sched.Hours8;
 
-                    SQLAccess.AddSchedulingData(sched);
+                        SQLAccess.AddSchedulingData(sched);
+                    }
                 }
 
             }

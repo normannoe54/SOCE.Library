@@ -24,8 +24,20 @@ namespace SOCE.Library.UI.ViewModels
     public class ProjectListVM : BaseVM
     {
         public ICommand PrintCommand { get; set; }
-
         public ICommand ReloadCommand { get; set; }
+        public ICommand ClearSearchParamters { get; set; }
+        public ICommand SearchCommand { get; set; }
+
+        private ObservableCollection<ClientModel> _clients = new ObservableCollection<ClientModel>();
+        public ObservableCollection<ClientModel> Clients
+        {
+            get { return _clients; }
+            set
+            {
+                _clients = value;
+                RaisePropertyChanged(nameof(Clients));
+            }
+        }
 
         private ObservableCollection<ProjectModel> _projectList = new ObservableCollection<ProjectModel>();
         public ObservableCollection<ProjectModel> ProjectList
@@ -59,10 +71,45 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private EmployeeModel _selectedPM;
+        public EmployeeModel SelectedPM
+        {
+            get { return _selectedPM; }
+            set
+            {
+                _selectedPM = value;
+                RaisePropertyChanged(nameof(SelectedPM));
+            }
+        }
+
+        private ClientModel _selectedClient;
+        public ClientModel SelectedClient
+        {
+            get { return _selectedClient; }
+            set
+            {
+                _selectedClient = value;
+                RaisePropertyChanged(nameof(SelectedClient));
+            }
+        }
+
+        private string _searchableText { get; set; }
+        public string SearchableText
+        {
+            get { return _searchableText; }
+            set
+            {
+                _searchableText = value;
+                RaisePropertyChanged(nameof(SearchableText));
+            }
+        }
+
         public ProjectListVM()
         {
             this.ReloadCommand = new RelayCommand(this.Reload);
             this.PrintCommand = new RelayCommand(this.Print);
+            this.ClearSearchParamters = new RelayCommand(this.ClearInputsandReload);
+            this.SearchCommand = new RelayCommand(this.RunSearch);
             Constructor();
 
         }
@@ -72,7 +119,37 @@ namespace SOCE.Library.UI.ViewModels
             ProjectManagers.Clear();
             ProjectList.Clear();
             LoadProjectManagers();
+            LoadClients();
             LoadSchedulingProjects();
+        }
+
+        private List<ProjectModel> AllProjects = new List<ProjectModel>();
+
+        private void RunSearch()
+        {
+            List<ProjectModel> pmnew = AllProjects;
+
+            if (SelectedPM != null)
+            {
+                pmnew = pmnew.Where(x => x.ProjectManager?.Id == SelectedPM.Id).ToList();
+            }
+
+            if (SelectedClient != null)
+            {
+                pmnew = pmnew.Where(x => x.Client.Id == SelectedClient.Id).ToList();
+            }
+
+            if (!String.IsNullOrEmpty(SearchableText))
+            {
+                pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
+            }
+
+            ProjectList = new ObservableCollection<ProjectModel>(pmnew);
+        }
+
+        private void ClearInputsandReload()
+        {
+            Reload();
         }
 
         private void Print()
@@ -108,8 +185,8 @@ namespace SOCE.Library.UI.ViewModels
                         values.Add(pm.Client.ClientNumber);
                         values.Add(pm.SchedulingValue.ToString());
                         values.Add(duedatevar);
-                        values.Add(pm.PercentComplete);
-                        values.Add(pm.ProjectManager.FullName);
+                        values.Add(pm.PercentComplete*0.01);
+                        values.Add(pm.ProjectManager != null ? pm.ProjectManager.FullName : "");
                         values.Add(pm.Remarks ?? "");
 
                         if (rowid == 3)
@@ -137,8 +214,27 @@ namespace SOCE.Library.UI.ViewModels
 
         private void Reload()
         {
+            SearchableText = "";
+            SelectedClient = null;
+            SelectedPM = null;
             Constructor();
         }
+
+        public void LoadClients()
+        {
+            List<ClientDbModel> dbclients = SQLAccess.LoadClients();
+
+            List<ClientModel> clients = new List<ClientModel>();
+            foreach (ClientDbModel cdbm in dbclients)
+            {
+                clients.Add(new ClientModel(cdbm));
+            }
+
+            List<ClientModel> newclients = clients.OrderBy(x => x.ClientNumber).ToList();
+
+            Clients = new ObservableCollection<ClientModel>(newclients);
+        }
+
 
         private void LoadProjectManagers()
         {
@@ -224,7 +320,8 @@ namespace SOCE.Library.UI.ViewModels
 
             }
 
-            ProjectList = new ObservableCollection<ProjectModel>(projects.OrderBy(x => x.SchedulingValue).ThenBy(y => y.Client.ClientNumber).ThenBy(z => z.ProjectNumber));
+            AllProjects = (projects.OrderBy(x => x.SchedulingValue).ThenBy(y => y.Client.ClientNumber).ThenBy(z => z.ProjectNumber)).ToList();
+            ProjectList = new ObservableCollection<ProjectModel>(AllProjects);
 
             ProjectNumber = ProjectList.Count();
         }

@@ -16,6 +16,7 @@ namespace SOCE.Library.UI.ViewModels
         TimesheetReview = 8,
         Projects = 9,
         ProjectSchedule = 10,
-        Default =11
+        NetworkSearch = 11,
+        Default =12
     }
 }

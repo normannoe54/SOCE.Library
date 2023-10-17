@@ -25,34 +25,58 @@ namespace SOCE.Library.UI.Views
         TimeSpan timer;
         public ScheduleWeekView()
         {
+            //Focusable = true;
+            //Loaded += (s, e) => Keyboard.Focus(this);
             timer = DateTime.Now.TimeOfDay;
             InitializeComponent();
         }
 
-        private void ComboBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
-        {
-            if (isactive)
-            {
-                e.Handled = true;
-            }
-        }
+        //private void ItemsControl_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    var list = sender as ListView;
+        //    switch (e.Key)
+        //    {
+        //        case Key.Right:
+        //            if (!list.Items.MoveCurrentToNext()) list.Items.MoveCurrentToLast();
+        //            break;
 
-        private async void ComboBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            timer = DateTime.Now.TimeOfDay;
+        //        case Key.Left:
+        //            if (!list.Items.MoveCurrentToPrevious()) list.Items.MoveCurrentToFirst();
+        //            break;
+        //    }
 
-            isactive = false;
+        //    e.Handled = true;
 
-            await Task.Delay(200);
+        //    if (list.SelectedItem != null)
+        //    {
+        //        (Keyboard.FocusedElement as UIElement).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
+        //    }
+        //}
 
-            TimeSpan difftime = DateTime.Now.TimeOfDay - timer;
-            TimeSpan limit = TimeSpan.FromSeconds(0.15);
+        //private void ComboBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        //{
+        //    if (isactive)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
-            if (!isactive && difftime >= limit)
-            {
-                isactive = true;
-            }
-        }
+        //private async void ComboBox_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    timer = DateTime.Now.TimeOfDay;
+
+        //    isactive = false;
+
+        //    await Task.Delay(200);
+
+        //    TimeSpan difftime = DateTime.Now.TimeOfDay - timer;
+        //    TimeSpan limit = TimeSpan.FromSeconds(0.15);
+
+        //    if (!isactive && difftime >= limit)
+        //    {
+        //        isactive = true;
+        //    }
+        //}
 
         private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {

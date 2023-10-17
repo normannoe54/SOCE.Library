@@ -319,7 +319,7 @@ namespace SOCE.Library.UI.ViewModels
                 weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = dbmodel.Hours8 });
 
 
-                weeklymodel.Total = dbmodel.Hours1 + dbmodel.Hours2 + dbmodel.Hours3;
+                weeklymodel.Total = dbmodel.Hours1 + dbmodel.Hours2 + dbmodel.Hours3 + dbmodel.Hours4 + dbmodel.Hours5 + dbmodel.Hours6 +  dbmodel.Hours7 + dbmodel.Hours8;
 
                 total1 += dbmodel.Hours1;
                 total2 += dbmodel.Hours2;

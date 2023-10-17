@@ -610,6 +610,7 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(EditList));
             }
         }
+        public string CombinedName { get; set; }
 
         public int ProjectStart;
 
@@ -717,6 +718,7 @@ namespace SOCE.Library.UI
 
             IsActive = Convert.ToBoolean(pm.IsActive);
             SearchText = ProjectNumber.ToString();
+            CombinedName = $"[{ProjectNumber.ToString()}] {ProjectName}";
             //PercentComplete = pm.PercentComplete;
             //ProjectStart = pm.ProjectStart;
             //ProjectEnd = pm.ProjectEnd;
@@ -780,6 +782,10 @@ namespace SOCE.Library.UI
                         foreach (SubProjectModel sub in SubProjects)
                         {
                             sub.IsScheduleActive = sub.PointNumber == "CA" ? true : false;
+                            if (sub.PointNumber == "CA")
+                            {
+                                sub.IsActive = true;
+                            }
                         }
                     }
                     else
@@ -851,8 +857,8 @@ namespace SOCE.Library.UI
                                 sub.IsScheduleActive = false;
                             }
 
-                            vm.SelectedSubproject.IsScheduleActive = true;  
-
+                            vm.SelectedSubproject.IsScheduleActive = true;
+                            vm.SelectedSubproject.IsActive = true;
                         } //show ui and ask user for stuff
                         //ask which phase is active
                     }
@@ -865,6 +871,7 @@ namespace SOCE.Library.UI
                             if (sub.PointNumber != "CA")
                             {
                                 sub.IsScheduleActive = true;
+                                sub.IsActive = true;
                             }
                             else
                             {

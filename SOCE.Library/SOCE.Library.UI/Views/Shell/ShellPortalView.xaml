@@ -12,7 +12,7 @@
     </Window.Resources>-->
     <materialDesign:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsRightDrawerOpen ="{Binding RightDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RightDrawerCloseOnClickAway="True">
         <materialDesign:DrawerHost.RightDrawerContent >
-            <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <!--<views:AddSubProjectView/>-->
         </materialDesign:DrawerHost.RightDrawerContent>
         <Border Padding="0" Background="#F7F6F4">
@@ -111,6 +111,12 @@
                                     <TextBlock Text="Project Schedule" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="NetworkSearch">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Search" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Network Search" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>
                             <TextBlock Text="Administration" Style="{StaticResource menuTitle}" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                             <!--<Button Style="{StaticResource menuButton}"  Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectData" Visibility="{Binding PMVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
@@ -129,7 +135,7 @@
 
                             <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="TimesheetReview" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <StackPanel Orientation="Horizontal">
-                                    <materialDesign:PackIcon Kind="Magnify" Style="{StaticResource menuButtonIcon}"/>
+                                    <materialDesign:PackIcon Kind="PaperSearch" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>

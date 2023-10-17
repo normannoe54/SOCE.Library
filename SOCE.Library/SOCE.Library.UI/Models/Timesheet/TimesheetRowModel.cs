@@ -120,9 +120,12 @@ namespace SOCE.Library.UI
 
             ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();
 
+            bool projisactive = Project.IsActive;
             foreach (SubProjectDbModel sdb in subdbprojects)
             {
-                if (Convert.ToBoolean(sdb.IsActive))
+                bool subisactive = Convert.ToBoolean(sdb.IsActive);
+
+                if (subisactive || (!projisactive))
                 {
                     members.Add(new SubProjectModel(sdb));
                 }

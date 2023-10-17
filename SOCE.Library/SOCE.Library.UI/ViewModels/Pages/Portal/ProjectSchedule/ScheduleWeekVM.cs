@@ -22,6 +22,9 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class ScheduleWeekVM : BaseVM
     {
+        public ICommand ClearSelectedProjectCommand { get; set; }
+
+        public ICommand SelectedItemChangedCommand { get; set; }
         public ICommand OpenEmployeeSummary { get; set; }
         public ICommand SaveSchedlingHoursCommand { get; set; }
         public ICommand AddRoleCommand { get; set; }
@@ -29,6 +32,7 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand PreviousCommand { get; set; }
         public ICommand NextCommand { get; set; }
         public ICommand CurrentCommand { get; set; }
+        //public ICommand KeyDownCommand { get; set; }
 
         private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
         public ObservableCollection<DateWrapper> DateSummary
@@ -38,6 +42,28 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _datesummary = value;
                 RaisePropertyChanged(nameof(DateSummary));
+            }
+        }
+
+        private ObservableCollection<DateWrapper> _employeeDatesummary = new ObservableCollection<DateWrapper>();
+        public ObservableCollection<DateWrapper> EmployeeDateSummary
+        {
+            get { return _employeeDatesummary; }
+            set
+            {
+                _employeeDatesummary = value;
+                RaisePropertyChanged(nameof(EmployeeDateSummary));
+            }
+        }
+
+        private ObservableCollection<EmployeeModel> _employeeSummary = new ObservableCollection<EmployeeModel>();
+        public ObservableCollection<EmployeeModel> EmployeeSummary
+        {
+            get { return _employeeSummary; }
+            set
+            {
+                _employeeSummary = value;
+                RaisePropertyChanged(nameof(EmployeeSummary));
             }
         }
 
@@ -52,6 +78,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        public ObservableCollection<ProjectModel> BaseProjectList { get; set; }
+
         private ProjectModel _selectedProject;
         public ProjectModel SelectedProject
         {
@@ -61,44 +89,60 @@ namespace SOCE.Library.UI.ViewModels
                 _selectedProject = value;
 
                 //CollectSubProjects();
-
-                _selectedProject.FormatData(true);
-
-                List<SubProjectModel> SubProjectstemp = _selectedProject.SubProjects.Renumber(true).ToList();
-                SubProjectstemp.RemoveAt(SubProjectstemp.Count - 1);
-                List<SubProjectModel> SubProjectsNew = SubProjectstemp.Where(x => x.IsActive).ToList();
-                int idofscheduleactive = 0;
-                bool stuffhappened = false;
-
-                foreach (SubProjectModel sub in SubProjectsNew)
+                if (SchedulingItems.Count > 0 && IsEditableItems)
                 {
-                    if (sub.IsScheduleActive)
-                    {
-                        stuffhappened = true;
-                        idofscheduleactive = SubProjectsNew.IndexOf(sub);
-                        //members = new ObservableCollection<SubProjectModel>(newlist);
-                        break;
-                    }
+                    SaveData();
                 }
 
-
-                if (stuffhappened)
+                if (_selectedProject != null)
                 {
-                    List<SubProjectModel> newsubs = SubProjectsNew.ToList();
-                    newsubs.MoveItemAtIndexToFront(idofscheduleactive);
-                    SubProjects = new ObservableCollection<SubProjectModel>(newsubs);
+                    _selectedProject.FormatData(true);
+
+                    List<SubProjectModel> SubProjectstemp = _selectedProject.SubProjects.Renumber(true).ToList();
+                    SubProjectstemp.RemoveAt(SubProjectstemp.Count - 1);
+                    List<SubProjectModel> SubProjectsNew = SubProjectstemp.Where(x => x.IsActive).ToList();
+                    int idofscheduleactive = 0;
+                    bool stuffhappened = false;
+
+                    foreach (SubProjectModel sub in SubProjectsNew)
+                    {
+                        if (sub.IsScheduleActive)
+                        {
+                            stuffhappened = true;
+                            idofscheduleactive = SubProjectsNew.IndexOf(sub);
+                            //members = new ObservableCollection<SubProjectModel>(newlist);
+                            break;
+                        }
+                    }
+
+
+                    if (stuffhappened)
+                    {
+                        List<SubProjectModel> newsubs = SubProjectsNew.ToList();
+                        newsubs.MoveItemAtIndexToFront(idofscheduleactive);
+                        SubProjects = new ObservableCollection<SubProjectModel>(newsubs);
+                    }
+                    else
+                    {
+                        SubProjects = new ObservableCollection<SubProjectModel>(SubProjectsNew);
+                    }
+
+                    //SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x => x.IsActive).ToList());
+
+
+                    if (SubProjects.Count > 0)
+                    {
+                        SelectedSubproject = SubProjects[0];
+                    }
+                    IsThisEditable = false;
+                    ProjectList = BaseProjectList;
                 }
                 else
                 {
-                    SubProjects = new ObservableCollection<SubProjectModel>(SubProjectsNew);
-                }
-
-                //SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x => x.IsActive).ToList());
-
-
-                if (SubProjects.Count > 0)
-                {
-                    SelectedSubproject = SubProjects[0];
+                    IsThisEditable = true;
+                    SelectedSubproject = null;
+                    SchedulingItems.Clear();
+                    CopiedSchedulingItems.Clear();
                 }
                 RaisePropertyChanged(nameof(SelectedProject));
             }
@@ -206,7 +250,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _isEditableItems = false;
+        private bool _isEditableItems = true;
         public bool IsEditableItems
         {
             get
@@ -251,6 +295,30 @@ namespace SOCE.Library.UI.ViewModels
                 }
                 //}
                 RaisePropertyChanged(nameof(SearchFilter));
+            }
+        }
+
+        private bool _comboOpen = false;
+        public bool ComboOpen
+        {
+            get { return _comboOpen; }
+            set
+            {
+                _comboOpen = value;
+
+                RaisePropertyChanged(nameof(ComboOpen));
+            }
+        }
+
+        private bool _isThisEditable = true;
+        public bool IsThisEditable
+        {
+            get { return _isThisEditable; }
+            set
+            {
+                _isThisEditable = value;
+
+                RaisePropertyChanged(nameof(IsThisEditable));
             }
         }
 
@@ -313,6 +381,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public ScheduleWeekVM()
         {
+            this.ClearSelectedProjectCommand = new RelayCommand(this.ClearSelected);
+            this.SelectedItemChangedCommand = new RelayCommand<string>(this.SelectionCombo);
             this.AddRoleCommand = new RelayCommand(this.AddRole);
             this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
             this.SaveSchedlingHoursCommand = new RelayCommand(this.SaveData);
@@ -336,9 +406,16 @@ namespace SOCE.Library.UI.ViewModels
             UpdateDateSummary(DateTime.Today);
             LoadProjectManagers();
             LoadProjects();
+            ProjectList = BaseProjectList;
+            CollectEmployeeSummary();
             //CollectEmployeeSummary();
             //UpdateLists();
             //LoadSchedulingData();
+        }
+
+        public void ClearSelected()
+        {
+            SelectedProject = null;
         }
 
         //private void CollectEmployeeSummary()
@@ -403,6 +480,25 @@ namespace SOCE.Library.UI.ViewModels
                 employeestoselect.AddRange(result);
                 role.EmployeeList = new ObservableCollection<EmployeeModel>(employeestoselect);
 
+            }
+        }
+
+        private void SelectionCombo(string project)
+        {
+            if (SelectedProject == null)
+            {
+                if (!String.IsNullOrEmpty(project))
+                {
+                    ComboOpen = true;
+
+                    ProjectList = new ObservableCollection<ProjectModel>(BaseProjectList.Where(x => (x.ProjectName.ToUpper() + x.ProjectNumber.ToString()).Contains(project.ToUpper())));
+                }
+                else
+                {
+                    ProjectList = BaseProjectList;
+                }
+
+                //SelectedProject = null;
             }
         }
 
@@ -499,13 +595,13 @@ namespace SOCE.Library.UI.ViewModels
                 //SubProjects.RemoveAt(SubProjects.Count - 1);
                 //SelectedSubproject = SelectedProject.SubProjects.Where(x => x.Id == id).FirstOrDefault();
                 //CollectEmployeeSummary();
-                double diffInSeconds = 0;
-                do
-                {
-                    diffInSeconds = (DateTime.Now - starttime).TotalSeconds;
+                //double diffInSeconds = 0;
+                //do
+                //{
+                //    diffInSeconds = (DateTime.Now - starttime).TotalSeconds;
 
-                } while (diffInSeconds < 2);
-
+                //} while (diffInSeconds < 2);
+                CollectEmployeeSummary();
                 Message = "Schedule Saved";
                 MessageVisible = false;
             }
@@ -514,12 +610,17 @@ namespace SOCE.Library.UI.ViewModels
                 Message = "Something went Wrong";
                 MessageVisible = false;
             }
+
+            
         }
 
         private void PreviousTimesheet()
         {
             UpdateDateSummary(DateSummary.First().Value.AddDays(-7));
-            LoadSchedulingData();
+            if (SelectedSubproject != null)
+            {
+                LoadSchedulingData();
+            }
         }
 
         /// <summary>
@@ -528,7 +629,10 @@ namespace SOCE.Library.UI.ViewModels
         private void NextTimesheet()
         {
             UpdateDateSummary(DateSummary.First().Value.AddDays(7));
-            LoadSchedulingData();
+            if (SelectedSubproject != null)
+            {
+                LoadSchedulingData();
+            }
         }
 
         /// <summary>
@@ -537,7 +641,10 @@ namespace SOCE.Library.UI.ViewModels
         private void CurrentTimesheet()
         {
             UpdateDateSummary(DateTime.Now);
-            LoadSchedulingData();
+            if (SelectedSubproject != null)
+            {
+                LoadSchedulingData();
+            }
         }
 
         private void OpenRightDrawer()
@@ -548,7 +655,15 @@ namespace SOCE.Library.UI.ViewModels
 
             EmployeeSummaryScheduleView cv = new EmployeeSummaryScheduleView();
             portAI.RightViewToShow = cv;
-            EmployeeScheduleSummaryVM cvm = new EmployeeScheduleSummaryVM(Employees, DateSummary);
+
+            ObservableCollection<EmployeeModel> employeesforref = new ObservableCollection<EmployeeModel>();
+
+            foreach(EmployeeModel em in Employees)
+            {
+                employeesforref.Add(new EmployeeModel() { Id = em.Id, FullName = em.FullName, ScheduledTotalHours = em.ScheduledTotalHours });
+            }
+
+            EmployeeScheduleSummaryVM cvm = new EmployeeScheduleSummaryVM(employeesforref, DateSummary);
             portAI.RightViewToShow.DataContext = cvm;
             portAI.RightDrawerOpen = true;
         }
@@ -646,23 +761,46 @@ namespace SOCE.Library.UI.ViewModels
             //update roles
         }
 
+        private void CollectEmployeeSummary()
+        {
+            foreach (EmployeeModel em in Employees)
+            {
+                em.Entries.Clear();
+                List<SchedulingDataDbModel> data = SQLAccess.LoadSchedulingDataByEmployee(DateSummary[0].Value, em.Id);
+                double hours1 = data.Sum(x => x.Hours1);
+                double hours2 = data.Sum(x => x.Hours2);
+
+                Brush solidgreen = Brushes.Blue;
+                Brush solidred = Brushes.Red;
+
+                Brush brush1 = solidred.Blend(solidgreen, 0.9 * (hours1 / 40));
+                Brush brush2 = solidred.Blend(solidgreen, 0.9 * (hours2 / 40));
+
+                SDEntryModel hours1entry = new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = hours1, CellColor = brush1 };
+                SDEntryModel hours2entry = new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = hours2, CellColor = brush2 };
+
+                em.Entries.Add(hours1entry);
+                em.Entries.Add(hours2entry);
+            }
+        }
+
         private void UpdateDateSummary(DateTime currdate)
         {
+            EmployeeDateSummary.Clear();
             DateSummary.Clear();
             // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
             int daysUntilMonday = ((int)DayOfWeek.Monday - (int)currdate.DayOfWeek + 7) % 7;
             DateTime nextMonday = currdate.AddDays(daysUntilMonday);
             DateSummary.Add(new DateWrapper(nextMonday));
+            EmployeeDateSummary.Add(new DateWrapper(nextMonday));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(7)));
+            EmployeeDateSummary.Add(new DateWrapper(nextMonday.AddDays(7)));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(14)));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(21)));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(28)));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(35)));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(42)));
             DateSummary.Add(new DateWrapper(nextMonday.AddDays(49)));
-
-
-
         }
 
         private void LoadSchedulingData()
@@ -735,6 +873,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 IsEditableItems = false;
             }
+            CollectEmployeeSummary();
         }
 
 
@@ -781,8 +920,9 @@ namespace SOCE.Library.UI.ViewModels
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();
             List<ProjectModel> orderedlist = ProjectArray.Where(x => x != null).OrderByDescending(x => x.ProjectNumber).ToList();
 
-            ProjectList = new ObservableCollection<ProjectModel>(orderedlist.ToList());
-            SelectedProject = ProjectList.First();
+            BaseProjectList = new ObservableCollection<ProjectModel>(orderedlist.ToList());
+            //SelectedProject = null;
+            //SelectedProject = ProjectList.First();
             //SelectedSubproject = SelectedProject.SubProjects[0];
         }
     }

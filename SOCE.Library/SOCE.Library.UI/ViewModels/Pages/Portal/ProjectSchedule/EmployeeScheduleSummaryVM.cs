@@ -24,6 +24,7 @@ namespace SOCE.Library.UI.ViewModels
     {
         public ICommand GoBackCommand { get; set; }
 
+
         private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
         public ObservableCollection<DateWrapper> DateSummary
         {
@@ -77,14 +78,17 @@ namespace SOCE.Library.UI.ViewModels
                 double hours7 = data.Sum(x => x.Hours7);
                 double hours8 = data.Sum(x => x.Hours8);
 
-                Brush brush1 = hours1 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush2 = hours2 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush3 = hours3 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush4 = hours4 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush5 = hours5 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush6 = hours6 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush7 = hours7 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
-                Brush brush8 = hours8 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
+                Brush solidgreen = Brushes.Blue;
+                Brush solidred = Brushes.Red;
+
+                Brush brush1 = solidred.Blend(solidgreen, 0.9 *(hours1/ em.ScheduledTotalHours));
+                Brush brush2 = solidred.Blend(solidgreen, 0.9 * (hours2 / em.ScheduledTotalHours));
+                Brush brush3 = solidred.Blend(solidgreen, 0.9 * (hours3 / em.ScheduledTotalHours));
+                Brush brush4 = solidred.Blend(solidgreen, 0.9 * (hours4 / em.ScheduledTotalHours));
+                Brush brush5 = solidred.Blend(solidgreen, 0.9 * (hours5 / em.ScheduledTotalHours));
+                Brush brush6 = solidred.Blend(solidgreen, 0.9 * (hours6 / em.ScheduledTotalHours));
+                Brush brush7 = solidred.Blend(solidgreen, 0.9 * (hours7 / em.ScheduledTotalHours));
+                Brush brush8 = solidred.Blend(solidgreen, 0.9 * (hours8 / em.ScheduledTotalHours));
 
 
                 SDEntryModel hours1entry = new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = hours1, CellColor = brush1 };
@@ -107,6 +111,8 @@ namespace SOCE.Library.UI.ViewModels
                 em.Entries.Add(hours8entry);
             }
         }
-       
+
+
+
     }
 }

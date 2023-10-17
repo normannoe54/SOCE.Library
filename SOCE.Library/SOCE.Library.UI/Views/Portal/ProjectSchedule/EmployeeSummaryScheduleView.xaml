@@ -37,10 +37,10 @@
                 </Grid.RowDefinitions>
                 <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="200"/>
+                        <ColumnDefinition Width="250"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock Grid.Column="0"  Text="Employee"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center" Margin="10 0 0 0"/>
+                    <TextBlock Text="Employee"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"  Grid.Column="0" Margin="10 0 0 0"/>
                     <ItemsControl Grid.Column="1" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch">
                         <ItemsControl.Resources>
                             <local:DatetoStringFullConverter x:Key="DatetoStringFullConverter"/>
@@ -56,7 +56,7 @@
                                                VerticalAlignment="Center" 
                                                                HorizontalAlignment="Center"
                                                FontSize="14" FontWeight="Bold"
-                                               Foreground="{StaticResource SOCERed}">
+                                               Foreground="Black">
                                         </TextBlock>
                                     </Grid>
                                 <!--</Border>-->
@@ -93,10 +93,25 @@
                         <DataTemplate>
                             <Grid Margin="0 5 0 5">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
+                                    <ColumnDefinition Width="250"/>
                                     <ColumnDefinition Width="*"/>
                                 </Grid.ColumnDefinitions>
-                                <TextBox IsReadOnly="True" Grid.Column="0"  Text="{Binding FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  FontSize="14" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center" Margin="10 0 0 0"/>
+
+                                <Grid Grid.Column="0" Margin="10 0 0 0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="80"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox IsReadOnly="True" Grid.Column="0"  Text="{Binding FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                                             FontSize="14" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Left"/>
+
+                                    <TextBox IsReadOnly="True" Grid.Column="1"  Text="{Binding ScheduledTotalHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,  StringFormat=' [{0:#,0.##} hr.]'}"  
+                                             FontSize="14" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center" HorizontalAlignment="Stretch" HorizontalContentAlignment="Right"/>
+
+
+                                </Grid>
+
+
                                 <ItemsControl Grid.Column="1" ItemsSource="{Binding Entries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch" Margin="0 0 0 0">
                                     <ItemsControl.ItemTemplate>
                                         <DataTemplate>
