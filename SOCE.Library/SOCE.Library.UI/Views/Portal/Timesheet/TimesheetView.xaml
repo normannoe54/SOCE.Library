@@ -7,6 +7,7 @@
              xmlns:local="clr-namespace:SOCE.Library.UI"
              xmlns:s="clr-namespace:System;assembly=mscorlib"
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:ie="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes">
     <Grid Grid.Column="1" Margin="30 10 40 20">
         <Grid.RowDefinitions>
@@ -101,14 +102,14 @@
                         <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
                         <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
                         <materialDesign:PackIcon Margin="5 0 0 0" Kind="{Binding Icon}" Foreground="{Binding Iconcolor}" VerticalAlignment="Center"/>
-                        <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding SearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                        <!--<ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Height="20" Width="20" Background="Transparent" Foreground="Black" IsChecked="{Binding SearchFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <ToggleButton.Content>
                                 <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Number" Kind="Pound" VerticalAlignment="Center" HorizontalAlignment="Center" Height="15" Width="15"/>
                             </ToggleButton.Content>
                             <materialDesign:ToggleButtonAssist.OnContent>
                                 <materialDesign:PackIcon Background="Transparent" ToolTip="Filter by Name" Kind="AlphaN" VerticalAlignment="Center" HorizontalAlignment="Center"  Height="25" Width="25" Padding="0"/>
                             </materialDesign:ToggleButtonAssist.OnContent>
-                        </ToggleButton>
+                        </ToggleButton>-->
                     </StackPanel>
 
                     <Border Grid.Column="1" Width="110" CornerRadius="3" BorderThickness="1" BorderBrush="Black" Margin="20 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="2">
@@ -270,12 +271,14 @@
             <!--<ScrollViewer Grid.Row="2">-->
             <ListView   Grid.Row="2" Margin="0 0 -20 0"
                     Background="Transparent" 
+                        x:Name="listview"
                           SelectionMode="Single"             
                           ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                           SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}">
                 <ListView.Resources>
                     <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
                     <local:TableColorConverter x:Key="valueconverter"/>
+                    <local:IsNullColorConverter x:Key="IsNullColorConverter"/>
                 </ListView.Resources>
 
                 <ListView.Template>
@@ -289,7 +292,7 @@
                 <ListView.ItemContainerStyle>
                     <Style TargetType="{x:Type ListViewItem}">
                         <Setter Property="Background" Value="Transparent" />
-                        <!--<Setter Property="IsEnabled" Value="{Binding Path=DataContext.IsSubEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" />-->
+                        <Setter Property="IsEnabled" Value="{Binding Path=DataContext.IsSubEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" />
                         <Setter Property="Template">
                             <Setter.Value>
                                 <ControlTemplate TargetType="{x:Type ListViewItem}">
@@ -319,12 +322,73 @@
                                         <ColumnDefinition Width="Auto"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
-                                    <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}" ToolTip="Remove">
+                                    <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" 
+                                            Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}" ToolTip="Remove">
                                         <Button.Content>
                                             <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="20"/>
                                         </Button.Content>
                                     </Button>
-                                    <ComboBox Grid.Column="1"
+                                    <local:MyCustomComboBox Margin="0 0 0 0"  Grid.Column="1" x:Name="combo" 
+                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                            Foreground="Black" BorderThickness="0 0 0 1"
+                                                            ToolTip="Select Project" VerticalContentAlignment="Center"
+                                                            SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            ItemsSource="{Binding Path=ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            MaxDropDownHeight="255"                                                        
+                                                            BorderBrush="{Binding Path=Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsNullColorConverter}}"
+                                                            IsEditable="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                            IsDropDownOpen="{Binding ComboOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            StaysOpenOnEdit="True"
+                                                            IsReadOnly="{Binding Path=DataContext.IsSubEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
+                                                                 RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource InvertBooleanConverter}}"
+                                                            IsTextSearchEnabled="False"
+                                                            TextSearch.TextPath="CombinedName">
+                                        <ie:Interaction.Triggers>
+                                            <ie:EventTrigger EventName="KeyUp">
+                                                <ie:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  CommandParameter="{Binding ElementName=combo, Path=Text}"/>
+                                            </ie:EventTrigger>
+                                        </ie:Interaction.Triggers>
+                                        <ComboBox.Resources>
+                                            <Style TargetType="{x:Type materialDesign:SmartHint}">
+                                                <Setter Property="VerticalAlignment" Value="Center"/>
+                                                <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                                <Setter Property="Opacity" Value="1"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                                <Setter Property="FontSize" Value="14"/>
+                                            </Style>
+                                        </ComboBox.Resources>
+                                        <ComboBox.Style>
+                                            <Style TargetType="{x:Type ComboBox}"  BasedOn="{StaticResource MaterialDesignDataGridComboBox}">
+                                                <Style.Triggers>
+                                                    <Trigger Property="IsEnabled" Value="True">
+                                                        <Setter Property="materialDesign:HintAssist.Hint" Value="Select Project" />
+                                                        <Setter Property="ToolTip" Value="Select Project" />
+                                                    </Trigger>
+                                                    <Trigger Property="IsEnabled" Value="False">
+                                                        <Setter Property="materialDesign:HintAssist.Hint" Value="" />
+                                                        <Setter Property="ToolTip" Value="" />
+                                                    </Trigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ComboBox.Style>
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="ProjectModel">
+                                                <VirtualizingStackPanel Orientation="Horizontal" Width="290">
+                                                    <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="5 0 0 0" />
+                                                    <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 5 0" />
+                                                </VirtualizingStackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </local:MyCustomComboBox>
+                                    
+                                    <Button Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" 
+                                            Command="{Binding ClearSelectedProjectCommand}" 
+                                            Visibility="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}" ToolTip="Remove" Margin="0 0 20 0">
+                                        <Button.Content>
+                                            <materialDesign:PackIcon Foreground="{StaticResource SOCEGray}" Kind="CancelCircle" VerticalAlignment="Center" Height="15" Width="15"/>
+                                        </Button.Content>
+                                    </Button>
+                                    <!--<ComboBox Grid.Column="1"
                                                   Margin="0 0 0 0"
                                                   VerticalAlignment="Stretch"
                                                   HorizontalAlignment="Stretch"
@@ -377,7 +441,7 @@
                                                 </VirtualizingStackPanel>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
-                                    </ComboBox>
+                                    </ComboBox>-->
                                 </Grid>
 
                                 <ComboBox Grid.Column="1"
@@ -388,6 +452,7 @@
                                                   Foreground="Black"
                                                   BorderThickness="0 0 0 1"
                                                   ToolTip="Select Phase"
+                                                  IsEnabled="{Binding Path=ProjectSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   BorderBrush="{StaticResource SOCELightGray}"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
                                                   IsTextSearchEnabled="True" IsEditable="False"
@@ -395,12 +460,12 @@
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"
                                                   MaxDropDownHeight="250">
-                                    <ComboBox.IsEnabled>
+                                    <!--<ComboBox.IsEnabled>
                                         <MultiBinding Converter="{StaticResource BooleanAllConverter}">
                                             <Binding Path="ProjectSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                                             <Binding Path="DataContext.IsSubEditable" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
                                         </MultiBinding>
-                                    </ComboBox.IsEnabled>
+                                    </ComboBox.IsEnabled>-->
                                     <ComboBox.ItemTemplate>
                                         <DataTemplate DataType="SubProjectModel">
                                             <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
@@ -422,8 +487,7 @@
                                                     VerticalContentAlignment="Center"
                                                     local:SelectTextOnFocus.Active = "True"
                                                     FontWeight="SemiBold" 
-                                                    IsReadOnly="{Binding Path=DataContext.IsSubEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                                 RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource InvertBooleanConverter}}"
+                                                    IsReadOnly="{Binding Path = ReadOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     MaxLength="4"
                                                     Background="{Binding CellColor}"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">

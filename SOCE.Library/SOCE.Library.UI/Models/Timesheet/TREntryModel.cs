@@ -23,6 +23,21 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _readOnly = true;
+        public bool ReadOnly
+        {
+            get
+            {
+                return _readOnly;
+            }
+            set
+            {
+                _readOnly = value;
+                RaisePropertyChanged(nameof(ReadOnly));
+            }
+        }
+
+
 
         private DateTime _date;
         public DateTime Date

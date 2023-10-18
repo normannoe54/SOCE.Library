@@ -8,13 +8,17 @@ using System.ComponentModel;
 using SOCE.Library.Db;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
+using SOCE.Library.UI.ViewModels;
+using System.Windows.Input;
 
 namespace SOCE.Library.UI
 {
-    public class TimesheetRowModel : PropertyChangedBase, ICloneable
+    public class TimesheetRowModel : BaseVM, ICloneable
     {
+        public ICommand ClearSelectedProjectCommand { get; set; }
+        public ICommand SelectedItemChangedCommand { get; set; }
 
-        private ProjectModel _project = new ProjectModel { ProjectName = "" };
+        private ProjectModel _project;
         public ProjectModel Project
         {
             get
@@ -24,9 +28,25 @@ namespace SOCE.Library.UI
             set
             {
                 _project = value;
-                //set selected item
 
-                CollectSubProjects();
+                if (_project != null)
+                {
+                    CollectSubProjects();
+                    IsThisEditable = false;
+                    ProjectList = BaseProjectList;
+                }
+                else
+                {
+                    IsThisEditable = true;
+                    SelectedSubproject = null;
+
+                    foreach (TREntryModel ent in Entries)
+                    {
+                        ent.ReadOnly = true;
+                        ent.TimeEntry = 0;
+                    }
+                }
+               
                 RaisePropertyChanged(nameof(Project));
             }
         }
@@ -86,6 +106,31 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _comboOpen = false;
+        public bool ComboOpen
+        {
+            get { return _comboOpen; }
+            set
+            {
+                _comboOpen = value;
+
+                RaisePropertyChanged(nameof(ComboOpen));
+            }
+        }
+
+        private bool _isThisEditable = true;
+        public bool IsThisEditable
+        {
+            get { return _isThisEditable; }
+            set
+            {
+                _isThisEditable = value;
+
+                RaisePropertyChanged(nameof(IsThisEditable));
+            }
+        }
+
+
         private bool _projectSelected = false;
         public bool ProjectSelected
         {
@@ -96,15 +141,64 @@ namespace SOCE.Library.UI
             set
             {
                 _projectSelected = value;
+                
                 RaisePropertyChanged(nameof(ProjectSelected));
             }
         }
+
+        private ObservableCollection<ProjectModel> _projectList;
+        public ObservableCollection<ProjectModel> ProjectList
+        {
+            get { return _projectList; }
+            set
+            {
+                _projectList = value;
+                RaisePropertyChanged(nameof(ProjectList));
+            }
+        }
+
+        public ObservableCollection<ProjectModel> BaseProjectList { get; set; }
 
         private void SetTotalNew()
         {
             Total = Entries.Sum(i => i.TimeEntry);
         }
 
+        public TimesheetRowModel()
+        {
+        }
+
+        public TimesheetRowModel(List<ProjectModel> projs)
+        {
+            this.SelectedItemChangedCommand = new RelayCommand<string>(this.SelectionCombo);
+            this.ClearSelectedProjectCommand = new RelayCommand(this.ClearSelected);
+            BaseProjectList = new ObservableCollection<ProjectModel> (projs);
+            ProjectList = BaseProjectList;
+        }
+
+        public void ClearSelected()
+        {
+            Project = null;
+        }
+
+        private void SelectionCombo(string project)
+        {
+            if (Project == null)
+            {
+                if (!String.IsNullOrEmpty(project))
+                {
+                    ComboOpen = true;
+
+                    ProjectList = new ObservableCollection<ProjectModel>(BaseProjectList.Where(x => (x.ProjectName.ToUpper() + x.ProjectNumber.ToString()).Contains(project.ToUpper())));
+                }
+                else
+                {
+                    ProjectList = BaseProjectList;
+                }
+
+                //SelectedProject = null;
+            }
+        }
 
         private void CollectSubProjects()
         {
@@ -165,7 +259,12 @@ namespace SOCE.Library.UI
             catch
             {
             }
+
             ProjectSelected = true;
+            foreach (TREntryModel ent in Entries)
+            {
+                ent.ReadOnly = false;
+            }
         }
 
 
@@ -185,7 +284,7 @@ namespace SOCE.Library.UI
                 trs.Add((TREntryModel)tr?.Clone());
             }
 
-            TimesheetRowModel trm = new TimesheetRowModel()
+            TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
             {
                 Project = (ProjectModel)this.Project?.Clone(),
                 SelectedSubproject = (SubProjectModel)this.SelectedSubproject?.Clone(),

@@ -114,7 +114,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private TimesheetRowModel _selectedRow = new TimesheetRowModel();
+        private TimesheetRowModel _selectedRow;
         public TimesheetRowModel SelectedRow
         {
             get { return _selectedRow; }
@@ -307,7 +307,7 @@ namespace SOCE.Library.UI.ViewModels
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
             this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
             this.SaveTimesheetCommand = new AsyncRelayCommand<int>(SaveCommand);
-
+            
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
@@ -323,7 +323,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddRowToCollection()
         {
-            Rowdata.Add(new TimesheetRowModel { Entries = AddNewBlankRow() });
+            Rowdata.Add(new TimesheetRowModel(ProjectList.ToList()){ Entries = AddNewBlankRow() });
             //CollectDates();
         }
 
@@ -347,6 +347,8 @@ namespace SOCE.Library.UI.ViewModels
 
             Rowdata.Remove(trm);
         }
+
+
 
 
         private void ExportCurrentTimesheetToExcel()
@@ -629,6 +631,8 @@ namespace SOCE.Library.UI.ViewModels
 
                 ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.FirstOrDefault();
 
+
+                //Right here is where we need to fix stuff.
                 if (pmnew == null)
                 {
                     //are you dumb?
@@ -640,7 +644,7 @@ namespace SOCE.Library.UI.ViewModels
                     continue;
                 }
 
-                TimesheetRowModel trm = new TimesheetRowModel()
+                TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
                 {
                     Project = pmnew
                 };
@@ -677,7 +681,7 @@ namespace SOCE.Library.UI.ViewModels
                 {
 
                         DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                        trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry });
+                        trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry, ReadOnly= false });
                 }
 
                 DateTime dateinc = datestart;
@@ -687,7 +691,7 @@ namespace SOCE.Library.UI.ViewModels
                     if (!trm.Entries.Any(x => x.Date == dateinc))
                     {
                         //add
-                        trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0 });
+                        trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0, ReadOnly = false });
                     }
                     dateinc = dateinc.AddDays(1);
                 }
@@ -996,7 +1000,7 @@ namespace SOCE.Library.UI.ViewModels
                     SubProjectModel spm = new SubProjectModel(spdb);
 
                     ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
-                    TimesheetRowModel trm = new TimesheetRowModel()
+                    TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
                     {
                         Project = pmnew
                     };
