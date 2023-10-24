@@ -72,6 +72,10 @@ namespace SOCE.Library.UI
             set
             {
                 _selectedSubproject = value;
+                if (_selectedSubproject != null)
+                {
+                    UpdateStatus();
+                }
                 RaisePropertyChanged(nameof(SelectedSubproject));
             }
         }
@@ -146,6 +150,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private TimesheetRowAlertStatus _alertStatus;
+        public TimesheetRowAlertStatus AlertStatus
+        {
+            get
+            {
+                return _alertStatus;
+            }
+            set
+            {
+                _alertStatus = value;
+                RaisePropertyChanged(nameof(AlertStatus));
+            }
+        }
+
         private ObservableCollection<ProjectModel> _projectList;
         public ObservableCollection<ProjectModel> ProjectList
         {
@@ -157,7 +175,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        public ObservableCollection<ProjectModel> BaseProjectList { get; set; }
+        public ObservableCollection<ProjectModel> BaseProjectList { get; set; } = new ObservableCollection<ProjectModel>();
 
         private void SetTotalNew()
         {
@@ -166,14 +184,20 @@ namespace SOCE.Library.UI
 
         public TimesheetRowModel()
         {
+            Constructor();
         }
 
         public TimesheetRowModel(List<ProjectModel> projs)
         {
+            Constructor();
+            BaseProjectList = new ObservableCollection<ProjectModel>(projs);
+            ProjectList = BaseProjectList;
+        }
+
+        public void Constructor()
+        {
             this.SelectedItemChangedCommand = new RelayCommand<string>(this.SelectionCombo);
             this.ClearSelectedProjectCommand = new RelayCommand(this.ClearSelected);
-            BaseProjectList = new ObservableCollection<ProjectModel> (projs);
-            ProjectList = BaseProjectList;
         }
 
         public void ClearSelected()
@@ -267,6 +291,13 @@ namespace SOCE.Library.UI
             }
         }
 
+        private void UpdateStatus()
+        {
+            bool status = SelectedSubproject.IsActive;
+
+            AlertStatus = status ? TimesheetRowAlertStatus.Active : TimesheetRowAlertStatus.Inactive;
+
+        }
 
 
         public object Clone()

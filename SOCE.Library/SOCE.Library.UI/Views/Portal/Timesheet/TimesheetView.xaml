@@ -20,10 +20,14 @@
 
         <!--Page Title-->
         <!--<TextBlock Text="Time Sheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>-->
-
-        <TextBlock Grid.Row="0" Text="Time Sheet"  Style="{StaticResource PageHeader}" HorizontalAlignment="Left"/>
-        <StackPanel  Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="bottom" Visibility="{Binding MessageVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-            <ProgressBar Value="75" Style="{StaticResource MaterialDesignCircularProgressBar}" Margin="0 0 10 0" IsIndeterminate="True" Foreground="{StaticResource SOCEBlueCompliment}"/>
+        <StackPanel Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal">
+            <TextBlock  Text="Time Sheet"  Style="{StaticResource PageHeader}" />
+            <materialDesign:PackIcon Margin="10 0 0 0" Kind="InformationCircleOutline" Width="20" Height="20" Foreground="{StaticResource SOCERed}" 
+                                     ToolTip="Any items highlighted in red are &#10; inactive and are subject for review."/>
+        </StackPanel>
+        
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding MessageVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ProgressBar Value="75" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Foreground="{StaticResource SOCEBlueCompliment}"/>
             <TextBlock Grid.Row="0" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCEBlueCompliment}"  VerticalAlignment="Bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="Saving..."/>
         </StackPanel>
         <TextBlock Grid.Row="0" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCEBlueCompliment}"  VerticalAlignment="bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding Message}" 
@@ -43,6 +47,11 @@
                 </EventTrigger>
             </TextBlock.Triggers>
         </TextBlock>
+
+        <!--<TextBlock Grid.Row="1" FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}"  VerticalAlignment="Bottom" TextAlignment="Center" HorizontalAlignment="Center"
+                       Text="Any rows highlighted in red are inactive projects or phases and are subject for review. "/>-->
+
+
         <!--<TextBlock Grid.Row="0" FontSize="24" FontWeight="DemiBold" Foreground="{StaticResource SOCERed}"  VerticalAlignment="bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding Message, NotifyOnTargetUpdated=True}">
             <TextBlock.Triggers>
                 <EventTrigger RoutedEvent="Binding.TargetUpdated">
@@ -279,6 +288,7 @@
                     <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
                     <local:TableColorConverter x:Key="valueconverter"/>
                     <local:IsNullColorConverter x:Key="IsNullColorConverter"/>
+                    <local:TimesheetColorAlertConverter x:Key="TimesheetColorAlertConverter"/>
                 </ListView.Resources>
 
                 <ListView.Template>
@@ -328,9 +338,10 @@
                                             <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="20"/>
                                         </Button.Content>
                                     </Button>
-                                    <local:MyCustomComboBox Margin="0 0 0 0"  Grid.Column="1" x:Name="combo" 
+                                    <local:MyCustomComboBox Grid.Column="1" x:Name="combo" 
                                                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                                             Foreground="Black" BorderThickness="0 0 0 1"
+                                                            Background="{Binding AlertStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TimesheetColorAlertConverter}}"
                                                             ToolTip="Select Project" VerticalContentAlignment="Center"
                                                             SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             ItemsSource="{Binding Path=ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
@@ -380,7 +391,7 @@
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
                                     </local:MyCustomComboBox>
-                                    
+
                                     <Button Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" 
                                             Command="{Binding ClearSelectedProjectCommand}" 
                                             Visibility="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}" ToolTip="Remove" Margin="0 0 20 0">
@@ -443,9 +454,9 @@
                                         </ComboBox.ItemTemplate>
                                     </ComboBox>-->
                                 </Grid>
-
-                                <ComboBox Grid.Column="1"
-                                                  Margin="10 0 5 0"
+                                <Grid Grid.Column="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                    Background="{Binding AlertStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TimesheetColorAlertConverter}}">
+                                    <ComboBox Margin="10 0 5 0"
                                                   VerticalAlignment="Stretch"
                                                   VerticalContentAlignment="Center"
                                                   HorizontalAlignment="Stretch"
@@ -460,22 +471,25 @@
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"
                                                   MaxDropDownHeight="250">
-                                    <!--<ComboBox.IsEnabled>
+                                        <!--<ComboBox.IsEnabled>
                                         <MultiBinding Converter="{StaticResource BooleanAllConverter}">
                                             <Binding Path="ProjectSelected" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged"/>
                                             <Binding Path="DataContext.IsSubEditable" RelativeSource="{RelativeSource FindAncestor, AncestorType={x:Type UserControl}}" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged" />
                                         </MultiBinding>
                                     </ComboBox.IsEnabled>-->
-                                    <ComboBox.ItemTemplate>
-                                        <DataTemplate DataType="SubProjectModel">
-                                            <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
-                                                <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Center" FontSize="14" FontWeight="Regular" ToolTip="{Binding Description}"/>
-                                                <materialDesign:PackIcon Kind="Star" VerticalAlignment="Center" Margin="5 0 0 0" Width="10" Height="10" Foreground="Black"
+                                        <ComboBox.ItemTemplate>
+                                            <DataTemplate DataType="SubProjectModel">
+                                                <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                                    <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Center" FontSize="14" FontWeight="Regular" ToolTip="{Binding Description}"/>
+                                                    <materialDesign:PackIcon Kind="Star" VerticalAlignment="Center" Margin="5 0 0 0" Width="10" Height="10" Foreground="Black"
                                                                  ToolTip="Current Phase" Visibility="{Binding IsScheduleActive, Converter={StaticResource BooleanToVisibilityConverter}}"/>
-                                            </VirtualizingStackPanel>
-                                        </DataTemplate>
-                                    </ComboBox.ItemTemplate>
-                                </ComboBox>
+                                                </VirtualizingStackPanel>
+                                            </DataTemplate>
+                                        </ComboBox.ItemTemplate>
+                                    </ComboBox>
+                                </Grid>
+
+
                             </Grid>
 
                             <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="1">
@@ -489,7 +503,7 @@
                                                     FontWeight="SemiBold" 
                                                     IsReadOnly="{Binding Path = ReadOnly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     MaxLength="4"
-                                                    Background="{Binding CellColor}"
+                                                    Background="{Binding CellColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                             <TextBox.Style >
                                                 <Style TargetType="TextBox">

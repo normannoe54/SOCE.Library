@@ -77,25 +77,25 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private string _monthYearString = "";
-        public string MonthYearString
+        private string _dateEndString = "";
+        public string DateEndString
         {
-            get { return _monthYearString; }
+            get { return _dateEndString; }
             set
             {
-                _monthYearString = value;
-                RaisePropertyChanged(nameof(MonthYearString));
+                _dateEndString = value;
+                RaisePropertyChanged(nameof(DateEndString));
             }
         }
 
-        private string _dateString = "";
-        public string DateString
+        private string _dateStartString = "";
+        public string DateStartString
         {
-            get { return _dateString; }
+            get { return _dateStartString; }
             set
             {
-                _dateString = value;
-                RaisePropertyChanged(nameof(DateString));
+                _dateStartString = value;
+                RaisePropertyChanged(nameof(DateStartString));
             }
         }
 
@@ -129,8 +129,8 @@ namespace SOCE.Library.UI.ViewModels
             //check if any data exists after monday of the week
             //if not copy all from last week
 
-            DateTime NextMonday = DateTime.Today.AddDays(7);
-            DateTime thisMonday = NextMonday.StartOfWeek(DayOfWeek.Tuesday);
+            DateTime nextweekdate = DateTime.Today.AddDays(7);
+            DateTime thisMonday = nextweekdate.StartOfWeek(DayOfWeek.Monday);
             //int daysUntilMonday = ((int)DayOfWeek.Monday - (int)DateTime.Today.DayOfWeek) % 7;
             //DateTime nextMonday = DateTime.Today.AddDays(daysUntilMonday);
             List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByAboveDate(thisMonday);
@@ -142,7 +142,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 foreach(SchedulingDataDbModel sched in previousweekschedulingdata)
                 {
-                    if (sched.Hours2 != 0 && sched.Hours3 != 0 && sched.Hours4 != 0 && sched.Hours5 != 0 && sched.Hours6 != 0 && sched.Hours7 != 0)
+                    if (sched.Hours2 != 0 || sched.Hours3 != 0 || sched.Hours4 != 0 || sched.Hours5 != 0 || sched.Hours6 != 0 || sched.Hours7 != 0 || sched.Hours8 != 0)
                     {
                         sched.Date = (int)long.Parse(thisMonday.ToString("yyyyMMdd"));
                         sched.Hours1 = sched.Hours2;
@@ -152,7 +152,7 @@ namespace SOCE.Library.UI.ViewModels
                         sched.Hours5 = sched.Hours6;
                         sched.Hours6 = sched.Hours7;
                         sched.Hours7 = sched.Hours8;
-
+                        sched.Hours8 = 0;
                         SQLAccess.AddSchedulingData(sched);
                     }
                 }
@@ -165,19 +165,24 @@ namespace SOCE.Library.UI.ViewModels
 
         public void UpdateDates(DateTime currdate)
         {
-            if (currdate.Day > 16)
-            {
-                firstdate = new DateTime(currdate.Year, currdate.Month + 1, 1);
-                lastdate = new DateTime(currdate.Year, currdate.Month + 1, 16);
-                //second tier
-                
-            }
-            else
-            {
-                //first tier
-                firstdate = new DateTime(currdate.Year, currdate.Month, 17);
-                lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
-            }
+            DateTime firstdate = currdate.StartOfWeek(DayOfWeek.Monday).AddDays(7);
+            DateTime lastdate = firstdate.StartOfWeek(DayOfWeek.Friday).AddDays(7);
+
+            //firstdate = new DateTime(currdate.Year, currdate.Month + 1, 1);
+
+            //if (currdate.Day > 16)
+            //{
+            //    firstdate = new DateTime(currdate.Year, currdate.Month + 1, 1);
+            //    lastdate = new DateTime(currdate.Year, currdate.Month + 1, 16);
+            //    //second tier
+
+            //}
+            //else
+            //{
+            //    //first tier
+            //    firstdate = new DateTime(currdate.Year, currdate.Month, 17);
+            //    lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
+            //}
 
             int diff = (lastdate - firstdate).Days;
             List<DateWrapper> dates = new List<DateWrapper>();
@@ -194,8 +199,8 @@ namespace SOCE.Library.UI.ViewModels
                 }
             }
 
-            MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
-            DateString = $"[{firstdate.Day} - {lastdate.Day}]";
+            DateStartString = $"{firstdate.ToString("MMM")}. {firstdate.Day}";
+            DateEndString = $" {lastdate.ToString("MMM")}. {lastdate.Day}";
 
         }
     }

@@ -193,6 +193,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _inactiveMessage = "";
+        public string InactiveMessage
+        {
+            get { return _inactiveMessage; }
+            set
+            {
+                _inactiveMessage = value;
+                RaisePropertyChanged(nameof(InactiveMessage));
+            }
+        }
+
         private bool _searchFilter = false;
         public bool SearchFilter
         {
@@ -624,79 +635,107 @@ namespace SOCE.Library.UI.ViewModels
             {
                 TimesheetRowDbModel subitem = item.First();
                 SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
-                ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
-                ProjectModel pm = new ProjectModel(pdb);
+                TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList());
+                ProjectDbModel pdb = null;
+                ProjectModel pm = null;
+                SubProjectModel spm = null;
+                ProjectModel pmnew = null;
 
-                SubProjectModel spm = new SubProjectModel(spdb);
-
-                ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.FirstOrDefault();
-
-
-                //Right here is where we need to fix stuff.
-                if (pmnew == null)
+                if (spdb == null)
                 {
-                    //are you dumb?
-                    foreach (TimesheetRowDbModel trdm in item)
+                    trm.AlertStatus = TimesheetRowAlertStatus.Deleted;
+                }
+                else
+                {
+                    pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
+
+                    if (pdb == null)
                     {
-                        SQLAccess.DeleteTimesheetData(trdm.Id);
+                        trm.AlertStatus = TimesheetRowAlertStatus.Deleted;
                     }
-
-                    continue;
-                }
-
-                TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
-                {
-                    Project = pmnew
-                };
-
-                SubProjectModel subpmnew;
-
-                try
-                {
-                    subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
-                }
-                catch
-                {
-                    foreach (TimesheetRowDbModel trdm in item)
+                    else
                     {
-                        SQLAccess.DeleteTimesheetData(trdm.Id);
+                        pm = new ProjectModel(pdb);
+                        spm = new SubProjectModel(spdb);
+                        pmnew = ProjectList.Where(x => x.Id == pm.Id)?.FirstOrDefault();
+
+                        //Right here is where we need to fix stuff.
+                        if (pmnew == null)
+                        {
+                            trm.AlertStatus = TimesheetRowAlertStatus.Inactive;
+                            List<ProjectModel> pmlist = ProjectList.ToList();
+                            pmlist.Add(pm);
+                            trm.BaseProjectList = new ObservableCollection<ProjectModel>(pmlist);
+                            //ProjectList.Add(pm);
+                            pmnew = pm;
+                        }
+
+                        //if (pmnew == null)
+                        //{
+                        //    //are you dumb?
+                        //    foreach (TimesheetRowDbModel trdm in item)
+                        //    {
+                        //        SQLAccess.DeleteTimesheetData(trdm.Id);
+                        //    }
+
+                        //    continue;
+                        //}
+
+                        trm.Project = pmnew;
+
+                        SubProjectModel subpmnew;
+
+                        try
+                        {
+                            subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+                            trm.AlertStatus = TimesheetRowAlertStatus.Active;
+                        }
+                        catch
+                        {
+                            trm.AlertStatus = TimesheetRowAlertStatus.Inactive;
+                            trm.SubProjects.Add(spm);
+                            subpmnew = spm;
+                            //foreach (TimesheetRowDbModel trdm in item)
+                            //{
+                            //    SQLAccess.DeleteTimesheetData(trdm.Id);
+                            //}
+
+                            //continue;
+                        }
+
+                        trm.SelectedSubproject = subpmnew;
+
+                        item.ToList().RemoveAll(x => x == null);
+
+                        List<TimesheetRowDbModel> distincts = item.ToList().GroupBy(x => x.Date).Select(y => y.First()).ToList();
+                        var duplicates = item.Except(distincts).ToList();
+
+                        foreach (TimesheetRowDbModel trdm in duplicates)
+                        {
+                            SQLAccess.DeleteTimesheetData(trdm.Id);
+                        }
+
+                        foreach (TimesheetRowDbModel trdm in distincts)
+                        {
+                            DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                            trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry, ReadOnly = false });
+                        }
+
+                        DateTime dateinc = datestart;
+
+                        while (dateinc <= dateend)
+                        {
+                            if (!trm.Entries.Any(x => x.Date == dateinc))
+                            {
+                                //add
+                                trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0, ReadOnly = false });
+                            }
+                            dateinc = dateinc.AddDays(1);
+                        }
+                        trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
+                        trms.Add(trm);
                     }
-
-                    continue;
                 }
-
-                trm.SelectedSubproject = subpmnew;
-
-                item.ToList().RemoveAll(x => x == null);
-
-                List<TimesheetRowDbModel> distincts = item.ToList().GroupBy(x => x.Date).Select(y => y.First()).ToList();
-                var duplicates = item.Except(distincts).ToList();
-
-                foreach (TimesheetRowDbModel trdm in duplicates)
-                {
-                    SQLAccess.DeleteTimesheetData(trdm.Id);
-                }
-
-                foreach (TimesheetRowDbModel trdm in distincts)
-                {
-
-                        DateTime dt = DateTime.ParseExact(trdm.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                        trm.Entries.Add(new TREntryModel() { Date = dt, TimeEntry = trdm.TimeEntry, ReadOnly= false });
-                }
-
-                DateTime dateinc = datestart;
-
-                while (dateinc <= dateend)
-                {
-                    if (!trm.Entries.Any(x => x.Date == dateinc))
-                    {
-                        //add
-                        trm.Entries.Add(new TREntryModel() { Date = dateinc, TimeEntry = 0, ReadOnly = false });
-                    }
-                    dateinc = dateinc.AddDays(1);
-                }
-                trm.Entries = new ObservableCollection<TREntryModel>(trm.Entries.OrderBy(x => x.Date).ToList());
-                trms.Add(trm);
             }
 
             List<TimesheetRowModel> trmadjusted = trms?.OrderByDescending(x => x.Project.ProjectNumber).ToList();
@@ -778,31 +817,70 @@ namespace SOCE.Library.UI.ViewModels
         {
             DateTime starttime = DateTime.Now;
             //Message = "Timesheet Saved";
+
             MessageVisible = true;
             //adding and modifying
 
-            try
-            {
-                //deleting
-                foreach (TimesheetRowModel ctrm in CopiedTimesheetData)
+            //bool isallactive = !Rowdata.Any(x => x.AlertStatus != TimesheetRowAlertStatus.Active);
+
+            //bool result = true;
+
+            //if (!isallactive)
+            //{
+            //    YesNoView view = new YesNoView();
+            //    YesNoVM aysvm = new YesNoVM();
+            //    aysvm.Message = "One or more projects highlighted in red are not active.";
+            //    aysvm.SubMessage = "Do you still want to save?";
+            //    view.DataContext = aysvm;
+            //    var dialogres = await DialogHost.Show(view, "RootDialog");
+            //    aysvm = view.DataContext as YesNoVM;
+            //    result = aysvm.Result;
+            //}
+
+            //if (result)
+            //{
+                bool contains;
+
+                try
                 {
-                    if (ctrm.SelectedSubproject != null)
+                    //deleting
+                    foreach (TimesheetRowModel ctrm in CopiedTimesheetData)
                     {
-                        int index = Rowdata.ToList().FindIndex(x => x.SelectedSubproject?.Id == ctrm.SelectedSubproject.Id);
-
-                        //it exists
-                        if (index != -1)
+                        if (ctrm.SelectedSubproject != null)
                         {
-                            TimesheetRowModel trmfound = Rowdata[index];
+                            int index = Rowdata.ToList().FindIndex(x => x.SelectedSubproject?.Id == ctrm.SelectedSubproject.Id);
 
-                            foreach (TREntryModel trentry in ctrm.Entries)
+                            //it exists
+                            if (index != -1)
                             {
-                                //think about this expression
-                                if (!trmfound.Entries.Any(x => x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
+                                TimesheetRowModel trmfound = Rowdata[index];
+
+                                foreach (TREntryModel trentry in ctrm.Entries)
+                                {
+                                    //think about this expression
+                                    if (!trmfound.Entries.Any(x => x.Date == trentry.Date && x.TimeEntry == trentry.TimeEntry))
+                                    {
+                                        if (trentry.TimeEntry > 0)
+                                        {
+                                            //delete
+                                            TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(CurrentEmployee.Id, ctrm.SelectedSubproject.Id, trentry.Date);
+
+                                            if (trdbm != null)
+                                            {
+                                                SQLAccess.DeleteTimesheetData(trdbm.Id);
+                                            }
+                                        }
+                                    }
+                                }
+
+                            }
+                            else
+                            {
+                                //delete all
+                                foreach (TREntryModel trentry in ctrm.Entries)
                                 {
                                     if (trentry.TimeEntry > 0)
                                     {
-                                        //delete
                                         TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(CurrentEmployee.Id, ctrm.SelectedSubproject.Id, trentry.Date);
 
                                         if (trdbm != null)
@@ -810,106 +888,89 @@ namespace SOCE.Library.UI.ViewModels
                                             SQLAccess.DeleteTimesheetData(trdbm.Id);
                                         }
                                     }
+
                                 }
                             }
-
                         }
-                        else
-                        {
-                            //delete all
-                            foreach (TREntryModel trentry in ctrm.Entries)
-                            {
-                                if (trentry.TimeEntry > 0)
-                                {
-                                    TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetData(CurrentEmployee.Id, ctrm.SelectedSubproject.Id, trentry.Date);
 
-                                    if (trdbm != null)
-                                    {
-                                        SQLAccess.DeleteTimesheetData(trdbm.Id);
-                                    }
-                                }
-
-                            }
-                        }
                     }
 
-                }
 
 
-
-                foreach (TimesheetRowModel trm in Rowdata)
-                {
-
-                    double timepersub = 0;
-                    //adding or modifying an existing submission
-                    foreach (TREntryModel trentry in trm.Entries)
+                    foreach (TimesheetRowModel trm in Rowdata)
                     {
-                        if (trentry.TimeEntry > 0 && trm.SelectedSubproject != null)
-                        {
-                            timepersub += trentry.TimeEntry;
-                            TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
-                            {
-                                EmployeeId = CurrentEmployee.Id,
-                                SubProjectId = trm.SelectedSubproject.Id,
-                                Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
-                                Submitted = submit,
-                                Approved = 0,
-                                TimeEntry = trentry.TimeEntry,
-                                BudgetSpent = CurrentEmployee.Rate * trentry.TimeEntry
-                            };
 
-                            SQLAccess.AddTimesheetData(dbmodel);
-                            //get data that needs to be removed
+                        double timepersub = 0;
+                        //adding or modifying an existing submission
+                        foreach (TREntryModel trentry in trm.Entries)
+                        {
+                            if (trentry.TimeEntry > 0 && trm.SelectedSubproject != null)
+                            {
+                                timepersub += trentry.TimeEntry;
+                                TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
+                                {
+                                    EmployeeId = CurrentEmployee.Id,
+                                    SubProjectId = trm.SelectedSubproject.Id,
+                                    Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
+                                    Submitted = submit,
+                                    Approved = 0,
+                                    TimeEntry = trentry.TimeEntry,
+                                    BudgetSpent = CurrentEmployee.Rate * trentry.TimeEntry
+                                };
+
+                                SQLAccess.AddTimesheetData(dbmodel);
+                                //get data that needs to be removed
+                            }
                         }
+
+
+
+                        //try
+                        //{
+                        //    RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
+                        //    {
+                        //        SubProjectId = trm.SelectedSubproject.Id,
+                        //        EmployeeId = CurrentEmployee.Id,
+                        //        Role = (int)CurrentEmployee.DefaultRole,
+                        //        Rate = CurrentEmployee.Rate,
+                        //        BudgetHours = 0
+                        //    };
+                        //    SQLAccess.AddRolesPerSubProject(rpp);
+
+                        //}
+                        //catch
+                        //{
+                        //}
+
+                        //ids++;
                     }
 
 
 
-                    //try
-                    //{
-                    //    RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
-                    //    {
-                    //        SubProjectId = trm.SelectedSubproject.Id,
-                    //        EmployeeId = CurrentEmployee.Id,
-                    //        Role = (int)CurrentEmployee.DefaultRole,
-                    //        Rate = CurrentEmployee.Rate,
-                    //        BudgetHours = 0
-                    //    };
-                    //    SQLAccess.AddRolesPerSubProject(rpp);
+                    CopiedTimesheetData.Clear();
+                    foreach (TimesheetRowModel trm in Rowdata)
+                    {
+                        CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
+                    }
 
-                    //}
-                    //catch
-                    //{
-                    //}
+                    double diffInSeconds = 0;
+                    do
+                    {
+                        diffInSeconds = (DateTime.Now - starttime).TotalSeconds;
 
-                    //ids++;
+                    } while (diffInSeconds < 2);
+
+
+                    Message = "Timesheet Saved";
+                    MessageVisible = false;
                 }
-
-                
-
-                CopiedTimesheetData.Clear();
-                foreach (TimesheetRowModel trm in Rowdata)
+                catch
                 {
-                    CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
+
+                    Message = "Something went wrong!";
+                    MessageVisible = false;
                 }
-
-                double diffInSeconds = 0;
-                do
-                {
-                    diffInSeconds = (DateTime.Now - starttime).TotalSeconds;
-
-                } while (diffInSeconds < 2);
-                
-
-                Message = "Timesheet Saved";
-                MessageVisible = false;
-            }
-            catch
-            {
-
-                Message = "Something went wrong!";
-                MessageVisible = false;
-            }
+            //}
             //Message = "";
         }
 

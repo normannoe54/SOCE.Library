@@ -194,6 +194,7 @@
     <Compile Include="Converters\Date\DatetoStringPartialConverter.cs" />
     <Compile Include="Converters\DescriptionConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
+    <Compile Include="Converters\TimesheetColorAlertConverter.cs" />
     <Compile Include="Converters\IsNullColorConverter.cs" />
     <Compile Include="Converters\IsStringEmptyConverter.cs" />
     <Compile Include="Converters\InvoicedColorConverter.cs" />
@@ -218,12 +219,14 @@
     <Compile Include="Models\Projects\ViewEnum.cs" />
     <Compile Include="Models\ResultEnum.cs" />
     <Compile Include="Models\StatusEnum.cs" />
+    <Compile Include="Models\Timesheet\TimesheetRowAlertStatus.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeInfoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\NetworkSearch\NetworkSearchVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\EmployeeScheduleSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\IndividualSingleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\PMScheduleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectListVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ScheduleWeekControlVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\WeeklyScheduleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ScheduleWeekVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectScheduleVM.cs" />
@@ -319,6 +322,9 @@
     </Compile>
     <Compile Include="Views\Portal\ProjectSchedule\ProjectListView.xaml.cs">
       <DependentUpon>ProjectListView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\SchedulingControlView.xaml.cs">
+      <DependentUpon>SchedulingControlView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\ProjectSchedule\WeeklyScheduleView.xaml.cs">
       <DependentUpon>WeeklyScheduleView.xaml</DependentUpon>
@@ -493,6 +499,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Portal\ProjectSchedule\ProjectListView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\SchedulingControlView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

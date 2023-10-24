@@ -1,0 +1,265 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.SchedulingControlView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="Transparent" Margin="0 10 0 10" >
+
+
+    <Border>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="{StaticResource SOCELightGray}" Height="45">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" VerticalAlignment="Bottom"  Margin="5 0 0 12" HorizontalAlignment="Left" Height="25" Width="30" Padding="0"
+                                Foreground="Black" Background="Transparent"
+                                BorderBrush="Transparent" Command="{Binding DeletePhaseCommand}" ToolTip="Delete Phase">
+                    <materialDesign:PackIcon Kind="CancelBox" VerticalAlignment="Bottom" Padding="0" Height="20" Width="20"/>
+                </Button>
+                <TextBlock Grid.Column="1"  Text="PHASE"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Bottom" Margin="10 0 0 15"/>
+                <ComboBox Grid.Column="2" Margin="10 0 0 7" Width="120"
+                                                  VerticalAlignment="Stretch"
+                                                  VerticalContentAlignment="Center"
+                                                  HorizontalAlignment="Stretch"
+                                                  Foreground="Black"
+                                                  BorderThickness="0 0 0 1"
+                                                  ToolTip="Select Phase"
+                                                  BorderBrush="Black"
+                                                  Style="{StaticResource MaterialDesignDataGridComboBox}"
+                                                  IsTextSearchEnabled="True" IsEditable="False"
+                                                  SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                  TextSearch.TextPath="Description"
+                                                  MaxDropDownHeight="250">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate DataType="SubProjectModel">
+                            <VirtualizingStackPanel Orientation="Horizontal" HorizontalAlignment="Stretch">
+                                <TextBlock Text="{Binding PointNumStr}" TextBlock.TextAlignment="Center" FontSize="14" FontWeight="Regular" ToolTip="{Binding Description}"/>
+                                <materialDesign:PackIcon Kind="Star" VerticalAlignment="Center" Margin="5 0 0 0" Width="10" Height="10" Foreground="Black"
+                                                                 ToolTip="Current Phase" Visibility="{Binding IsScheduleActive, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            </VirtualizingStackPanel>
+
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <Grid HorizontalAlignment="Right" Grid.Column="3">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0 0 0">
+                        <TextBlock  Text="Hours Spent"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
+                        <TextBox Width="70"  Text="{Binding HoursSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" FontSize="16" Foreground="#FBD9D3" FontWeight="DemiBold" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0 0 0">
+                        <TextBlock  Text="Hours Left"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Center"/>
+                        <TextBox  Width="70" Text="{Binding HoursLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" FontSize="16" Foreground="#CEFAD0" FontWeight="DemiBold" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                    </StackPanel>
+                </Grid>
+                
+            </Grid>
+
+            <Grid Background="Transparent"  Margin="0 5 0 0" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="45"/>
+                    <ColumnDefinition Width="250"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="120"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="60"/>
+                </Grid.ColumnDefinitions>
+                <Button Grid.Column="0"  IsEnabled="{Binding IsEditableItems}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}"
+                                Foreground="{StaticResource SOCERed}" Background="Transparent"
+                                BorderBrush="Transparent" Command="{Binding AddRoleCommand}" ToolTip="Add Role">
+                    <materialDesign:PackIcon Kind="PlusBoxOutline" VerticalAlignment="Center" Padding="0" Height="30" Width="30"/>
+                </Button>
+                <TextBlock Grid.Column="1" FontSize="14" FontWeight="Bold" VerticalAlignment="Center" Text="Employee" TextAlignment="Left" Margin="10 0 0 0" Foreground="{StaticResource SOCERed}"/>
+                <TextBlock Grid.Column="2" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10 0 0 0" Text="Hours Spent&#10;To Date" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
+                <TextBlock Grid.Column="3" FontSize="14" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="10 0 0 0" Text="Hours&#10;Budgeted" TextAlignment="Center" Foreground="{StaticResource SOCERed}"/>
+
+
+                <ItemsControl Grid.Column="4" ItemsSource="{Binding DateSummary}" HorizontalAlignment="Stretch" Margin="10 0 10 0">
+                    <ItemsControl.Resources>
+                        <local:DatetoStringFullConverter x:Key="DatetoStringFullConverter"/>
+                    </ItemsControl.Resources>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <TextBlock Text="{Binding Value, Converter={StaticResource DatetoStringFullConverter}}"
+                                               TextAlignment="Center"
+                                               VerticalAlignment="Center" 
+                                               FontSize="12" FontWeight="Bold"
+                                               Foreground="{StaticResource SOCERed}">
+                                </TextBlock>
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <UniformGrid Rows="1"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+
+                <TextBlock Grid.Column="6" Margin="0 0 20 0"
+                             Text="Total" 
+                             TextAlignment="Center"
+                             VerticalAlignment="Center" 
+                             HorizontalAlignment="Stretch" 
+                             FontSize="14" FontWeight="Bold"
+                             Foreground="{StaticResource SOCERed}"/>
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding SchedulingItems, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                      Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                <ItemsControl.Resources>
+                    <local:TableColorConverter x:Key="valueconverter"/>
+                </ItemsControl.Resources>
+
+                <!--<ItemsControl.Template>
+                                <ControlTemplate>
+                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+                                        <ItemsPresenter />
+                                    </ScrollViewer>
+                                </ControlTemplate>
+                            </ItemsControl.Template>-->
+
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Grid Margin="0 5 0 5">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="45"/>
+                                <ColumnDefinition Width="250"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="120"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="60"/>
+                            </Grid.ColumnDefinitions>
+                            <!--<VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="10 0 0 0">-->
+                            <Button Grid.Column="0" HorizontalAlignment="Center" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="30" Width="30"
+                                    Command="{Binding Path=DataContext.DeleteRole, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                <Button.Content>
+                                    <materialDesign:PackIcon Height="25" Width="25" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                </Button.Content>
+                            </Button>
+                            <!--<ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Background="Transparent" Foreground="Black" Height="30" Width="30" 
+                                                              IsChecked="{Binding EditRoleFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                              IsEnabled="{Binding Path=DataContext.SelectedProjectPhase.CanEdit, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" >
+                                <ToggleButton.Content>
+                                    <materialDesign:PackIcon Height="25" Width="25" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
+                                </ToggleButton.Content>
+                                <materialDesign:ToggleButtonAssist.OnContent>
+                                    <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center" Height="25" Width="25"/>
+                                </materialDesign:ToggleButtonAssist.OnContent>
+                            </ToggleButton>-->
+                            <!--</VirtualizingStackPanel>-->
+
+                            <!--<Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20"  Margin="10 0 0 0"
+                                    Command="{Binding Path=DataContext.RemoveRoleCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                            <Button.Content>
+                                                <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                            </Button.Content>
+                                        </Button>-->
+
+
+                            <!--<TextBlock Grid.Column="1" FontWeight="Regular" FontSize="16" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16 0 0 2"
+                                                       Text="{Binding Employee.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                       Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
+                            <ComboBox Grid.Column="1" Margin="10 0 0 0" FontSize="16" 
+                                                      ItemsSource="{Binding Path=EmployeeList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                      DisplayMemberPath="FullName" MaxDropDownHeight="200" SelectedItem="{Binding Path = EmployeeWrapper, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel />
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                            <!--<ComboBox Grid.Column="2" Margin="20 0 0 0" FontSize="16"
+                                                  IsEnabled="{Binding EditComboRoleFieldState}"
+                                      ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
+                                      DisplayMemberPath="Description"
+                                      SelectedValue="{Binding Role}"  
+                                      SelectedValuePath="Value"/>-->
+                            <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="16" HorizontalAlignment="Center" 
+                                   VerticalAlignment="Center" Text="{Binding SpentHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}"/>
+
+                            <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="16" HorizontalAlignment="Center" VerticalAlignment="Center"
+                                   Text="{Binding BudgetedHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" />
+
+                            <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="4"  Margin="10 -5 10 -5">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <local:TimesheetTextBox
+                                            Text="{Binding TimeEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                    TextAlignment="Center"
+                                                    VerticalContentAlignment="Center"
+                                                    local:SelectTextOnFocus.Active = "True"
+                                                    FontWeight="SemiBold" 
+                                                    FontSize="16"
+                                                    MaxLength="4"
+                                                    Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                            <!--Background="{Binding CellColor}"
+                                                    Foreground="{Binding TimeEntry, Converter={StaticResource valueconverter},  Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">-->
+                                            <TextBox.Style >
+                                                <Style TargetType="TextBox">
+                                                    <Style.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Trigger>
+                                                        <Trigger Property="IsFocused" Value="True">
+                                                            <Setter Property="Background" Value="Transparent" />
+                                                            <Setter Property="BorderBrush" Value="Transparent" />
+                                                        </Trigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBox.Style>
+                                        </local:TimesheetTextBox>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <!--<WrapPanel Orientation="Horizontal"/>-->
+                                        <UniformGrid Rows="1"/>
+                                        <!--<StackPanel Orientation="Horizontal"/>-->
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                            </ItemsControl>
+                            <TextBlock Grid.Column="5"
+                                           Text="{Binding Total}" 
+                                           TextAlignment="Center"
+                                           VerticalAlignment="Center" 
+                                           HorizontalAlignment="Stretch" 
+                                            FontSize="16" FontWeight="SemiBold" 
+                                           Background="Transparent" Foreground="Black"/>
+
+                        </Grid>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </Grid>
+    </Border>
+</UserControl>

@@ -213,9 +213,9 @@ namespace SOCE.Library.UI.ViewModels
                     Project = pm
                 };
 
-                SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+                //SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
 
-                trm.SelectedSubproject = subpmnew;
+                trm.SelectedSubproject = spm;
 
                 foreach (TimesheetRowDbModel trdm in item)
                 {

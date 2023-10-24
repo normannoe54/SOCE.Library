@@ -108,7 +108,7 @@
                                 </TextBlock.Effect>-->
                             <TextBlock Grid.Column="1" Foreground="{StaticResource SOCERed}" Margin="5 0 10 0" Text="INACTIVE" FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Right"  VerticalAlignment="Center" Visibility="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
 
-                            <Grid HorizontalAlignment="Right" Grid.Column="2">
+                            <Grid HorizontalAlignment="Right" Grid.Column="2" Visibility="{Binding ShowActiveProjects, Converter={StaticResource InverseBoolToVisConverter}}">
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="*"/>
                                     <ColumnDefinition Width="Auto"/>

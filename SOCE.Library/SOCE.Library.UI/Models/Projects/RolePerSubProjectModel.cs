@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Media;
 using SOCE.Library.Db;
+using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI
 {
@@ -89,6 +90,7 @@ namespace SOCE.Library.UI
                 {
                     Id = role.Id;
                     BudgetedHours = role.BudgetedHours;
+                    
                 }
                 else
                 {
@@ -96,7 +98,7 @@ namespace SOCE.Library.UI
                 }
 
                 Employee = value;
-                _employeeWrapper = value;
+                _employeeWrapper = value;            
                 RaisePropertyChanged(nameof(EmployeeWrapper));
             }
         }
@@ -446,7 +448,7 @@ namespace SOCE.Library.UI
             {
                 Id = this.Id,
                 Role = this.Role,
-                //Subproject = (SubProjectModel)this.Subproject?.Clone(),
+                Subproject = (SubProjectModel)this.Subproject?.Clone(),
                 //Rate = this.Rate,
                 //BudgetedHours = this.BudgetedHours,
                 //PercentofBudget = this.PercentofBudget,

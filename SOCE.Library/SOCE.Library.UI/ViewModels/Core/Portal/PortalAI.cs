@@ -81,6 +81,18 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _rightDrawerOpen = value;
+
+                if (_rightDrawerOpen)
+                {
+                    CoreAI CurrentPage = IoCCore.Application as CoreAI;
+                    CurrentPage.IsConfusingStuffVisible = false;
+                }
+                else
+                {
+                    CoreAI CurrentPage = IoCCore.Application as CoreAI;
+                    CurrentPage.IsConfusingStuffVisible = true;
+                }
+
                 RaisePropertyChanged(nameof(RightDrawerOpen));
             }
         }

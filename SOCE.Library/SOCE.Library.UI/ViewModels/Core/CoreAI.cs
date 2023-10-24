@@ -119,6 +119,20 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _isConfusingStuffVisible = true;
+        public bool IsConfusingStuffVisible
+        {
+            get
+            {
+                return _isConfusingStuffVisible;
+            }
+            set
+            {
+                _isConfusingStuffVisible = value;
+                RaisePropertyChanged("IsConfusingStuffVisible");
+            }
+        }
+
         public CoreAI()
         {
             //version number

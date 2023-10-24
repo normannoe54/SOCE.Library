@@ -538,6 +538,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _totalScheduledHours { get; set; }
+        public double TotalScheduledHours
+        {
+            get
+            {
+                return _totalScheduledHours;
+            }
+            set
+            {
+                _totalScheduledHours = value;
+                RaisePropertyChanged(nameof(TotalScheduledHours));
+            }
+        }
+
         private DateTime? _dateInitiated;
         public DateTime? DateInitiated
         {
