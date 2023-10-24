@@ -31,10 +31,11 @@
                     <materialDesign:PackIcon Kind="CancelBox" VerticalAlignment="Bottom" Padding="0" Height="20" Width="20"/>
                 </Button>
                 <TextBlock Grid.Column="1"  Text="PHASE"  FontSize="16" FontWeight="SemiBold" Foreground="Black" VerticalAlignment="Bottom" Margin="10 0 0 15"/>
-                <ComboBox Grid.Column="2" Margin="10 0 0 7" Width="120"
+                <ComboBox Grid.Column="2" Margin="10 0 0 7" Width="80"
                                                   VerticalAlignment="Stretch"
                                                   VerticalContentAlignment="Center"
                                                   HorizontalAlignment="Stretch"
+                          HorizontalContentAlignment="Left"
                                                   Foreground="Black"
                                                   BorderThickness="0 0 0 1"
                                                   ToolTip="Select Phase"

@@ -149,85 +149,133 @@ namespace SOCE.Library.UI.ViewModels
             //LoadScheduling();
         }
 
-        private void Print()
+        private async void Print()
         {
-            //do stuff
-            //save down to downloads
-            try
+            IndividualSingleView view = new IndividualSingleView();
+            IndividualSingleVM aysvm = new IndividualSingleVM();
+            view.DataContext = aysvm;
+
+            //show the dialog
+            await DialogHost.Show(view, "RootDialog");
+
+            IndividualSingleVM vm = view.DataContext as IndividualSingleVM;
+            ResultEnum res = vm.Result;
+
+            if (res == ResultEnum.ResultTwo)
             {
-                string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                string pathDownload = Path.Combine(pathUser, "Downloads\\WeeklySchedule.xlsx");
-                File.WriteAllBytes(pathDownload, Properties.Resources.WeeklySchedule);
-                Excel.Excel exinst = new Excel.Excel(pathDownload);
-
-                Thread.Sleep(200);
-
-                int rowid = 4;
-
-                if (SchedulingItems.Count > 0)
+                try
                 {
-                    exinst.WriteCell(1, 1, "Report for: " + SelectedEmployee.FullName);
-                    List<string> dates = new List<string>();
+                    string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string pathDownload = Path.Combine(pathUser, "Downloads\\WeeklySchedule.xlsx");
+                    File.WriteAllBytes(pathDownload, Properties.Resources.WeeklySchedule);
+                    Excel.Excel exinst = new Excel.Excel(pathDownload);
+                    Thread.Sleep(200);
 
-                    foreach (DateWrapper date in DateSummary)
+                    if (SchedulingItems.Count > 0)
                     {
-                        dates.Add(date.Value.ToString("MM/dd/yyyy"));
+                        RunIndividualExport(ref exinst, SelectedEmployee);
                     }
 
-                    exinst.WriteRow<string>(rowid - 1, 8, dates);
-
-                    List< WeeklyScheduleModel> items = SchedulingItems.OrderBy(x => x.ClientNumber).ToList();
-
-                    foreach (WeeklyScheduleModel wsm in items)
-                    {
-                        List<object> values = new List<object>();
-
-                        values.Add(wsm.ProjectName);
-                        values.Add(wsm.ProjectNumber);
-                        values.Add(wsm.ClientNumber);
-                        values.Add(wsm.PhaseName);
-                        values.Add(wsm.DueDate ?? "" );
-                        values.Add(wsm.PercentComplete);
-                        values.Add(wsm.PM);
-
-                        foreach (SDEntryModel sd in wsm.Entries)
-                        {
-                            if (sd.TimeEntry == 0)
-                            {
-                                values.Add("");
-                            }
-                            else
-                            {
-                                values.Add(sd.TimeEntry);
-                            }
-                        }
-
-                        if (rowid == 4)
-                        {
-                            exinst.WriteRow<object>(rowid, 1, values);
-                        }
-                        else
-                        {
-                            exinst.InsertRowBelow(rowid - 1, values);
-
-                        }
-
-                        string formula = $"SUM(H{rowid}: O{rowid})";
-                        exinst.WriteFormula(rowid, 16, formula);
-                        rowid++;
-
-                    }
-
-                    exinst.SaveDocument();
+                    Process.Start(pathDownload);
                 }
-
-                Process.Start(pathDownload);
+                catch
+                {
+                }
             }
-            catch
+            else if (res == ResultEnum.ResultOne)
             {
+                try
+                {
+                    EmployeeModel selectedpm = SelectedEmployee;
+                    string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                    string pathDownload = Path.Combine(pathUser, "Downloads\\WeeklySchedule.xlsx");
+                    File.WriteAllBytes(pathDownload, Properties.Resources.WeeklySchedule);
+                    Excel.Excel exinst = new Excel.Excel(pathDownload);
+
+                    Thread.Sleep(200);
+
+                    foreach (EmployeeModel em in Employees)
+                    {
+                        exinst.CopyFirstWorksheet(em.FullName, "Sheet1");
+
+                        RunIndividualExport(ref exinst, em);
+                    }
+
+                    exinst.DeleteWorksheet("Sheet1");
+                    exinst.SaveDocument();
+                    Process.Start(pathDownload);
+                    SelectedEmployee = selectedpm;
+                }
+                catch
+                {
+                }
             }
         }
 
+
+        private void RunIndividualExport(ref Excel.Excel exinst, EmployeeModel pmofinterest)
+        {
+            int rowid = 1;
+            exinst.WriteCell(rowid, 1, "Report for: " + pmofinterest.FullName);
+            List<string> dates = new List<string>();
+
+            foreach (DateWrapper date in DateSummary)
+            {
+                dates.Add(date.Value.ToString("MM/dd/yyyy"));
+            }
+
+            exinst.WriteRow<string>(rowid + 2, 8, dates);
+
+            List<WeeklyScheduleModel> newitems = LoadEmployeeSchedulingData(pmofinterest);
+
+            List<WeeklyScheduleModel> items = newitems.OrderBy(x => x.ClientNumber).ToList();
+
+            foreach (WeeklyScheduleModel wsm in items)
+            {
+                List<object> values = new List<object>();
+
+                values.Add(wsm.ProjectName);
+                values.Add(wsm.ProjectNumber);
+                values.Add(wsm.ClientNumber);
+                values.Add(wsm.PhaseName);
+                values.Add(wsm.DueDate ?? "");
+                values.Add(wsm.PercentComplete);
+                values.Add(wsm.PM);
+
+                foreach (SDEntryModel sd in wsm.Entries)
+                {
+                    if (sd.TimeEntry == 0)
+                    {
+                        values.Add("");
+                    }
+                    else
+                    {
+                        values.Add(sd.TimeEntry);
+                    }
+                }
+
+                if (rowid   == 1)
+                {
+                    exinst.WriteRow<object>(rowid + 3, 1, values);
+                }
+                else
+                {
+                    exinst.InsertRowBelow(rowid +2, values);
+
+                }
+
+
+                    string formula = $"SUM(H{rowid+3}: O{rowid+3})";
+                    exinst.WriteFormula(rowid+3, 16, formula);
+                
+
+
+                rowid++;
+            }
+
+            exinst.SaveDocument();
+
+        }
 
         private void PreviousTimesheet()
         {
@@ -274,7 +322,66 @@ namespace SOCE.Library.UI.ViewModels
         {
             Totals.Clear();
             SchedulingItems.Clear();
-            List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByEmployee(DateSummary.First().Value, SelectedEmployee.Id);
+            //List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByEmployee(DateSummary.First().Value, SelectedEmployee.Id);
+            //double total1 = 0;
+            //double total2 = 0;
+            //double total3 = 0;
+            //double total4 = 0;
+            //double total5 = 0;
+            //double total6 = 0;
+            //double total7 = 0;
+            //double total8 = 0;
+
+            //foreach (SchedulingDataDbModel dbmodel in schedulingdata)
+            //{
+            //    SubProjectDbModel sub = SQLAccess.LoadSubProjectsBySubProject(dbmodel.PhaseId);
+            //    ProjectDbModel project = SQLAccess.LoadProjectsById(sub.ProjectId);
+            //    ClientDbModel client = SQLAccess.LoadClientById(project.ClientId);
+
+            //    DateTime? newdate = null;
+
+            //    if (project?.DueDate != null && project?.DueDate != 0)
+            //    {
+            //        newdate = DateTime.ParseExact(project.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            //    }
+
+            //    string finisheddate = newdate?.ToString("MM/dd/yyyy");
+
+            //    WeeklyScheduleModel weeklymodel = new WeeklyScheduleModel();
+            //    weeklymodel.ProjectName = project.ProjectName;
+            //    weeklymodel.ProjectNumber = project.ProjectNumber;
+            //    weeklymodel.ClientNumber = client.ClientNumber;
+            //    weeklymodel.PhaseName = sub.PointNumber;
+            //    weeklymodel.DueDate = finisheddate;
+            //    weeklymodel.PercentComplete = sub.PercentComplete;
+            //    EmployeeDbModel employee = SQLAccess.LoadEmployeeById(project.ManagerId);
+            //    weeklymodel.PM = employee.FullName;
+
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = dbmodel.Hours1 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = dbmodel.Hours2 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = dbmodel.Hours3 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = dbmodel.Hours4 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[4].Value, TimeEntry = dbmodel.Hours5 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[5].Value, TimeEntry = dbmodel.Hours6 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = dbmodel.Hours7 });
+            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = dbmodel.Hours8 });
+
+
+            //    weeklymodel.Total = dbmodel.Hours1 + dbmodel.Hours2 + dbmodel.Hours3 + dbmodel.Hours4 + dbmodel.Hours5 + dbmodel.Hours6 + dbmodel.Hours7 + dbmodel.Hours8;
+
+            //    total1 += dbmodel.Hours1;
+            //    total2 += dbmodel.Hours2;
+            //    total3 += dbmodel.Hours3;
+            //    total4 += dbmodel.Hours4;
+            //    total5 += dbmodel.Hours5;
+            //    total6 += dbmodel.Hours6;
+            //    total7 += dbmodel.Hours7;
+            //    total8 += dbmodel.Hours8;
+
+            //    SchedulingItems.Add(weeklymodel);
+            //}
+            List<WeeklyScheduleModel> weeklystuff = LoadEmployeeSchedulingData(SelectedEmployee);
+            SchedulingItems = new ObservableCollection<WeeklyScheduleModel>(weeklystuff);
             double total1 = 0;
             double total2 = 0;
             double total3 = 0;
@@ -283,6 +390,46 @@ namespace SOCE.Library.UI.ViewModels
             double total6 = 0;
             double total7 = 0;
             double total8 = 0;
+            foreach (WeeklyScheduleModel week in weeklystuff)
+            {
+                total1 += week.Entries[0].TimeEntry;
+                total2 += week.Entries[1].TimeEntry;
+                total3 += week.Entries[2].TimeEntry;
+                total4 += week.Entries[3].TimeEntry;
+                total5 += week.Entries[4].TimeEntry;
+                total6 += week.Entries[5].TimeEntry;
+                total7 += week.Entries[6].TimeEntry;
+                total8 += week.Entries[7].TimeEntry;
+            }
+
+
+
+
+            Totals.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = total1 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = total2 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = total3 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = total4 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[4].Value, TimeEntry = total5 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[5].Value, TimeEntry = total6 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = total7 });
+            Totals.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = total8 });
+
+            DateTime Curr = DateTime.Now.AddDays(-1);
+
+            if (DateSummary[0].Value > Curr)
+            {
+                CanSeeNext = false;
+            }
+            else
+            {
+                CanSeeNext = true;
+            }
+        }
+
+        private List<WeeklyScheduleModel> LoadEmployeeSchedulingData(EmployeeModel employeeofinterest)
+        {
+            List<WeeklyScheduleModel> weekly = new List<WeeklyScheduleModel>();
+            List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByEmployee(DateSummary.First().Value, employeeofinterest.Id);
 
             foreach (SchedulingDataDbModel dbmodel in schedulingdata)
             {
@@ -318,39 +465,12 @@ namespace SOCE.Library.UI.ViewModels
                 weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = dbmodel.Hours7 });
                 weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = dbmodel.Hours8 });
 
+                weeklymodel.Total = dbmodel.Hours1 + dbmodel.Hours2 + dbmodel.Hours3 + dbmodel.Hours4 + dbmodel.Hours5 + dbmodel.Hours6 + dbmodel.Hours7 + dbmodel.Hours8;
 
-                weeklymodel.Total = dbmodel.Hours1 + dbmodel.Hours2 + dbmodel.Hours3 + dbmodel.Hours4 + dbmodel.Hours5 + dbmodel.Hours6 +  dbmodel.Hours7 + dbmodel.Hours8;
-
-                total1 += dbmodel.Hours1;
-                total2 += dbmodel.Hours2;
-                total3 += dbmodel.Hours3;
-                total4 += dbmodel.Hours4;
-                total5 += dbmodel.Hours5;
-                total6 += dbmodel.Hours6;
-                total7 += dbmodel.Hours7;
-                total8 += dbmodel.Hours8;
-
-                SchedulingItems.Add(weeklymodel);
+                weekly.Add(weeklymodel);
             }
-            Totals.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = total1 } );
-            Totals.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = total2 } );
-            Totals.Add(new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = total3 } );
-            Totals.Add(new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = total4 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[4].Value, TimeEntry = total5 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[5].Value, TimeEntry = total6 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = total7 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = total8 });
 
-            DateTime Curr = DateTime.Now.AddDays(-1);
-
-            if (DateSummary[0].Value > Curr)
-            {
-                CanSeeNext = false;
-            }
-            else
-            {
-                CanSeeNext = true;
-            }
+            return weekly;
         }
     }
 }

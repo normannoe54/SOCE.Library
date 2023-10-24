@@ -126,7 +126,7 @@ namespace SOCE.Library.UI.ViewModels
         private async void Print()
         {
             IndividualSingleView view = new IndividualSingleView();
-            IndividualSingleVM aysvm = new IndividualSingleVM(SelectedPM, PMReportItems.ToList());
+            IndividualSingleVM aysvm = new IndividualSingleVM();
             view.DataContext = aysvm;
 
             //show the dialog

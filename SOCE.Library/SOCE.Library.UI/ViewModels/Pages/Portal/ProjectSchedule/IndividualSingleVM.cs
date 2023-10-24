@@ -22,14 +22,9 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand CloseCommand { get; set; }
 
-        private EmployeeModel pmselected;
 
-        private List<PMScheduleModel> allpmdata;
-
-        public IndividualSingleVM( EmployeeModel PM, List<PMScheduleModel> AllPmdata)
+        public IndividualSingleVM()
         {
-            pmselected = PM;
-            allpmdata = AllPmdata;
             this.PrintFullReportCommand = new RelayCommand(this.PrintFullReport);
             this.PrintIndividualCommand = new RelayCommand(this.PrintIndividualReport);
             this.CloseCommand = new RelayCommand(this.CancelCommand);

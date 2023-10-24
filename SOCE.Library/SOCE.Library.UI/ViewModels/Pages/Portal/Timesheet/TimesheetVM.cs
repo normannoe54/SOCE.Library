@@ -665,7 +665,8 @@ namespace SOCE.Library.UI.ViewModels
                             trm.AlertStatus = TimesheetRowAlertStatus.Inactive;
                             List<ProjectModel> pmlist = ProjectList.ToList();
                             pmlist.Add(pm);
-                            trm.BaseProjectList = new ObservableCollection<ProjectModel>(pmlist);
+                            //trm.BaseProjectList = new ObservableCollection<ProjectModel>(pmlist);
+                            trm.ProjectList = new ObservableCollection<ProjectModel>(pmlist);
                             //ProjectList.Add(pm);
                             pmnew = pm;
                         }

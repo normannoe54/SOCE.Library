@@ -34,6 +34,54 @@ namespace SOCE.Library.Excel
             document.Save();
         }
 
+        public void RenameWorksheet(string name)
+        {
+            activeworksheet.Name = name;
+        }
+
+        public void CopyFirstWorksheet(string name, string nametocopy)
+        {
+            IXLWorksheet value = GetSheet(nametocopy)?.CopyTo(name);
+            SetActiveSheet(value);
+        }
+
+        public void DeleteWorksheet(string name)
+        {
+            GetSheet(name).Delete();
+        }
+
+        public IXLWorksheet GetSheet(string name)
+        {
+            IXLWorksheet sheetfound = null;
+
+            foreach (IXLWorksheet sheet in document.Worksheets)
+            {
+                if (sheet.Name == name)
+                {
+                    sheetfound = sheet;
+                    break;
+                }
+            }
+            return sheetfound;
+        }
+
+        public void SetActiveSheet(IXLWorksheet sheetToSetActive)
+        {
+            foreach (IXLWorksheet sheet in document.Worksheets)
+            {
+                var isCurrentSheet = sheet.Equals(sheetToSetActive);
+
+                if (isCurrentSheet)
+                {
+                    sheet.SetTabActive(isCurrentSheet);
+                    sheet.SetTabSelected(isCurrentSheet);
+                    activeworksheet = sheet;
+                    break;
+                }
+            }
+        }
+
+
         public void InsertBlankColumns(int column)
         {
             IXLColumn colnew = activeworksheet.Column(column);
