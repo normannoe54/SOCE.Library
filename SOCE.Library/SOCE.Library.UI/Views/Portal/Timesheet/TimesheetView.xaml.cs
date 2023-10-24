@@ -25,34 +25,34 @@ namespace SOCE.Library.UI.Views
         public TimesheetView()
         {
             InitializeComponent();
-            timer= DateTime.Now.TimeOfDay;
+            //timer= DateTime.Now.TimeOfDay;
             //this.KeyDown += new KeyEventHandler(MainWindow_KeyDown);
             //this.RequestBringIntoView += new RequestBringIntoViewEventHandler(ComboBox_RequestBringIntoView);
         }
 
-        private void ComboBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
-        {
-            if (isactive)
-            {
-                e.Handled = true;
-            }
-        }
+        //private void ComboBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        //{
+        //    if (isactive)
+        //    {
+        //        e.Handled = true;
+        //    }
+        //}
 
-        private async void ComboBox_KeyDown(object sender, KeyEventArgs e)
-        {
-            timer = DateTime.Now.TimeOfDay;
+        //private async void ComboBox_KeyDown(object sender, KeyEventArgs e)
+        //{
+        //    timer = DateTime.Now.TimeOfDay;
 
-            isactive = false;
+        //    isactive = false;
 
-            await Task.Delay(200);
+        //    await Task.Delay(200);
 
-            TimeSpan difftime = DateTime.Now.TimeOfDay - timer;
-            TimeSpan limit = TimeSpan.FromSeconds(0.15);
+        //    TimeSpan difftime = DateTime.Now.TimeOfDay - timer;
+        //    TimeSpan limit = TimeSpan.FromSeconds(0.15);
 
-            if (!isactive && difftime >= limit)
-            {
-                isactive = true;
-            }
-        }
+        //    if (!isactive && difftime >= limit)
+        //    {
+        //        isactive = true;
+        //    }
+        //}
     }
 }

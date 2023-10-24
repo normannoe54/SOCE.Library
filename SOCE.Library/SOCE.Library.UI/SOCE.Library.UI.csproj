@@ -191,9 +191,12 @@
       <DependentUpon>BindablePasswordBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanOrConverter.cs" />
+    <Compile Include="Converters\InverseBoolToVisConverter.cs" />
+    <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringPartialConverter.cs" />
     <Compile Include="Converters\DescriptionConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
+    <Compile Include="Converters\InvertBooleanConverter.cs" />
     <Compile Include="Converters\TimesheetColorAlertConverter.cs" />
     <Compile Include="Converters\IsNullColorConverter.cs" />
     <Compile Include="Converters\IsStringEmptyConverter.cs" />

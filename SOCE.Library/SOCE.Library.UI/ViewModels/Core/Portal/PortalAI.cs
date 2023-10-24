@@ -162,7 +162,7 @@ namespace SOCE.Library.UI.ViewModels
                     CurrentPage = employeeVM;
                     break;
                 case PortalPage.Timesheet:
-                    timesheetVM.LoadCurrentTimesheet(DateTime.Now);
+                    //timesheetVM.LoadCurrentTimesheet(DateTime.Now);
                     timesheetVM.Message = "";
                     //timesheetVM.SearchFilter = false;
                     CurrentPage = timesheetVM;

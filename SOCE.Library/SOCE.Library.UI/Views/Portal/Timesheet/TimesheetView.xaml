@@ -493,6 +493,28 @@
                             </Grid>
 
                             <ItemsControl ItemsSource="{Binding Entries}" HorizontalAlignment="Stretch" Grid.Column="1">
+                                <!--<ItemsControl.Template>
+                                    <ControlTemplate>
+                                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" >
+                                            <ItemsPresenter />
+                                        </ScrollViewer>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>-->
+
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <!--<WrapPanel Orientation="Horizontal"/>-->
+                                        <UniformGrid Rows="1"/>
+                                        <!--<StackPanel Orientation="Horizontal"/>-->
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
                                         <local:TimesheetTextBox
@@ -522,13 +544,7 @@
                                         </local:TimesheetTextBox>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
-                                <ItemsControl.ItemsPanel>
-                                    <ItemsPanelTemplate>
-                                        <!--<WrapPanel Orientation="Horizontal"/>-->
-                                        <UniformGrid Rows="1"/>
-                                        <!--<StackPanel Orientation="Horizontal"/>-->
-                                    </ItemsPanelTemplate>
-                                </ItemsControl.ItemsPanel>
+                                
                             </ItemsControl>
                             <TextBlock Grid.Column="2"
                                            Text="{Binding Total}" 

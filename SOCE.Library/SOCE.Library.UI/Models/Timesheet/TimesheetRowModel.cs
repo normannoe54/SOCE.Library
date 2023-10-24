@@ -33,7 +33,7 @@ namespace SOCE.Library.UI
                 {
                     CollectSubProjects();
                     IsThisEditable = false;
-                    ProjectList = BaseProjectList;
+                    //ProjectList = BaseProjectList;
                 }
                 else
                 {
