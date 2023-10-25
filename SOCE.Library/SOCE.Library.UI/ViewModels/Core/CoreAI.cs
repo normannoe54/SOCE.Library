@@ -199,7 +199,7 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         public void GoToPortal(EmployeeModel employee)
-        {           
+        {
             CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
             portAI.Initiate(employee);

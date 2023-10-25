@@ -23,7 +23,7 @@
     </UserControl.Resources>
     <Grid >
         <StackPanel Orientation="Horizontal" VerticalAlignment="Top" HorizontalAlignment="Right" Panel.ZIndex="2" >
-            <materialDesign:PopupBox  Width="40" Height="40">
+            <materialDesign:PopupBox  Width="40" Height="40" >
                 <ListBox ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:ViewEnum}}}"
                          DisplayMemberPath="Description"
                          SelectedValue="{Binding SelectedViewEnum, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"

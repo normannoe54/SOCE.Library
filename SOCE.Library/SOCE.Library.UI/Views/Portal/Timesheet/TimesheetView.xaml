@@ -155,7 +155,7 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
-                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Black" BorderThickness="1">
+                        HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
 
@@ -347,7 +347,7 @@
                                                             ItemsSource="{Binding Path=ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             MaxDropDownHeight="255"                                                        
                                                             BorderBrush="{Binding Path=Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsNullColorConverter}}"
-                                                            IsEditable="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                            
                                                             IsDropDownOpen="{Binding ComboOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             StaysOpenOnEdit="True"
                                                             IsReadOnly="{Binding Path=DataContext.IsSubEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
@@ -466,7 +466,7 @@
                                                   IsEnabled="{Binding Path=ProjectSelected, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   BorderBrush="{StaticResource SOCELightGray}"
                                                   Style="{StaticResource MaterialDesignDataGridComboBox}"
-                                                  IsTextSearchEnabled="True" IsEditable="False"
+                                                  IsTextSearchEnabled="True"
                                                   SelectedItem="{Binding Path= SelectedSubproject, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemsSource="{Binding Path=SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                   TextSearch.TextPath="Description"

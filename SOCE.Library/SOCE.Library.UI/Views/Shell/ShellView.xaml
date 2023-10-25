@@ -15,11 +15,9 @@
         Background="Transparent">
     <Border BorderThickness="1" BorderBrush="Black">
         <materialDesign:DialogHost
-        Identifier="RootDialog"
-        DialogTheme="Light"
-           >
+        Identifier="RootDialog" 
+        DialogTheme="Light">
             <Grid>
-
                 <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right" 
                             Visibility="{Binding IsConfusingStuffVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <TextBlock Text="Version:" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center"/>

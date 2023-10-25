@@ -10,7 +10,9 @@
     <!--<Window.Resources>
         <BooleanToVisibilityConverter x:Key="BoolToVisConverter" />
     </Window.Resources>-->
-    <materialDesign:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch" IsRightDrawerOpen ="{Binding RightDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RightDrawerCloseOnClickAway="True" >
+    <materialDesign:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                               IsRightDrawerOpen ="{Binding RightDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                               RightDrawerCloseOnClickAway="True">
         <materialDesign:DrawerHost.RightDrawerContent >
             <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <!--<views:AddSubProjectView/>-->
