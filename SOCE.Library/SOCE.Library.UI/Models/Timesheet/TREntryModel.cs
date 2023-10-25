@@ -138,21 +138,6 @@ namespace SOCE.Library.UI
             }
         }
 
-        //private Brush _cellColor;
-        //public Brush CellColor
-        //{
-        //    get
-        //    {
-        //        return _cellColor;
-        //    }
-        //    set
-        //    {
-        //        _cellColor = value;
-        //        //SetTotal();
-        //        RaisePropertyChanged(nameof(CellColor));
-        //    }
-        //}
-
         public object Clone()
         {
             return new TREntryModel() { Date = this.Date, TimeEntry = this.TimeEntry, Id = this.Id };

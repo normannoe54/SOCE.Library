@@ -205,8 +205,8 @@ namespace SOCE.Library.UI.ViewModels
                 SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
                 ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
 
-                ProjectModel pm = new ProjectModel(pdb);
-                SubProjectModel spm = new SubProjectModel(spdb);
+                ProjectLowResModel pm = new ProjectLowResModel(pdb);
+                SubProjectLowResModel spm = new SubProjectLowResModel(spdb);
 
                 TimesheetRowModel trm = new TimesheetRowModel()
                 {

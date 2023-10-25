@@ -13,13 +13,13 @@ using System.Windows.Input;
 
 namespace SOCE.Library.UI
 {
-    public class TimesheetRowModel : BaseVM, ICloneable
+    public class TimesheetRowModel : BaseVM
     {
         public ICommand ClearSelectedProjectCommand { get; set; }
         public ICommand SelectedItemChangedCommand { get; set; }
 
-        private ProjectModel _project;
-        public ProjectModel Project
+        private ProjectLowResModel _project;
+        public ProjectLowResModel Project
         {
             get
             {
@@ -51,8 +51,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ObservableCollection<SubProjectModel> _subprojects = new ObservableCollection<SubProjectModel>();
-        public ObservableCollection<SubProjectModel> SubProjects
+        private ObservableCollection<SubProjectLowResModel> _subprojects = new ObservableCollection<SubProjectLowResModel>();
+        public ObservableCollection<SubProjectLowResModel> SubProjects
         {
             get { return _subprojects; }
             set
@@ -62,8 +62,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private SubProjectModel _selectedSubproject;
-        public SubProjectModel SelectedSubproject
+        private SubProjectLowResModel _selectedSubproject;
+        public SubProjectLowResModel SelectedSubproject
         {
             get
             {
@@ -164,8 +164,8 @@ namespace SOCE.Library.UI
             }
         }
 
-        private ObservableCollection<ProjectModel> _projectList;
-        public ObservableCollection<ProjectModel> ProjectList
+        private ObservableCollection<ProjectLowResModel> _projectList;
+        public ObservableCollection<ProjectLowResModel> ProjectList
         {
             get { return _projectList; }
             set
@@ -175,7 +175,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        public ObservableCollection<ProjectModel> BaseProjectList { get; set; } = new ObservableCollection<ProjectModel>();
+        public ObservableCollection<ProjectLowResModel> BaseProjectList { get; set; } = new ObservableCollection<ProjectLowResModel>();
 
         private void SetTotalNew()
         {
@@ -187,10 +187,10 @@ namespace SOCE.Library.UI
             Constructor();
         }
 
-        public TimesheetRowModel(List<ProjectModel> projs)
+        public TimesheetRowModel(List<ProjectLowResModel> projs)
         {
             Constructor();
-            BaseProjectList = new ObservableCollection<ProjectModel>(projs);
+            BaseProjectList = new ObservableCollection<ProjectLowResModel>(projs);
             ProjectList = BaseProjectList;
         }
 
@@ -213,7 +213,7 @@ namespace SOCE.Library.UI
                 {
                     ComboOpen = true;
 
-                    ProjectList = new ObservableCollection<ProjectModel>(BaseProjectList.Where(x => (x.ProjectName.ToUpper() + x.ProjectNumber.ToString()).Contains(project.ToUpper())));
+                    ProjectList = new ObservableCollection<ProjectLowResModel>(BaseProjectList.Where(x => (x.ProjectName.ToUpper() + x.ProjectNumber.ToString()).Contains(project.ToUpper())));
                 }
                 else
                 {
@@ -236,7 +236,7 @@ namespace SOCE.Library.UI
             //1 = active subprojects - doesnt work cuz of saved or submitted previous phases
             List<SubProjectDbModel> subdbprojects = SQLAccess.LoadSubProjectsByProject(id);
 
-            ObservableCollection<SubProjectModel> members = new ObservableCollection<SubProjectModel>();
+            ObservableCollection<SubProjectLowResModel> members = new ObservableCollection<SubProjectLowResModel>();
 
             bool projisactive = Project.IsActive;
             foreach (SubProjectDbModel sdb in subdbprojects)
@@ -245,15 +245,15 @@ namespace SOCE.Library.UI
 
                 if (subisactive || (!projisactive))
                 {
-                    members.Add(new SubProjectModel(sdb));
+                    members.Add(new SubProjectLowResModel(sdb));
                 }
             }
 
-            members.Renumber(true);
+            //members.Renumber(true);
             int idofscheduleactive = 0;
             bool stuffhappened = false;
 
-            foreach (SubProjectModel sub in members)
+            foreach (SubProjectLowResModel sub in members)
             {
                 if (sub.IsScheduleActive)
                 {
@@ -267,9 +267,9 @@ namespace SOCE.Library.UI
             
             if (stuffhappened)
             {
-                List<SubProjectModel> newsubs = members.ToList();
+                List<SubProjectLowResModel> newsubs = members.ToList();
                 newsubs.MoveItemAtIndexToFront(idofscheduleactive);
-                SubProjects = new ObservableCollection<SubProjectModel>(newsubs);
+                SubProjects = new ObservableCollection<SubProjectLowResModel>(newsubs);
             }
             else
             {
@@ -296,19 +296,11 @@ namespace SOCE.Library.UI
             bool status = SelectedSubproject.IsActive;
 
             AlertStatus = status ? TimesheetRowAlertStatus.Active : TimesheetRowAlertStatus.Inactive;
-
         }
 
 
         public object Clone()
         {
-            ObservableCollection<SubProjectModel> spms = new ObservableCollection<SubProjectModel>();
-
-            foreach (SubProjectModel spm in SubProjects)
-            {
-                spms.Add((SubProjectModel)spm?.Clone());
-            }
-
             ObservableCollection<TREntryModel> trs = new ObservableCollection<TREntryModel>();
             foreach (TREntryModel tr in Entries)
             {
@@ -317,9 +309,8 @@ namespace SOCE.Library.UI
 
             TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
             {
-                Project = (ProjectModel)this.Project?.Clone(),
-                SelectedSubproject = (SubProjectModel)this.SelectedSubproject?.Clone(),
-                SubProjects = spms,
+                Project = (ProjectLowResModel)this.Project?.Clone(),
+                SelectedSubproject = (SubProjectLowResModel)this.SelectedSubproject?.Clone(),
                 Entries = trs
             };
 

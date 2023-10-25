@@ -47,31 +47,24 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand NextCommand { get; set; }
         public ICommand CurrentCommand { get; set; }
 
-        public ICommand CopyPreviousCommand { get; set; }
+        //public ICommand CopyPreviousCommand { get; set; }
 
         public ICommand ExportToExcel { get; set; }
         public List<TimesheetRowModel> CopiedTimesheetData { get; set; } = new List<TimesheetRowModel>();
 
-        private ObservableCollection<TimesheetRowModel> _rowdata = new ObservableCollection<TimesheetRowModel>();
-        public ObservableCollection<TimesheetRowModel> Rowdata
+        private ObservableCollection<TimesheetRowView> _rowdata = new ObservableCollection<TimesheetRowView>();
+        public ObservableCollection<TimesheetRowView> Rowdata
         {
             get { return _rowdata; }
             set
             {
                 _rowdata = value;
-                //SumTable();
-                //CollectDates();
-
-                if (Rowdata.Count == 0)
-                {
-
-                }
                 RaisePropertyChanged(nameof(Rowdata));
             }
         }
 
-        private ObservableCollection<ProjectModel> _projectList;
-        public ObservableCollection<ProjectModel> ProjectList
+        private ObservableCollection<ProjectLowResModel> _projectList;
+        public ObservableCollection<ProjectLowResModel> ProjectList
         {
             get { return _projectList; }
             set
@@ -204,24 +197,24 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _searchFilter = false;
-        public bool SearchFilter
-        {
-            get { return _searchFilter; }
-            set
-            {
-                _searchFilter = value;
+        //private bool _searchFilter = false;
+        //public bool SearchFilter
+        //{
+        //    get { return _searchFilter; }
+        //    set
+        //    {
+        //        _searchFilter = value;
 
-                //if (_searchFilter)
-                //{
-                foreach (ProjectModel pm in ProjectList)
-                {
-                    pm.SearchText = _searchFilter ? pm.ProjectName : pm.ProjectNumber.ToString();
-                }
-                //}
-                RaisePropertyChanged(nameof(SearchFilter));
-            }
-        }
+        //        //if (_searchFilter)
+        //        //{
+        //        foreach (ProjectModel pm in ProjectList)
+        //        {
+        //            pm.SearchText = _searchFilter ? pm.ProjectName : pm.ProjectNumber.ToString();
+        //        }
+        //        //}
+        //        RaisePropertyChanged(nameof(SearchFilter));
+        //    }
+        //}
 
         private PackIconKind _icon;
         public PackIconKind Icon
@@ -297,7 +290,6 @@ namespace SOCE.Library.UI.ViewModels
             Constructor(loggedinEmployee);
             LoadCurrentTimesheet(DateTime.Now);
             SumTable();
-            SearchFilter = false;
 
         }
 
@@ -306,23 +298,21 @@ namespace SOCE.Library.UI.ViewModels
             Constructor(loggedinEmployee);
             LoadCurrentTimesheet(date);
             SumTable();
-            SearchFilter = false;
-
         }
 
         private void Constructor(EmployeeModel loggedinEmployee)
         {
             CurrentEmployee = loggedinEmployee;
-            Rowdata.CollectionChanged += RowDataChanged;
+            //Rowdata.CollectionChanged += RowDataChanged;
             this.AddRowCommand = new RelayCommand(AddRowToCollection);
             this.SubmitTimeSheetCommand = new RelayCommand(SubmitTimesheet);
-            this.RemoveRowCommand = new RelayCommand<TimesheetRowModel>(RemoveRow);
+            this.RemoveRowCommand = new RelayCommand<TimesheetRowView>(RemoveRow);
             this.SaveTimesheetCommand = new AsyncRelayCommand<int>(SaveCommand);
             
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
-            this.CopyPreviousCommand = new RelayCommand(CopyPrevious);
+            //this.CopyPreviousCommand = new RelayCommand(CopyPrevious);
             this.ExportToExcel = new RelayCommand(ExportCurrentTimesheetToExcel);
 
         }
@@ -334,29 +324,34 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddRowToCollection()
         {
-            Rowdata.Add(new TimesheetRowModel(ProjectList.ToList()){ Entries = AddNewBlankRow() });
+            TimesheetRowView trv = new TimesheetRowView();
+            TimesheetRowModel trvm = new TimesheetRowModel(ProjectList.ToList()) { Entries = AddNewBlankRow() };
+            trv.DataContext = trvm;
+            Rowdata.Add(trv);
             //CollectDates();
         }
 
-        private async void RemoveRow(TimesheetRowModel trm)
+        private async void RemoveRow(TimesheetRowView trmv)
         {
-            if (trm.Entries.Any(x => x.TimeEntry > 0))
-            {
-                YesNoView view = new YesNoView();
-                YesNoVM aysvm = new YesNoVM();
-                aysvm.Message = "Are you sure you want to delete";
-                aysvm.SubMessage = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
-                view.DataContext = aysvm;
-                var result = await DialogHost.Show(view, "RootDialog");
-                aysvm = view.DataContext as YesNoVM;
+            TimesheetRowModel trm = (TimesheetRowModel)trmv.DataContext;
 
-                if (!aysvm.Result)
-                {
-                    return;
-                }
-            }
+            //if (trm.Entries.Any(x => x.TimeEntry > 0))
+            //{
+            //    YesNoView view = new YesNoView();
+            //    YesNoVM aysvm = new YesNoVM();
+            //    aysvm.Message = "Are you sure you want to delete";
+            //    aysvm.SubMessage = trm.Project.ProjectName + " [" + trm.Project.ProjectNumber.ToString() + "]";
+            //    view.DataContext = aysvm;
+            //    var result = await DialogHost.Show(view, "RootDialog");
+            //    aysvm = view.DataContext as YesNoVM;
 
-            Rowdata.Remove(trm);
+            //    if (!aysvm.Result)
+            //    {
+            //        return;
+            //    }
+            //}
+
+            Rowdata.Remove(trmv);
         }
 
 
@@ -375,7 +370,9 @@ namespace SOCE.Library.UI.ViewModels
 
                 if (Rowdata.Count > 0)
                 {
-                    TimesheetRowModel trmfirst = Rowdata[0];
+                    TimesheetRowView trv = Rowdata[0];
+                    TimesheetRowModel trmfirst = (TimesheetRowModel)trv.DataContext;
+
                     int count = trmfirst.Entries.Count;
 
                     for (int i = 0; i < count - 2; i++)
@@ -390,7 +387,7 @@ namespace SOCE.Library.UI.ViewModels
                     char cval = 'D';
                     char finalval = 'C';
 
-                    foreach (TREntryModel ent1 in Rowdata[0].Entries)
+                    foreach (TREntryModel ent1 in trmfirst.Entries)
                     {
                         dates.Add(ent1.Date.DayOfWeek.ToString().Substring(0, 1));
                         number.Add(ent1.Date.Day);
@@ -408,7 +405,14 @@ namespace SOCE.Library.UI.ViewModels
 
                     int basenum = 6;
 
-                    List<TimesheetRowModel> exportedtime = Rowdata.ToList().OrderBy(x => x.Project.ProjectNumber.ToString().Substring(2)).ThenBy(x=> x.Project.ProjectNumber).ToList();
+                    List<TimesheetRowModel> viewmodels = new List<TimesheetRowModel>();
+
+                    foreach (TimesheetRowView trv2 in Rowdata)
+                    {
+                        viewmodels.Add((TimesheetRowModel)trv.DataContext);
+                    }
+
+                    List<TimesheetRowModel> exportedtime = viewmodels.ToList().OrderBy(x => x.Project.ProjectNumber.ToString().Substring(2)).ThenBy(x=> x.Project.ProjectNumber).ToList();
 
                     foreach (TimesheetRowModel trm in exportedtime)
                     {
@@ -457,15 +461,17 @@ namespace SOCE.Library.UI.ViewModels
             if (Rowdata.Count > 0)
             {
                 TotalHeader.Clear();
-                int numofentries = Rowdata[0].Entries.Count();
+                TimesheetRowModel trvm = (TimesheetRowModel)Rowdata[0].DataContext;
+                int numofentries = trvm.Entries.Count();
 
                 for (int i = 0; i < numofentries; i++)
                 {
                     double total = 0;
 
-                    foreach (TimesheetRowModel trm in Rowdata)
+                    foreach (TimesheetRowView trm in Rowdata)
                     {
-                        total += trm.Entries[i].TimeEntry;
+                        TimesheetRowModel trmind = (TimesheetRowModel)trm.DataContext;
+                        total += trmind.Entries[i].TimeEntry;
                     }
 
                     TotalHeader.Add(new DoubleWrapper(total));
@@ -515,15 +521,15 @@ namespace SOCE.Library.UI.ViewModels
         {
             List<ProjectDbModel> dbprojects = SQLAccess.LoadProjects();
 
-            ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
+            ObservableCollection<ProjectLowResModel> members = new ObservableCollection<ProjectLowResModel>();
 
-            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
+            ProjectLowResModel[] ProjectArray = new ProjectLowResModel[dbprojects.Count];
 
             //Do not include the last layer
             for (int i = 0; i < dbprojects.Count; i++)
             {
                 ProjectDbModel pdb = dbprojects[i];
-                ProjectModel pm = new ProjectModel(pdb);
+                ProjectLowResModel pm = new ProjectLowResModel(pdb);
 
 
                 bool activetest = submitted ? true : pm.IsActive;
@@ -531,52 +537,11 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     ProjectArray[i] = pm;
                 }
-
-                //pm.LoadSubProjects();
-
-                //if (pm.SubProjects.Count > 0 && activetest)
-                //{
             }
 
-            //Parallel.For(0, dbprojects.Count, i =>
-            //{
-            //    ProjectDbModel pdb = dbprojects[i];
-            //    ProjectModel pm = new ProjectModel(pdb);
-            //    bool activetest = submitted ? true : pm.IsActive;
-
-            //    //pm.LoadSubProjects();
-
-            //    //if (pm.SubProjects.Count > 0 && activetest)
-            //    //{
-
-            //    if (activetest)
-            //    {
-            //        ProjectArray[i] = pm;
-            //    }
-            //    //members.Add(pm);
-            //    //}
-            //}
-            //);
-
             ProjectArray = ProjectArray.Where(x => x != null).OrderByDescending(x => x.ProjectNumber).ToArray();
-            ProjectList = new ObservableCollection<ProjectModel>(ProjectArray.ToList());
-            SearchFilter = SearchFilter;
-            //ProjectList = new ObservableCollection<ProjectModel>(ProjectArray.ToList().OrderByDescending(x=>x.ProjectNumber));
+            ProjectList = new ObservableCollection<ProjectLowResModel>(ProjectArray.ToList());
 
-
-
-            //foreach (ProjectDbModel pdb in dbprojects)
-            //{
-            //    ProjectModel pm = new ProjectModel(pdb);
-            //pm.LoadSubProjects();
-            //bool activetest = submitted ? true : pm.IsActive;
-            //if (pm.SubProjects.Count > 0 && activetest)
-            //{
-            //    members.Add(pm);
-            //}
-            //}
-
-            //ProjectList = members;
         }
 
         /// <summary>
@@ -609,7 +574,7 @@ namespace SOCE.Library.UI.ViewModels
 
             IsSubEditable = (tsdbm == null) ? true : false;
 
-            Icon = (tsdbm == null) ? MaterialDesignThemes.Wpf.PackIconKind.DotsHorizontalCircleOutline : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
+            //Icon = (tsdbm == null) ? MaterialDesignThemes.Wpf.PackIconKind.DotsHorizontalCircleOutline : MaterialDesignThemes.Wpf.PackIconKind.CheckCircleOutline;
             Iconcolor = (tsdbm == null) ? Brushes.SlateBlue : Brushes.Green;
             return !IsSubEditable;
         }
@@ -619,8 +584,8 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void LoadTimesheetData()
         {
-            CopiedTimesheetData.Clear();
-            Rowdata.Clear();
+            CopiedTimesheetData = null;
+            Rowdata = null;
             DateTime datestart = DateSummary.First().Value;
             DateTime dateend = DateSummary.Last().Value;
 
@@ -637,9 +602,9 @@ namespace SOCE.Library.UI.ViewModels
                 SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
                 TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList());
                 ProjectDbModel pdb = null;
-                ProjectModel pm = null;
-                SubProjectModel spm = null;
-                ProjectModel pmnew = null;
+                ProjectLowResModel pm = null;
+                SubProjectLowResModel spm = null;
+                ProjectLowResModel pmnew = null;
 
                 if (spdb == null)
                 {
@@ -655,18 +620,18 @@ namespace SOCE.Library.UI.ViewModels
                     }
                     else
                     {
-                        pm = new ProjectModel(pdb);
-                        spm = new SubProjectModel(spdb);
+                        pm = new ProjectLowResModel(pdb);
+                        spm = new SubProjectLowResModel(spdb);
                         pmnew = ProjectList.Where(x => x.Id == pm.Id)?.FirstOrDefault();
 
                         //Right here is where we need to fix stuff.
                         if (pmnew == null)
                         {
                             trm.AlertStatus = TimesheetRowAlertStatus.Inactive;
-                            List<ProjectModel> pmlist = ProjectList.ToList();
+                            List<ProjectLowResModel> pmlist = ProjectList.ToList();
                             pmlist.Add(pm);
                             //trm.BaseProjectList = new ObservableCollection<ProjectModel>(pmlist);
-                            trm.ProjectList = new ObservableCollection<ProjectModel>(pmlist);
+                            trm.ProjectList = new ObservableCollection<ProjectLowResModel>(pmlist);
                             //ProjectList.Add(pm);
                             pmnew = pm;
                         }
@@ -684,7 +649,7 @@ namespace SOCE.Library.UI.ViewModels
 
                         trm.Project = pmnew;
 
-                        SubProjectModel subpmnew;
+                        SubProjectLowResModel subpmnew;
 
                         try
                         {
@@ -740,12 +705,19 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             List<TimesheetRowModel> trmadjusted = trms?.OrderByDescending(x => x.Project.ProjectNumber).ToList();
-
+            List<TimesheetRowModel> copied = new List<TimesheetRowModel>();
+            List<TimesheetRowView> views = new List<TimesheetRowView>();
             foreach (TimesheetRowModel trm in trmadjusted)
             {
-                Rowdata.Add(trm);
-                CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
+                TimesheetRowView trv = new TimesheetRowView();
+                trv.DataContext = trm;
+                trv.InitializeComponent();
+                views.Add(trv);
+                copied.Add((TimesheetRowModel)trm.Clone());
             }
+
+            Rowdata = new ObservableCollection<TimesheetRowView>(views);
+            CopiedTimesheetData = copied;
 
             //order by descending here
             SumTable();
@@ -753,23 +725,24 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void SubmitTimesheet()
         {
-            YesNoView view = new YesNoView();
-            YesNoVM aysvm = new YesNoVM();
-            aysvm.Message = "Submit Time Sheet?";
-            view.DataContext = aysvm;
-            var result = await DialogHost.Show(view, "RootDialog");
-            aysvm = view.DataContext as YesNoVM;
+            //YesNoView view = new YesNoView();
+            //YesNoVM aysvm = new YesNoVM();
+            //aysvm.Message = "Submit Time Sheet?";
+            //view.DataContext = aysvm;
+            //var result = await DialogHost.Show(view, "RootDialog");
+            //aysvm = view.DataContext as YesNoVM;
 
-            if (aysvm.Result)
-            {
+            //if (aysvm.Result)
+            //{
                 SaveCommand(1);
                 double pto = 0;
                 double ot = 0;
                 double sick = 0;
                 double holiday = 0;
                 double sum = 0;
-                foreach (TimesheetRowModel trm in Rowdata)
+                foreach (TimesheetRowView trmv in Rowdata)
                 {
+                    TimesheetRowModel trm = (TimesheetRowModel)trmv.DataContext;
                     //adding or modifying an existing submission
                     foreach (TREntryModel trentry in trm.Entries)
                     {
@@ -808,7 +781,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 SQLAccess.AddTimesheetSubmissionData(timesheetsubdbmodel);
                 LoadTimesheetSubmissionData();
-            }
+            //}
         }
 
         /// <summary>
@@ -825,6 +798,12 @@ namespace SOCE.Library.UI.ViewModels
             //bool isallactive = !Rowdata.Any(x => x.AlertStatus != TimesheetRowAlertStatus.Active);
 
             //bool result = true;
+            List<TimesheetRowModel> viewmodels = new List<TimesheetRowModel>();
+
+            foreach (TimesheetRowView trv in Rowdata)
+            {
+                viewmodels.Add((TimesheetRowModel)trv.DataContext);
+            }
 
             //if (!isallactive)
             //{
@@ -849,12 +828,12 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         if (ctrm.SelectedSubproject != null)
                         {
-                            int index = Rowdata.ToList().FindIndex(x => x.SelectedSubproject?.Id == ctrm.SelectedSubproject.Id);
+                            int index = viewmodels.ToList().FindIndex(x => x.SelectedSubproject?.Id == ctrm.SelectedSubproject.Id);
 
                             //it exists
                             if (index != -1)
                             {
-                                TimesheetRowModel trmfound = Rowdata[index];
+                                TimesheetRowModel trmfound = viewmodels[index];
 
                                 foreach (TREntryModel trentry in ctrm.Entries)
                                 {
@@ -898,7 +877,7 @@ namespace SOCE.Library.UI.ViewModels
 
 
 
-                    foreach (TimesheetRowModel trm in Rowdata)
+                    foreach (TimesheetRowModel trm in viewmodels)
                     {
 
                         double timepersub = 0;
@@ -949,7 +928,7 @@ namespace SOCE.Library.UI.ViewModels
 
 
                     CopiedTimesheetData.Clear();
-                    foreach (TimesheetRowModel trm in Rowdata)
+                    foreach (TimesheetRowModel trm in viewmodels)
                     {
                         CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
                     }
@@ -993,109 +972,109 @@ namespace SOCE.Library.UI.ViewModels
         /// Load Date of Timesheet
         /// </summary>
         /// <param name="currdate"></param>
-        private async void CopyPrevious()
-        {
-            if (Rowdata.Count == 0)
-            {
-                YesNoView view = new YesNoView();
-                YesNoVM aysvm = new YesNoVM();
-                aysvm.Message = "Copy the previous timesheet?";
-                view.DataContext = aysvm;
-                var result = await DialogHost.Show(view, "RootDialog");
-                aysvm = view.DataContext as YesNoVM;
+        //private async void CopyPrevious()
+        //{
+        //    if (Rowdata.Count == 0)
+        //    {
+        //        YesNoView view = new YesNoView();
+        //        YesNoVM aysvm = new YesNoVM();
+        //        aysvm.Message = "Copy the previous timesheet?";
+        //        view.DataContext = aysvm;
+        //        var result = await DialogHost.Show(view, "RootDialog");
+        //        aysvm = view.DataContext as YesNoVM;
 
-                if (aysvm.Result)
-                {
+        //        if (aysvm.Result)
+        //        {
 
-                    DateTime currdate = DateSummary.First().Value.AddDays(-1);
-                    //UpdateDateSummary(currdate);
-                    bool issubmitted = LoadTimesheetSubmissionData();
-                    LoadProjects(issubmitted);
-                    LoadTimesheetDataforCopyPrevious();
-                }
-            }
-            else
-            {
-                //Message sorry fam
-            }
+        //            DateTime currdate = DateSummary.First().Value.AddDays(-1);
+        //            //UpdateDateSummary(currdate);
+        //            bool issubmitted = LoadTimesheetSubmissionData();
+        //            LoadProjects(issubmitted);
+        //            LoadTimesheetDataforCopyPrevious();
+        //        }
+        //    }
+        //    else
+        //    {
+        //        //Message sorry fam
+        //    }
 
-        }
+        //}
 
-        private void LoadTimesheetDataforCopyPrevious()
-        {
-            //LoadCurrentTimesheet();
+        //private void LoadTimesheetDataforCopyPrevious()
+        //{
+        //    //LoadCurrentTimesheet();
 
-            CopiedTimesheetData.Clear();
-            Rowdata.Clear();
-            DateTime currdate = DateSummary.First().Value.AddDays(-1);
-            DateTime firstdate;
-            DateTime lastdate;
-            if (currdate.Day > 16)
-            {
-                //second tier
-                firstdate = new DateTime(currdate.Year, currdate.Month, 17);
-                lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
-            }
-            else
-            {
-                //first tier
-                firstdate = new DateTime(currdate.Year, currdate.Month, 1);
-                lastdate = new DateTime(currdate.Year, currdate.Month, 16);
-            }
+        //    CopiedTimesheetData.Clear();
+        //    Rowdata.Clear();
+        //    DateTime currdate = DateSummary.First().Value.AddDays(-1);
+        //    DateTime firstdate;
+        //    DateTime lastdate;
+        //    if (currdate.Day > 16)
+        //    {
+        //        //second tier
+        //        firstdate = new DateTime(currdate.Year, currdate.Month, 17);
+        //        lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
+        //    }
+        //    else
+        //    {
+        //        //first tier
+        //        firstdate = new DateTime(currdate.Year, currdate.Month, 1);
+        //        lastdate = new DateTime(currdate.Year, currdate.Month, 16);
+        //    }
 
-            //update employee Id
-            List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, CurrentEmployee.Id);
+        //    //update employee Id
+        //    List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, CurrentEmployee.Id);
 
-            //ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
+        //    //ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
 
-            var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
+        //    var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
 
-            foreach (var item in groupedlist)
-            {
-                TimesheetRowDbModel subitem = item.First();
-                SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
-                ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
+        //    foreach (var item in groupedlist)
+        //    {
+        //        TimesheetRowDbModel subitem = item.First();
+        //        SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
+        //        ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
 
-                try
-                {
-                    ProjectModel pm = new ProjectModel(pdb);
-                    SubProjectModel spm = new SubProjectModel(spdb);
+        //        try
+        //        {
+        //            ProjectModel pm = new ProjectModel(pdb);
+        //            SubProjectModel spm = new SubProjectModel(spdb);
 
-                    ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
-                    TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
-                    {
-                        Project = pmnew
-                    };
+        //            ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
+        //            TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
+        //            {
+        //                Project = pmnew
+        //            };
 
-                    SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
+        //            SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
 
-                    trm.SelectedSubproject = subpmnew;
+        //            trm.SelectedSubproject = subpmnew;
 
-                    ObservableCollection<TREntryModel> blanks = new ObservableCollection<TREntryModel>();
+        //            ObservableCollection<TREntryModel> blanks = new ObservableCollection<TREntryModel>();
 
-                    foreach (TREntryModel trentry in BlankEntry)
-                    {
-                        blanks.Add((TREntryModel)trentry.Clone());
-                    }
+        //            foreach (TREntryModel trentry in BlankEntry)
+        //            {
+        //                blanks.Add((TREntryModel)trentry.Clone());
+        //            }
 
-                    trm.Entries = blanks;
+        //            trm.Entries = blanks;
 
-                    Rowdata.Add(trm);
-                }
-                catch
-                {
-                    continue;
-                }
-            }
+        //            Rowdata.Add(trm);
+        //        }
+        //        catch
+        //        {
+        //            continue;
+        //        }
+        //    }
 
-            //Rowdata = members;
+        //    //Rowdata = members;
 
-            foreach (TimesheetRowModel trm in Rowdata)
-            {
-                CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
-            }
+        //    foreach (TimesheetRowModel trm in Rowdata)
+        //    {
+        //        CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
+        //    }
 
-        }
+        //}
 
         private void UpdateDateSummary(DateTime currdate)
         {
@@ -1196,9 +1175,10 @@ namespace SOCE.Library.UI.ViewModels
         {
             SumTable();
 
-            foreach (TimesheetRowModel trm in Rowdata)
+            foreach (TimesheetRowView trm in Rowdata)
             {
-                trm.Total = trm.Entries.Sum(x => x.TimeEntry);
+                TimesheetRowModel trvm = (TimesheetRowModel)trm.DataContext;
+                trvm.Total = trvm.Entries.Sum(x => x.TimeEntry);
             }
             AutoSave();
         }

@@ -8,35 +8,26 @@
              StartupUri="Views/Shell/ShellView.xaml">
     <Application.Resources>
         <ResourceDictionary>
-            
+
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />
+                <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Light.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.Defaults.xaml" />-->
                 <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.DialogHost.xaml" />
                 <!--<ResourceDictionary Source="pack://application:,,,/MaterialDesignColors;component/Themes/Recommended/Primary/MaterialDesignColor.Red.xaml" />-->
             </ResourceDictionary.MergedDictionaries>
 
-            <SolidColorBrush x:Key="PrimaryHueLightBrush" Color="#e38a8a"/>
-            <SolidColorBrush x:Key="PrimaryHueLightForegroundBrush" Color="Black"/>
-            <SolidColorBrush x:Key="PrimaryHueMidBrush" Color="#5c5c5c"/>
-            <SolidColorBrush x:Key="PrimaryHueMidForegroundBrush" Color="White"/>
-            <SolidColorBrush x:Key="PrimaryHueDarkBrush" Color="#4f1d1b"/>
-            <SolidColorBrush x:Key="PrimaryHueDarkForegroundBrush" Color="DarkGray"/>
-            
-            
+            <!--#region Converters-->
             <local:DatetoStringConverter x:Key="DatetoString"/>
-            <!--<local:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
+            <local:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
             <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
-            <local:InverseBoolToVisConverter x:Key="InverseBoolToVisConverter"/>-->
-            
-            <!--<SolidColorBrush x:Key="SOCERed" Color="#9d3434"/>
-            <SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>
-            <SolidColorBrush x:Key="SOCELightRed" Color="#e36d6d"/>-->
+            <local:InverseBoolToVisConverter x:Key="InverseBoolToVisConverter"/>
+            <local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
+            <local:TableColorConverter x:Key="valueconverter"/>
+            <local:IsNullColorConverter x:Key="IsNullColorConverter"/>
+            <local:TimesheetColorAlertConverter x:Key="TimesheetColorAlertConverter"/>
+            <!--#endregion-->
 
-            <!--<DataTemplate DataType="{x:Type viewmodels:EmployeeDataVM}">
-                <views:EmployeeDataView/>
-            </DataTemplate>-->
-            
+            <!--#region Views-->
             <DataTemplate DataType="{x:Type viewmodels:EmployeeVM}">
                 <views:EmployeeView/>
             </DataTemplate>
@@ -45,18 +36,6 @@
                 <views:NetworkSearchView/>
             </DataTemplate>
 
-            <!--<DataTemplate DataType="{x:Type viewmodels:HomeViewVM}">
-                <views:HomeView/>
-            </DataTemplate>-->
-            
-            <!--<DataTemplate DataType="{x:Type viewmodels:LicenseManagerVM}">
-                <views:LicenseManagerView/>
-            
-            </DataTemplate>-->
-            <!--<DataTemplate DataType="{x:Type viewmodels:ResourcesVM}">
-                <views:ResourcesView/>
-            
-            </DataTemplate>-->
             <DataTemplate DataType="{x:Type viewmodels:TimesheetVM}">
                 <views:TimesheetView/>
             </DataTemplate>
@@ -66,7 +45,7 @@
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:PMScheduleVM}">
-            <views:PMReportView/>
+                <views:PMReportView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:ScheduleWeekVM}">
@@ -88,7 +67,7 @@
             <DataTemplate DataType="{x:Type viewmodels:PortalAI}">
                 <views:ShellPortalView/>
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type viewmodels:LoginAI}">
                 <views:ShellLoginView/>
             </DataTemplate>
@@ -96,23 +75,19 @@
             <DataTemplate DataType="{x:Type viewmodels:LoginVM}">
                 <views:LoginView/>
             </DataTemplate>
-            
-            <!--<DataTemplate DataType="{x:Type viewmodels:SignupVM}">
-                <views:SignupView/>
-            </DataTemplate>-->
-            
+
             <DataTemplate DataType="{x:Type viewmodels:ForgotPasswordVM}">
                 <views:ForgotPasswordView/>
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type viewmodels:CodeInsertVM}">
                 <views:CodeInsertView/>
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type viewmodels:ProjectVM}">
                 <views:ProjectView/>
             </DataTemplate>
-            
+
             <DataTemplate DataType="{x:Type viewmodels:ResetPasswordVM}">
                 <views:ResetPasswordView/>
             </DataTemplate>
@@ -120,24 +95,51 @@
             <DataTemplate DataType="{x:Type viewmodels:ProjectListVM}">
                 <views:ProjectListView/>
             </DataTemplate>
+            <!--#endregion-->
 
+            <!--#region Colors-->
             <SolidColorBrush x:Key="SOCERed" Color="#c92127"/>
             <SolidColorBrush x:Key="SOCEGray" Color="#636466"/>
-            <!--<SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>-->
             <SolidColorBrush x:Key="SOCELightRed" Color="#e24d52"/>
             <SolidColorBrush x:Key="SOCELightGray" Color="#898b8d"/>
-
             <SolidColorBrush x:Key="SOCEBlueCompliment" Color="#147975"/>
             <SolidColorBrush x:Key="SOCEGreenCompliment" Color="#1d9719"/>
             <SolidColorBrush x:Key="SOCEOrangeCompliment" Color="#c97221"/>
             <SolidColorBrush x:Key="SOCELightGreenCompliment" Color="#1d9719"/>
-            
+            <!--#endregion-->
+
             <Style x:Key="PageHeader" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="{StaticResource SOCERed}" />
                 <Setter Property="FontSize" Value="32"/>
                 <Setter Property="FontWeight" Value="SemiBold"/>
             </Style>
-            
+
+            <Style x:Key="GrayTimeSheetText" TargetType="TextBlock">
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Center"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="Foreground" Value="Gray"/>
+            </Style>
+
+            <Style x:Key="TimesheetTextBox" TargetType="local:TimesheetTextBox">
+                <Setter Property="TextAlignment" Value="Center" />
+                <Setter Property="VerticalContentAlignment" Value="Center"/>
+                <Setter Property="local:SelectTextOnFocus.Active"  Value="True"/>
+                <Setter Property="FontWeight" Value="SemiBold"/>
+                <Setter Property="MaxLength" Value="4"/>
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                    </Trigger>
+                    <Trigger Property="IsFocused" Value="True">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="BorderBrush" Value="Transparent" />
+                    </Trigger>
+                </Style.Triggers>
+            </Style>
+            <Style TargetType="{x:Type local:TimesheetTextBox}" BasedOn="{StaticResource TimesheetTextBox}" />
+
             <!--<Style x:Key="DataGridCellStyle1" TargetType="{x:Type DataGridCell}">
                 <Setter Property="Background" Value="Transparent"/>
                 <Setter Property="VerticalAlignment" Value="Center" />
