@@ -13,7 +13,6 @@ namespace SOCE.Library.UI.ViewModels
     public class YesNoVM : BaseVM
     {
         public bool Result { get; set; }
-
         private ProjectSummaryVM ProjectSummary { get; set; }
         private AddServiceVM AddServiceSummary { get; set; }
         public string Message { get; set; } = "";
@@ -87,7 +86,7 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = mm.MarketName;
         }
 
-        public YesNoVM(SubProjectModel spm, ProjectSummaryVM psm)
+        public YesNoVM(SubProjectSummaryModel spm, ProjectSummaryVM psm)
         {
             ProjectSummary = psm;
             Result = false;
@@ -97,7 +96,7 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = $"Phase: {spm.PointNumber}";
         }
 
-        public YesNoVM(SubProjectModel spm, AddServiceVM psm)
+        public YesNoVM(SubProjectAddServiceModel spm, AddServiceVM psm)
         {
             AddServiceSummary = psm;
             Result = false;
@@ -107,7 +106,7 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = $"Add-Service: {spm.PointNumber}";
         }
 
-        public YesNoVM(RolePerSubProjectModel rpspm, ProjectSummaryVM psm)
+        public YesNoVM(RoleSummaryModel rpspm, ProjectSummaryVM psm)
         {
             ProjectSummary = psm;
             Result = false;
@@ -118,7 +117,7 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = $"Role: {description} {Environment.NewLine}Employee: {rpspm.Employee.FullName}";
         }
 
-        public YesNoVM(ProjectModel pm)
+        public YesNoVM(ProjectViewResModel pm)
         {
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
@@ -163,19 +162,19 @@ namespace SOCE.Library.UI.ViewModels
             }
             else if (AddServiceSummary != null)
             {
-                SubProjectModel itemtodelete = (SubProjectModel)AddServiceSummary.ItemToDelete;
+                SubProjectAddServiceModel itemtodelete = (SubProjectAddServiceModel)AddServiceSummary.ItemToDelete;
 
                 if (Result)
                 {
-                    foreach (RolePerSubProjectModel rpspm in itemtodelete.RolesPerSub)
+                    List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(itemtodelete.Id);
+
+                    foreach (RolePerSubProjectDbModel rpspm in roles)
                     {
                         SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
                     }
 
                     SQLAccess.DeleteSubProject(itemtodelete.Id);
                     AddServiceSummary.SubProjects.Remove(itemtodelete);
-                    AddServiceSummary.BaseProject.UpdateSubProjects();
-                    AddServiceSummary.SubProjects.Renumber(true);
                     AddServiceSummary.ItemToDelete = null;
                     AddServiceSummary.LeftDrawerOpen = false;
                 }
@@ -188,26 +187,29 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     switch (itemtodelete)
                     {
-                        case SubProjectModel sub:
+                        case SubProjectSummaryModel sub:
                             {
-                                foreach (RolePerSubProjectModel rpspm in sub.RolesPerSub)
+                                List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(sub.Id);
+                                foreach (RolePerSubProjectDbModel rpspm in roles)
                                 {
                                     SQLAccess.DeleteRolesPerSubProject(rpspm.Id);
                                 }
                                 SQLAccess.DeleteSubProject(sub.Id);
-                                ProjectSummary.SubProjects.Remove(sub);
-                                ProjectSummary.BaseProject.UpdateSubProjects();
-                                ProjectSummary.SubProjects.Renumber(true);
+                                ProjectSummary.CollectSubProjectsInfo();
+                                //ProjectSummary.SubProjects.Remove(sub);
+                                //ProjectSummary.BaseProject.UpdateSubProjects();
+                                //ProjectSummary.SubProjects.Renumber(true);
                                 break;
                             }
-                        case RolePerSubProjectModel role:
+                        case RoleSummaryModel role:
                             {
                                 if (role.SpentHours == 0)
                                 {
                                     SQLAccess.DeleteRolesPerSubProject(role.Id);
                                 }
-                                ProjectSummary.SelectedProjectPhase.RolesPerSub.Remove(role);
-                                role.Subproject.baseproject.FormatData(false);
+                                ProjectSummary.CollectSubProjectsInfo();
+                                //ProjectSummary.SelectedProjectPhase.RolesPerSub.Remove(role);
+                                //role.Subproject.baseproject.FormatData(false);
 
                                 break;
                             }

@@ -66,6 +66,19 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(ClientAddress));
             }
         }
+        private string _clientCity { get; set; }
+        public string ClientCity
+        {
+            get
+            {
+                return _clientCity;
+            }
+            set
+            {
+                _clientCity = value;
+                RaisePropertyChanged(nameof(ClientCity));
+            }
+        }
 
         private bool _editFieldClientsState = true;
         public bool EditFieldClientsState
@@ -108,6 +121,7 @@ namespace SOCE.Library.UI
             ClientName = cdbm.ClientName;
             ClientNumber = cdbm.ClientNumber;
             ClientAddress = cdbm.ClientAddress;
+            ClientCity = cdbm.ClientCity;
             NameOfClient = cdbm.NameOfClient;
         }
 
@@ -119,6 +133,7 @@ namespace SOCE.Library.UI
                 ClientName = ClientName,
                 ClientNumber = ClientNumber,
                 ClientAddress = ClientAddress,
+                ClientCity = ClientCity,
                 NameOfClient = NameOfClient
             };
 
@@ -134,7 +149,7 @@ namespace SOCE.Library.UI
                 return false;
             }
 
-            return cm != null && Id == cm.Id && ClientName == cm.ClientName && ClientNumber == cm.ClientNumber;
+            return cm != null && Id == cm.Id && ClientName == cm.ClientName && ClientNumber == cm.ClientNumber && cm.ClientCity == ClientCity;
         }
 
         public override int GetHashCode()

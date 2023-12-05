@@ -16,6 +16,8 @@ using MaterialDesignThemes.Wpf;
 using SOCE.Library.UI.Views;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Windows;
+using System.Threading.Tasks;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -111,10 +113,18 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private void OpenTimeSheet(TimesheetSubmissionModel timesheetsubmission)
+        private async void OpenTimeSheet(TimesheetSubmissionModel timesheetsubmission)
         {
-            TimesheetViewerVM tvvm = new TimesheetViewerVM(basevm, timesheetsubmission);
-            basevm.ReviewVM = tvvm;
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                TimesheetViewerVM tvvm = new TimesheetViewerVM(basevm, timesheetsubmission);
+                basevm.ReviewVM = tvvm;
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         private void SendEmail(TimesheetSubmissionModel tsm)

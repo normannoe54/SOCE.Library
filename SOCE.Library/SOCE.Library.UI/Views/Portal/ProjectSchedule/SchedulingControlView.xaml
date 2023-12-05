@@ -191,7 +191,8 @@
                                                        Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>-->
                             <ComboBox Grid.Column="1" Margin="10 0 0 0" FontSize="16" 
                                                       ItemsSource="{Binding Path=EmployeeList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                      DisplayMemberPath="FullName" MaxDropDownHeight="200" SelectedItem="{Binding Path = EmployeeWrapper, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                      DisplayMemberPath="FullName" MaxDropDownHeight="200" 
+                                      SelectedItem="{Binding Path = SelectedEmployee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <ComboBox.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <VirtualizingStackPanel />
@@ -216,6 +217,7 @@
                                         <local:TimesheetTextBox
                                             Text="{Binding TimeEntry, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     TextAlignment="Center"
+                                                    Background="{Binding CellColor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     VerticalContentAlignment="Center"
                                                     local:SelectTextOnFocus.Active = "True"
                                                     FontWeight="SemiBold" 

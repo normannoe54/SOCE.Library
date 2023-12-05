@@ -36,8 +36,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<EmployeeModel> _employeeSummary = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> EmployeeSummary
+        private ObservableCollection<EmployeeScheduleModel> _employeeSummary = new ObservableCollection<EmployeeScheduleModel>();
+        public ObservableCollection<EmployeeScheduleModel> EmployeeSummary
         {
             get { return _employeeSummary; }
             set
@@ -47,7 +47,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public EmployeeScheduleSummaryVM(ObservableCollection<EmployeeModel> Employees, ObservableCollection<DateWrapper> Dates)
+        public EmployeeScheduleSummaryVM(ObservableCollection<EmployeeScheduleModel> Employees, ObservableCollection<DateWrapper> Dates)
         {
             this.GoBackCommand = new RelayCommand(this.GoBack);
             EmployeeSummary = Employees;
@@ -65,9 +65,9 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CollectEmployeeSummary()
         {
-            foreach (EmployeeModel em in EmployeeSummary)
+            foreach (EmployeeScheduleModel em in EmployeeSummary)
             {
-                em.Entries.Clear();
+                em.Entries = null;
                 List<SchedulingDataDbModel> data = SQLAccess.LoadSchedulingDataByEmployee(DateSummary[0].Value, em.Id);
                 double hours1 = data.Sum(x => x.Hours1);
                 double hours2 = data.Sum(x => x.Hours2);
@@ -108,15 +108,16 @@ namespace SOCE.Library.UI.ViewModels
                 SDEntryModel hours7entry = new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = hours7, CellColor = brush7 };
                 SDEntryModel hours8entry = new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = hours8, CellColor = brush8 };
 
-
-                em.Entries.Add(hours1entry);
-                em.Entries.Add(hours2entry);
-                em.Entries.Add(hours3entry);
-                em.Entries.Add(hours4entry);
-                em.Entries.Add(hours5entry);
-                em.Entries.Add(hours6entry);
-                em.Entries.Add(hours7entry);
-                em.Entries.Add(hours8entry);
+                List<SDEntryModel> entries = new List<SDEntryModel>();
+                entries.Add(hours1entry);
+                entries.Add(hours2entry);
+                entries.Add(hours3entry);
+                entries.Add(hours4entry);
+                entries.Add(hours5entry);
+                entries.Add(hours6entry);
+                entries.Add(hours7entry);
+                entries.Add(hours8entry);
+                em.Entries = new ObservableCollection<SDEntryModel>(entries);
             }
         }
     }

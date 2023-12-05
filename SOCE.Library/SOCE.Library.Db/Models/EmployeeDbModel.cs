@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+//using System.Drawing;
 
 namespace SOCE.Library.Db
 {
@@ -33,6 +34,8 @@ namespace SOCE.Library.Db
         public double WednesdayHours { get; set; }
         public double ThursdayHours { get; set; }
         public double FridayHours { get; set; }
+
+        public object PMSignature { get; set; }
         public string FullName
         {
             get

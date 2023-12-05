@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Media;
+using SOCE.Library.UI.ViewModels;
 
 namespace SOCE.Library.UI
 {
@@ -61,6 +62,10 @@ namespace SOCE.Library.UI
                 //{
                     _timeentry = value;
 
+                if (basevm != null)
+                {
+                    basevm.UpdateTotals();
+                }
                     //if (_timeEntryString != _timeentry.ToString())
                     //{
                     //    TimeEntryString = _timeentry.ToString();
@@ -70,6 +75,8 @@ namespace SOCE.Library.UI
                 //}
             }
         }
+
+        public ScheduleWeekControlVM basevm;
 
         //private string _timeEntryString = "0";
         //public string TimeEntryString

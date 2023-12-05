@@ -99,6 +99,8 @@
                                         <Grid.RowDefinitions>
                                             <RowDefinition Height="Auto"/>
                                             <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+
                                         </Grid.RowDefinitions>
 
                                         <Grid HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="0">
@@ -119,7 +121,15 @@
                                             <TextBox Grid.Column="1" Margin="10 0 0 0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
                                          VerticalAlignment="Center" Text="{Binding ClientAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Default Address"/>
                                         </Grid>
-
+                                        <Grid  HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="2" Margin="0 5 0 0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Margin="0 0 0 6" Text="City:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
+                                            <TextBox Grid.Column="1" Margin="10 0 0 0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
+                                         VerticalAlignment="Center" Text="{Binding ClientCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Default City"/>
+                                        </Grid>
                                     </Grid>
 
                                 </Border>

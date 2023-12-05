@@ -12,8 +12,8 @@ namespace SOCE.Library.UI.ViewModels
 {
     public class SubProjectInfoVM : BaseVM
     {
-        private SubProjectModel _subProject = new SubProjectModel();
-        public SubProjectModel SubProject
+        private SubProjectSummaryModel _subProject = new SubProjectSummaryModel();
+        public SubProjectSummaryModel SubProject
         {
             get { return _subProject; }
             set
@@ -74,7 +74,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private ProjectSummaryVM baseViewModel;
 
-        public SubProjectInfoVM(SubProjectModel sub, ProjectSummaryVM proj)
+        public SubProjectInfoVM(SubProjectSummaryModel sub, ProjectSummaryVM proj)
         {
             this.SaveSubProjectCommand = new RelayCommand(this.SaveSubProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
@@ -109,7 +109,7 @@ namespace SOCE.Library.UI.ViewModels
                 IsScheduleActive = Convert.ToInt32(SubProject.IsScheduleActive)
             };
 
-            SQLAccess.UpdateSubProject(subupdate);
+            SQLAccess.UpdateSubProjectSummary(subupdate);
 
             result = true;
             CloseWindow();
@@ -117,19 +117,19 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            if (result)
-            {
-                SubProjectModel sub = baseViewModel.SubProjects.Where(x => x.Id == SubProject.Id).FirstOrDefault();
-                sub.PointNumber = AdServiceNumber.ToString();
-                sub.Description = Description;
-                sub.Fee = AdditionalServicesFee;
-                sub.ExpandedDescription = ExpandedDescription;
-                baseViewModel.BaseProject.SubProjects = baseViewModel.SubProjects;
-                baseViewModel.BaseProject.UpdateSubProjects();
-                baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
-                baseViewModel.SelectedProjectPhase = sub;
-            }
-            
+            //if (result)
+            //{
+            //    //SubProjectModel sub = baseViewModel.SubProjects.Where(x => x.Id == SubProject.Id).FirstOrDefault();
+            //    sub.PointNumber = AdServiceNumber.ToString();
+            //    sub.Description = Description;
+            //    sub.Fee = AdditionalServicesFee;
+            //    sub.ExpandedDescription = ExpandedDescription;
+            //    baseViewModel.BaseProject.SubProjects = baseViewModel.SubProjects;
+            //    baseViewModel.BaseProject.UpdateSubProjects();
+            //    baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
+            //    baseViewModel.SelectedProjectPhase = sub;
+            //}
+            baseViewModel.CollectSubProjectsInfo();
             baseViewModel.LeftDrawerOpen = false;
             //DialogHost.Close("RootDialog");
         }

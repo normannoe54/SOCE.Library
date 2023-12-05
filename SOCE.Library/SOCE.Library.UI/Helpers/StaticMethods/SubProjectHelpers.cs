@@ -59,5 +59,55 @@ namespace SOCE.Library.UI
 
             return SubProjects;
         }
+
+        public static ObservableCollection<SubProjectSummaryModel> Renumber(this ObservableCollection<SubProjectSummaryModel> SubProjects, bool firstload)
+        {
+            bool toggle0 = false;
+            SubProjectSummaryModel Lastitem = null;
+            List<SubProjectSummaryModel> subs = new List<SubProjectSummaryModel>();
+            for (int i = 0; i < SubProjects.Count; i++)
+            {
+                SubProjectSummaryModel sub = SubProjects[i];
+
+                if (sub.Id != 0)
+                {
+                    int num = 0;
+                    if (firstload)
+                    {
+                        if (sub.NumberOrder == 0 && !toggle0)
+                        {
+                            num = 0;
+                            toggle0 = true;
+                        }
+                        else
+                        {
+                            num = sub.NumberOrder == 0 ? i : sub.NumberOrder;
+                        }
+                    }
+                    else
+                    {
+                        num = i;
+                    }
+
+                    SQLAccess.UpdateNumberOrder(sub.Id, num);
+                    sub.NumberOrder = num;
+                    subs.Add(sub);
+                }
+                else
+                {
+                    Lastitem = sub;
+                }
+            }
+
+            //SubProjects.ToList().Sort((x1, x2) =>  x1.NumberOrder - x2.NumberOrder );
+            SubProjects = new ObservableCollection<SubProjectSummaryModel>(subs.OrderBy(x => x.NumberOrder).ToList());
+
+            if (Lastitem != null)
+            {
+                SubProjects.Add(Lastitem);
+            }
+
+            return SubProjects;
+        }
     }
 }

@@ -135,5 +135,7 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(Total));
             }
         }
+
+
     }
 }

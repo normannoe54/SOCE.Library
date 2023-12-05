@@ -103,7 +103,7 @@
                     </CheckBox>
                 </StackPanel>
             </TabItem>
-            <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding AdSelected}" Background="{StaticResource SOCELightRed}" Width="90">
+            <!--<TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding AdSelected}" Background="{StaticResource SOCELightRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
                         <TextBlock Text="Add-&#10;Service" TextAlignment="Center" Foreground="Black"/>
@@ -134,12 +134,12 @@
                              AcceptsReturn="True" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" materialDesign:HintAssist.Hint="Scope of Work" Text="{Binding ExpandedDescription}"/>
 
 
-                    <!--<TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding ExpandedDescription}" 
-                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>-->
+                    --><!--<TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding ExpandedDescription}" 
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>--><!--
                     <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Grid.Row="4" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$"
                              Margin="0 8 0 0"/>
                 </Grid>
-            </TabItem>
+            </TabItem>-->
 
             <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" VerticalAlignment="Stretch" IsSelected="{Binding CustomSelected}" Background="{StaticResource SOCELightRed}" Width="90">
                 <TabItem.Header>

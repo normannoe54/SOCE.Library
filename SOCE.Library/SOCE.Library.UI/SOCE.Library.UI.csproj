@@ -181,6 +181,9 @@
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="WpfAnimatedGif, Version=2.0.0.0, Culture=neutral, PublicKeyToken=9e7cd3b544a090dc, processorArchitecture=MSIL">
+      <HintPath>..\packages\WpfAnimatedGif.2.0.2\lib\net40\WpfAnimatedGif.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -201,6 +204,8 @@
     <Compile Include="Converters\IsNullColorConverter.cs" />
     <Compile Include="Converters\IsStringEmptyConverter.cs" />
     <Compile Include="Converters\InvoicedColorConverter.cs" />
+    <Compile Include="Helpers\AsyncObservableCollection.cs" />
+    <Compile Include="Helpers\AsyncRunner.cs" />
     <Compile Include="Helpers\BrushExtension.cs" />
     <Compile Include="Helpers\CustomEditableComboBox.cs" />
     <Compile Include="Helpers\EnumHelper.cs" />
@@ -209,19 +214,30 @@
     <Compile Include="Helpers\TimesheetTextBox.cs" />
     <Compile Include="Models\Employee\DefaultRoleEnum.cs" />
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
+    <Compile Include="Models\Generic\ClientLowResModel.cs" />
+    <Compile Include="Models\Generic\EmployeeLowResModel.cs" />
     <Compile Include="Models\NetworkSearch\FolderModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
     <Compile Include="Models\ProjectData\TimeOptionEnum.cs" />
+    <Compile Include="Models\ProjectSchedule\EmployeeScheduleModel.cs" />
     <Compile Include="Models\ProjectSchedule\PMScheduleIndModel.cs" />
+    <Compile Include="Models\ProjectSchedule\ProjectListModel.cs" />
     <Compile Include="Models\ProjectSchedule\ProjectScheduleViewEnum.cs" />
+    <Compile Include="Models\ProjectSchedule\ScheduleWeekModel.cs" />
     <Compile Include="Models\ProjectSchedule\SchedulingEnum.cs" />
     <Compile Include="Models\ProjectSchedule\SDEntryModel.cs" />
     <Compile Include="Models\ProjectSchedule\PMScheduleModel.cs" />
     <Compile Include="Models\ProjectSchedule\WeeklyScheduleModel.cs" />
+    <Compile Include="Models\Projects\ProjectSummaryModel.cs" />
+    <Compile Include="Models\Projects\ProjectViewResModel.cs" />
+    <Compile Include="Models\Projects\RoleSummaryModel.cs" />
+    <Compile Include="Models\Projects\SubProjectSummaryModel.cs" />
     <Compile Include="Models\Projects\ViewEnum.cs" />
     <Compile Include="Models\ResultEnum.cs" />
     <Compile Include="Models\StatusEnum.cs" />
+    <Compile Include="Models\Generic\ProjectLowResModel.cs" />
+    <Compile Include="Models\Generic\SubProjectLowResModel.cs" />
     <Compile Include="Models\Timesheet\TimesheetRowAlertStatus.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeInfoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\NetworkSearch\NetworkSearchVM.cs" />
@@ -239,6 +255,7 @@
     <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BaseProjectSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\HoursVM.cs" />
+    <Compile Include="Models\Projects\SubProjectAddServiceModel.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\SubProjectInfoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BudgetEstimateVM.cs" />
     <Compile Include="Models\Projects\ClientModel.cs" />
@@ -672,6 +689,7 @@
     <EmbeddedResource Include="Resources\ProjectList.xlsx" />
     <EmbeddedResource Include="Resources\PMSchedule.xlsx" />
     <EmbeddedResource Include="Resources\WeeklySchedule.xlsx" />
+    <EmbeddedResource Include="Resources\AddServiceTrackingLog.xlsx" />
     <Resource Include="license.txt" />
     <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Resources\ProjectDataExport.xlsx" />
@@ -685,6 +703,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
@@ -720,6 +739,12 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\leaves.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\fallingsnow.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

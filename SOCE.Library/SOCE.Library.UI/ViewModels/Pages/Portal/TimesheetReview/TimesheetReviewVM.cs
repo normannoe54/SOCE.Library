@@ -16,6 +16,8 @@ using MaterialDesignThemes.Wpf;
 using SOCE.Library.UI.Views;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Threading.Tasks;
+using System.Windows;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -177,25 +179,50 @@ namespace SOCE.Library.UI.ViewModels
         /// <summary>
         /// Button Press
         /// </summary>
-        private void PreviousTimesheet()
+        private async void PreviousTimesheet()
         {
-            LoadCurrentTimesheet(DateSummary.First().Value.AddDays(-1));
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                LoadCurrentTimesheet(DateSummary.First().Value.AddDays(-1));
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         /// <summary>
         /// Button Press
         /// </summary>
-        private void NextTimesheet()
+        private async void NextTimesheet()
         {
-            LoadCurrentTimesheet(DateSummary.Last().Value.AddDays(1));
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                LoadCurrentTimesheet(DateSummary.Last().Value.AddDays(1));
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         /// <summary>
         /// Button Press
         /// </summary>
-        private void CurrentTimesheet()
+        private async void CurrentTimesheet()
         {
-            LoadCurrentTimesheet(DateTime.Now);
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                LoadCurrentTimesheet(DateTime.Now);
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
+            
         }
 
         private void LoadCurrentTimesheet(DateTime currdate)

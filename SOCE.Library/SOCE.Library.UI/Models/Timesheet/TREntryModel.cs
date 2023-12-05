@@ -1,7 +1,9 @@
-﻿using System;
+﻿using SOCE.Library.UI.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
+using System.Linq;
 using System.Text;
 using System.Windows.Media;
 
@@ -61,6 +63,8 @@ namespace SOCE.Library.UI
             }
         }
 
+        public TimesheetVM timesheetvm;
+
         private double _timeentry = 0;
         public double TimeEntry
         {
@@ -73,6 +77,18 @@ namespace SOCE.Library.UI
                 if (_timeentry != value)
                 {
                     _timeentry = value;
+
+                    if (timesheetvm != null)
+                    {
+                        timesheetvm.SumTable();
+
+                        foreach (TimesheetRowModel trm in timesheetvm.Rowdata)
+                        {
+                            trm.Total = trm.Entries.Sum(x => x.TimeEntry);
+                        }
+
+                        timesheetvm.AutoSave();
+                    }
 
                     //if (_timeEntryString != _timeentry.ToString())
                     //{

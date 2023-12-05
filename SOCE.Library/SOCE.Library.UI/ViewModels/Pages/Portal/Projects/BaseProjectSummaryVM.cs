@@ -37,9 +37,9 @@ namespace SOCE.Library.UI.ViewModels
                         HoursVM Hoursvm = new HoursVM(BaseProject, CurrentEmployee);
                         SelectedVM = Hoursvm;
                         break;
-                    //case ViewEnum.AddService:
-                    //    SelectedVM = new AddServiceVM(BaseProject, CurrentEmployee);
-                    //    break;
+                    case ViewEnum.AddService:
+                        SelectedVM = new AddServiceVM(BaseProject, CurrentEmployee);
+                        break;
                     default:
                         break;
                 }
@@ -82,8 +82,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand CloseCommand { get; set; }
         public EmployeeModel CurrentEmployee { get; set; }
-        public ProjectModel BaseProject { get; set; }
-        public BaseProjectSummaryVM(EmployeeModel employee, ProjectModel baseproject, ViewEnum viewselection)
+        public ProjectViewResModel BaseProject { get; set; }
+        public BaseProjectSummaryVM(EmployeeModel employee, ProjectViewResModel baseproject, ViewEnum viewselection)
         {
             this.CloseCommand = new RelayCommand(this.CloseWindow);
             CurrentEmployee = employee;

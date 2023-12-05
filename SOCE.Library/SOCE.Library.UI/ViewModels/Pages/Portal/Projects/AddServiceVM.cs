@@ -14,11 +14,22 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
     public class AddServiceVM : BaseVM
     {
+        private ObservableCollection<EmployeeLowResModel> _projectManagers = new ObservableCollection<EmployeeLowResModel>();
+        public ObservableCollection<EmployeeLowResModel> ProjectManagers
+        {
+            get { return _projectManagers; }
+            set
+            {
+                _projectManagers = value;
+                RaisePropertyChanged(nameof(ProjectManagers));
+            }
+        }
 
         private UserControl _leftViewToShow = new UserControl();
         public UserControl LeftViewToShow
@@ -44,8 +55,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public bool result = false;
 
-        private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
-        public ObservableCollection<SubProjectModel> SubProjects
+        private ObservableCollection<SubProjectAddServiceModel> _subProjects = new ObservableCollection<SubProjectAddServiceModel>();
+        public ObservableCollection<SubProjectAddServiceModel> SubProjects
         {
             get { return _subProjects; }
             set
@@ -55,20 +66,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private SubProjectModel _selectedAddService;
-        public SubProjectModel SelectedAddService
+        private SubProjectAddServiceModel _selectedAddService;
+        public SubProjectAddServiceModel SelectedAddService
         {
             get { return _selectedAddService; }
             set
             {
-                if ((_selectedAddService != null || !string.IsNullOrEmpty(_selectedAddService?.PointNumber)))
-                {
-
-                    if (!_selectedAddService.EditSubFieldState)
-                    {
-                        _selectedAddService.EditSubFieldState = true;
-                    }
-                }
+                //if ((_selectedAddService != null || !string.IsNullOrEmpty(_selectedAddService?.PointNumber)))
+                //{
+                //    if (!_selectedAddService.EditSubFieldState)
+                //    {
+                //        _selectedAddService.EditSubFieldState = true;
+                //    }
+                //}
 
                 _selectedAddService = value;
                 //Employees = BaseEmployees;
@@ -125,8 +135,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ProjectModel _baseProject;
-        public ProjectModel BaseProject
+        private ProjectViewResModel _baseProject;
+        public ProjectViewResModel BaseProject
         {
             get { return _baseProject; }
             set
@@ -153,9 +163,9 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         public ICommand AddSubCommand { get; set; }
-        public ICommand CloseCommand { get; set; }
+        //public ICommand CloseCommand { get; set; }
         public ICommand DeleteSubProject { get; set; }
-        public ICommand ExportDataCommand { get; set; }
+        public ICommand ImortalizeCommand { get; set; }
 
         public ICommand OpenAdCommand { get; set; }
         public ICommand MoveUpCommand { get; set; }
@@ -165,7 +175,7 @@ namespace SOCE.Library.UI.ViewModels
         //public ICommand SynchAdserviceFileCommand { get; set; }
         //public ICommand RemoveAdserviceCommand { get; set; }
 
-        public AddServiceVM(ProjectModel pm, EmployeeModel employee)
+        public AddServiceVM(ProjectViewResModel pm, EmployeeModel employee)
         {
             CanAddPhase = employee.Status != AuthEnum.Standard ? true : false;
             CanEditPhase = employee.Status != AuthEnum.Standard ? true : false;
@@ -173,62 +183,199 @@ namespace SOCE.Library.UI.ViewModels
 
             //Roles.CollectionChanged += CollectionChanged;
             this.AddSubCommand = new RelayCommand(this.AddSubProject);
-            this.CloseCommand = new RelayCommand(this.CloseWindow);
-            this.DeleteSubProject = new RelayCommand<SubProjectModel>(this.DeleteSub);
-            this.ExportDataCommand = new RelayCommand(this.RunExport);
+            //this.CloseCommand = new RelayCommand(this.CloseWindow);
+            this.DeleteSubProject = new RelayCommand<SubProjectAddServiceModel>(this.DeleteSub);
+            this.ImortalizeCommand = new RelayCommand(this.Imortalize);
 
             //this.AdserviceCommand = new RelayCommand(this.RunAdserviceCommand);
 
             ActiveProject = pm.IsActive;
-           
-            pm.FormatData(true);
 
-            List<SubProjectModel> subs = new List<SubProjectModel>();
-            foreach (SubProjectModel sub in pm.SubProjects)
+            //pm.FormatData(true);
+            LoadProjectManagers();
+            LoadAdservice();
+        }
+        private void LoadProjectManagers()
+        {
+            List<EmployeeDbModel> PMs = SQLAccess.LoadProjectManagers();
+
+            ObservableCollection<EmployeeLowResModel> members = new ObservableCollection<EmployeeLowResModel>();
+
+            foreach (EmployeeDbModel edbm in PMs)
             {
-                if (sub.IsAddService)
+                members.Add(new EmployeeLowResModel(edbm));
+            }
+
+            ProjectManagers = members;
+        }
+
+        public void LoadAdservice()
+        {
+            List<SubProjectDbModel> subsdb = SQLAccess.LoadAllSubProjectsByProject(BaseProject.Id);
+
+            List<SubProjectAddServiceModel> subs = new List<SubProjectAddServiceModel>();
+
+            foreach (SubProjectDbModel sub in subsdb)
+            {
+                if (sub.IsAdservice == 1)
                 {
-                    subs.Add(sub);
+                    List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDatabySubId(sub.Id);
+
+                    double sum = time.Sum(x => x.TimeEntry);
+
+                    EmployeeLowResModel elrsm = null;
+                    if (sub.EmployeeIdSigned > 0)
+                    {
+                        elrsm = ProjectManagers.Where(x => x.Id == sub.EmployeeIdSigned).FirstOrDefault();
+                        elrsm.LoadSignature();
+                    }
+
+                    SubProjectAddServiceModel spsm = new SubProjectAddServiceModel(sub, BaseProject, elrsm);
+
+                    if (sum == 0)
+                    {
+                        spsm.CanDelete = true;
+                    }
+                    subs.Add(spsm);
                 }
             }
 
-
-            SubProjects = new ObservableCollection<SubProjectModel>(subs);
+            subs.OrderBy(x => x.NumberOrder);
+            SubProjects = new ObservableCollection<SubProjectAddServiceModel>(subs);
 
             if (SubProjects.Count > 0)
             {
                 SelectedAddService = SubProjects[0];
-                SubProjects = SubProjects.Renumber(true);
             }
         }
 
-        private async void RunExport()
+        private void Imortalize()
         {
-            YesNoView view = new YesNoView();
-            YesNoVM aysvm = new YesNoVM();
-
-            aysvm.Message = $"Are you sure you want to export";
-            aysvm.SubMessage = $"[{BaseProject.ProjectNumber}] {BaseProject.ProjectName}";
-            view.DataContext = aysvm;
-
-            //show the dialog
-            var Result = await DialogHost.Show(view, "RootDialog");
-
-            YesNoVM vm = view.DataContext as YesNoVM;
-            bool resultvm = vm.Result;
-
-            if (resultvm)
+            if (String.IsNullOrEmpty(BaseProject.Projectfolder))
             {
-                ExportConfirmView ecv = new ExportConfirmView();
-                ExportConfirmVM ecvm = new ExportConfirmVM(new List<ProjectModel> { BaseProject });
-                //show progress bar and do stuff
-                ecv.DataContext = ecvm;
-                var newres = await DialogHost.Show(ecv, "RootDialog");
+                //are you sure you want to blah?
             }
+            else
+            {
+                if (SubProjects.Count > 0)
+                {
+                    string generalpath = BaseProject.Projectfolder;
+                    string adservicefolderpath = generalpath + "\\Add Services";
+
+                    if (Directory.Exists(adservicefolderpath))
+                    {
+                        //does fileexist
+                        string[] files = Directory.GetFiles(adservicefolderpath);
+
+                        string archivepath = adservicefolderpath + "\\Archive";
+
+                        if (!Directory.Exists(archivepath))
+                        {
+                            DirectoryInfo di = Directory.CreateDirectory(archivepath);
+                        }
+
+                        foreach (string file in files)
+                        {
+                            string oldname = file.Remove(0, adservicefolderpath.Length + 1);
+                            string newname = archivepath + "\\" + oldname;
+
+                            if (File.Exists(newname))
+                            {
+                                File.Delete(newname);
+                            }
+
+                            try
+                            {
+                                File.Move(file, newname);
+                            }
+                            catch
+                            {
+
+                            }
+                        }
+
+                        //create log
+                        CreateLog(adservicefolderpath);
+                    }
+                    else
+                    {
+                        DirectoryInfo di = Directory.CreateDirectory(adservicefolderpath);
+                        //create log
+                        CreateLog(adservicefolderpath);
+                    }
+                    Process.Start(adservicefolderpath);
+                }
+            }
+
         }
 
 
-        private void DeleteSub(SubProjectModel spm)
+        private void CreateLog(string path)
+        {
+            try
+            {
+                string finalpath = $"{path}\\{BaseProject.ProjectNumber}_Add_Service_Tracking_Log_{DateTime.Now.ToString("yyyyMMdd")}.xlsx";
+
+                File.WriteAllBytes(finalpath, Properties.Resources.AddServiceTrackingLog);
+                Excel.Excel exinst = new Excel.Excel(finalpath);
+                Thread.Sleep(200);
+
+                exinst.WriteCell(8, 4, $"{BaseProject.ProjectName}");
+                exinst.WriteCell(9, 4, $"{BaseProject.ProjectNumber}");
+                exinst.WriteCell(10, 4, $"{BaseProject.Client.ClientName}");
+
+                int row = 13;
+                foreach (SubProjectAddServiceModel submodel in SubProjects)
+                {
+                    exinst.WriteCell(row, 3, $"{BaseProject.ProjectNumber}{submodel.PointNumber.Substring(1)}");
+                    exinst.WriteCell(row, 4, submodel.Description);
+                    exinst.WriteCell(row, 5, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
+                    exinst.WriteCell(row, 6, submodel.IsBillable ? "YES" : "NO");
+                    exinst.WriteCell(row, 7, submodel.DateInvoiced?.ToString("MM/dd/yyyy"));
+                    exinst.WriteCell(row, 8, submodel.Fee.ToString());
+
+                    row++;
+                }
+
+                exinst.SaveDocument();
+
+                foreach (SubProjectAddServiceModel submodel in SubProjects)
+                {
+                    exinst.CopyFirstWorksheet($"Proposal #{submodel.PointNumber.Substring(2)}", "Default");
+                    exinst.WriteCell(7, 4, submodel.PersonAddressed);
+                    exinst.WriteCell(9, 4, submodel.ClientAddress);
+                    exinst.WriteCell(11, 4, submodel.ClientCity);
+                    //exinst.WriteCell(11, 4, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
+                    exinst.WriteCell(13, 4, submodel.NameOfClient);
+                    string date = submodel.DateInitiated?.ToString("MMMM dd, yyyy");
+                    //exinst.WriteCell(7, 10, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
+                    exinst.WriteCell(7, 10, date);
+                    exinst.WriteCell(9, 10, BaseProject.ProjectName);
+                    exinst.WriteCell(11, 10, $"{BaseProject.ProjectNumber}{submodel.PointNumber.Substring(1)}");
+                    exinst.WriteCell(13, 10, submodel.ClientCompanyName);
+                    exinst.WriteCell(16, 5, submodel.Description);
+                    exinst.WriteCell(23, 5, submodel.Fee.ToString());
+                    exinst.WriteCell(32, 5, submodel.SelectedEmployee?.FullName);
+
+                    if (submodel.SelectedEmployee?.SignatureOfPM != null)
+                    {
+
+                        exinst.AddPicture(31, 4, submodel.SelectedEmployee.SignatureOfPM);
+                    }
+
+                    exinst.SaveDocument();
+                }
+            }
+            catch
+            {
+
+            }
+
+        }
+
+
+
+        private void DeleteSub(SubProjectAddServiceModel spm)
         {
             if (SubProjects.Count > 1)
             {
@@ -248,9 +395,9 @@ namespace SOCE.Library.UI.ViewModels
             LeftDrawerOpen = true;
         }
 
-        private void CloseWindow()
-        {
-            DialogHost.Close("RootDialog");
-        }
+        //private void CloseWindow()
+        //{
+        //    DialogHost.Close("RootDialog");
+        //}
     }
 }

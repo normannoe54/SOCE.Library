@@ -14,7 +14,49 @@ namespace SOCE.Library.DbBatch
         static void Main(string[] args)
         {
             //RunProgram();
-            RunBudgetProgram();
+            //RunBudgetProgram();
+            RunUpdateScheduling();
+        }
+
+        public static void RunUpdateScheduling()
+        {
+            int id = 0;
+            DateTime date = DateTime.Now.AddYears(-1);
+            List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByAboveDate(date);
+            List<EmployeeDbModel> employeeData = SQLAccess.LoadEmployees();
+            var grouped = schedulingdata.GroupBy(x => x.PhaseId);
+
+            foreach (var schedlist in grouped)
+            {
+                SchedulingDataDbModel first = schedlist.First();
+                SubProjectDbModel subdb = SQLAccess.LoadSubProjectsBySubProject(first.PhaseId);
+
+                if (subdb != null)
+                {
+                    
+                    ProjectDbModel projdb = SQLAccess.LoadProjectsById(subdb.ProjectId);
+
+                    foreach (SchedulingDataDbModel sched in schedlist)
+                    {
+                        EmployeeDbModel em = employeeData.Where(x => x.Id == sched.EmployeeId).FirstOrDefault();
+
+                        if (em != null)
+                        {
+                            sched.EmployeeName = em.FullName;
+                        }
+
+                        sched.ManagerId = projdb.ManagerId;
+                        sched.PhaseName = subdb.PointNumber;
+                        sched.ProjectName = projdb.ProjectName;
+                        sched.ProjectNumber = projdb.ProjectNumber;
+                        SQLAccess.AddSchedulingData(sched);
+                        Console.WriteLine($"{sched.Id}, { sched.PhaseName}, {sched.ProjectName}");
+                    }
+                }
+                
+            }
+
+
         }
 
         public static void RunBudgetProgram()
@@ -22,7 +64,7 @@ namespace SOCE.Library.DbBatch
             List<EmployeeDbModel> employees = SQLAccess.LoadEmployees();
             List<TimesheetRowDbModel> time = SQLAccess.LoadAllTimeSheetData();
 
-            foreach(TimesheetRowDbModel trm in time)
+            foreach (TimesheetRowDbModel trm in time)
             {
                 if (trm.BudgetSpent <= 0)
                 {

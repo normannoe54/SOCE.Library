@@ -10,14 +10,14 @@
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
              Background="Transparent">
-    <materialDesign:DrawerHost HorizontalAlignment="Center" VerticalAlignment="Center" IsLeftDrawerOpen="{Binding LeftDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" LeftDrawerCloseOnClickAway="True">
+    <materialDesign:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Center" IsLeftDrawerOpen="{Binding LeftDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" LeftDrawerCloseOnClickAway="True">
         <materialDesign:DrawerHost.LeftDrawerContent >
             <ContentControl Content="{Binding LeftViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <!--<views:AddSubProjectView/>-->
         </materialDesign:DrawerHost.LeftDrawerContent>
-        <Grid>
+        <Grid Margin="10 10 10 20">
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="300"/>
                 <RowDefinition Height="320"/>
             </Grid.RowDefinitions>
 
@@ -29,7 +29,7 @@
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="230"/>
             </Grid.ColumnDefinitions>-->
-            <Grid Grid.Row="0" Height="300">
+            <Grid Grid.Row="0">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="40"/>
                     <RowDefinition Height="40"/>
@@ -49,7 +49,7 @@
                             <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="20" FontWeight="SemiBold" Margin="10 0 0 0" Text="{Binding BaseProject.ProjectManager.FullName}"/>
                         </VirtualizingStackPanel>
                     </VirtualizingStackPanel>
-                    <VirtualizingStackPanel HorizontalAlignment="Right" Grid.Column="1" Orientation="Horizontal" Margin="0 0 90 0">
+                    <!--<VirtualizingStackPanel HorizontalAlignment="Right" Grid.Column="1" Orientation="Horizontal" Margin="0 0 90 0">
                         <TextBlock HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="20" FontWeight="SemiBold" Text="Edit Mode"/>
                         <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}"  Background="Transparent" Foreground="Black" Height="40" Width="40" 
                                       IsEnabled="{Binding BaseProject.IsActive}" IsChecked="{Binding GlobalEditMode, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0">
@@ -60,10 +60,11 @@
                                 <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                             </materialDesign:ToggleButtonAssist.OnContent>
                         </ToggleButton>
-                    </VirtualizingStackPanel>
+                    </VirtualizingStackPanel>-->
                 </Grid>
                 <Grid Margin="10 0 0 0" Grid.Row="1">
                     <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
@@ -98,8 +99,23 @@
                             </Style>
                         </CheckBox.Style>
                     </CheckBox>
-
-                    <Border Grid.Column="3" Margin="0 0 100 5" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="130">
+                    <StackPanel Grid.Column="4" Orientation="Horizontal" Margin="30 0 0 0" Visibility="{Binding IsSelectionVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <materialDesign:PackIcon Kind="StarBorder" BorderBrush="Black" Height="20" Width="20" VerticalAlignment="Center" Foreground="Orange"/>
+                        <ComboBox  Width="80" VerticalAlignment="Center" HorizontalAlignment="Right" HorizontalContentAlignment="Right" Foreground="Black"
+                                      Background="Transparent"
+                                      Style="{StaticResource MaterialDesignComboBox}"
+                                      FontSize="16"
+                                      FontWeight="SemiBold"
+                                      IsTextSearchEnabled="True" IsEditable="False" StaysOpenOnEdit="True"
+                                      SelectedItem="{Binding SelectedActiveProjectPhase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      ItemsSource="{Binding SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      TextSearch.TextPath="PointNumber"
+                                      DisplayMemberPath="PointNumber"
+                                      MaxDropDownHeight="250">
+                        </ComboBox>
+                    </StackPanel>
+                    <!--materialDesign:HintAssist.Hint="   Select Active Phase"-->
+                    <Border Grid.Column="5" Margin="0 0 100 5" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="130">
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Style.Triggers>
@@ -190,7 +206,8 @@
                     </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="{Binding IsInvoiced, Converter={StaticResource valueconverter}}" 
+                            <Border Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  
+                                    Background="{Binding IsInvoiced, Converter={StaticResource valueconverter}}" 
                                     IsEnabled="{Binding Path=DataContext.BaseProject.IsActive, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                 <Grid Margin="0 5 0 5">
                                     <Grid.ColumnDefinitions>
@@ -243,9 +260,9 @@
                                                 <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </materialDesign:ToggleButtonAssist.OnContent>
                                         </ToggleButton>
-                                        <CheckBox  IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                        <!--<CheckBox  IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                                    Style="{StaticResource StarCheckBox}" IsChecked="{Binding IsScheduleActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                                                   HorizontalAlignment="Center" Background="DarkGray" ToolTip="Select Active Phase" />
+                                                   HorizontalAlignment="Center" Background="DarkGray" ToolTip="Select Active Phase" />-->
 
                                     </VirtualizingStackPanel>
 
@@ -336,7 +353,7 @@
                             <materialDesign:PackIcon Kind="AlphaP" Height="32" Width="32" VerticalAlignment="Center" ToolTip="Project Phase" 
                                                      Visibility="{Binding SelectedProjectPhase.IsAddService, Converter={StaticResource InverseBoolToVisConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             <!--<TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="PHASE FORECAST SUMMARY" />-->
-                            <ComboBox Margin="10 0 0 0" Width="300" VerticalAlignment="Center" HorizontalAlignment="Stretch" Foreground="Black"
+                            <ComboBox Margin="10 0 0 0" Width="150" VerticalAlignment="Center" HorizontalAlignment="Stretch" Foreground="Black"
                                       Background="Transparent"
                                       Style="{StaticResource MaterialDesignComboBox}"
                                       FontSize="16"
@@ -344,9 +361,9 @@
                                       IsTextSearchEnabled="True" IsEditable="False" StaysOpenOnEdit="True"
                                       materialDesign:HintAssist.Hint="   Select Phase"   
                                       SelectedItem="{Binding SelectedProjectPhase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      ItemsSource="{Binding SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      TextSearch.TextPath="Description"
-                                      DisplayMemberPath="Description"   
+                                      ItemsSource="{Binding SubProjectsForSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      TextSearch.TextPath="PointNumber"
+                                      DisplayMemberPath="PointNumber"   
                                       MaxDropDownHeight="250">
                             </ComboBox>
                             <TextBlock Margin="20,0,0,0" VerticalAlignment="Center" FontSize="14" Text="Planned Budget:" FontWeight="Thin" />
@@ -374,6 +391,7 @@
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="70"/>
+                                <ColumnDefinition Width="70"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" IsEnabled="{Binding SelectedProjectPhase.IsActive}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Foreground="Black" Background="Transparent" 
@@ -387,17 +405,18 @@
                             <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent&#10;Spent" TextAlignment="Center"/>
                             <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Rate" TextAlignment="Center"/>
                             <TextBlock Grid.Column="7" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Budget&#10;Spent" TextAlignment="Center"/>
-                            <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent of&#10;Planned Budget" TextAlignment="Center" />
+                            <TextBlock Grid.Column="8" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Planned&#10;Budget" TextAlignment="Center"/>
+                            <TextBlock Grid.Column="9" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Percent of&#10;Planned Budget" TextAlignment="Center" />
                         </Grid>
 
-                        <ItemsControl ItemsSource="{Binding SelectedProjectPhase.RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                        <ItemsControl ItemsSource="{Binding RolesPerSub}" Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
                             <ItemsControl.Resources>
                                 <local:InvoicedColorConverter x:Key="valueconverter"/>
                             </ItemsControl.Resources>
-
                             <ItemsControl.Template>
                                 <ControlTemplate>
-                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
+                                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" 
+                                                  Height="{Binding Path=ActualHeight, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UIElement}}">
                                         <ItemsPresenter />
                                     </ScrollViewer>
                                 </ControlTemplate>
@@ -411,12 +430,13 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Border BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="Transparent"
-                                            IsEnabled="{Binding Path=BaseProject.ActiveProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
+                                            IsEnabled="{Binding Path= DataContext.BaseProject.IsActive, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                         <Grid Margin="0 5 0 5">
                                             <Grid.ColumnDefinitions>
                                                 <ColumnDefinition Width="50"/>
                                                 <ColumnDefinition Width="130"/>
                                                 <ColumnDefinition Width="130"/>
+                                                <ColumnDefinition Width="70"/>
                                                 <ColumnDefinition Width="70"/>
                                                 <ColumnDefinition Width="70"/>
                                                 <ColumnDefinition Width="70"/>
@@ -451,18 +471,16 @@
                                         </Button>-->
 
                                             <ComboBox Grid.Column="1" Margin="10 0 0 0" FontSize="14"
-                                                  IsEnabled="{Binding EditComboRoleFieldState}"
-                                      ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" 
-                                      DisplayMemberPath="Description"
-                                      SelectedValue="{Binding Role}"  
-                                      SelectedValuePath="Value"/>
+                                                  IsEnabled="{Binding EditRoleFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                                      ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:DefaultRoleEnum}}}" DisplayMemberPath="Description" SelectedValue="{Binding Role}"  
+                                                      SelectedValuePath="Value"/>
                                             <TextBlock Grid.Column="2" FontWeight="Regular" FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Bottom" Margin="16 0 0 2"
                                                        Text="{Binding Employee.FullName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                        Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                             <ComboBox Grid.Column="2" Margin="10 0 0 0" FontSize="14" 
                                                       Visibility="{Binding TextBoxVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
-                                                      IsEnabled="{Binding EditComboEmployeeFieldState}"
-                                                      ItemsSource="{Binding Path=DataContext.Employees, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                                      IsEnabled="{Binding EditRoleFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                                      ItemsSource="{Binding EmployeeList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                       DisplayMemberPath="FullName" MaxDropDownHeight="200" SelectedItem="{Binding Path = Employee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                                 <ComboBox.ItemsPanel>
                                                     <ItemsPanelTemplate>
@@ -490,6 +508,8 @@
                                             <TextBlock Grid.Column="7" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center" Text="{Binding SpentBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
                                             <TextBlock Grid.Column="8" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
+                                                   VerticalAlignment="Center" Text="{Binding PlannedBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
+                                            <TextBlock Grid.Column="9" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" 
                                                    VerticalAlignment="Center" Text="{Binding PercentofRegulatedBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
                                         </Grid>
                                     </Border>
@@ -509,7 +529,7 @@
                     <GroupBox.HeaderTemplate>
                         <DataTemplate>
                             <StackPanel Orientation="Horizontal">
-                                <materialDesign:PackIcon Kind="{Binding IconforBudgetSummary}" Height="32" Width="32" VerticalAlignment="Center" />
+                                <!--<materialDesign:PackIcon Kind="{Binding IconforBudgetSummary}" Height="32" Width="32" VerticalAlignment="Center" />-->
                                 <TextBlock Margin="8,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="BUDGET SUMMARY" />
                             </StackPanel>
                         </DataTemplate>
@@ -538,34 +558,34 @@
                         <TextBlock Grid.Column="0" Grid.Row="5" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Hours Spent:"/>
                         <TextBlock Grid.Column="0" Grid.Row="6" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="SemiBold" FontSize="14" Text="Hours Left:"/>
 
-                        <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.TotalBudget, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
-                        <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.TotalRegulatedBudget, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
-                        <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.PercentofInvoicedFee, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%" Margin="10 0 0 0"/>
-                        <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.BudgetSpent, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
-                        <TextBox Grid.Column="1" Grid.Row="4" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.BudgetLeft, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
-                        <TextBox Grid.Column="1" Grid.Row="5" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.HoursSpent}" materialDesign:TextFieldAssist.SuffixText="hr." Margin="10 0 0 0"/>
-                        <TextBox Grid.Column="1" Grid.Row="6" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BaseProject.HoursLeft}" materialDesign:TextFieldAssist.SuffixText="hr." Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="0" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding TotalBudget, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="1" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding TotalRegulatedBudget, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="2" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding PercentofInvoicedFee, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%" Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="3" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BudgetSpent, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="4" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding BudgetLeft, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="5" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding HoursSpent}" materialDesign:TextFieldAssist.SuffixText="hr." Margin="10 0 0 0"/>
+                        <TextBox Grid.Column="1" Grid.Row="6" IsReadOnly="True" HorizontalAlignment="Stretch" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="{Binding HoursLeft}" materialDesign:TextFieldAssist.SuffixText="hr." Margin="10 0 0 0"/>
 
                         <StackPanel Grid.Row="7" Orientation="Vertical" Grid.ColumnSpan="2" VerticalAlignment="Bottom" Margin="0 10 0 0">
                             <Grid>
-                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentBudgetSpent}" Foreground="CornflowerBlue" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
+                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentBudgetSpent}" Foreground="CornflowerBlue" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="Planned Budget Spent: " FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding BaseProject.PercentBudgetSpent, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding PercentBudgetSpent, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </Grid>
                             <Grid>
-                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentComplete}" Foreground="Green" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
+                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Foreground="Green" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="Percent Complete: " FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding BaseProject.PercentComplete, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding PercentComplete, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </Grid>
                             <Grid>
-                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding BaseProject.PercentTotalFeeSpent}" Foreground="Yellow" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
+                                <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentTotalFeeSpent}" Foreground="Yellow" Background="Transparent" BorderThickness="1" BorderBrush="LightGray"/>
                                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                     <TextBlock Text="Fee Spent: " FontSize="10" FontWeight="SemiBold"/>
-                                    <TextBlock Text="{Binding BaseProject.PercentTotalFeeSpent, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
+                                    <TextBlock Text="{Binding PercentTotalFeeSpent, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
                                 </StackPanel>
                             </Grid>
                         </StackPanel>

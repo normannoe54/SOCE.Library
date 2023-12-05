@@ -14,20 +14,58 @@ using Microsoft.WindowsAPICodePack.Dialogs;
 using System.IO;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
+using System.Windows.Data;
+using System.Windows.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
     public class ProjectScheduleVM : BaseVM
     {
-        private ProjectScheduleViewEnum _selectedViewEnum;
+        private ProjectScheduleViewEnum _selectedViewEnum = ProjectScheduleViewEnum.WeeklySchedule;
         public ProjectScheduleViewEnum SelectedViewEnum
         {
             get { return _selectedViewEnum; }
             set
             {
-                _selectedViewEnum = value;
+                //if (_selectedViewEnum != value)
+                //{
+                    
+                    AsyncRunner.Run(NavigateToMenuAsync(value));
+                    
+                //}
+                //switch (_selectedViewEnum)
+                //{
+                //    case ProjectScheduleViewEnum.WeeklySchedule:
+                //        WeeklyScheduleVM wsvm = new WeeklyScheduleVM(CurrentEmployee);
+                //        SelectedVM = wsvm;
+                //        break;
+                //    case ProjectScheduleViewEnum.PMReport:
+                //        PMScheduleVM pmschedvm = new PMScheduleVM(CurrentEmployee);
+                //        SelectedVM = pmschedvm;
+                //        break;
+                //    case ProjectScheduleViewEnum.UpcomingSchedule:
+                //        ScheduleWeekVM swvm = new ScheduleWeekVM();
+                //        SelectedVM = swvm;
+                //        break;
+                //    case ProjectScheduleViewEnum.ProjectList:
+                //        ProjectListVM plvm = new ProjectListVM();
+                //        SelectedVM = plvm;
+                //        break;
+                //    default:
+                //        break;
+                //}
+            }
+        }
 
-                switch (_selectedViewEnum)
+        public async Task NavigateToMenuAsync(ProjectScheduleViewEnum selectedViewEnum)
+        {
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
+            {
+                switch (selectedViewEnum)
                 {
                     case ProjectScheduleViewEnum.WeeklySchedule:
                         WeeklyScheduleVM wsvm = new WeeklyScheduleVM(CurrentEmployee);
@@ -48,8 +86,12 @@ namespace SOCE.Library.UI.ViewModels
                     default:
                         break;
                 }
+                _selectedViewEnum = selectedViewEnum;
                 RaisePropertyChanged(nameof(SelectedViewEnum));
-            }
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
+
         }
 
         private BaseVM _selectedVM;
@@ -159,7 +201,8 @@ namespace SOCE.Library.UI.ViewModels
 
             }
 
-            SelectedViewEnum = ProjectScheduleViewEnum.WeeklySchedule;
+            WeeklyScheduleVM wsvm = new WeeklyScheduleVM(CurrentEmployee);
+            SelectedVM = wsvm;
             //ReviewVM = new EmployeeSummaryVM(this);
         }
 

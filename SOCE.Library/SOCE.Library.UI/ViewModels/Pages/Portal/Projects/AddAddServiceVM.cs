@@ -14,14 +14,25 @@ namespace SOCE.Library.UI.ViewModels
     {
         public bool result = false;
 
-        private ProjectModel baseProject = new ProjectModel();
-        public ProjectModel BaseProject
+        private ProjectViewResModel baseProject = new ProjectViewResModel();
+        public ProjectViewResModel BaseProject
         {
             get { return baseProject; }
             set
             {
                 baseProject = value;
                 RaisePropertyChanged(nameof(BaseProject));
+            }
+        }
+
+        private string _personAddressedInp;
+        public string PersonAddressedInp
+        {
+            get { return _personAddressedInp; }
+            set
+            {
+                _personAddressedInp = value;
+                RaisePropertyChanged("PersonAddressedInp");
             }
         }
 
@@ -55,6 +66,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _clientAddressInp = value;
                 RaisePropertyChanged("ClientAddressInp");
+            }
+        }
+
+        private string _clientCityInp;
+        public string ClientCityInp
+        {
+            get { return _clientCityInp; }
+            set
+            {
+                _clientCityInp = value;
+                RaisePropertyChanged("ClientCityInp");
             }
         }
 
@@ -104,6 +126,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _isBillable = true;
+        public bool IsBillable
+        {
+            get { return _isBillable; }
+            set
+            {
+
+                _isBillable = value;
+                RaisePropertyChanged("IsBillable");
+
+            }
+        }
+
         private string _errorMessage = "";
         public string ErrorMessage
         {
@@ -122,7 +157,7 @@ namespace SOCE.Library.UI.ViewModels
 
         //private ProjectSummaryVM baseViewModel;
 
-        public AddAddServiceVM(ProjectModel pm, AddServiceVM psvm)
+        public AddAddServiceVM(ProjectViewResModel pm, AddServiceVM psvm)
         {
             baseViewModel = psvm;
             this.AddSubProjectCommand = new RelayCommand(this.AddSubProject);
@@ -134,7 +169,7 @@ namespace SOCE.Library.UI.ViewModels
             BaseProject = pm;
 
             //get latest adservice
-            List<SubProjectModel> spms = BaseProject.SubProjects.ToList();
+            List<SubProjectAddServiceModel> spms = psvm.SubProjects.ToList();
 
             //bool Prephaseexists = !spms.Any(x => x.PointNumber == "Pre");
             //bool CAphaseexists = !spms.Any(x => x.PointNumber == "CA");
@@ -143,7 +178,7 @@ namespace SOCE.Library.UI.ViewModels
             //see if CA, CD, P are available
             double pointmax = 0;
             int maxnumberorder = 0;
-            foreach (SubProjectModel spm in spms)
+            foreach (SubProjectAddServiceModel spm in spms)
             {
                 double num = 0;
                 bool succ = Double.TryParse(spm.PointNumber, out num);
@@ -156,7 +191,9 @@ namespace SOCE.Library.UI.ViewModels
             }
             ClientCompanyNameInp = pm.Client.ClientName;
             ClientAddressInp = pm.Client.ClientAddress;
+            ClientCityInp = pm.Client.ClientCity;
             NameOfClientInp = pm.Client.NameOfClient;
+            PersonAddressedInp = pm.Client.ClientName;
             LatestAdServiceNumber = pointmax + 0.1;
             BigNumOrder = maxnumberorder;
         }
@@ -171,15 +208,22 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = 0,
                 SubStart = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd")),
                 ClientAddress = ClientAddressInp,
+                ClientCity = ClientCityInp,
                 NameOfClient = NameOfClientInp,
+                IsBillable = IsBillable ? 1 : 0,
                 ClientCompanyName = ClientCompanyNameInp,
                 PercentComplete = 0,
                 PercentBudget = 0,
                 NumberOrder = Convert.ToInt32(BigNumOrder) + 1,
+                PersonToAddress = PersonAddressedInp,
                 Fee = 0
             };
 
             subproject.IsAdservice = 1;
+            if (BaseProject.ProjectManager.Id > 0)
+            {
+                subproject.EmployeeIdSigned = BaseProject.ProjectManager.Id;
+            }
 
             if (String.IsNullOrEmpty(Description) || LatestAdServiceNumber == 0)
             {
@@ -204,27 +248,30 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            baseViewModel.BaseProject.FormatData(result);
+            //baseViewModel.BaseProject.FormatData(result);
 
-            List<SubProjectModel> subs = new List<SubProjectModel>();
-            foreach (SubProjectModel sub in baseViewModel.BaseProject.SubProjects)
-            {
-                if (sub.IsAddService)
-                {
-                    subs.Add(sub);
-                }
-            }
+            //List<SubProjectModel> subs = new List<SubProjectModel>();
+
+            //foreach (SubProjectModel sub in baseViewModel.BaseProject.SubProjects)
+            //{
+            //    if (sub.IsAddService)
+            //    {
+            //        subs.Add(sub);
+            //    }
+            //}
 
 
-            baseViewModel.SubProjects = new ObservableCollection<SubProjectModel>(subs);
+            //baseViewModel.SubProjects = new ObservableCollection<SubProjectModel>(subs);
 
-            if (baseViewModel.SubProjects.Count > 0)
-            {
-                baseViewModel.SelectedAddService = baseViewModel.SubProjects[0];
-                baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
-            }
+            //if (baseViewModel.SubProjects.Count > 0)
+            //{
+            //    baseViewModel.SelectedAddService = baseViewModel.SubProjects[0];
+            //    baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
+            //}
 
+            baseViewModel.LoadAdservice();
             baseViewModel.LeftDrawerOpen = false;
+
             //DialogHost.Close("RootDialog");
         }
     }

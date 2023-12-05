@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Windows.Media;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -28,8 +29,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand ClearSearchParamters { get; set; }
         public ICommand SearchCommand { get; set; }
 
-        private ObservableCollection<ClientModel> _clients = new ObservableCollection<ClientModel>();
-        public ObservableCollection<ClientModel> Clients
+        private ObservableCollection<ClientLowResModel> _clients = new ObservableCollection<ClientLowResModel>();
+        public ObservableCollection<ClientLowResModel> Clients
         {
             get { return _clients; }
             set
@@ -39,8 +40,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<ProjectModel> _projectList = new ObservableCollection<ProjectModel>();
-        public ObservableCollection<ProjectModel> ProjectList
+        private ObservableCollection<ProjectListModel> _projectList = new ObservableCollection<ProjectListModel>();
+        public ObservableCollection<ProjectListModel> ProjectList
         {
             get { return _projectList; }
             set
@@ -49,8 +50,8 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged(nameof(ProjectList));
             }
         }
-        private ObservableCollection<EmployeeModel> _projectManagers = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> ProjectManagers
+        private ObservableCollection<EmployeeLowResModel> _projectManagers = new ObservableCollection<EmployeeLowResModel>();
+        public ObservableCollection<EmployeeLowResModel> ProjectManagers
         {
             get { return _projectManagers; }
             set
@@ -71,8 +72,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private EmployeeModel _selectedPM;
-        public EmployeeModel SelectedPM
+        private EmployeeLowResModel _selectedPM;
+        public EmployeeLowResModel SelectedPM
         {
             get { return _selectedPM; }
             set
@@ -82,8 +83,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ClientModel _selectedClient;
-        public ClientModel SelectedClient
+        private ClientLowResModel _selectedClient;
+        public ClientLowResModel SelectedClient
         {
             get { return _selectedClient; }
             set
@@ -123,39 +124,60 @@ namespace SOCE.Library.UI.ViewModels
             LoadSchedulingProjects();
         }
 
-        private List<ProjectModel> AllProjects = new List<ProjectModel>();
+        private List<ProjectListModel> AllProjects = new List<ProjectListModel>();
 
-        private void RunSearch()
+        private async void RunSearch()
         {
-            List<ProjectModel> pmnew = AllProjects;
-
-            if (SelectedPM != null)
+            //async here
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                pmnew = pmnew.Where(x => x.ProjectManager?.Id == SelectedPM.Id).ToList();
-            }
+                List<ProjectListModel> pmnew = AllProjects;
 
-            if (SelectedClient != null)
-            {
-                pmnew = pmnew.Where(x => x.Client.Id == SelectedClient.Id).ToList();
-            }
+                if (SelectedPM != null)
+                {
+                    pmnew = pmnew.Where(x => x.ProjectManager?.Id == SelectedPM.Id).ToList();
+                }
 
-            if (!String.IsNullOrEmpty(SearchableText))
-            {
-                pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
-            }
+                if (SelectedClient != null)
+                {
+                    pmnew = pmnew.Where(x => x.ClientNumber == SelectedClient.ClientNumber).ToList();
+                }
 
-            ProjectList = new ObservableCollection<ProjectModel>(pmnew);
+                if (!String.IsNullOrEmpty(SearchableText))
+                {
+                    pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
+                }
+
+                ProjectList = new ObservableCollection<ProjectListModel>(pmnew);
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
-        private void ClearInputsandReload()
+        private async void ClearInputsandReload()
         {
-            Reload();
+            //async here
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => Reload()));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
+            
         }
 
-        private void Print()
+        private async void Print()
         {
-            //do stuff
-            //save down to downloads
+            //async here
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+
             try
             {
                 string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -164,13 +186,13 @@ namespace SOCE.Library.UI.ViewModels
                 Excel.Excel exinst = new Excel.Excel(pathDownload);
 
                 Thread.Sleep(200);
-
                 int rowid = 3;
                 if (ProjectList.Count > 0)
                 {
-                    exinst.WriteCell(1, 2, ProjectNumber.ToString());
+                    var monday = DateTime.Today.AddDays(-(int)DateTime.Today.DayOfWeek + (int)DayOfWeek.Monday);
+                    exinst.WriteCell(1, 2, monday.ToString("MM/dd/yyyy"));
 
-                    foreach (ProjectModel pm in ProjectList)
+                    foreach (ProjectListModel pm in ProjectList)
                     {
                         List<object> values = new List<object>();
                         string duedatevar = "";
@@ -182,7 +204,7 @@ namespace SOCE.Library.UI.ViewModels
 
                         values.Add(pm.ProjectName);
                         values.Add(pm.ProjectNumber);
-                        values.Add(pm.Client.ClientNumber);
+                        values.Add(pm.ClientNumber);
                         values.Add(pm.SchedulingValue.ToString());
                         values.Add(duedatevar);
                         values.Add(pm.PercentComplete*0.01);
@@ -210,29 +232,41 @@ namespace SOCE.Library.UI.ViewModels
             catch
             {
             }
+
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
-        private void Reload()
+        private async void Reload()
         {
-            SearchableText = "";
-            SelectedClient = null;
-            SelectedPM = null;
-            Constructor();
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
+            {
+                SearchableText = "";
+                SelectedClient = null;
+                SelectedPM = null;
+                Constructor();
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         public void LoadClients()
         {
             List<ClientDbModel> dbclients = SQLAccess.LoadClients();
 
-            List<ClientModel> clients = new List<ClientModel>();
+            List<ClientLowResModel> clients = new List<ClientLowResModel>();
             foreach (ClientDbModel cdbm in dbclients)
             {
-                clients.Add(new ClientModel(cdbm));
+                clients.Add(new ClientLowResModel(cdbm));
             }
 
-            List<ClientModel> newclients = clients.OrderBy(x => x.ClientNumber).ToList();
+            List<ClientLowResModel> newclients = clients.OrderBy(x => x.ClientNumber).ToList();
 
-            Clients = new ObservableCollection<ClientModel>(newclients);
+            Clients = new ObservableCollection<ClientLowResModel>(newclients);
         }
 
 
@@ -240,11 +274,11 @@ namespace SOCE.Library.UI.ViewModels
         {
             List<EmployeeDbModel> PMs = SQLAccess.LoadProjectManagers();
 
-            ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
+            ObservableCollection<EmployeeLowResModel> members = new ObservableCollection<EmployeeLowResModel>();
 
             foreach (EmployeeDbModel edbm in PMs)
             {
-                members.Add(new EmployeeModel(edbm));
+                members.Add(new EmployeeLowResModel(edbm));
             }
 
             ProjectManagers = members;
@@ -254,25 +288,9 @@ namespace SOCE.Library.UI.ViewModels
         {         
             List<SubProjectDbModel> subdbs = SQLAccess.LoadSubProjectsByActiveScheduling();
             List<ProjectDbModel> projdbs = SQLAccess.LoadProjectsByOnHoldScheduling();
-            List<ClientDbModel> dbclients = SQLAccess.LoadClients();
-            List<ClientModel> clients = new List<ClientModel>();
-
-            List<MarketDbModel> dbmarkets = SQLAccess.LoadMarkets();
-
-            ObservableCollection<MarketModel> members = new ObservableCollection<MarketModel>();
-
-            foreach (MarketDbModel mdbm in dbmarkets)
-            {
-                members.Add(new MarketModel(mdbm));
-            }
-
-            foreach (ClientDbModel cdbm in dbclients)
-            {
-                clients.Add(new ClientModel(cdbm));
-            }
-
             List<ProjectDbModel> projectsdb = SQLAccess.LoadActiveProjects(true);
-            List<ProjectModel> projects = new List<ProjectModel>();
+
+            List<ProjectListModel> projects = new List<ProjectListModel>();
 
             foreach (SubProjectDbModel sub in subdbs)
             {
@@ -280,14 +298,12 @@ namespace SOCE.Library.UI.ViewModels
 
                 if (pdb != null)
                 {
-                    ProjectModel pm = new ProjectModel(pdb, true);
-                    EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
-                    ClientModel cm = clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
-                    MarketModel mm = members.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
+                    ProjectListModel pm = new ProjectListModel(pdb);
+                    EmployeeLowResModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
+                    ClientLowResModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
 
                     pm.ProjectManager = em;
-                    pm.Client = cm;
-                    pm.Market = mm;
+                    pm.ClientNumber = cm.ClientNumber;
 
                     if (sub.PointNumber == "CA")
                     {
@@ -297,32 +313,29 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         pm.SchedulingValue = SchedulingEnum.D;
                     }
-                    pm.LoadSubProjects();
+                    //pm.LoadSubProjects();
                     projects.Add(pm);
                 }
             }
 
             foreach (ProjectDbModel proj in projdbs)
             {
-                ProjectModel pm = new ProjectModel(proj, true);
+                ProjectListModel pm = new ProjectListModel(proj);
                 
-                EmployeeModel em = ProjectManagers.Where(x => x.Id == proj.ManagerId).FirstOrDefault();
-                ClientModel cm = clients.Where(x => x.Id == proj.ClientId).FirstOrDefault();
-                MarketModel mm = members.Where(x => x.Id == proj.MarketId).FirstOrDefault();
+                EmployeeLowResModel em = ProjectManagers.Where(x => x.Id == proj.ManagerId).FirstOrDefault();
+                ClientLowResModel cm = Clients.Where(x => x.Id == proj.ClientId).FirstOrDefault();
 
                 pm.ProjectManager = em;
-                pm.Client = cm;
-                pm.Market = mm;
+                pm.ClientNumber = cm.ClientNumber;
 
                 pm.SchedulingValue = SchedulingEnum.H;
-                pm.LoadSubProjects();
+                //pm.LoadSubProjects();
                 projects.Add(pm);
 
             }
 
-            AllProjects = (projects.OrderBy(x => x.SchedulingValue).ThenBy(y => y.Client.ClientNumber).ThenBy(z => z.ProjectNumber)).ToList();
-            ProjectList = new ObservableCollection<ProjectModel>(AllProjects);
-
+            AllProjects = (projects.OrderBy(x => x.SchedulingValue).ThenBy(y => y.ClientNumber).ThenBy(z => z.ProjectNumber)).ToList();
+            ProjectList = new ObservableCollection<ProjectListModel>(AllProjects);
             ProjectNumber = ProjectList.Count();
         }
     }

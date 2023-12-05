@@ -4,6 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using ClosedXML.Excel;
+using System.Windows.Media;
+using System.IO;
+using System.Windows.Media.Imaging;
+using ClosedXML.Excel.Drawings;
 
 namespace SOCE.Library.Excel
 {
@@ -42,6 +46,7 @@ namespace SOCE.Library.Excel
         public void CopyFirstWorksheet(string name, string nametocopy)
         {
             IXLWorksheet value = GetSheet(nametocopy)?.CopyTo(name);
+            value.Unhide();
             SetActiveSheet(value);
         }
 
@@ -157,6 +162,47 @@ namespace SOCE.Library.Excel
         public void WriteCell(int row, int column, string cellvalue)
         {
             activeworksheet.Cell(row, column).Value = cellvalue;
+
+        }
+
+        public void AddPicture(int row, int column, ImageSource image)
+        {
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            var bitmapSource = image as BitmapSource;
+            if (bitmapSource != null)
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+                //MemoryStream stream = null;
+                using (var stream = new MemoryStream())
+                {
+                    try
+                    {
+                        encoder.Save(stream);
+                        IXLPicture picture = activeworksheet.AddPicture(stream);
+                        picture.MoveTo(activeworksheet.Cell(row, column));
+                        double scalefactor = 50/Convert.ToDouble(picture.Height);
+                        scalefactor = Math.Min(400/ Convert.ToDouble(picture.Width), scalefactor);
+                        picture.ScaleHeight(scalefactor);
+                        picture.ScaleWidth (scalefactor);
+
+                    }
+                    catch
+                    {
+
+                    }
+                }
+
+                //if (stream != null)
+                //{
+
+                //    //
+
+                //}
+
+            }
+
+            //activeworksheet.Cell(row, column).Value = cellvalue;
 
         }
 

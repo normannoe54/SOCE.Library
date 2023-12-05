@@ -51,8 +51,7 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="160"/>
-                <ColumnDefinition Width="160"/>
+                <ColumnDefinition Width="170"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Employee"/>
             <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Title" Margin="20 0 0 0"/>
@@ -76,8 +75,8 @@
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="auto"/>
-                                <ColumnDefinition Width="auto"/>
+                                <ColumnDefinition Width="160"/>
+                                <!--<ColumnDefinition Width="auto"/>-->
 
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"  IsReadOnly="True" Text="{Binding Path=Employee.FullName}" TextAlignment="Left" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" Margin="0 0 10 0"/>
@@ -132,10 +131,10 @@
                                 <TextBlock Text="Open Time Sheet" Foreground="black" VerticalAlignment="Center"/>
                             </Button>
 
-                            <Button Margin="10 0 0 0" Grid.Column="8" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.EmailReminder, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" 
+                            <!--<Button Margin="10 0 0 0" Grid.Column="8" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.EmailReminder, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" 
                                     CommandParameter="{Binding}" IsEnabled="{Binding EmailRemind}" HorizontalAlignment="Center" VerticalAlignment="Center"  BorderBrush="Black" BorderThickness="1">
                                 <TextBlock Text="Email Reminder" Foreground="black" VerticalAlignment="Center"/>
-                            </Button>
+                            </Button>-->
                         </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>

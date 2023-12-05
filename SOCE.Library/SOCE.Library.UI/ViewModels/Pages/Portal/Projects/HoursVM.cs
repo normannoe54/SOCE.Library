@@ -52,8 +52,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public Func<double, string> Formatter { get; set; }
 
-        private ObservableCollection<ProjectModel> _projectList;
-        public ObservableCollection<ProjectModel> ProjectList
+        private ObservableCollection<ProjectLowResModel> _projectList;
+        public ObservableCollection<ProjectLowResModel> ProjectList
         {
             get { return _projectList; }
             set
@@ -63,8 +63,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<SubProjectModel> _subprojects;
-        public ObservableCollection<SubProjectModel> SubProjects
+        private ObservableCollection<SubProjectLowResModel> _subprojects;
+        public ObservableCollection<SubProjectLowResModel> SubProjects
         {
             get { return _subprojects; }
             set
@@ -85,8 +85,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private SubProjectModel _selectedProjectPhase;
-        public SubProjectModel SelectedProjectPhase
+        private SubProjectLowResModel _selectedProjectPhase;
+        public SubProjectLowResModel SelectedProjectPhase
         {
             get
             {
@@ -99,12 +99,12 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     LoadGraphData();
                 }
-                RaisePropertyChanged(nameof(SelectedProjectPhase));
+                RaisePropertyChanged(nameof(SubProjectLowResModel));
             }
         }
 
-        private ProjectModel _baseProject;
-        public ProjectModel BaseProject
+        private ProjectViewResModel _baseProject;
+        public ProjectViewResModel BaseProject
         {
             get { return _baseProject; }
             set
@@ -173,15 +173,33 @@ namespace SOCE.Library.UI.ViewModels
             }
         };
 
-        public HoursVM(ProjectModel pm, EmployeeModel employee)
+        public HoursVM(ProjectViewResModel pm, EmployeeModel employee)
         {
             RelevantEmployees.CollectionChanged += this.EmployeesChanged;
             CurrentEmployee = employee;
             BaseProject = pm;
-            pm.FormatData(true);
-            SubProjects = pm.SubProjects;
 
+            //pm.FormatData(true);
+
+            CollectSubProjects(pm.Id);
+
+        }
+
+        private void CollectSubProjects(int id)
+        {
+            List<SubProjectLowResModel> subs = new List<SubProjectLowResModel>();
+            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(id);
+
+            foreach (SubProjectDbModel spdm in subdbmodels)
+            {
+                SubProjectLowResModel spm = new SubProjectLowResModel(spdm);
+                subs.Add(spm);
+            }
+
+            subs.Add(new SubProjectLowResModel() { PointNumber = "All Phases", Description = "All Phases" });
+            SubProjects = new ObservableCollection<SubProjectLowResModel>(subs);
             SelectedProjectPhase = SubProjects[SubProjects.Count - 1];
+
         }
 
         private void EmployeesChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -230,11 +248,12 @@ namespace SOCE.Library.UI.ViewModels
 
             List<TimesheetRowDbModel> total = new List<TimesheetRowDbModel>();
 
+            //AllPhases
             if (SelectedProjectPhase.Id == 0)
             {
                 //total
                 //get all subprojectIds associated with projectId
-                List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(SelectedProjectPhase.baseproject.Id);
+                List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
 
                 foreach (SubProjectDbModel spdm in subdbmodels)
                 {

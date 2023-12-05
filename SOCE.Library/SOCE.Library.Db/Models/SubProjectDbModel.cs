@@ -25,6 +25,8 @@ namespace SOCE.Library.Db
         public int IsScheduleActive { get; set; }
         public string ClientCompanyName { get; set; }
         public string ClientAddress { get; set; }
+        public string ClientCity { get; set; }
+        public string PersonToAddress { get; set; }
         public int EmployeeIdSigned { get; set; }
 
 

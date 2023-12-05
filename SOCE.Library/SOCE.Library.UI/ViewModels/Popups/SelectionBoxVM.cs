@@ -49,8 +49,8 @@ namespace SOCE.Library.UI.ViewModels
         }
 
 
-        private ObservableCollection<SubProjectModel> _subprojects = new ObservableCollection<SubProjectModel>();
-        public ObservableCollection<SubProjectModel> SubProjects
+        private ObservableCollection<SubProjectLowResModel> _subprojects = new ObservableCollection<SubProjectLowResModel>();
+        public ObservableCollection<SubProjectLowResModel> SubProjects
         {
             get { return _subprojects; }
             set
@@ -60,8 +60,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private SubProjectModel _selectedSubproject;
-        public SubProjectModel SelectedSubproject
+        private SubProjectLowResModel _selectedSubproject;
+        public SubProjectLowResModel SelectedSubproject
         {
             get
             {

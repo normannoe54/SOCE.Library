@@ -17,6 +17,8 @@ using SOCE.Library.UI.Views;
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Diagnostics;
+using System.Windows;
+using System.Threading.Tasks;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -205,8 +207,8 @@ namespace SOCE.Library.UI.ViewModels
                 SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
                 ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
 
-                ProjectModel pm = new ProjectModel(pdb);
-                SubProjectModel spm = new SubProjectModel(spdb);
+                ProjectLowResModel pm = new ProjectLowResModel(pdb);
+                SubProjectLowResModel spm = new SubProjectLowResModel(spdb);
 
                 TimesheetRowModel trm = new TimesheetRowModel()
                 {
@@ -403,15 +405,10 @@ namespace SOCE.Library.UI.ViewModels
                                 TimesheetRowDbModel dbmodel = new TimesheetRowDbModel()
                                 {
                                     Id = trentry.Id,
-                                    EmployeeId = SelectedEmployee.Id,
-                                    SubProjectId = trm.SelectedSubproject.Id,
-                                    Date = (int)long.Parse(trentry.Date.ToString("yyyyMMdd")),
-                                    Submitted = 1,
                                     Approved = Convert.ToInt32(approve),
-                                    TimeEntry = trentry.TimeEntry
                                 };
 
-                                SQLAccess.UpdateTimesheetData(dbmodel);
+                                SQLAccess.UpdateTimesheetDataApproved(dbmodel);
                                 //get data that needs to be removed
                             }
                         }
@@ -499,9 +496,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private void BackToSummary()
+        private async void BackToSummary()
         {
-            basevm.ReviewVM = new EmployeeSummaryVM(basevm);
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                basevm.ReviewVM = new EmployeeSummaryVM(basevm);
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
 
         }
 
@@ -531,7 +536,6 @@ namespace SOCE.Library.UI.ViewModels
         private async void SendEmailMessage(TextPart textbody, EmployeeModel employeetosendto, string subject)
         {
             SmtpClient client = new SmtpClient();
-
             client.Connect("smtp-mail.outlook.com", 587, false);
             client.AuthenticationMechanisms.Remove("XOAUTH2");
             client.Authenticate("normnoe@shirkodonovan.com", "Jules0714!");
@@ -540,8 +544,6 @@ namespace SOCE.Library.UI.ViewModels
             mailMessage.To.Add(new MailboxAddress(employeetosendto.FirstName, employeetosendto.Email));
             mailMessage.Subject = subject;
             mailMessage.Body = textbody;
-
-
             await client.SendAsync(mailMessage);
             client.Disconnect(true);
         }

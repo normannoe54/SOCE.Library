@@ -8,7 +8,12 @@ namespace SOCE.Library.Db
     {
         public int Id { get; set; }
         public int PhaseId { get; set; }
-        public int RoleId { get; set; }
+        public string PhaseName { get; set; }
+        public string ProjectName { get; set; }
+        public string EmployeeName { get; set; }
+
+
+        //public int RoleId { get; set; }
         public int Date { get; set; }
         public double Hours1 { get; set; }
         public double Hours2 { get; set; }
@@ -20,5 +25,7 @@ namespace SOCE.Library.Db
         public double Hours8 { get; set; }
         public int EmployeeId { get; set; }
 
+        public int ProjectNumber { get; set; }
+        public int ManagerId { get; set; }
     }
 }

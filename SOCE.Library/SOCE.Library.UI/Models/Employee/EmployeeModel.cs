@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using SOCE.Library.Db;
 
 namespace SOCE.Library.UI
@@ -599,8 +603,8 @@ namespace SOCE.Library.UI
         //    }
         //}
 
-        private Brush _borderColor = Brushes.Transparent;
-        public Brush BorderColor
+        private System.Windows.Media.Brush _borderColor = System.Windows.Media.Brushes.Transparent;
+        public System.Windows.Media.Brush BorderColor
         {
             get { return _borderColor; }
             set
@@ -634,11 +638,23 @@ namespace SOCE.Library.UI
             }
         }
 
+        private System.Windows.Media.ImageSource _signatureOfPM;
+        public System.Windows.Media.ImageSource SignatureOfPM
+        {
+            get { return _signatureOfPM; }
+            set
+            {
+                _signatureOfPM = value;
+                RaisePropertyChanged(nameof(SignatureOfPM));
+            }
+        }
+        public EmployeeDbModel baseemployee;
         public EmployeeModel()
         { }
 
         public EmployeeModel(EmployeeDbModel emdb)
         {
+            baseemployee = emdb;
             Id = emdb.Id;
             FirstName = emdb.FirstName;
             LastName = emdb.LastName;
@@ -669,6 +685,24 @@ namespace SOCE.Library.UI
             ScheduledTotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
             SickRate = emdb.SickRate;
             HolidayHours = emdb.HolidayHours;
+        }
+
+        public void LoadSignature()
+        {
+            if (baseemployee != null)
+            {
+                if (baseemployee.PMSignature != null)
+                {
+                    byte[] imageData = (byte[])baseemployee.PMSignature;
+                    BitmapImage biImg = new BitmapImage();
+                    MemoryStream ms = new MemoryStream(imageData);
+                    biImg.BeginInit();
+                    biImg.StreamSource = ms;
+                    biImg.EndInit();
+                    ImageSource imgSrc = biImg as ImageSource;
+                    SignatureOfPM = (ImageSource)imgSrc;
+                }
+            }
         }
 
         public void CollectTimesheetSubmission()
@@ -751,7 +785,7 @@ namespace SOCE.Library.UI
             {
                 IsEditable = true;
                 CanReviewTimesheet = true;
-                BorderColor = Brushes.LightGray;
+                BorderColor = System.Windows.Media.Brushes.LightGray;
             }
             else
             {
@@ -761,34 +795,75 @@ namespace SOCE.Library.UI
 
         public void UpdateEmployee()
         {
-            EmployeeDbModel employee = new EmployeeDbModel()
-            {
-                Id = Id,
-                FirstName = FirstName,
-                LastName = LastName,
-                AuthId = (int)Status,
-                Title = Title,
-                Email = Email,
-                PhoneNumber = PhoneNumber,
-                Extension = Extension,
-                Rate = Rate,
-                PTORate = PTORate,
-                //PTOHours = PTOHours
-                DefaultRoleId = (int)DefaultRole,
-                PTOCarryover = PTOCarryover,
-                HolidayHours = HolidayHours,
-                //SickHours = SickHours,
-                SickRate = SickRate,
-                MondayHours = MondayHours,
-                TuesdayHours = TuesdayHours,
-                WednesdayHours = WednesdayHours,
-                ThursdayHours = ThursdayHours,
-                FridayHours = FridayHours,
-                IsActive = 1
-            };
+            byte[] imageArray = null;
 
-            SQLAccess.UpdateEmployee(employee);
+            if (SignatureOfPM != null)
+            {
+                imageArray = ImageSourceToBytes(SignatureOfPM);
+            }
+            else if (baseemployee.PMSignature != null)
+            {
+                imageArray = (byte[])baseemployee.PMSignature;
+            }
+
+            try
+            {
+                EmployeeDbModel employee = new EmployeeDbModel()
+                {
+                    Id = Id,
+                    FirstName = FirstName,
+                    LastName = LastName,
+                    AuthId = (int)Status,
+                    Title = Title,
+                    Email = Email,
+                    PhoneNumber = PhoneNumber,
+                    Extension = Extension,
+                    Rate = Rate,
+                    PTORate = PTORate,
+                    //PTOHours = PTOHours
+                    DefaultRoleId = (int)DefaultRole,
+                    PTOCarryover = PTOCarryover,
+                    HolidayHours = HolidayHours,
+                    //SickHours = SickHours,
+                    SickRate = SickRate,
+                    MondayHours = MondayHours,
+                    TuesdayHours = TuesdayHours,
+                    WednesdayHours = WednesdayHours,
+                    ThursdayHours = ThursdayHours,
+                    FridayHours = FridayHours,
+                    PMSignature = imageArray,
+                    IsActive = 1
+                };
+
+                SQLAccess.UpdateEmployee(employee);
+                baseemployee.PMSignature = imageArray;
+            }
+            catch
+            {
+
+            }
+
             CollectTimesheetSubmission();
+        }
+
+        public byte[] ImageSourceToBytes(ImageSource imageSource)
+        {
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            byte[] bytes = null;
+            var bitmapSource = imageSource as BitmapSource;
+
+            if (bitmapSource != null)
+            {
+                encoder.Frames.Add(BitmapFrame.Create(bitmapSource));
+
+                using (var stream = new MemoryStream())
+                {
+                    encoder.Save(stream);
+                    bytes = stream.ToArray();
+                }
+            }
+
+            return bytes;
         }
 
         public override bool Equals(object obj)

@@ -15,6 +15,8 @@ namespace SOCE.Library.Db
         public string NameOfClient { get; set; }
 
         public string ClientAddress { get; set; }
+
+        public string ClientCity { get; set; }
         public int IsActive { get; set; }
     }
 }

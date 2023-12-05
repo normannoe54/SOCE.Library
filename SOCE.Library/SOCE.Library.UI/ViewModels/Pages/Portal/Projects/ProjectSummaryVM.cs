@@ -44,8 +44,20 @@ namespace SOCE.Library.UI.ViewModels
 
         public bool result = false;
 
-        private ObservableCollection<SubProjectModel> _subProjects = new ObservableCollection<SubProjectModel>();
-        public ObservableCollection<SubProjectModel> SubProjects
+        
+        private ObservableCollection<RoleSummaryModel> _rolesPerSub = new ObservableCollection<RoleSummaryModel>();
+        public ObservableCollection<RoleSummaryModel> RolesPerSub
+        {
+            get { return _rolesPerSub; }
+            set
+            {
+                _rolesPerSub = value;
+                RaisePropertyChanged(nameof(RolesPerSub));
+            }
+        }
+
+        private ObservableCollection<SubProjectSummaryModel> _subProjects = new ObservableCollection<SubProjectSummaryModel>();
+        public ObservableCollection<SubProjectSummaryModel> SubProjects
         {
             get { return _subProjects; }
             set
@@ -55,10 +67,63 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public ObservableCollection<EmployeeModel> BaseEmployees = new ObservableCollection<EmployeeModel>();
+        private ObservableCollection<SubProjectSummaryModel> _subProjectsForSelection = new ObservableCollection<SubProjectSummaryModel>();
+        public ObservableCollection<SubProjectSummaryModel> SubProjectsForSelection
+        {
+            get { return _subProjectsForSelection; }
+            set
+            {
+                _subProjectsForSelection = value;
+                RaisePropertyChanged(nameof(SubProjectsForSelection));
+            }
+        }
+        bool firstloadv2 = true;
+        private SubProjectSummaryModel _selectedActiveProjectPhase;
+        public SubProjectSummaryModel SelectedActiveProjectPhase
+        {
+            get { return _selectedActiveProjectPhase; }
+            set
+            {
+                if (value != null)
+                {
+                    if (!firstloadv2 && value != _selectedActiveProjectPhase)
+                    {
+                        if (_selectedActiveProjectPhase != null)
+                        {
+                            SQLAccess.UpdateScheduleActive(_selectedActiveProjectPhase.Id, 0);
+                            _selectedActiveProjectPhase.IsScheduleActive = false;
+                        }
 
-        private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> Employees
+                        SQLAccess.UpdateScheduleActive(value.Id, 1);
+                        
+                    }
+                }
+
+                _selectedActiveProjectPhase = value;
+
+                if (_selectedActiveProjectPhase != null)
+                {
+                    _selectedActiveProjectPhase.IsScheduleActive = true;
+                }
+
+                if (value != null)
+                {
+                    if (!_selectedActiveProjectPhase.IsActive)
+                    {
+                        _selectedActiveProjectPhase.IsActive = true;
+                        SQLAccess.UpdateActive(_selectedActiveProjectPhase.Id, 1);
+                    }
+                }
+
+                RaisePropertyChanged(nameof(SelectedActiveProjectPhase));
+            }
+        }
+
+
+        public ObservableCollection<EmployeeLowResModel> BaseEmployees = new ObservableCollection<EmployeeLowResModel>();
+
+        private ObservableCollection<EmployeeLowResModel> _employees = new ObservableCollection<EmployeeLowResModel>();
+        public ObservableCollection<EmployeeLowResModel> Employees
         {
             get { return _employees; }
             set
@@ -68,29 +133,82 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private SubProjectModel _selectedProjectPhase;
-        public SubProjectModel SelectedProjectPhase
+        private SubProjectSummaryModel _selectedProjectPhase;
+        public SubProjectSummaryModel SelectedProjectPhase
         {
             get { return _selectedProjectPhase; }
             set
             {
-                if ((_selectedProjectPhase != null || !string.IsNullOrEmpty(_selectedProjectPhase?.PointNumber)) && GlobalEditMode)
-                {
+                _selectedProjectPhase = value;
 
-                    foreach (RolePerSubProjectModel rpspm in _selectedProjectPhase.RolesPerSub)
+                if ((_selectedProjectPhase != null || !string.IsNullOrEmpty(_selectedProjectPhase?.PointNumber)))
+                {
+                    if (_selectedProjectPhase.PointNumber == "All Phases")
                     {
-                        if (!rpspm.EditRoleFieldState)
+                        List<RoleSummaryModel> newroles = new List<RoleSummaryModel>();
+                        foreach (SubProjectSummaryModel spsm in SubProjects)
                         {
-                            rpspm.EditRoleFieldState = true;
+                            List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(spsm.Id);
+                            foreach (RolePerSubProjectDbModel rpspm in roles)
+                            {
+                                RoleSummaryModel rolefound = newroles.Where(x => x.Employee.Id == rpspm.EmployeeId && x.Role == (DefaultRoleEnum)rpspm.Role).FirstOrDefault();
+
+                                if (rolefound == null)
+                                {
+                                    RoleSummaryModel role = new RoleSummaryModel(rpspm, spsm, this, Employees);
+                                    role.CanDelete = false;
+                                    newroles.Add(role);
+                                }
+                                else
+                                {
+                                    rolefound.BudgetedHours += rpspm.BudgetHours;
+                                    List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(rolefound.Employee.Id, spsm.Id);
+                                    rolefound.SpentHours += time.Sum(x => x.TimeEntry);
+                                    rolefound.SpentBudget += time.Sum(x => x.BudgetSpent);
+                                    rolefound.PlannedBudget += rpspm.BudgetHours * rpspm.Rate;
+                                    rolefound.PercentofRegulatedBudget = (rolefound.SpentBudget / rolefound.PlannedBudget) * 100;
+                                }
+                                
+                            }
                         }
+                        RolesPerSub = new ObservableCollection<RoleSummaryModel>(newroles);
+
                     }
-                    if (!_selectedProjectPhase.EditSubFieldState)
+                    else
                     {
-                        _selectedProjectPhase.EditSubFieldState = true;
+                        List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(_selectedProjectPhase.Id);
+                        List<RoleSummaryModel> newroles = new List<RoleSummaryModel>();
+                        foreach (RolePerSubProjectDbModel rpspm in roles)
+                        {
+                            RoleSummaryModel role = new RoleSummaryModel(rpspm, _selectedProjectPhase, this, Employees);
+                            //EmployeeLowResModel emlowres = Employees.Where(x => x.Id == rpspm.EmployeeId).FirstOrDefault();
+
+                            //if (emlowres == null)
+                            //{
+                            //    EmployeeDbModel emdb = SQLAccess.LoadEmployeeById(rpspm.EmployeeId);
+                            //    EmployeeLowResModel emnew = new EmployeeLowResModel(emdb);
+                            //    Employees.Add(emnew);
+                            //    role.Employee = emnew;
+                            //}
+                            //else
+                            //{
+                            //    role.Employee = emlowres;
+                            //}
+
+                            newroles.Add(role);
+                        }
+
+                        RolesPerSub = new ObservableCollection<RoleSummaryModel>(newroles);
                     }
+
+                     
+                    //if (!_selectedProjectPhase.EditSubFieldState)
+                    //{
+                    //    _selectedProjectPhase.EditSubFieldState = true;
+                    //}
                 }
 
-                _selectedProjectPhase = value;
+
                 //Employees = BaseEmployees;
                 ////set stuff
                 //foreach (RolePerSubProjectModel role in _selectedProjectPhase.RolesPerSub)
@@ -123,6 +241,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        bool firstload = true;
         private bool _isOnHoldChecked;
         public bool IsOnHoldChecked
         {
@@ -133,33 +252,40 @@ namespace SOCE.Library.UI.ViewModels
                 if (value)
                 {
                     ChipName = "ON HOLD";
+                    IsSelectionVisible = false;
                 }
                 else
                 {
                     ChipName = "IN PROGRESS";
+                    IsSelectionVisible = true;
                 }
 
-                if (value != _isOnHoldChecked)
+                if (value != _isOnHoldChecked && !firstload)
                 {
-                    BaseProject.IsOnHold = value;
-                    BaseProject.UpdateProject();
+                    if (BaseProject.IsOnHold != value)
+                    {
+                        SQLAccess.UpdateOnHoldStatus(BaseProject.Id, Convert.ToInt32(value));
+                        BaseProject.IsOnHold = value;
+                    }
 
                     if (value)
                     {
-                        foreach(SubProjectModel sub in SubProjects)
+                        foreach (SubProjectSummaryModel sub in SubProjects)
                         {
                             if (sub.IsScheduleActive)
                             {
                                 sub.IsScheduleActive = false;
+                                SQLAccess.UpdateScheduleActive(sub.Id, 0);
                             }
                         }
                     }
                     else
                     {
+                        SQLAccess.UpdateScheduleActive(SubProjects[0].Id, 1);
                         SubProjects[0].IsScheduleActive = true;
+                        SelectedActiveProjectPhase = SubProjects[0];
+
                     }
-                    BaseProject.SubProjects = SubProjects;
-                    BaseProject.UpdateSubProjects();
                 }
 
                 _isOnHoldChecked = value;
@@ -211,101 +337,16 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _globalEditMode = true;
-        public bool GlobalEditMode
+        public ProjectViewResModel BaseProject { get; set; }
+
+        private bool _isSelectionVisible;
+        public bool IsSelectionVisible
         {
-            get { return _globalEditMode; }
+            get { return _isSelectionVisible; }
             set
             {
-                int id = SubProjects.IndexOf(SelectedProjectPhase);
-
-                //if (value)
-                //{
-                for (int i = 0; i < SubProjects.Count; i++)
-                {
-                    SubProjectModel sub = SubProjects[i];
-                    if (sub.CanEdit)
-                    {
-                        //List<RolePerSubProjectModel> rolesinp = sub.RolesPerSub.OrderBy(x => x.Id).ToList();
-                        for (int j = 0; j < sub.RolesPerSub.Count; j++)
-                        {
-                            RolePerSubProjectModel role = sub.RolesPerSub[j];
-
-                            if (value)
-                            {
-                                if (role.Employee != null)
-                                {
-                                    role.EditRoleFieldState = value;
-                                    role.globaleditmode = false;
-                                    role.UpdateRolePerSub();
-                                }
-                            }
-                            else
-                            {
-                                role.globaleditmode = true;
-                                role.EditRoleFieldState = value;
-                            }
-
-                        }
-
-                        if (value)
-                        {
-                            sub.EditSubFieldState = value;
-                            sub.globaleditmode = false;
-                        }
-                        else
-                        {
-                            sub.globaleditmode = true;
-                            sub.EditSubFieldState = value;
-                        }
-
-                    }
-                }
-
-                if (value)
-                {
-                    BaseProject.UpdateSubProjects();
-                    BaseProject.FormatData(false);
-                    SubProjects = BaseProject.SubProjects.Renumber(true);
-                    //Renumber(true);
-
-                    if (SelectedProjectPhase == null)
-                    {
-                        SelectedProjectPhase = SubProjects.Where(x => x.Description.ToUpper() == "ALL PHASES").FirstOrDefault();
-                    }
-                }
-
-
-                _globalEditMode = value;
-                RaisePropertyChanged("GlobalEditMode");
-            }
-        }
-
-        private ProjectModel _baseProject;
-        public ProjectModel BaseProject
-        {
-            get { return _baseProject; }
-            set
-            {
-                _baseProject = value;
-                RaisePropertyChanged("BaseProject");
-            }
-        }
-
-        private bool _activeProject;
-        public bool ActiveProject
-        {
-            get { return _activeProject; }
-            set
-            {
-                _activeProject = value;
-
-                if (!_activeProject)
-                {
-                    CanAddPhase = false;
-                    CanAddRole = false;
-                }
-                RaisePropertyChanged("ActiveProject");
+                _isSelectionVisible = value;
+                RaisePropertyChanged(nameof(IsSelectionVisible));
             }
         }
 
@@ -321,64 +362,317 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private double _totalBudget;
+        public double TotalBudget
+        {
+            get { return _totalBudget; }
+            set
+            {
+                _totalBudget = value;
+                RaisePropertyChanged(nameof(TotalBudget));
+            }
+        }
+
+        private double _percentTotalFeeSpent;
+        public double PercentTotalFeeSpent
+        {
+            get { return _percentTotalFeeSpent; }
+            set
+            {
+                _percentTotalFeeSpent = value;
+                RaisePropertyChanged(nameof(PercentTotalFeeSpent));
+            }
+        }
+
+        private double _percentComplete;
+        public double PercentComplete
+        {
+            get { return _percentComplete; }
+            set
+            {
+                _percentComplete = value;
+                RaisePropertyChanged(nameof(PercentComplete));
+            }
+        }
+
+        private double _percentBudgetSpent;
+        public double PercentBudgetSpent
+        {
+            get { return _percentBudgetSpent; }
+            set
+            {
+                _percentBudgetSpent = value;
+                RaisePropertyChanged(nameof(PercentBudgetSpent));
+            }
+        }
+
+        private double _totalRegulatedBudget;
+        public double TotalRegulatedBudget
+        {
+            get { return _totalRegulatedBudget; }
+            set
+            {
+                _totalRegulatedBudget = value;
+                RaisePropertyChanged(nameof(TotalRegulatedBudget));
+            }
+        }
+
+        private double _percentofInvoicedFee;
+        public double PercentofInvoicedFee
+        {
+            get { return _percentofInvoicedFee; }
+            set
+            {
+                _percentofInvoicedFee = value;
+                RaisePropertyChanged(nameof(PercentofInvoicedFee));
+            }
+        }
+
+        private double _budgetSpent;
+        public double BudgetSpent
+        {
+            get { return _budgetSpent; }
+            set
+            {
+                _budgetSpent = value;
+                RaisePropertyChanged(nameof(BudgetSpent));
+            }
+        }
+
+        private double _budgetLeft;
+        public double BudgetLeft
+        {
+            get { return _budgetLeft; }
+            set
+            {
+                _budgetLeft = value;
+                RaisePropertyChanged(nameof(BudgetLeft));
+            }
+        }
+
+        private double _hoursLeft;
+        public double HoursLeft
+        {
+            get { return _hoursLeft; }
+            set
+            {
+                _hoursLeft = value;
+                RaisePropertyChanged(nameof(HoursLeft));
+            }
+        }
+
+        private double _hoursSpent;
+        public double HoursSpent
+        {
+            get { return _hoursSpent; }
+            set
+            {
+                _hoursSpent = value;
+                RaisePropertyChanged(nameof(HoursSpent));
+            }
+        }
+
+
         public ICommand AddSubCommand { get; set; }
         public ICommand AddRoleCommand { get; set; }
         public ICommand CloseCommand { get; set; }
         public ICommand DeleteSubProject { get; set; }
         public ICommand DeleteRole { get; set; }
         public ICommand ExportDataCommand { get; set; }
-
         public ICommand OpenAdCommand { get; set; }
         public ICommand MoveUpCommand { get; set; }
         public ICommand MoveDownCommand { get; set; }
 
-        //public ICommand AdserviceCommand { get; set; }
-        //public ICommand SynchAdserviceFileCommand { get; set; }
-        //public ICommand RemoveAdserviceCommand { get; set; }
-
-        public ProjectSummaryVM(ProjectModel pm, EmployeeModel employee)
+        public ProjectSummaryVM(ProjectViewResModel pm, EmployeeModel employee)
         {
             CanAddPhase = employee.Status != AuthEnum.Standard ? true : false;
             CanEditPhase = employee.Status != AuthEnum.Standard ? true : false;
             BaseProject = pm;
 
-            //Roles.CollectionChanged += CollectionChanged;
+
             this.AddSubCommand = new RelayCommand(this.AddSubProject);
             this.AddRoleCommand = new RelayCommand(this.AddRole);
 
             this.CloseCommand = new RelayCommand(this.CloseWindow);
-            this.DeleteSubProject = new RelayCommand<SubProjectModel>(this.DeleteSub);
-            this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
+            this.DeleteSubProject = new RelayCommand<SubProjectSummaryModel>(this.DeleteSub);
+            this.DeleteRole = new RelayCommand<RoleSummaryModel>(this.DeleteRoleIfPossible);
             this.ExportDataCommand = new RelayCommand(this.RunExport);
             this.OpenAdCommand = new RelayCommand(this.OpenAd);
-            this.MoveUpCommand = new RelayCommand<SubProjectModel>(this.MoveUpSub);
-            this.MoveDownCommand = new RelayCommand<SubProjectModel>(this.MoveDownSub);
+            this.MoveUpCommand = new RelayCommand<SubProjectSummaryModel>(this.MoveUpSub);
+            this.MoveDownCommand = new RelayCommand<SubProjectSummaryModel>(this.MoveDownSub);
 
-            //this.AdserviceCommand = new RelayCommand(this.RunAdserviceCommand);
-
-            ActiveProject = pm.IsActive;
+            
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
 
-            ObservableCollection<EmployeeModel> totalemployees = new ObservableCollection<EmployeeModel>();
+            ObservableCollection<EmployeeLowResModel> totalemployees = new ObservableCollection<EmployeeLowResModel>();
 
             foreach (EmployeeDbModel employeenew in employeesDb)
             {
-                totalemployees.Add(new EmployeeModel(employeenew));
+                totalemployees.Add(new EmployeeLowResModel(employeenew));
             }
 
             //OverallFee = overallfee;
             Employees = totalemployees;
 
-            pm.FormatData(true);
-            SubProjects = pm.SubProjects;
+            CollectSubProjectsInfo();
 
-            if (SubProjects.Count > 0)
+            if (SubProjectsForSelection.Count > 0)
             {
-                SelectedProjectPhase = SubProjects[0];
-                SubProjects = SubProjects.Renumber(true);
+                SelectedProjectPhase = SubProjectsForSelection[SubProjectsForSelection.Count - 1];
             }
 
+            //pm.FormatData(true);
+            //SubProjects = pm.SubProjects;
             IsOnHoldChecked = pm.IsOnHold;
+
+            if (!BaseProject.IsActive || IsOnHoldChecked)
+            {
+                IsSelectionVisible = false;
+            }
+            else
+            {
+                IsSelectionVisible = true;
+            }
+
+            firstload = false;
+            firstloadv2 = false;
+        }
+
+        public void CollectSubProjectsInfo()
+        {
+            List<SubProjectSummaryModel> subs = new List<SubProjectSummaryModel>();
+            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
+
+            double totalfee = 0;
+            TotalBudget = BaseProject.Fee;
+            PercentComplete = BaseProject.PercentComplete;
+
+            foreach (SubProjectDbModel spdm in subdbmodels)
+            {
+                totalfee += spdm.Fee;
+            }
+
+            //update overall fee
+            if (BaseProject.Fee != totalfee)
+            {
+                SQLAccess.UpdateFee(BaseProject.Id, totalfee);
+                BaseProject.Fee = totalfee;
+                TotalBudget = totalfee;
+            }
+
+            double totalregbudget = 0;
+            double totalbudgetspent = 0;
+            double hoursleft = 0;
+            double hoursspent = 0;     
+
+            foreach (SubProjectDbModel spdm in subdbmodels)
+            {
+                SubProjectSummaryModel spm = new SubProjectSummaryModel(spdm, BaseProject, this) ;
+                
+                List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(spdm.Id);
+
+                //Add roles if needed
+                List<TimesheetRowDbModel> timecheck = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
+
+                var groupedlist = timecheck.GroupBy(x => x.EmployeeId).ToList();
+
+                foreach (var item in groupedlist)
+                {
+                    TimesheetRowDbModel subitem = item.First();
+                    if (!roles.Any(x=>x.EmployeeId == subitem.EmployeeId))
+                    {
+
+                        try
+                        {
+                            EmployeeDbModel em = SQLAccess.LoadEmployeeById(subitem.EmployeeId);
+                            if (em!= null)
+                            {
+                                RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
+                                {
+                                    SubProjectId = subitem.SubProjectId,
+                                    EmployeeId = em.Id,
+                                    Role = em.DefaultRoleId,
+                                    Rate = em.Rate,
+                                    BudgetHours = 0
+                                };
+                                SQLAccess.AddRolesPerSubProject(rpp);
+                                roles.Add(rpp);
+                            }
+                        }
+                        catch
+                        {
+                        }
+                    }
+                }
+
+                double plannedbudget = 0;
+                double budgethours = 0;
+                double spenthours = 0;
+                double budgetspent = 0;
+                foreach (RolePerSubProjectDbModel rpspm in roles)
+                {
+                    EmployeeDbModel emdb = SQLAccess.LoadEmployeeById(rpspm.EmployeeId);
+                    List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(emdb.Id, spdm.Id);
+                    spenthours += time.Sum(x => x.TimeEntry);
+                    budgethours += rpspm.BudgetHours;
+                    plannedbudget += rpspm.BudgetHours * rpspm.Rate;
+                    budgetspent += time.Sum(x => x.BudgetSpent);
+                }
+                spm.HoursUsed = spenthours;
+                spm.HoursLeft = budgethours - spenthours;
+                spm.RegulatedBudget = plannedbudget;
+                spm.PercentofInvoicedFee = (plannedbudget / spm.Fee) * 100;
+                spm.PercentBudget = (plannedbudget / TotalBudget) * 100;
+                spm.TotalHours = budgethours;
+                spm.FeeUsed = budgetspent;
+                spm.FeeLeft = plannedbudget - budgetspent;
+                spm.PercentSpent = (budgetspent / plannedbudget) * 100;
+                subs.Add(spm);
+
+                hoursspent += spenthours;
+                hoursleft += budgethours - spenthours;
+                totalregbudget += plannedbudget;
+                totalbudgetspent += budgetspent;
+                totalfee += spm.Fee;
+            }
+
+            TotalRegulatedBudget = totalregbudget;
+            PercentofInvoicedFee = (TotalBudget / totalregbudget)*100;
+            BudgetSpent = totalbudgetspent;
+            BudgetLeft = totalregbudget - totalbudgetspent;
+            HoursLeft = hoursleft;
+            HoursSpent = hoursspent;
+            PercentTotalFeeSpent = (BudgetSpent / TotalBudget)*100;
+            PercentBudgetSpent = (BudgetSpent / totalregbudget)*100;
+
+            //List <SubProjectSummaryModel> subsum = new List<SubProjectSummaryModel>(subs.OrderBy(x => x.NumberOrder).ToList());
+            SubProjects = new ObservableCollection<SubProjectSummaryModel>(subs);
+            SubProjects = SubProjects.Renumber(true);
+
+            SubProjectSummaryModel allphases = new SubProjectSummaryModel() { PointNumber = "All Phases", Description = "All Phases", HoursUsed = hoursspent, HoursLeft = hoursleft,
+                RegulatedBudget = totalregbudget, TotalHours = hoursspent + hoursleft,
+                CanEdit = false};
+
+            subs = SubProjects.ToList();
+            subs.Add(allphases);
+            int id = 0;
+
+            if (SelectedProjectPhase != null)
+            {
+                id = SubProjectsForSelection.IndexOf(SelectedProjectPhase);
+            }
+
+            foreach (SubProjectSummaryModel subcheck in SubProjects)
+            {
+                if (subcheck.IsScheduleActive)
+                {
+                    SelectedActiveProjectPhase = subcheck;
+                    break;
+                }
+            }
+
+            SubProjectsForSelection = new ObservableCollection<SubProjectSummaryModel>(subs);
+            SelectedProjectPhase = SubProjectsForSelection[id];
         }
 
         private async void RunExport()
@@ -396,14 +690,14 @@ namespace SOCE.Library.UI.ViewModels
             YesNoVM vm = view.DataContext as YesNoVM;
             bool resultvm = vm.Result;
 
-            if (resultvm)
-            {
-                ExportConfirmView ecv = new ExportConfirmView();
-                ExportConfirmVM ecvm = new ExportConfirmVM(new List<ProjectModel> { BaseProject });
-                //show progress bar and do stuff
-                ecv.DataContext = ecvm;
-                var newres = await DialogHost.Show(ecv, "RootDialog");
-            }
+            //if (resultvm)
+            //{
+            //    ExportConfirmView ecv = new ExportConfirmView();
+            //    ExportConfirmVM ecvm = new ExportConfirmVM(new List<ProjectModel> { BaseProject });
+            //    //show progress bar and do stuff
+            //    ecv.DataContext = ecvm;
+            //    var newres = await DialogHost.Show(ecv, "RootDialog");
+            //}
         }
 
         //private void RunAdserviceCommand()
@@ -449,8 +743,14 @@ namespace SOCE.Library.UI.ViewModels
         //        catch { }
         //    }
         //}
+        //public void Renumber()
+        //{
+        //    SubProjects.OrderBy(x => x.NumberOrder);
+        //    SubProjectsForSelection.OrderBy(x => x.NumberOrder);
+        //}
 
-        private void MoveUpSub(SubProjectModel sub)
+
+        private void MoveUpSub(SubProjectSummaryModel sub)
         {
             int ind = SubProjects.IndexOf(sub);
 
@@ -459,12 +759,12 @@ namespace SOCE.Library.UI.ViewModels
                 SubProjects.Move(ind, ind - 1);
                 sub.NumberOrder = ind - 1;
                 SubProjects =  SubProjects.Renumber(false);
-
+                
             }
 
         }
 
-        private void MoveDownSub(SubProjectModel sub)
+        private void MoveDownSub(SubProjectSummaryModel sub)
         {
             int ind = SubProjects.IndexOf(sub);
 
@@ -472,7 +772,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 SubProjects.Move(ind, ind + 1);
                 sub.NumberOrder = ind + 1;
-                SubProjects = SubProjects.Renumber(false);
+                SubProjects =  SubProjects.Renumber(false);
             }
 
         }
@@ -525,7 +825,7 @@ namespace SOCE.Library.UI.ViewModels
         //    }
         //}
 
-        private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)
+        private void DeleteRoleIfPossible(RoleSummaryModel rpsm)
         {
             if (rpsm.Id != 0)
             {
@@ -537,13 +837,13 @@ namespace SOCE.Library.UI.ViewModels
             }
             else
             {
-                SelectedProjectPhase.RolesPerSub.Remove(rpsm);
+                RolesPerSub.Remove(rpsm);
             }
 
             //update roles
         }
 
-        private void DeleteSub(SubProjectModel spm)
+        private void DeleteSub(SubProjectSummaryModel spm)
         {
             if (SubProjects.Count > 1)
             {
@@ -557,14 +857,12 @@ namespace SOCE.Library.UI.ViewModels
         }
         private void AddRole()
         {
-            GlobalEditMode = true;
             if (SelectedProjectPhase != null)
             {
-                RolePerSubProjectModel rpspm = new RolePerSubProjectModel(SelectedProjectPhase, SelectedProjectPhase.Fee);
+                RoleSummaryModel rpspm = new RoleSummaryModel(SelectedProjectPhase, SelectedProjectPhase.Fee, this, Employees);
                 rpspm.EditRoleFieldState = false;
                 rpspm.SpentHours = 0;
-                rpspm.globaleditmode = !GlobalEditMode;
-                SelectedProjectPhase.RolesPerSub.Add(rpspm);
+                RolesPerSub.Add(rpspm);
             }
         }
 
@@ -579,7 +877,6 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddSubProject()
         {
-            GlobalEditMode = true;
             LeftViewToShow = new AddSubProjectView();
             AddSubProjectVM addsubvm = new AddSubProjectVM(BaseProject, this);
             LeftViewToShow.DataContext = addsubvm;

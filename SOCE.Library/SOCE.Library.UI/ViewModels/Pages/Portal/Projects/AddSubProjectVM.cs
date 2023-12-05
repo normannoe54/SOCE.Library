@@ -14,8 +14,8 @@ namespace SOCE.Library.UI.ViewModels
     {
         public bool result = false;
 
-        private ProjectModel baseProject = new ProjectModel();
-        public ProjectModel BaseProject
+        private ProjectViewResModel baseProject = new ProjectViewResModel();
+        public ProjectViewResModel BaseProject
         {
             get { return baseProject; }
             set
@@ -344,7 +344,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private ProjectSummaryVM baseViewModel;
 
-        public AddSubProjectVM(ProjectModel pm, ProjectSummaryVM psvm)
+        public AddSubProjectVM(ProjectViewResModel pm, ProjectSummaryVM psvm)
         {
             baseViewModel = psvm;
             this.AddSubProjectCommand = new RelayCommand(this.AddSubProject);
@@ -356,7 +356,7 @@ namespace SOCE.Library.UI.ViewModels
             BaseProject = pm;
 
             //get latest adservice
-            List<SubProjectModel> spms = BaseProject.SubProjects.ToList();
+            List<SubProjectSummaryModel> spms = baseViewModel.SubProjects.ToList();
 
             CLDevEnabled = !spms.Any(x => x.PointNumber == "CLD");
             PEnabled = !spms.Any(x => x.PointNumber == "P");
@@ -374,7 +374,7 @@ namespace SOCE.Library.UI.ViewModels
             //see if CA, CD, P are available
             double pointmax = 0;
             int maxnumberorder = 0;
-            foreach(SubProjectModel spm in spms)
+            foreach(SubProjectSummaryModel spm in spms)
             {
                 double num = 0;
                 bool succ = Double.TryParse(spm.PointNumber, out num);
@@ -397,6 +397,7 @@ namespace SOCE.Library.UI.ViewModels
                 ProjectId = BaseProject.Id,
                 Description = Description,
                 IsActive = 1,
+                SubStart = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd")),
                 IsInvoiced = 0,
                 PercentComplete = 0,
                 PercentBudget = 0,
@@ -512,11 +513,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            baseViewModel.BaseProject.FormatData(result);
-            baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
-            baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
+            //baseViewModel.BaseProject.FormatData(result);
+            //baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
+            //baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
             //baseViewModel.Renumber(true);
-            baseViewModel.SelectedProjectPhase = baseViewModel.SubProjects[0];
+            baseViewModel.CollectSubProjectsInfo();
+            //baseViewModel.SelectedProjectPhase = baseViewModel.SubProjects[0];
             baseViewModel.LeftDrawerOpen = false;
             //DialogHost.Close("RootDialog");
         }

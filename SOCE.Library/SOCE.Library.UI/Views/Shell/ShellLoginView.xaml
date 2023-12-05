@@ -5,6 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:SOCE.Library.UI.Views"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d">
     <Grid>
         <Border Background="GhostWhite" BorderBrush="Silver" BorderThickness="0">
@@ -13,8 +14,11 @@
                     <ColumnDefinition Width="*"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
-
+                
                 <Image Grid.Column="0" Source="/SOCE.Library.UI;component/Resources/AMZPicture.png" Stretch="UniformToFill"/>
+                <Image Grid.Column="0" 
+                       gif:ImageBehavior.AnimatedSource="/SOCE.Library.UI;component/Resources/fallingsnow.gif" 
+                       Margin="10 0 10 0" Stretch="UniformToFill"/>
                 <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Grid>
 

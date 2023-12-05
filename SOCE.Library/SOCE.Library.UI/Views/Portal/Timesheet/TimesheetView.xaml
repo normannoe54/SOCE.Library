@@ -342,16 +342,15 @@
                                                             VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
                                                             Foreground="Black" BorderThickness="0 0 0 1"
                                                             Background="{Binding AlertStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TimesheetColorAlertConverter}}"
-                                                            ToolTip="Select Project" VerticalContentAlignment="Center"
+                                                            VerticalContentAlignment="Center"
                                                             SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                             ItemsSource="{Binding Path=ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            MaxDropDownHeight="255"                                                        
+                                                            MaxDropDownHeight="255"  
+                                                            ToolTip="Select Project"
                                                             BorderBrush="{Binding Path=Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsNullColorConverter}}"
-                                                            
+                                                            IsEditable="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                                             IsDropDownOpen="{Binding ComboOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                                            StaysOpenOnEdit="True"
-                                                            IsReadOnly="{Binding Path=DataContext.IsSubEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,
-                                                                 RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource InvertBooleanConverter}}"
+                                                            StaysOpenOnEdit="True"      
                                                             IsTextSearchEnabled="False"
                                                             TextSearch.TextPath="CombinedName">
                                         <ie:Interaction.Triggers>
@@ -371,19 +370,24 @@
                                         <ComboBox.Style>
                                             <Style TargetType="{x:Type ComboBox}"  BasedOn="{StaticResource MaterialDesignDataGridComboBox}">
                                                 <Style.Triggers>
-                                                    <Trigger Property="IsEnabled" Value="True">
+                                                    <Trigger Property="IsEditable" Value="True">
                                                         <Setter Property="materialDesign:HintAssist.Hint" Value="Select Project" />
-                                                        <Setter Property="ToolTip" Value="Select Project" />
+                                                        <!--<Setter Property="ToolTip" Value="Select Project" />-->
                                                     </Trigger>
-                                                    <Trigger Property="IsEnabled" Value="False">
+                                                    <Trigger Property="IsEditable" Value="False">
                                                         <Setter Property="materialDesign:HintAssist.Hint" Value="" />
-                                                        <Setter Property="ToolTip" Value="" />
+                                                        <!--<Setter Property="ToolTip" Value="" />-->
                                                     </Trigger>
                                                 </Style.Triggers>
                                             </Style>
                                         </ComboBox.Style>
+                                        <ComboBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel />
+                                            </ItemsPanelTemplate>
+                                        </ComboBox.ItemsPanel>
                                         <ComboBox.ItemTemplate>
-                                            <DataTemplate DataType="ProjectModel">
+                                            <DataTemplate DataType="ProjectLowResModel">
                                                 <VirtualizingStackPanel Orientation="Horizontal" Width="290">
                                                     <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="5 0 0 0" />
                                                     <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 5 0" />
@@ -486,6 +490,11 @@
                                                 </VirtualizingStackPanel>
                                             </DataTemplate>
                                         </ComboBox.ItemTemplate>
+                                        <ComboBox.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <VirtualizingStackPanel />
+                                            </ItemsPanelTemplate>
+                                        </ComboBox.ItemsPanel>
                                     </ComboBox>
                                 </Grid>
 
@@ -507,8 +516,17 @@
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>-->
 
+                                <!--<ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        --><!--<WrapPanel Orientation="Horizontal"/>--><!--
+                                        <UniformGrid Rows="1"/>
+                                        --><!--<StackPanel Orientation="Horizontal"/>--><!--
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>-->
+
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
+                       
                                         <!--<WrapPanel Orientation="Horizontal"/>-->
                                         <UniformGrid Rows="1"/>
                                         <!--<StackPanel Orientation="Horizontal"/>-->
@@ -567,12 +585,12 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" IsEnabled="{Binding CanPressButton}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding CopyPreviousCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+            <!--<Button Grid.Column="0" IsEnabled="{Binding CanPressButton}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding CopyPreviousCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ContentCopy" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                     <TextBlock Text="Copy from Previous"/>
                 </StackPanel>
-            </Button>
+            </Button>-->
 
             <StackPanel Orientation="Horizontal" Grid.Column="2">
                 <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">

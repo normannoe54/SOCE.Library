@@ -18,6 +18,7 @@ using System.Threading.Tasks;
 using System.Globalization;
 using System.Windows.Media;
 using System.Threading;
+using System.Windows.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -27,6 +28,7 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand PreviousCommand { get; set; }
         public ICommand NextCommand { get; set; }
         public ICommand CurrentCommand { get; set; }
+        public ICommand GoToSchedulingCommand { get; set; }
 
         private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
         public ObservableCollection<DateWrapper> DateSummary
@@ -39,19 +41,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        //private ObservableCollection<ProjectModel> _projectList;
-        //public ObservableCollection<ProjectModel> ProjectList
-        //{
-        //    get { return _projectList; }
-        //    set
-        //    {
-        //        _projectList = value;
-        //        RaisePropertyChanged(nameof(ProjectList));
-        //    }
-        //}
-
-        private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> Employees
+        private ObservableCollection<EmployeeLowResModel> _employees = new ObservableCollection<EmployeeLowResModel>();
+        public ObservableCollection<EmployeeLowResModel> Employees
         {
             get { return _employees; }
             set
@@ -61,8 +52,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private EmployeeModel _selectedEmployee;
-        public EmployeeModel SelectedEmployee
+        private EmployeeLowResModel _selectedEmployee;
+        public EmployeeLowResModel SelectedEmployee
         {
             get { return _selectedEmployee; }
             set
@@ -84,14 +75,36 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private bool _canSelect = false;
-        public bool CanSelect
+        private string _weekDate = "";
+        public string WeekDate
         {
-            get { return _canSelect; }
+            get { return _weekDate; }
             set
             {
-                _canSelect = value;
-                RaisePropertyChanged(nameof(CanSelect));
+                _weekDate = value;
+                RaisePropertyChanged(nameof(WeekDate));
+            }
+        }
+
+        //private bool _canSelect = false;
+        //public bool CanSelect
+        //{
+        //    get { return _canSelect; }
+        //    set
+        //    {
+        //        _canSelect = value;
+        //        RaisePropertyChanged(nameof(CanSelect));
+        //    }
+        //}
+
+        private bool _schedulePerson = false;
+        public bool SchedulePerson
+        {
+            get { return _schedulePerson; }
+            set
+            {
+                _schedulePerson = value;
+                RaisePropertyChanged(nameof(SchedulePerson));
             }
         }
 
@@ -125,28 +138,67 @@ namespace SOCE.Library.UI.ViewModels
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             this.PrintCommand = new RelayCommand(Print);
+            this.GoToSchedulingCommand = new RelayCommand<WeeklyScheduleModel>(OpenScheduling);
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
 
-            List<EmployeeModel> totalemployees = new List<EmployeeModel>();
+            List<EmployeeLowResModel> totalemployees = new List<EmployeeLowResModel>();
 
-            if (employee.Status == AuthEnum.Admin || employee.Status == AuthEnum.Principal)
+            if (employee.Status == AuthEnum.Principal || employee.Status == AuthEnum.Admin || employee.Status == AuthEnum.PM)
             {
-                CanSelect = true;
+                SchedulePerson = true;
             }
 
-
+            //if (employee.Status == AuthEnum.Admin || employee.Status == AuthEnum.Principal)
+            //{
+            //    CanSelect = true;
+            //}
 
             foreach (EmployeeDbModel employeenew in employeesDb)
             {
-                totalemployees.Add(new EmployeeModel(employeenew));
+                totalemployees.Add(new EmployeeLowResModel(employeenew));
             }
 
             UpdateDateSummary(DateTime.Today);
 
-            ObservableCollection<EmployeeModel> ordered = new ObservableCollection<EmployeeModel>(totalemployees.OrderBy(x => x.LastName).ToList());
+            ObservableCollection<EmployeeLowResModel> ordered = new ObservableCollection<EmployeeLowResModel>(totalemployees.OrderBy(x => x.LastName).ToList());
             Employees = ordered;
             SelectedEmployee = ordered.Where(x => x.Id == employee.Id).FirstOrDefault();
             //LoadScheduling();
+        }
+
+        public async void OpenScheduling(WeeklyScheduleModel wsm)
+        {
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+           
+            BaseAI originalpage = IoCPortal.Application as BaseAI;
+            PortalAI portAI = (PortalAI)originalpage;
+            ProjectScheduleVM psvm = (ProjectScheduleVM)portAI.CurrentPage;
+
+            await psvm.NavigateToMenuAsync(ProjectScheduleViewEnum.UpcomingSchedule);
+
+            //await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            //{
+            //    psvm.SelectedViewEnum = ProjectScheduleViewEnum.UpcomingSchedule;
+            //}));
+
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                if (psvm.SelectedVM is ScheduleWeekVM)
+                {
+                    ScheduleWeekVM weekvm = (ScheduleWeekVM)psvm.SelectedVM;
+                    ProjectLowResModel plrm = weekvm.ProjectList.Where(x => x.ProjectNumber == wsm.ProjectNumber).FirstOrDefault();
+
+                    if (plrm != null)
+                    {
+                        weekvm.SelectedProject = plrm;
+                    }
+                }
+            }));
+
+            await Task.Run(() => Task.Delay(800));
+            CurrentPage.MakeClear();
         }
 
         private async void Print()
@@ -161,8 +213,14 @@ namespace SOCE.Library.UI.ViewModels
             IndividualSingleVM vm = view.DataContext as IndividualSingleVM;
             ResultEnum res = vm.Result;
 
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+
             if (res == ResultEnum.ResultTwo)
             {
+                CurrentPage.MakeBlurry();
+                await Task.Run(() => Task.Delay(600));
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => 
+                {
                 try
                 {
                     string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
@@ -181,39 +239,49 @@ namespace SOCE.Library.UI.ViewModels
                 catch
                 {
                 }
+                }));
+                await Task.Run(() => Task.Delay(600));
+                CurrentPage.MakeClear();
             }
             else if (res == ResultEnum.ResultOne)
             {
-                try
+                CurrentPage.MakeBlurry();
+                await Task.Run(() => Task.Delay(600));
+                await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
                 {
-                    EmployeeModel selectedpm = SelectedEmployee;
-                    string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
-                    string pathDownload = Path.Combine(pathUser, "Downloads\\WeeklySchedule.xlsx");
-                    File.WriteAllBytes(pathDownload, Properties.Resources.WeeklySchedule);
-                    Excel.Excel exinst = new Excel.Excel(pathDownload);
-
-                    Thread.Sleep(200);
-
-                    foreach (EmployeeModel em in Employees)
+                    try
                     {
-                        exinst.CopyFirstWorksheet(em.FullName, "Sheet1");
+                        EmployeeLowResModel selectedpm = SelectedEmployee;
+                        string pathUser = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+                        string pathDownload = Path.Combine(pathUser, "Downloads\\WeeklySchedule.xlsx");
+                        File.WriteAllBytes(pathDownload, Properties.Resources.WeeklySchedule);
+                        Excel.Excel exinst = new Excel.Excel(pathDownload);
 
-                        RunIndividualExport(ref exinst, em);
+                        Thread.Sleep(200);
+
+                        foreach (EmployeeLowResModel em in Employees)
+                        {
+                            exinst.CopyFirstWorksheet(em.FullName, "Sheet1");
+
+                            RunIndividualExport(ref exinst, em);
+                        }
+
+                        exinst.DeleteWorksheet("Sheet1");
+                        exinst.SaveDocument();
+                        Process.Start(pathDownload);
+                        SelectedEmployee = selectedpm;
                     }
-
-                    exinst.DeleteWorksheet("Sheet1");
-                    exinst.SaveDocument();
-                    Process.Start(pathDownload);
-                    SelectedEmployee = selectedpm;
-                }
-                catch
-                {
-                }
+                    catch
+                    {
+                    }
+                }));
+                await Task.Run(() => Task.Delay(600));
+                CurrentPage.MakeClear();
             }
         }
 
 
-        private void RunIndividualExport(ref Excel.Excel exinst, EmployeeModel pmofinterest)
+        private void RunIndividualExport(ref Excel.Excel exinst, EmployeeLowResModel pmofinterest)
         {
             int rowid = 1;
             exinst.WriteCell(rowid, 1, "Report for: " + pmofinterest.FullName);
@@ -277,109 +345,70 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-        private void PreviousTimesheet()
+        private async void PreviousTimesheet()
         {
-            UpdateDateSummary(DateSummary.First().Value.AddDays(-7));
-            LoadScheduling();
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => UpdateDateSummary(DateSummary.First().Value.AddDays(-7))));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => LoadScheduling()));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         /// <summary>LoadScheduling
         /// Button Press
         /// </summary>
-        private void NextTimesheet()
+        private async void NextTimesheet()
         {
-            UpdateDateSummary(DateSummary.First().Value.AddDays(7));
-            LoadScheduling();
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => UpdateDateSummary(DateSummary.First().Value.AddDays(7))));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => LoadScheduling()));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         /// <summary>
         /// Button Press
         /// </summary>
-        private void CurrentTimesheet()
+        private async void CurrentTimesheet()
         {
-            UpdateDateSummary(DateTime.Now);
-            LoadScheduling();
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => UpdateDateSummary(DateTime.Now)));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => LoadScheduling()));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         private void UpdateDateSummary(DateTime currdate)
         {
-            DateSummary.Clear();
+            DateSummary = null;
+            List<DateWrapper> dates = new List<DateWrapper>();
+
             // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
             int daysUntilMonday = ((int)DayOfWeek.Monday - (int)currdate.DayOfWeek + 7) % 7;
             DateTime nextMonday = currdate.AddDays(daysUntilMonday);
-            DateSummary.Add(new DateWrapper(nextMonday));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(7)));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(14)));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(21)));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(28)));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(35)));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(42)));
-            DateSummary.Add(new DateWrapper(nextMonday.AddDays(49)));
-
+            WeekDate = nextMonday.ToString("MM/dd/yyyy");
+            dates.Add(new DateWrapper(nextMonday));
+            dates.Add(new DateWrapper(nextMonday.AddDays(7)));
+            dates.Add(new DateWrapper(nextMonday.AddDays(14)));
+            dates.Add(new DateWrapper(nextMonday.AddDays(21)));
+            dates.Add(new DateWrapper(nextMonday.AddDays(28)));
+            dates.Add(new DateWrapper(nextMonday.AddDays(35)));
+            dates.Add(new DateWrapper(nextMonday.AddDays(42)));
+            dates.Add(new DateWrapper(nextMonday.AddDays(49)));
+            DateSummary = new ObservableCollection<DateWrapper>(dates);
         }
 
         private void LoadScheduling()
         {
-            Totals.Clear();
-            SchedulingItems.Clear();
-            //List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByEmployee(DateSummary.First().Value, SelectedEmployee.Id);
-            //double total1 = 0;
-            //double total2 = 0;
-            //double total3 = 0;
-            //double total4 = 0;
-            //double total5 = 0;
-            //double total6 = 0;
-            //double total7 = 0;
-            //double total8 = 0;
+            List<SDEntryModel> totals = new List<SDEntryModel>();
+            SchedulingItems = null;
 
-            //foreach (SchedulingDataDbModel dbmodel in schedulingdata)
-            //{
-            //    SubProjectDbModel sub = SQLAccess.LoadSubProjectsBySubProject(dbmodel.PhaseId);
-            //    ProjectDbModel project = SQLAccess.LoadProjectsById(sub.ProjectId);
-            //    ClientDbModel client = SQLAccess.LoadClientById(project.ClientId);
-
-            //    DateTime? newdate = null;
-
-            //    if (project?.DueDate != null && project?.DueDate != 0)
-            //    {
-            //        newdate = DateTime.ParseExact(project.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-            //    }
-
-            //    string finisheddate = newdate?.ToString("MM/dd/yyyy");
-
-            //    WeeklyScheduleModel weeklymodel = new WeeklyScheduleModel();
-            //    weeklymodel.ProjectName = project.ProjectName;
-            //    weeklymodel.ProjectNumber = project.ProjectNumber;
-            //    weeklymodel.ClientNumber = client.ClientNumber;
-            //    weeklymodel.PhaseName = sub.PointNumber;
-            //    weeklymodel.DueDate = finisheddate;
-            //    weeklymodel.PercentComplete = sub.PercentComplete;
-            //    EmployeeDbModel employee = SQLAccess.LoadEmployeeById(project.ManagerId);
-            //    weeklymodel.PM = employee.FullName;
-
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = dbmodel.Hours1 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = dbmodel.Hours2 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = dbmodel.Hours3 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = dbmodel.Hours4 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[4].Value, TimeEntry = dbmodel.Hours5 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[5].Value, TimeEntry = dbmodel.Hours6 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = dbmodel.Hours7 });
-            //    weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = dbmodel.Hours8 });
-
-
-            //    weeklymodel.Total = dbmodel.Hours1 + dbmodel.Hours2 + dbmodel.Hours3 + dbmodel.Hours4 + dbmodel.Hours5 + dbmodel.Hours6 + dbmodel.Hours7 + dbmodel.Hours8;
-
-            //    total1 += dbmodel.Hours1;
-            //    total2 += dbmodel.Hours2;
-            //    total3 += dbmodel.Hours3;
-            //    total4 += dbmodel.Hours4;
-            //    total5 += dbmodel.Hours5;
-            //    total6 += dbmodel.Hours6;
-            //    total7 += dbmodel.Hours7;
-            //    total8 += dbmodel.Hours8;
-
-            //    SchedulingItems.Add(weeklymodel);
-            //}
             List<WeeklyScheduleModel> weeklystuff = LoadEmployeeSchedulingData(SelectedEmployee);
             SchedulingItems = new ObservableCollection<WeeklyScheduleModel>(weeklystuff);
             double total1 = 0;
@@ -402,17 +431,16 @@ namespace SOCE.Library.UI.ViewModels
                 total8 += week.Entries[7].TimeEntry;
             }
 
+            totals.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = total1 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = total2 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = total3 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = total4 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[4].Value, TimeEntry = total5 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[5].Value, TimeEntry = total6 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = total7 });
+            totals.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = total8 });
 
-
-
-            Totals.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = total1 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = total2 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = total3 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = total4 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[4].Value, TimeEntry = total5 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[5].Value, TimeEntry = total6 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[6].Value, TimeEntry = total7 });
-            Totals.Add(new SDEntryModel() { Date = DateSummary[7].Value, TimeEntry = total8 });
+            Totals = new ObservableCollection<SDEntryModel>(totals);
 
             DateTime Curr = DateTime.Now.AddDays(-1);
 
@@ -426,7 +454,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private List<WeeklyScheduleModel> LoadEmployeeSchedulingData(EmployeeModel employeeofinterest)
+        private List<WeeklyScheduleModel> LoadEmployeeSchedulingData(EmployeeLowResModel employeeofinterest)
         {
             List<WeeklyScheduleModel> weekly = new List<WeeklyScheduleModel>();
             List<SchedulingDataDbModel> schedulingdata = SQLAccess.LoadSchedulingDataByEmployee(DateSummary.First().Value, employeeofinterest.Id);
@@ -434,27 +462,53 @@ namespace SOCE.Library.UI.ViewModels
             foreach (SchedulingDataDbModel dbmodel in schedulingdata)
             {
                 SubProjectDbModel sub = SQLAccess.LoadSubProjectsBySubProject(dbmodel.PhaseId);
-                ProjectDbModel project = SQLAccess.LoadProjectsById(sub.ProjectId);
-                ClientDbModel client = SQLAccess.LoadClientById(project.ClientId);
 
-                DateTime? newdate = null;
+                string subprojectname = "";
+                string projectname = "";
+                string projectmanager = "";
+                double projectnumber=0;
+                double percentcomplete = 0;
+                DateTime? duedate = null;
+                double clientnumber=0;
 
-                if (project?.DueDate != null && project?.DueDate != 0)
+                if (sub != null)
                 {
-                    newdate = DateTime.ParseExact(project.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                    subprojectname = sub.PointNumber;
+                    percentcomplete = sub.PercentComplete;
+                    ProjectDbModel project = SQLAccess.LoadProjectsById(sub.ProjectId);
+
+                    if (project != null)
+                    {
+                        projectname = project.ProjectName;
+                        projectnumber = project.ProjectNumber;
+                        EmployeeDbModel emtemp = SQLAccess.LoadEmployeeById(project.ManagerId);
+                        projectmanager = emtemp.FullName;
+                        if (project?.DueDate != null && project?.DueDate != 0)
+                        {
+                            duedate = DateTime.ParseExact(project.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                        }
+                    }
+
+                    ClientDbModel client = SQLAccess.LoadClientById(project.ClientId);
+                    clientnumber = client.ClientNumber;
+                }
+                else
+                {
+                    subprojectname = dbmodel.PhaseName;
+                    projectname = dbmodel.ProjectName;
+
                 }
 
-                string finisheddate = newdate?.ToString("MM/dd/yyyy");
+                string finisheddate = duedate?.ToString("MM/dd/yyyy");
 
                 WeeklyScheduleModel weeklymodel = new WeeklyScheduleModel();
-                weeklymodel.ProjectName = project.ProjectName;
-                weeklymodel.ProjectNumber = project.ProjectNumber;
-                weeklymodel.ClientNumber = client.ClientNumber;
-                weeklymodel.PhaseName = sub.PointNumber;
+                weeklymodel.ProjectName = projectname;
+                weeklymodel.ProjectNumber = projectnumber;
+                weeklymodel.ClientNumber = clientnumber;
+                weeklymodel.PhaseName = subprojectname;
                 weeklymodel.DueDate = finisheddate;
-                weeklymodel.PercentComplete = sub.PercentComplete;
-                EmployeeDbModel employee = SQLAccess.LoadEmployeeById(project.ManagerId);
-                weeklymodel.PM = employee.FullName;
+                weeklymodel.PercentComplete = percentcomplete;
+                weeklymodel.PM = projectmanager;
 
                 weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = dbmodel.Hours1 });
                 weeklymodel.Entries.Add(new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = dbmodel.Hours2 });

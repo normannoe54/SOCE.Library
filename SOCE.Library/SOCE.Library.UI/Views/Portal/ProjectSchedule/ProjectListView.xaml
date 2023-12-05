@@ -88,11 +88,10 @@
                               Style="{StaticResource MaterialDesignComboBox}"
                               SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                               ItemsSource="{Binding Clients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                              TextSearch.TextPath="ClientName"
                               IsTextSearchEnabled="True" IsEditable="False" 
                               StaysOpenOnEdit="True"                         
                               MaxDropDownHeight="250"
-                              DisplayMemberPath="ClientName">
+                              DisplayMemberPath="ClientNumber">
                     <ComboBox.ItemsPanel>
                         <ItemsPanelTemplate>
                             <VirtualizingStackPanel MaxWidth="300"/>
@@ -242,7 +241,7 @@
 
                             <TextBlock Grid.Column="3" 
                                                  HorizontalAlignment="Center"
-                                                 Text="{Binding Client.ClientNumber}" 
+                                                 Text="{Binding ClientNumber}" 
                                                  FontSize="16" 
                                                  FontWeight="Bold" 
                                                  VerticalAlignment="Center"/>

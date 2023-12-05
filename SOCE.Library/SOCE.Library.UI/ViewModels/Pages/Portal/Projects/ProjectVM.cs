@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using MaterialDesignThemes.Wpf;
@@ -124,8 +125,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<ProjectModel> _projects = new ObservableCollection<ProjectModel>();
-        public ObservableCollection<ProjectModel> Projects
+        private ObservableCollection<ProjectViewResModel> _projects = new ObservableCollection<ProjectViewResModel>();
+        public ObservableCollection<ProjectViewResModel> Projects
         {
             get { return _projects; }
             set
@@ -169,7 +170,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private List<ProjectModel> AllProjects = new List<ProjectModel>();
+        private List<ProjectViewResModel> AllProjects = new List<ProjectViewResModel>();
 
         private ObservableCollection<ClientModel> _clients = new ObservableCollection<ClientModel>();
         public ObservableCollection<ClientModel> Clients
@@ -193,8 +194,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<EmployeeModel> _projectManagers = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> ProjectManagers
+        private ObservableCollection<EmployeeLowResModel> _projectManagers = new ObservableCollection<EmployeeLowResModel>();
+        public ObservableCollection<EmployeeLowResModel> ProjectManagers
         {
             get { return _projectManagers; }
             set
@@ -248,7 +249,6 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-
         private int _dateTimeSelection { get; set; }
         public int DateTimeSelection
         {
@@ -269,19 +269,8 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _showActiveProjects = value;
                 LoadProjects();
-                Projects = new ObservableCollection<ProjectModel>(AllProjects);
+                Projects = new ObservableCollection<ProjectViewResModel>(AllProjects);
                 SortProjects(SortFilter);
-                //if (_showActiveProjects)
-                //{
-                //    AllProjects = LoadProjects();
-                //    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive == _showActiveProjects).ToList());
-                //}
-                //else
-                //{
-                //    AllProjects = 
-                //    Projects = new ObservableCollection<ProjectModel>(AllProjects);
-                //}
-
                 RaisePropertyChanged(nameof(ShowActiveProjects));
 
             }
@@ -361,41 +350,50 @@ namespace SOCE.Library.UI.ViewModels
             portAI.RightDrawerOpen = true;
         }
 
-        private void ClearInputsandReload()
+        private async void ClearInputsandReload()
         {
-            SearchableText = "";
-            SelectedMarket = null;
-            SelectedClient = null;
-            SelectedPM = null;
-
-            if (!ShowActiveProjects)
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                if (YearInp != null)
+                SearchableText = "";
+                SelectedMarket = null;
+                SelectedClient = null;
+                SelectedPM = null;
+
+                if (!ShowActiveProjects)
                 {
-                    string yearinpstr = YearInp.ToString();
-                    Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList());
+                    if (YearInp != null)
+                    {
+                        string yearinpstr = YearInp.ToString();
+                        Projects = new ObservableCollection<ProjectViewResModel>(AllProjects.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList());
+                    }
+                    else
+                    {
+                        Projects = new ObservableCollection<ProjectViewResModel>(AllProjects);
+                    }
                 }
                 else
                 {
-                    Projects = new ObservableCollection<ProjectModel>(AllProjects);
+                    Projects = new ObservableCollection<ProjectViewResModel>(AllProjects.Where(x => x.IsActive == true).ToList());
                 }
-            }
-            else
-            {
-                Projects = new ObservableCollection<ProjectModel>(AllProjects.Where(x => x.IsActive == true).ToList());
-            }
-            SortProjects(SortFilter);
+                SortProjects(SortFilter);
+
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         private void SortProjects(bool sort)
         {
             if (sort)
             {
-                Projects = new ObservableCollection<ProjectModel>(Projects.OrderBy(x => x.ProjectNumber).ToList());
+                Projects = new ObservableCollection<ProjectViewResModel>(Projects.OrderBy(x => x.ProjectNumber).ToList());
             }
             else
             {
-                Projects = new ObservableCollection<ProjectModel>(Projects.OrderByDescending(x => x.ProjectNumber).ToList());
+                Projects = new ObservableCollection<ProjectViewResModel>(Projects.OrderByDescending(x => x.ProjectNumber).ToList());
             }
 
         }
@@ -426,52 +424,51 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private void RunSearch()
+        private async void RunSearch()
         {
-            List<ProjectModel> pmnew = AllProjects;
-
-            if (SelectedPM != null)
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
             {
-                pmnew = pmnew.Where(x => x.ProjectManager?.Id == SelectedPM.Id).ToList();
-            }
+                List<ProjectViewResModel> pmnew = AllProjects;
 
-            if (SelectedClient != null)
-            {
-                pmnew = pmnew.Where(x => x.Client.Id == SelectedClient.Id).ToList();
-            }
+                if (SelectedPM != null)
+                {
+                    pmnew = pmnew.Where(x => x.ProjectManager?.Id == SelectedPM.Id).ToList();
+                }
 
-            if (SelectedMarket != null)
-            {
-                pmnew = pmnew.Where(x => x.Market.Id == SelectedMarket.Id).ToList();
-            }
+                if (SelectedClient != null)
+                {
+                    pmnew = pmnew.Where(x => x.Client.Id == SelectedClient.Id).ToList();
+                }
 
-            if (!String.IsNullOrEmpty(SearchableText))
-            {
-                pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
-            }
+                if (SelectedMarket != null)
+                {
+                    pmnew = pmnew.Where(x => x.Market.Id == SelectedMarket.Id).ToList();
+                }
 
-            if (!ShowActiveProjects && YearInp != null)
-            {
-                string yearinpstr = YearInp.ToString();
-                pmnew = pmnew.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList();
-            }
+                if (!String.IsNullOrEmpty(SearchableText))
+                {
+                    pmnew = pmnew.Where(x => x.ProjectName.ToUpper().Contains(_searchableText.ToUpper()) || x.ProjectNumber.ToString().Contains(_searchableText)).ToList();
+                }
 
-            Projects = new ObservableCollection<ProjectModel>(pmnew);
-            SortProjects(SortFilter);
+                if (!ShowActiveProjects && YearInp != null)
+                {
+                    string yearinpstr = YearInp.ToString();
+                    pmnew = pmnew.Where(x => x.ProjectNumber.ToString().Substring(0, 2) == yearinpstr.Substring(yearinpstr.Length - 2)).ToList();
+                }
+
+                Projects = new ObservableCollection<ProjectViewResModel>(pmnew);
+                SortProjects(SortFilter);
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         private async void ExecuteOpenSubDialog(object o)
         {
-            ProjectModel pm = (ProjectModel)o;
-
-            //let's set up a little MVVM, cos that's what the cool kids are doing:
-            //var view = new ProjectSummaryView();
-            //ProjectSummaryVM vm = new ProjectSummaryVM(pm, CurrentEmployee);
-            //view.DataContext = vm;
-            ////show the dialog
-            //var result = await DialogHost.Show(view, "RootDialog");
-
-
+            ProjectViewResModel pm = (ProjectViewResModel)o;
             var view = new BaseProjectSummaryView();
             BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee, pm, ViewEnum.ProjectSummary);
             view.DataContext = vm;
@@ -525,7 +522,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
-            ProjectModel pm = (ProjectModel)o;
+            ProjectViewResModel pm = (ProjectViewResModel)o;
 
             List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(pm.Id);
             foreach (SubProjectDbModel spm in subs)
@@ -554,15 +551,14 @@ namespace SOCE.Library.UI.ViewModels
             if (ynvm.Result)
             {
                 SQLAccess.DeleteProject(pm.Id);
-
-                foreach (SubProjectModel spm in pm.SubProjects)
+                List<SubProjectDbModel> subprojs = SQLAccess.LoadAllSubProjectsByProject(pm.Id);
+                foreach (SubProjectDbModel spm in subprojs)
                 {
                     SQLAccess.DeleteSubProject(spm.Id);
                 }
 
                 LoadProjects();
             }
-
         }
 
         //private void ClosingEventHandlerProjects(object sender, DialogClosingEventArgs eventArgs)
@@ -586,9 +582,9 @@ namespace SOCE.Library.UI.ViewModels
         {
             List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
 
-            ObservableCollection<ProjectModel> members = new ObservableCollection<ProjectModel>();
+            ObservableCollection<ProjectViewResModel> members = new ObservableCollection<ProjectViewResModel>();
 
-            ProjectModel[] ProjectArray = new ProjectModel[dbprojects.Count];
+            ProjectViewResModel[] ProjectArray = new ProjectViewResModel[dbprojects.Count];
 
             //Do not include the last layer
             Parallel.For(0, dbprojects.Count, i =>
@@ -597,8 +593,8 @@ namespace SOCE.Library.UI.ViewModels
 
                 //if (pdb.ProjectName != "VACATION" && pdb.ProjectName != "OFFICE" && pdb.ProjectName != "HOLIDAY" && pdb.ProjectName != "SICK")
                 //{
-                ProjectModel pm = new ProjectModel(pdb, IsEditable);
-                EmployeeModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
+                ProjectViewResModel pm = new ProjectViewResModel(pdb);
+                EmployeeLowResModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
                 ClientModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
                 MarketModel mm = Markets.Where(x => x.Id == pdb.MarketId).FirstOrDefault();
 
@@ -614,7 +610,7 @@ namespace SOCE.Library.UI.ViewModels
 
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();
             AllProjects = ProjectArray.ToList();
-            Projects = new ObservableCollection<ProjectModel>(ProjectArray.ToList());
+            Projects = new ObservableCollection<ProjectViewResModel>(ProjectArray.ToList());
 
             //List<ProjectModel> activeprojects = Projects.Where(x => x.IsActive == true).ToList();
             NumProjects = Projects.Count;
@@ -664,11 +660,11 @@ namespace SOCE.Library.UI.ViewModels
         {
             List<EmployeeDbModel> PMs = SQLAccess.LoadProjectManagers();
 
-            ObservableCollection<EmployeeModel> members = new ObservableCollection<EmployeeModel>();
+            ObservableCollection<EmployeeLowResModel> members = new ObservableCollection<EmployeeLowResModel>();
 
             foreach (EmployeeDbModel edbm in PMs)
             {
-                members.Add(new EmployeeModel(edbm));
+                members.Add(new EmployeeLowResModel(edbm));
             }
 
             ProjectManagers = members;

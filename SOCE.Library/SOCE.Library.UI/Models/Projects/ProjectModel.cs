@@ -840,7 +840,7 @@ namespace SOCE.Library.UI
 
                         aysvm.Message = $"More than 1 possible active phase";
                         aysvm.SubMessage = $"Select the active phase";
-                        aysvm.SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x=>x.PointNumber != "CA").ToList());
+                        //aysvm.SubProjects = new ObservableCollection<SubProjectModel>(SubProjects.Where(x=>x.PointNumber != "CA").ToList());
                         view.DataContext = aysvm;
 
                         //show the dialog

@@ -168,7 +168,11 @@
                     </Grid.RowDefinitions>
                     <TextBlock Grid.Row="0"  Foreground="{StaticResource SOCERed}" Text="SOCE PORTAL" FontWeight="Bold" FontSize="32" HorizontalAlignment="Center"/>
                     <TextBlock Grid.Row="1"  Foreground="Gray" Text="{Binding WelcomeMessage}" FontWeight="Bold" FontSize="20" FontStyle="Italic" HorizontalAlignment="Center"/>
-                    <ContentControl Grid.Row="2" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                    <ContentControl Grid.Row="2" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+                        <!--<ContentControl.Effect>
+                            <BlurEffect Radius="5" KernelType="Gaussian"/>
+                        </ContentControl.Effect>-->
+                    </ContentControl>
                 </Grid>
             </Grid>
         </Border>

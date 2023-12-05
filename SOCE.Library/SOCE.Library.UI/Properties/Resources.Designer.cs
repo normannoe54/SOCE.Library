@@ -61,11 +61,41 @@ namespace SOCE.Library.UI.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] AddServiceTrackingLog {
+            get {
+                object obj = ResourceManager.GetObject("AddServiceTrackingLog", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
         internal static System.Drawing.Bitmap AMZPicture {
             get {
                 object obj = ResourceManager.GetObject("AMZPicture", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap fallingsnow {
+            get {
+                object obj = ResourceManager.GetObject("fallingsnow", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap leaves {
+            get {
+                object obj = ResourceManager.GetObject("leaves", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

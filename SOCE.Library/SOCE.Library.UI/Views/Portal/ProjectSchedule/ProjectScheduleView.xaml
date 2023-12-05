@@ -12,8 +12,8 @@
     <Grid Margin="30 10 20 20">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
+            <!--<RowDefinition Height="*"/>-->
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <TextBlock  Text="Project Schedule"  Style="{StaticResource PageHeader}" HorizontalAlignment="left"/>
@@ -24,12 +24,12 @@
                          SelectedValuePath="Value"/>
             </materialDesign:PopupBox>
         </StackPanel>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 20 0 0">
+        <!--<StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="0 20 0 0">
             <TextBlock Text="Scheduling for week:" FontSize="18" FontWeight="SemiBold"/>
             <TextBlock Text="{Binding DateStartString}" Margin="10 0 0 0" FontSize="18" FontWeight="SemiBold"/>
             <TextBlock Margin="5 0 5 0" Text="-" FontSize="18" FontWeight="SemiBold"/>
             <TextBlock Text="{Binding DateEndString}" FontSize="18" FontWeight="SemiBold"/>
-        </StackPanel>
-        <ContentControl Grid.Row="2" Content="{Binding SelectedVM, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  Margin="0 15 0 0"/>
+        </StackPanel>-->
+        <ContentControl Grid.Row="1" Content="{Binding SelectedVM, Mode=TwoWay , UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"  />
     </Grid>
 </UserControl>

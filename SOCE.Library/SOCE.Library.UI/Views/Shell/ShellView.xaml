@@ -12,29 +12,50 @@
         WindowStartupLocation="CenterScreen" 
         WindowStyle="None" 
         AllowsTransparency ="True" 
-        Background="Transparent">
+        Background="Transparent"
+        IsEnabled="{Binding IsWindowEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+    
+
     <Border BorderThickness="1" BorderBrush="Black">
-        <materialDesign:DialogHost
+        <Grid>
+            <Control Panel.ZIndex="2" Background="Transparent" HorizontalAlignment="Center" VerticalAlignment="Center"
+                     Visibility="{Binding IsWindowEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
+                     Style="{StaticResource BusyAnimationStyle}"/>
+            <!--<StackPanel Panel.ZIndex="2" Margin="50" Orientation="Vertical" Visibility="{Binding IsWindowEnabled, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}">
+                <TextBlock Text="LOADING..." FontSize="24" HorizontalAlignment="Center" FontWeight="Bold"/>
+                <ProgressBar Panel.ZIndex="3"   Value="0" IsIndeterminate="True" Height="20" Width="400"  Background="Transparent" Foreground ="Black" BorderBrush="Transparent"
+                         HorizontalAlignment="Center" VerticalAlignment="top" >
+                    --><!--<ProgressBar.LayoutTransform>
+                    <ScaleTransform CenterX="0.5" CenterY="0.5" ScaleX="2" ScaleY="2" />
+                </ProgressBar.LayoutTransform>--><!--
+                </ProgressBar>
+                
+            </StackPanel>-->
+            <materialDesign:DialogHost
         Identifier="RootDialog" 
         DialogTheme="Light">
-            <Grid>
-                <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right" 
+                <Grid>
+                    <Grid.Effect>
+                        <BlurEffect Radius="{Binding BlurRadius, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" KernelType="Gaussian" />
+                    </Grid.Effect>
+                    <StackPanel Orientation="Horizontal" Margin="5" Panel.ZIndex="2" VerticalAlignment="Top" HorizontalAlignment="Right" 
                             Visibility="{Binding IsConfusingStuffVisible, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <TextBlock Text="Version:" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center"/>
-                    <TextBlock Text="{Binding VersionNumber}" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center" Margin="5 0 30 0"/>
-                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
-                        <materialDesign:PackIcon Kind="WindowMinimize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-                    </Button>
-                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="{Binding MaxorRestoreTooltip}" Command="{Binding MaximizeWindowCommand}">
+                        <TextBlock Text="Version:" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center"/>
+                        <TextBlock Text="{Binding VersionNumber}" Foreground="Black" FontStyle="Italic" FontSize="12" FontWeight="Light" VerticalAlignment="Center" Margin="5 0 30 0"/>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="Minimize" Command="{Binding MinusCommand}">
+                            <materialDesign:PackIcon Kind="WindowMinimize" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                        </Button>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" Margin="5 0 5 0" Width="30" Height="30" Background="Transparent" BorderBrush="Transparent" ToolTip="{Binding MaxorRestoreTooltip}" Command="{Binding MaximizeWindowCommand}">
                             <materialDesign:PackIcon Kind="{Binding WindowButton}" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
                         </Button>
-                    <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="0 0 5 0" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
-                        <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
-                    </Button>
-                </StackPanel>
+                        <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}"  Margin="0 0 5 0" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
+                            <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                        </Button>
+                    </StackPanel>
 
-                <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
-            </Grid>
-        </materialDesign:DialogHost>
+                    <ContentControl Panel.ZIndex="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+                </Grid>
+            </materialDesign:DialogHost>
+        </Grid>
     </Border>
 </Window>

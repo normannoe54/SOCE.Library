@@ -14,7 +14,10 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBlock Grid.Row="0" Text="Employee Weekly Report"  FontSize="22" FontWeight="SemiBold" Margin="0 15 0 0" Foreground="{StaticResource SOCERed}" />
-
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom">
+            <TextBlock  Text="WEEK OF:" FontSize="16" FontWeight="SemiBold"  Foreground="Black"/>
+            <TextBlock Margin="5 0 0 0" Text="{Binding WeekDate}" FontSize="16" FontWeight="SemiBold"  Foreground="Black"/>
+        </StackPanel>
         <Grid Grid.Row="1" Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -34,7 +37,6 @@
                               TextSearch.TextPath="FullName"
                               IsTextSearchEnabled="True"
                               StaysOpenOnEdit="True"  
-                      IsEnabled="{Binding CanSelect, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
                               MaxDropDownHeight="250"
                               DisplayMemberPath="FullName">
                 <ComboBox.ItemsPanel>
@@ -187,9 +189,15 @@
                                     <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
 
-                                <Border BorderBrush="Black"  Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0 0 2 0" Margin="0 -10 0 -10">
-                                    <TextBlock FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Left" Margin="5 0 0 0"
-                                   VerticalAlignment="Center" Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                <Border BorderBrush="Black" IsHitTestVisible="{Binding Path =DataContext.SchedulePerson, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" 
+                                        Grid.Column="0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0 0 2 0" Margin="0 -10 0 -10">
+                                    <Button HorizontalAlignment ="Left" Margin ="5 0 0 0" 
+                                            Style="{StaticResource MaterialDesignFlatButton}" Padding ="0" 
+                                            Command="{Binding Path =DataContext.GoToSchedulingCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                            CommandParameter="{Binding}">
+                                        <TextBlock FontWeight="SemiBold" FontSize="16" Foreground="Black"
+                                                   VerticalAlignment="Stretch" Text="{Binding ProjectName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    </Button>
                                 </Border>
 
                                 <Border BorderBrush="Black"  Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" BorderThickness="0 0 2 0" Margin="0 -10 0 -10">

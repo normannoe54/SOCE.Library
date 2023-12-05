@@ -13,6 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using System.Windows.Forms;
 using System.Threading;
+using System.Windows.Interop;
 
 namespace SOCE.Library.UI.Views
 {
@@ -36,100 +37,127 @@ namespace SOCE.Library.UI.Views
             this.DataContext = IoCCore.Application;
             this.MouseDown += Window_MouseDown;
             this.MouseUp += Window_MouseUp;
-            
+
         }
 
-        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        private async void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.ChangedButton == MouseButton.Left)
+            try
             {
-                dragAction = true;
-                //this.MouseMove += StrangeMouseMove;
-                //this.MouseMove += Window_MouseMove;
-                //await Task.Delay(1000);
-                Window_MouseMove(this, e);
-
-            }
-        }
-
-        private async void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-        {
-
-            CoreAI core = (CoreAI)this.DataContext;
-            if (core.WindowType == WindowState.Maximized)
-            {
-                //var point = e.GetPosition(this);
-                System.Drawing.Point point = System.Windows.Forms.Cursor.Position;
-                if (point.Y < 50)
+                if (e.ChangedButton == MouseButton.Left)
                 {
-
-                    await Task.Delay(1000);
-
-                    if (dragAction)
+                    dragAction = true;
+                    CoreAI basevm = (CoreAI)DataContext;
+                    if (basevm.WindowType == WindowState.Maximized)
                     {
-                        core.MaximizeWindowCom();
-                        Top = Math.Max(point.Y - 5, 0);
-
-                        if (point.X > 1800)
+                        //double widthref = System.Windows.SystemParameters.PrimaryScreenWidth;
+                        System.Drawing.Point point = System.Windows.Forms.Cursor.Position;
+                        if (point.Y < 50)
                         {
-                            Left = 1920;
-                        }
-                        else
-                        {
-                            Left = 0;
-                        }
+                            
+                            await Task.Delay(300);
 
-                        var transform = PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice;
-                        //
-                        //Left = point.X - Left
-                        //if (dragAction == true)
-                        //{
-                            this.DragMove();
-                            //Left = Math.Max(ActualWidth - point.X, 0);
-                            //
-                        //}
+                            if (dragAction)
+                            {
+                                WindowInteropHelper windowInteropHelper = new WindowInteropHelper(System.Windows.Application.Current.MainWindow);
+                                Screen screen = System.Windows.Forms.Screen.FromHandle(windowInteropHelper.Handle);
+                                basevm.MaximizeWindowCom();
+                                Top = 0;
+
+                                double val = Convert.ToDouble(screen.Bounds.X) + (Convert.ToDouble(point.X - screen.Bounds.X) - (((Convert.ToDouble(point.X) - Convert.ToDouble(screen.Bounds.X)) / Convert.ToDouble(screen.Bounds.Width)) * Convert.ToDouble(basevm.WidthRef)));
+                                Left = Math.Max(val, 0);
+                                //if (point.X > 1800)
+                                //{
+                                //    Left = 1920 + 1920/2;
+                                //}
+                                //else
+                                //{
+                                //    Left = 1920 / 2;
+                                //}
+
+                                var transform = PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice;
+                                this.MouseMove += Window_MouseMove;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        this.MouseMove += Window_MouseMove;
                     }
 
-
+                    ////this.MouseMove += StrangeMouseMove;
+                    ////await Task.Delay(1000);
+                    //if (dragAction)
+                    //{
+                    //    this.MouseMove += Window_MouseMove;
+                    //    Window_MouseMove(this, e);
+                    //    this.MouseMove -= Window_MouseMove;
+                    //}
 
                 }
             }
-            else
+            catch
             {
-                if (dragAction == true)
-                {
-                    this.DragMove();
-                }
+                this.MouseMove -= Window_MouseMove;
             }
-            //}
-            //catch
-            //{
-            //    this.MouseMove -= Window_MouseMove;
-            //}
 
-
-            //if (e.LeftButton == MouseButtonState.Pressed)
-            //{
-            //    CoreAI core = (CoreAI)this.DataContext;
-            //    if (core.WindowType == WindowState.Maximized)
-            //    {
-            //        core.MaximizeWindowCom();
-
-            //        this.DragMove();
-            //    }
-            //}
         }
 
         private void Window_MouseUp(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            //if (dragAction)
-            //{
-            //    cancelSource.Cancel();
-            //}
-
-             dragAction = false;
-            
-            //this.MouseMove -= Window_MouseMove;
+            dragAction = false;
+            this.MouseMove -= Window_MouseMove;
         }
+
+        private void Window_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+        {
+            //CoreAI core = (CoreAI)this.DataContext;
+            //if (core.WindowType == WindowState.Maximized)
+            //{
+            //    System.Drawing.Point point = System.Windows.Forms.Cursor.Position;
+            //    if (point.Y < 50)
+            //    {
+
+
+            //        if (dragAction)
+            //        {
+            //            core.MaximizeWindowCom();
+            //            Top = Math.Max(point.Y - 5, 0);
+
+            //            if (point.X > 1800)
+            //            {
+            //                Left = 1920;
+            //            }
+            //            else
+            //            {
+            //                Left = 0;
+            //            }
+
+            //            var transform = PresentationSource.FromVisual(this).CompositionTarget.TransformFromDevice;
+
+            //            this.DragMove();
+
+            //        }
+
+
+
+            //    }
+            //}
+            //else
+            //{
+            if (dragAction == true)
+            {
+                try
+                {
+                    this.DragMove();
+                }
+                catch { }
+            }
+            //}
+            this.MouseMove -= Window_MouseMove;
+
+        }
+
+
     }
 }

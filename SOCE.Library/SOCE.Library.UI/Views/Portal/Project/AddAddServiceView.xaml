@@ -59,22 +59,29 @@
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
+
             </Grid.RowDefinitions>
 
             <Grid Grid.Row="0">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="Auto"/>
-                    
+                    <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Grid.Column="0" Text="Next Add-service point number:" VerticalAlignment="Bottom"/>
                 <TextBox Grid.Column="1" Width="30" HorizontalAlignment="Left" Margin="10 0 0 0" Text="{Binding LatestAdServiceNumber}" VerticalAlignment="Center"  MaxLength="4"/>
+                <StackPanel Grid.Column="2" Orientation="Horizontal" HorizontalAlignment="Right">
+                    <TextBlock Text="Billable" VerticalAlignment="Bottom"/>
+                    <CheckBox VerticalAlignment="Bottom" Margin="10 0 0 0"  Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray" />
+
+                </StackPanel>
             </Grid>
             
-            <TextBox materialDesign:HintAssist.Hint="Client" Text="{Binding ClientCompanyNameInp}" Grid.Row="1"
+            <TextBox materialDesign:HintAssist.Hint="Architect" Text="{Binding ClientCompanyNameInp}" Grid.Row="1"
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
 
             <TextBox materialDesign:HintAssist.Hint="Contact" Text="{Binding NameOfClientInp}" Grid.Row="2"
@@ -83,16 +90,21 @@
             <TextBox materialDesign:HintAssist.Hint="Client Address" Text="{Binding ClientAddressInp}" Grid.Row="3"
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
 
-            <TextBox materialDesign:HintAssist.Hint="Title" Text="{Binding Description}" Grid.Row="4"
+            <TextBox materialDesign:HintAssist.Hint="Client City" Text="{Binding ClientCityInp}" Grid.Row="4"
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
 
-            <TextBox TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0 10 0 0" Grid.Row="5"
+            <TextBox materialDesign:HintAssist.Hint="Title" Text="{Binding Description}" Grid.Row="5"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
+
+            <TextBox TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0 10 0 0" Grid.Row="6"
                              AcceptsReturn="True" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" materialDesign:HintAssist.Hint="Scope of Work" Text="{Binding ExpandedDescription}"/>
 
             <!--<TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding ExpandedDescription}" 
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>-->
-            <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Grid.Row="6" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$"
+            <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Grid.Row="7" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$"
                              Margin="0 8 0 0"/>
+            <TextBox materialDesign:HintAssist.Hint="Send To" Text="{Binding PersonAddressedInp}" Grid.Row="8"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
         </Grid>
 
         

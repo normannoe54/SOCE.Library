@@ -6,8 +6,10 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Threading;
 using MaterialDesignThemes.Wpf;
 using SOCE.Library.Db;
 using SOCE.Library.UI.Views;
@@ -43,8 +45,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<FolderModel> _architecturalFolders = new ObservableCollection<FolderModel>();
-        public ObservableCollection<FolderModel> ArchitecturalFolders
+        private AsyncObservableCollection<FolderModel> _architecturalFolders = new AsyncObservableCollection<FolderModel>();
+        public AsyncObservableCollection<FolderModel> ArchitecturalFolders
         {
             get { return _architecturalFolders; }
             set
@@ -54,8 +56,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<FolderModel> _plotFolders = new ObservableCollection<FolderModel>();
-        public ObservableCollection<FolderModel> PlotFolders
+        private AsyncObservableCollection<FolderModel> _plotFolders = new AsyncObservableCollection<FolderModel>();
+        public AsyncObservableCollection<FolderModel> PlotFolders
         {
             get { return _plotFolders; }
             set
@@ -65,8 +67,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<FolderModel> _drawingFolders = new ObservableCollection<FolderModel>();
-        public ObservableCollection<FolderModel> DrawingFolders
+        private AsyncObservableCollection<FolderModel> _drawingFolders = new AsyncObservableCollection<FolderModel>();
+        public AsyncObservableCollection<FolderModel> DrawingFolders
         {
             get { return _drawingFolders; }
             set
@@ -76,8 +78,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<FolderModel> _projectFolders = new ObservableCollection<FolderModel>();
-        public ObservableCollection<FolderModel> ProjectFolders
+        private AsyncObservableCollection<FolderModel> _projectFolders = new AsyncObservableCollection<FolderModel>();
+        public AsyncObservableCollection<FolderModel> ProjectFolders
         {
             get { return _projectFolders; }
             set
@@ -87,8 +89,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<FolderModel> _archiveFolders = new ObservableCollection<FolderModel>();
-        public ObservableCollection<FolderModel> ArchiveFolders
+        private AsyncObservableCollection<FolderModel> _archiveFolders = new AsyncObservableCollection<FolderModel>();
+        public AsyncObservableCollection<FolderModel> ArchiveFolders
         {
             get { return _archiveFolders; }
             set
@@ -112,99 +114,104 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-        public void RunSearch()
+        public async void RunSearch()
         {
-            if (!String.IsNullOrEmpty(TextSearch))
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                DrawingFolders.Clear();
-                List<string> drawingsubs = Directory.GetDirectories(drawing).ToList();
-                foreach (string indd in drawingsubs)
+                if (!String.IsNullOrEmpty(TextSearch))
                 {
-                    string final = indd.Remove(0, drawing.Length + 1);
-
-                    if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                    DrawingFolders.Clear();
+                    List<string> drawingsubs = Directory.GetDirectories(drawing).ToList();
+                    foreach (string indd in drawingsubs)
                     {
-                        DrawingFolders.Add(new FolderModel(indd, final));
-                    }
-                }
+                        string final = indd.Remove(0, drawing.Length + 1);
 
-                PlotFolders.Clear();
-                List<string> plotsubs = Directory.GetDirectories(plot).ToList();
-                foreach (string indd in plotsubs)
-                {
-                    string final = indd.Remove(0, plot.Length + 1);
-
-                    if (final.ToUpper().Contains(TextSearch.ToUpper()))
-                    {
-                        PlotFolders.Add(new FolderModel(indd, final));
-                    }
-                }
-
-                ArchitecturalFolders.Clear();
-                List<string> archsubs = Directory.GetDirectories(architectural).ToList();
-                foreach (string indd in archsubs)
-                {
-                    string final = indd.Remove(0, architectural.Length + 1);
-
-                    if (final.ToUpper().Contains(TextSearch.ToUpper()))
-                    {
-                        ArchitecturalFolders.Add(new FolderModel(indd, final));
-                    }
-                }
-
-                ProjectFolders.Clear();
-                List<string> projsubs0 = Directory.GetDirectories(project).ToList();
-
-                foreach (string subdirectory1 in projsubs0)
-                {
-                    List<string> projsubs1 = Directory.GetDirectories(subdirectory1).ToList();
-
-                    foreach (string subdirectory2 in projsubs1)
-                    {
-                        List<string> projsubs2 = Directory.GetDirectories(subdirectory2).ToList();
-
-                        foreach (string indd in projsubs2)
+                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
                         {
-                            string final = indd.Remove(0, subdirectory2.Length + 1);
+                            DrawingFolders.Add(new FolderModel(indd, final));
+                        }
+                    }
+
+                    PlotFolders.Clear();
+                    List<string> plotsubs = Directory.GetDirectories(plot).ToList();
+                    foreach (string indd in plotsubs)
+                    {
+                        string final = indd.Remove(0, plot.Length + 1);
+
+                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                        {
+                            PlotFolders.Add(new FolderModel(indd, final));
+                        }
+                    }
+
+                    ArchitecturalFolders.Clear();
+                    List<string> archsubs = Directory.GetDirectories(architectural).ToList();
+                    foreach (string indd in archsubs)
+                    {
+                        string final = indd.Remove(0, architectural.Length + 1);
+
+                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                        {
+                            ArchitecturalFolders.Add(new FolderModel(indd, final));
+                        }
+                    }
+
+                    ProjectFolders.Clear();
+                    List<string> projsubs0 = Directory.GetDirectories(project).ToList();
+
+                    foreach (string subdirectory1 in projsubs0)
+                    {
+                        List<string> projsubs1 = Directory.GetDirectories(subdirectory1).ToList();
+
+                        foreach (string subdirectory2 in projsubs1)
+                        {
+                            List<string> projsubs2 = Directory.GetDirectories(subdirectory2).ToList();
+
+                            foreach (string indd in projsubs2)
+                            {
+                                string final = indd.Remove(0, subdirectory2.Length + 1);
+
+                                if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                                {
+                                    ProjectFolders.Add(new FolderModel(indd, final));
+                                }
+                            }
+                        }
+                    }
+
+                    ArchiveFolders.Clear();
+                    List<string> archsubs0 = Directory.GetDirectories(archive).ToList();
+
+                    foreach (string subdirectory1 in archsubs0)
+                    {
+                        List<string> archsubs1 = Directory.GetDirectories(subdirectory1).ToList();
+
+                        foreach (string indd in archsubs1)
+                        {
+                            string final = indd.Remove(0, subdirectory1.Length + 1);
 
                             if (final.ToUpper().Contains(TextSearch.ToUpper()))
                             {
-                                ProjectFolders.Add(new FolderModel(indd, final));
+                                ArchiveFolders.Add(new FolderModel(indd, final));
                             }
                         }
                     }
                 }
-
-                ArchiveFolders.Clear();
-                List<string> archsubs0 = Directory.GetDirectories(archive).ToList();
-
-                foreach (string subdirectory1 in archsubs0)
+                else
                 {
-                    List<string> archsubs1 = Directory.GetDirectories(subdirectory1).ToList();
-
-                    foreach (string indd in archsubs1)
-                    {
-                        string final = indd.Remove(0, subdirectory1.Length + 1);
-
-                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
-                        {
-                            ArchiveFolders.Add(new FolderModel(indd, final));
-                        }
-                    }
+                    ArchiveFolders.Clear();
+                    ArchitecturalFolders.Clear();
+                    ProjectFolders.Clear();
+                    DrawingFolders.Clear();
+                    PlotFolders.Clear();
                 }
-            }
-            else
-            {
-                ArchiveFolders.Clear();
-                ArchitecturalFolders.Clear();
-                ProjectFolders.Clear();
-                DrawingFolders.Clear();
-                PlotFolders.Clear();
-            }
-
+            }));
             //List<string> founddrawings = drawingsubs.Where(s => s.Contains(TextSearch)).ToList();
-
-
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
             //DrawingFolders = new ObservableCollection<string>(founddrawings);
         }
 

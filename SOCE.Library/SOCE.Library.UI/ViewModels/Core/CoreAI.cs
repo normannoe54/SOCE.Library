@@ -133,6 +133,49 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _isBlurProgressVisible = false;
+        public bool IsBlurProgressVisible
+        {
+            get
+            {
+                return _isBlurProgressVisible;
+            }
+            set
+            {
+                _isBlurProgressVisible = value;
+                RaisePropertyChanged("IsBlurProgressVisible");
+            }
+        }
+
+        private bool _isWindowEnabled = true;
+        public bool IsWindowEnabled
+        {
+            get
+            {
+                return _isWindowEnabled;
+            }
+            set
+            {
+                _isWindowEnabled = value;
+                RaisePropertyChanged("IsWindowEnabled");
+            }
+        }
+
+
+        private double _blurRadius = 0;
+        public double BlurRadius
+        {
+            get
+            {
+                return _blurRadius;
+            }
+            set
+            {
+                _blurRadius = value;
+                RaisePropertyChanged("BlurRadius");
+            }
+        }
+
         public CoreAI()
         {
             //version number
@@ -149,6 +192,22 @@ namespace SOCE.Library.UI.ViewModels
             MinusCommand = new RelayCommand(MinusWindow);
             DetermineIcon();
         }
+
+        public void MakeBlurry()
+        {
+            BlurRadius = 20;
+            IsWindowEnabled = false;
+            IsBlurProgressVisible = true;
+        }
+
+        public void MakeClear()
+        {
+            
+            BlurRadius = 0;
+            IsWindowEnabled = true;
+            IsBlurProgressVisible = false;
+        }
+
 
         public void CollectVersionNumber()
         {

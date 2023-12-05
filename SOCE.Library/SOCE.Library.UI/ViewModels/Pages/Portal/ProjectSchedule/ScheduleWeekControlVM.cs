@@ -37,19 +37,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<EmployeeModel> _employeeSummary = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> EmployeeSummary
-        {
-            get { return _employeeSummary; }
-            set
-            {
-                _employeeSummary = value;
-                RaisePropertyChanged(nameof(EmployeeSummary));
-            }
-        }
-
-        private ObservableCollection<EmployeeModel> _employees = new ObservableCollection<EmployeeModel>();
-        public ObservableCollection<EmployeeModel> Employees
+        private ObservableCollection<EmployeeScheduleModel> _employees = new ObservableCollection<EmployeeScheduleModel>();
+        public ObservableCollection<EmployeeScheduleModel> Employees
         {
             get { return _employees; }
             set
@@ -59,8 +48,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<SubProjectModel> _subprojects = new ObservableCollection<SubProjectModel>();
-        public ObservableCollection<SubProjectModel> SubProjects
+        private ObservableCollection<SubProjectLowResModel> _subprojects = new ObservableCollection<SubProjectLowResModel>();
+        public ObservableCollection<SubProjectLowResModel> SubProjects
         {
             get { return _subprojects; }
             set
@@ -70,8 +59,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private SubProjectModel _selectedSubproject;
-        public SubProjectModel SelectedSubproject
+        private SubProjectLowResModel _selectedSubproject;
+        public SubProjectLowResModel SelectedSubproject
         {
             get
             {
@@ -87,9 +76,9 @@ namespace SOCE.Library.UI.ViewModels
                     BaseVM.UpdatePhaseLists();
                 }
 
-                foreach (RolePerSubProjectModel roles in SchedulingItems)
+                foreach (ScheduleWeekModel roles in SchedulingItems)
                 {
-                    roles.Subproject = _selectedSubproject;
+                    roles.PhaseId = _selectedSubproject.Id;
                 }
 
                 firstopen = true;
@@ -101,8 +90,8 @@ namespace SOCE.Library.UI.ViewModels
 
         //private ObservableCollection<RolePerSubProjectModel> CopiedSchedulingItems = new ObservableCollection<RolePerSubProjectModel>();
 
-        private ObservableCollection<RolePerSubProjectModel> _schedulingItems = new ObservableCollection<RolePerSubProjectModel>();
-        public ObservableCollection<RolePerSubProjectModel> SchedulingItems
+        private ObservableCollection<ScheduleWeekModel> _schedulingItems = new ObservableCollection<ScheduleWeekModel>();
+        public ObservableCollection<ScheduleWeekModel> SchedulingItems
         {
             get { return _schedulingItems; }
             set
@@ -166,17 +155,27 @@ namespace SOCE.Library.UI.ViewModels
 
         public ScheduleWeekVM BaseVM;
 
-        public ScheduleWeekControlVM(List<RolePerSubProjectModel> InitialRoleLoadIn, ObservableCollection<DateWrapper> dates, SubProjectModel sub, ObservableCollection<SubProjectModel> subs, ScheduleWeekVM scheduleweek)
+        public ScheduleWeekControlVM(List<ScheduleWeekModel> InitialRoleLoadIn, ObservableCollection<DateWrapper> dates, SubProjectLowResModel sub, ObservableCollection<SubProjectLowResModel> subs, ScheduleWeekVM scheduleweek)
         {
             Constructor();
             SubProjects = subs;
             SelectedSubproject = sub;
             HoursLeft = SelectedSubproject.HoursLeft;
             HoursSpent = SelectedSubproject.HoursUsed;
-            foreach (RolePerSubProjectModel role in InitialRoleLoadIn)
+            //List<ScheduleWeekModel> swm = new List<ScheduleWeekModel>();
+            //foreach (ScheduleWeekModel role in InitialRoleLoadIn)
+            //{
+            //    role.EmployeeList = Employees;
+            //    swm.Add(role);
+            //}
+            SchedulingItems = new ObservableCollection<ScheduleWeekModel>(InitialRoleLoadIn);
+
+            foreach (ScheduleWeekModel swm in SchedulingItems)
             {
-                role.EmployeeList = Employees;
-                SchedulingItems.Add(role);
+                foreach (SDEntryModel entry in swm.Entries)
+                {
+                    entry.basevm = this;
+                }
             }
             //foreach (RolePerSubProjectModel role in InitialRoleLoadIn)
             //{
@@ -190,7 +189,7 @@ namespace SOCE.Library.UI.ViewModels
             //CollectEmployeeSummary();
         }
 
-        public ScheduleWeekControlVM(ObservableCollection<DateWrapper> dates, SubProjectModel sub, ObservableCollection<SubProjectModel> subs, ScheduleWeekVM scheduleweek)
+        public ScheduleWeekControlVM(ObservableCollection<DateWrapper> dates, SubProjectLowResModel sub, ObservableCollection<SubProjectLowResModel> subs, ScheduleWeekVM scheduleweek)
         {
             Constructor();
             SubProjects = subs;
@@ -208,24 +207,57 @@ namespace SOCE.Library.UI.ViewModels
         {
             this.AddRoleCommand = new RelayCommand(this.AddRole);
             this.DeletePhaseCommand = new RelayCommand(this.DeletePhase);
-            this.DeleteRole = new RelayCommand<RolePerSubProjectModel>(this.DeleteRoleIfPossible);
-            SchedulingItems.CollectionChanged += RowDataChanged;
+            this.DeleteRole = new RelayCommand<ScheduleWeekModel>(this.DeleteRoleIfPossible);
+            //SchedulingItems.CollectionChanged += RowDataChanged;
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
-            List<EmployeeModel> totalemployees = new List<EmployeeModel>();
+            List<EmployeeScheduleModel> totalemployees = new List<EmployeeScheduleModel>();
             foreach (EmployeeDbModel employeenew in employeesDb)
             {
-                totalemployees.Add(new EmployeeModel(employeenew));
+                totalemployees.Add(new EmployeeScheduleModel(employeenew));
             }
 
-            ObservableCollection<EmployeeModel> ordered = new ObservableCollection<EmployeeModel>(totalemployees.OrderBy(x => x.LastName).ToList());
+            ObservableCollection<EmployeeScheduleModel> ordered = new ObservableCollection<EmployeeScheduleModel>(totalemployees.OrderBy(x => x.LastName).ToList());
             //OverallFee = overallfee;
             Employees = ordered;
 
         }
 
-        private void DeletePhase()
+        public void UpdateTotals()
+        {
+            foreach (ScheduleWeekModel swm in SchedulingItems)
+            {
+                double total = 0;
+                for (int i = 0; i< swm.Entries.Count(); i++)
+                {
+                    total += swm.Entries[i].TimeEntry;
+                }
+                swm.Total = total;
+            }
+        }
+
+        private async void DeletePhase()
         {
             int id = -1;
+
+            if (SchedulingItems.Count > 0)
+            {
+                YesNoView view = new YesNoView();
+                YesNoVM aysvm = new YesNoVM();
+
+                aysvm.Message = $"Are you sure you want to delete?";
+                view.DataContext = aysvm;
+
+                //show the dialog
+                var Result = await DialogHost.Show(view, "RootDialog");
+
+                YesNoVM vm = view.DataContext as YesNoVM;
+                bool resultvm = vm.Result;
+                if (!resultvm)
+                {
+                    return;
+                }
+            }
+
             for (int i = 0; i < BaseVM.SchedulingViews.Count; i++)
             {
                 ScheduleWeekControlVM swcvm = (ScheduleWeekControlVM)BaseVM.SchedulingViews[i].DataContext;
@@ -262,59 +294,71 @@ namespace SOCE.Library.UI.ViewModels
         //    }
         //}
 
-        private void RowDataChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            if (e.NewItems != null)
-            {
-                foreach (INotifyPropertyChanged added in e?.NewItems)
-                {
-                    RolePerSubProjectModel trm = (RolePerSubProjectModel)added;
-                    //trm.PropertyChanged += ListPropertyChanged;
-                    foreach (SDEntryModel trentry in trm.Entries)
-                    {
-                        trentry.PropertyChanged += ItemModificationOnPropertyChanged;
-                    }
-                }
-            }
+        //private void RowDataChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.NewItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.NewItems)
+        //        {
+        //            RolePerSubProjectModel trm = (RolePerSubProjectModel)added;
+        //            //trm.PropertyChanged += ListPropertyChanged;
+        //            foreach (SDEntryModel trentry in trm.Entries)
+        //            {
+        //                trentry.PropertyChanged += ItemModificationOnPropertyChanged;
+        //            }
+        //        }
+        //    }
 
-            if (e.OldItems != null)
-            {
-                foreach (INotifyPropertyChanged added in e?.OldItems)
-                {
-                    RolePerSubProjectModel trm = (RolePerSubProjectModel)added;
-                    foreach (SDEntryModel trentry in trm.Entries)
-                    {
-                        trentry.PropertyChanged -= ItemModificationOnPropertyChanged;
-                    }
-                }
-            }
-        }
+        //    if (e.OldItems != null)
+        //    {
+        //        foreach (INotifyPropertyChanged added in e?.OldItems)
+        //        {
+        //            RolePerSubProjectModel trm = (RolePerSubProjectModel)added;
+        //            foreach (SDEntryModel trentry in trm.Entries)
+        //            {
+        //                trentry.PropertyChanged -= ItemModificationOnPropertyChanged;
+        //            }
+        //        }
+        //    }
+        //}
 
-        private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
-        {
-            foreach (RolePerSubProjectModel trm in SchedulingItems)
-            {
-                trm.Total = trm.Entries.Sum(x => x.TimeEntry);
-            }
-        }
+        //private void ItemModificationOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
+        //{
+        //    foreach (ScheduleWeekModel trm in SchedulingItems)
+        //    {
+        //        trm.Total = trm.Entries.Sum(x => x.TimeEntry);
+        //    }
+        //}
 
         private void AddRole()
         {
             if (SelectedSubproject != null)
             {
-                RolePerSubProjectModel rpspm = new RolePerSubProjectModel(SelectedSubproject, SelectedSubproject.Fee);
-                rpspm.EditRoleFieldState = false;
-                rpspm.SpentHours = 0;
-                rpspm.Subproject = SelectedSubproject;
+                ScheduleWeekModel rpspm = new ScheduleWeekModel();
+                rpspm.PhaseId = SelectedSubproject.Id;
+                rpspm.ProjectName = BaseVM.SelectedProject.ProjectName;
+                rpspm.PhaseName = SelectedSubproject.PointNumber;
+                rpspm.ProjectNumber = BaseVM.SelectedProject.ProjectNumber;
+                rpspm.ManagerId = BaseVM.SelectedProject.ManagerId;
                 rpspm.EmployeeList = Employees;
-                //SelectedSubproject.RolesPerSub.Add(rpspm);
-
+               
                 foreach (DateWrapper date in DateSummary)
                 {
                     if (!rpspm.Entries.Any(x => x.Date == date.Value))
                     {
-                        //add
-                        rpspm.Entries.Add(new SDEntryModel() { Date = date.Value, TimeEntry = 0 });
+                        Brush cellcolor = Brushes.Transparent;
+                        
+                        if (BaseVM.DueDate != null)
+                        {
+                            double diff = ((DateTime)BaseVM.DueDate - date.Value).TotalDays;
+
+                            if (diff >= 0 && diff < 7)
+                            {
+                                cellcolor = (SolidColorBrush)new BrushConverter().ConvertFrom("#f9aeae");
+                            }
+                        }
+
+                        rpspm.Entries.Add(new SDEntryModel() { Date = date.Value, TimeEntry = 0, CellColor = cellcolor, basevm = this });
                     }
                 }
 
@@ -323,7 +367,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private void DeleteRoleIfPossible(RolePerSubProjectModel rpsm)
+        private void DeleteRoleIfPossible(ScheduleWeekModel rpsm)
         {
             SchedulingItems.Remove(rpsm);
             //UpdateLists();

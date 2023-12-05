@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -148,44 +149,55 @@ namespace SOCE.Library.UI.ViewModels
             Initiate(LoggedInEmployee);
         }
 
-        public void GoToPage(PortalPage page)
-        {   if (currentPage == page )
+        public async void GoToPage(PortalPage page)
+        {  
+            if (currentPage == page )
             {
                 return;
             }
-            switch (page)
-            {
-                //case PortalPage.Home:
-                //    CurrentPage = new EmployeeVM(LoggedInEmployee);
-                //    break;
-                case PortalPage.Employee:
-                    CurrentPage = employeeVM;
-                    break;
-                case PortalPage.Timesheet:
-                    //timesheetVM.LoadCurrentTimesheet(DateTime.Now);
-                    timesheetVM.Message = "";
-                    //timesheetVM.SearchFilter = false;
-                    CurrentPage = timesheetVM;
-                    break;
-                case PortalPage.TimesheetReview:
-                    CurrentPage = timesheetReviewVM;
-                    break;
-                case PortalPage.ProjectSchedule:
-                    CurrentPage = projectScheduleVM;
-                    break;
-                case PortalPage.NetworkSearch:
-                    CurrentPage = networkSearchVM;
-                    break;
-                //case PortalPage.LicenseManager:
-                //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);
-                //    break;
-                case PortalPage.Projects:
-                    projectVM.Reload();
-                    CurrentPage = projectVM;
-                    break;
-            }
 
-            currentPage = page;
+            CoreAI CurrentPage2 = IoCCore.Application as CoreAI;
+            CurrentPage2.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                switch (page)
+                {
+
+                    //case PortalPage.Home:
+                    //    CurrentPage = new EmployeeVM(LoggedInEmployee);
+                    //    break;
+                    case PortalPage.Employee:
+                        CurrentPage = employeeVM;
+                        break;
+                    case PortalPage.Timesheet:
+                        timesheetVM.LoadCurrentTimesheet(DateTime.Now);
+                        timesheetVM.Message = "";
+                        //timesheetVM.SearchFilter = false;
+                        CurrentPage = timesheetVM;
+                        break;
+                    case PortalPage.TimesheetReview:
+                        CurrentPage = timesheetReviewVM;
+                        break;
+                    case PortalPage.ProjectSchedule:
+                        CurrentPage = projectScheduleVM;
+                        break;
+                    case PortalPage.NetworkSearch:
+                        CurrentPage = networkSearchVM;
+                        break;
+                    //case PortalPage.LicenseManager:
+                    //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);
+                    //    break;
+                    case PortalPage.Projects:
+                        projectVM.Reload();
+                        CurrentPage = projectVM;
+                        break;
+                }
+                currentPage = page;
+            }
+            ));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage2.MakeClear();
         }
 
         public void GoToTimesheetByDate(DateTime date)

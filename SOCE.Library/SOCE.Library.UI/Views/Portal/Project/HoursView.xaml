@@ -35,8 +35,8 @@
                                       materialDesign:HintAssist.Hint="   Select Phase"   
                                       SelectedItem="{Binding SelectedProjectPhase, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                       ItemsSource="{Binding SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                      TextSearch.TextPath="Description"
-                                      DisplayMemberPath="Description"   
+                                      TextSearch.TextPath="PointNumber"
+                                      DisplayMemberPath="PointNumber"   
                                       MaxDropDownHeight="250"/>
         </Grid>
         <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0 20 0 0">

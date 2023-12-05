@@ -11,6 +11,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.IO;
 using System.Diagnostics;
+using System.Linq;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -33,7 +34,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private CancellationTokenSource _cts = new CancellationTokenSource();
         public ICommand CancelCommand { get; set; }
-        private List<ProjectModel> Projects;
+        private List<ProjectViewResModel> Projects;
 
         private double _increment = 0;
         public double Increment
@@ -49,7 +50,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        public ExportConfirmVM(List<ProjectModel> projects)
+        public ExportConfirmVM(List<ProjectViewResModel> projects)
         {
             Projects = projects;
             DoStuff();
@@ -105,25 +106,50 @@ namespace SOCE.Library.UI.ViewModels
             {
                 try
                 {
-                    foreach (ProjectModel pm in Projects)
+                    foreach (ProjectViewResModel pm in Projects)
                     {
                         _cts.Token.ThrowIfCancellationRequested();
-                        pm.FormatData(true);
+                        //pm.FormatData(true);
 
                         List<object> rowinputs = new List<object>();
                         rowinputs.Add(pm.ProjectNumber);
                         rowinputs.Add(pm.ProjectName);
                         rowinputs.Add(pm.Client.ClientName);
                         rowinputs.Add(pm.Market.MarketName);
-                        rowinputs.Add(pm.ProjectManager.FullName);
-                        rowinputs.Add(pm.PercentComplete);
+                        rowinputs.Add((pm.ProjectManager != null) ? pm.ProjectManager.FullName : "");
+                        rowinputs.Add(pm.PercentComplete/100);
                         rowinputs.Add(pm.Fee);
-                        rowinputs.Add(pm.TotalRegulatedBudget);
-                        rowinputs.Add(pm.BudgetSpent);
-                        rowinputs.Add(pm.BudgetLeft);
-                        rowinputs.Add(pm.HoursSpent);
-                        rowinputs.Add(pm.HoursLeft);
-                        rowinputs.Add(pm.PercentBudgetSpent/100);
+
+                        double totalhours = 0;
+                        double totalreg = 0;
+                        double budgetspent = 0;
+                        //double budgetleft = 0;
+                        double hoursspent = 0;
+                        //double hoursleft = 0;
+                        //double percentbudgetspent = 0;
+
+                        List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(pm.Id);
+
+                        foreach(SubProjectDbModel sub in subs)
+                        {
+                            List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(sub.Id);
+                            
+                            foreach (RolePerSubProjectDbModel role in roles)
+                            {
+                                totalreg += role.BudgetHours * role.Rate;
+                                List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(role.EmployeeId, sub.Id);
+                                budgetspent += time.Sum(x => x.BudgetSpent);
+                                hoursspent += time.Sum(x => x.TimeEntry);
+                                totalhours += role.BudgetHours;
+                            }
+                        }
+
+                        rowinputs.Add(totalreg);
+                        rowinputs.Add(budgetspent);
+                        rowinputs.Add(totalreg - budgetspent);
+                        rowinputs.Add(hoursspent);
+                        rowinputs.Add(totalhours - hoursspent);
+                        rowinputs.Add((budgetspent/totalreg) / 100);
                         Increment = (Convert.ToDouble(doubleinc) / Projects.Count) * 100;
                         TextToShow = $"Exporting [{pm.ProjectNumber}] {pm.ProjectName}";
                         exinst.WriteRow<object>(basenum, 1, rowinputs);
