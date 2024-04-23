@@ -25,6 +25,8 @@
             
             
             <local:DatetoStringConverter x:Key="DatetoString"/>
+            <local:DatetoStringPartialConverter x:Key="DateToStringPartial"/>
+
             <!--<local:InvertBooleanConverter x:Key="InvertBooleanConverter"/>
             <local:BooleanToVisibilityConverter x:Key="BooleanToVisibilityConverter"/>
             <local:InverseBoolToVisConverter x:Key="InverseBoolToVisConverter"/>-->
@@ -61,8 +63,8 @@
                 <views:TimesheetView/>
             </DataTemplate>
 
-            <DataTemplate DataType="{x:Type viewmodels:AddServiceVM}">
-                <views:AddServiceManagerView/>
+            <DataTemplate DataType="{x:Type viewmodels:InvoicingVM}">
+                <views:InvoicingView/>
             </DataTemplate>
 
             <DataTemplate DataType="{x:Type viewmodels:PMScheduleVM}">
@@ -126,6 +128,7 @@
             <!--<SolidColorBrush x:Key="SOCELighterRed" Color="#e38a8a"/>-->
             <SolidColorBrush x:Key="SOCELightRed" Color="#e24d52"/>
             <SolidColorBrush x:Key="SOCELightGray" Color="#898b8d"/>
+            <SolidColorBrush x:Key="SOCETransparentGray" Color="#898B8D"/>
 
             <SolidColorBrush x:Key="SOCEBlueCompliment" Color="#147975"/>
             <SolidColorBrush x:Key="SOCEGreenCompliment" Color="#1d9719"/>
@@ -277,6 +280,13 @@
                 </Setter>
             </Style>-->
 
+            <Style x:Key="NonUnderLineTextBox" TargetType="TextBox" BasedOn="{StaticResource MaterialDesignTextBox}">
+                <Setter Property="materialDesign:TextFieldAssist.DecorationVisibility" Value="Hidden" />
+                <Setter Property="BorderThickness" Value="0" />
+                <Setter Property="FontSize" Value="14" />
+                <Setter Property="FontWeight" Value="Regular" />
+            </Style>
+            
             <Style x:Key="menuTitle" TargetType="TextBlock">
                 <Setter Property="Foreground" Value="#ffffff" />
                 <Setter Property="FontSize" Value="16" />
@@ -322,10 +332,18 @@
                 <Setter Property="Height" Value="18"/>
             </Style>
 
-            <Style x:Key="menuButtonText" TargetType="TextBlock">
+            <Style x:Key="menuButtonText" TargetType="TextBlock" >
                 <Setter Property="Foreground" Value="{Binding Path=Foreground, RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Button}}}" />
                 <Setter Property="FontSize" Value="14"/>
                 <Setter Property="Margin" Value="20 0 0 2"/>
+            </Style>
+
+            <Style TargetType="Button" BasedOn="{StaticResource MaterialDesignFlatButton}" x:Key="DefaultButton">
+                <Style.Triggers>
+                    <Trigger Property="IsMouseOver" Value="True">
+                        <Setter Property="Background" Value="{StaticResource SOCETransparentGray}"/>
+                    </Trigger>
+                </Style.Triggers>
             </Style>
 
             <Style x:Key="StarCheckBox" TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignCheckBox}">
@@ -365,7 +383,6 @@
                     </Setter.Value>
                 </Setter>-->
             </Style>
-
         </ResourceDictionary>
     </Application.Resources>
 </Application>

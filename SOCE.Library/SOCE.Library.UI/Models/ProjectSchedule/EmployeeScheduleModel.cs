@@ -154,6 +154,29 @@ namespace SOCE.Library.UI
             }
         }
 
+        public bool firstload { get; set; } = true;
+
+        private bool _scheduleWeekCheck = false;
+        public bool ScheduleWeekCheck
+        {
+            get { return _scheduleWeekCheck; }
+            set
+            {
+                _scheduleWeekCheck = value;
+
+                if (!firstload)
+                {
+                    SQLAccess.UpdateScheduleWeek(Id, Convert.ToInt32(_scheduleWeekCheck));
+                }
+                else
+                {
+                    firstload = false;
+                }
+
+                RaisePropertyChanged(nameof(ScheduleWeekCheck));
+            }
+        }
+
         public EmployeeScheduleModel()
         { }
 
@@ -167,6 +190,8 @@ namespace SOCE.Library.UI
             Status = ((AuthEnum)emdb.AuthId);
             Rate = emdb.Rate;
             ScheduledTotalHours = emdb.MondayHours + emdb.TuesdayHours + emdb.WednesdayHours + emdb.ThursdayHours + emdb.FridayHours;
+            ScheduleWeekCheck = Convert.ToBoolean(emdb.ScheduleWeekCheck);
+
         }
 
         //public EmployeeScheduleModel(EmployeeDbModel emdb, SDEntryModel hours1, SDEntryModel hours2)

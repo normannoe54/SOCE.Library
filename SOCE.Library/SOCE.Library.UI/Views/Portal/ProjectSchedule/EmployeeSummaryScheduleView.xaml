@@ -15,9 +15,14 @@
                   materialDesign:ColorZoneAssist.Foreground="White">
             <GroupBox.HeaderTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Horizontal">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
 
-                        <Button Grid.Row="0" HorizontalAlignment="Left"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" 
+                        <Button Grid.Column="0" HorizontalAlignment="Left"  Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" 
                                 BorderBrush="Transparent" Foreground="White"
                                 Command="{Binding Path=DataContext.GoBackCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" ToolTip="Back">
                             <Button.Content>
@@ -26,8 +31,18 @@
                         </Button>
 
                         <!--<materialDesign:PackIcon Kind="Timer" Height="32" Width="32" VerticalAlignment="Center" />-->
-                        <TextBlock Margin="20,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding}"/>
-                    </StackPanel>
+                        <TextBlock Grid.Column="1" Margin="20,0,0,0" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold" Text="{Binding}"/>
+
+                        <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black"
+                                Command="{Binding Path=DataContext.PrintCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"  Margin="0 0 15 0"
+                        HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" BorderBrush="White" BorderThickness="2">
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="EXPORT" Foreground="White" VerticalAlignment="Center" FontSize="16" FontWeight="SemiBold"/>
+
+                                <materialDesign:PackIcon Margin="5 0 0 0" Kind="Download" VerticalAlignment="Center"  Width="20" Height="20" ToolTip="Export" Foreground="White"/>
+                            </StackPanel>
+                        </Button>
+                    </Grid>
                 </DataTemplate>
             </GroupBox.HeaderTemplate>
             <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">

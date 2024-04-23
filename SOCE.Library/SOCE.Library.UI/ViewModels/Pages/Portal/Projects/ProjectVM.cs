@@ -137,8 +137,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private EmployeeModel _selectedPM;
-        public EmployeeModel SelectedPM
+        private EmployeeLowResModel _selectedPM;
+        public EmployeeLowResModel SelectedPM
         {
             get { return _selectedPM; }
             set

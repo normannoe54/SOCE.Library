@@ -132,6 +132,18 @@ namespace SOCE.Library.Excel
 
         }
 
+        public void MakeRowCustomBorder(int row, int startingcell, int lastcell)
+        {
+            for (int i = 0; i < lastcell; i++)
+            {
+                IXLCell cell = activeworksheet.Cell(row, startingcell + i);
+                cell.Style.Border.BottomBorder = XLBorderStyleValues.Medium;
+                cell.Style.Border.LeftBorder = XLBorderStyleValues.Thin;
+                cell.Style.Border.RightBorder = XLBorderStyleValues.Thin;
+
+            }
+        }
+
         public void MakeRowDoubleBorderedTopandBot(int row, int startingcell, int lastcell)
         {
             for (int i = 0; i < lastcell; i++)

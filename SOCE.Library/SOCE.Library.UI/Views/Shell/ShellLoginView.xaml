@@ -17,8 +17,9 @@
                 
                 <Image Grid.Column="0" Source="/SOCE.Library.UI;component/Resources/AMZPicture.png" Stretch="UniformToFill"/>
                 <Image Grid.Column="0" 
-                       gif:ImageBehavior.AnimatedSource="/SOCE.Library.UI;component/Resources/fallingsnow.gif" 
-                       Margin="10 0 10 0" Stretch="UniformToFill"/>
+                       gif:ImageBehavior.AnimatedSource="/SOCE.Library.UI;component/Resources/Butterflies.gif" 
+                       Stretch="UniformToFill">
+                </Image>
                 <ContentControl Grid.Column="1" Content="{Binding CurrentPage}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             </Grid>
 

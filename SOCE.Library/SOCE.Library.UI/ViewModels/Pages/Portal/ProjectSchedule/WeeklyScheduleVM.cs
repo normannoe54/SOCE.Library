@@ -482,7 +482,12 @@ namespace SOCE.Library.UI.ViewModels
                         projectname = project.ProjectName;
                         projectnumber = project.ProjectNumber;
                         EmployeeDbModel emtemp = SQLAccess.LoadEmployeeById(project.ManagerId);
-                        projectmanager = emtemp.FullName;
+
+                        if (emtemp != null)
+                        {
+                            projectmanager = emtemp.FullName;
+                        }
+
                         if (project?.DueDate != null && project?.DueDate != 0)
                         {
                             duedate = DateTime.ParseExact(project.DueDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);

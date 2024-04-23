@@ -396,6 +396,19 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _isHourly { get; set; } = true;
+        public bool IsHourly
+        {
+            get
+            {
+                return _isHourly;
+            }
+            set
+            {
+                _isHourly = value;
+                RaisePropertyChanged(nameof(IsHourly));
+            }
+        }
 
         private bool _isBillable { get; set; } = true;
         public bool IsBillable
@@ -432,6 +445,17 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(DateInvoiced));
             }
         }
+        private DateTime? _dateSent;
+        public DateTime? DateSent
+        {
+            get { return _dateSent; }
+            set
+            {
+                _dateSent = value;
+                RaisePropertyChanged(nameof(DateSent));
+            }
+        }
+
 
         private string _nameOfClient { get; set; }
         public string NameOfClient
@@ -503,6 +527,48 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _feeBaseVis { get; set; }
+        public bool FeeBaseVis
+        {
+            get
+            {
+                return _feeBaseVis;
+            }
+            set
+            {
+                _feeBaseVis = value;
+                RaisePropertyChanged(nameof(FeeBaseVis));
+            }
+        }
+
+        private bool _feeandHourlyBaseVis { get; set; }
+        public bool FeeandHourlyBaseVis
+        {
+            get
+            {
+                return _feeandHourlyBaseVis;
+            }
+            set
+            {
+                _feeandHourlyBaseVis = value;
+                RaisePropertyChanged(nameof(FeeandHourlyBaseVis));
+            }
+        }
+
+        private bool _feeOnlyVis { get; set; }
+        public bool FeeOnlyVis
+        {
+            get
+            {
+                return _feeOnlyVis;
+            }
+            set
+            {
+                _feeOnlyVis = value;
+                RaisePropertyChanged(nameof(FeeOnlyVis));
+            }
+        }
+
         private EmployeeLowResModel _selectedEmployee { get; set; }
         public EmployeeLowResModel SelectedEmployee
         {
@@ -547,6 +613,7 @@ namespace SOCE.Library.UI
             Fee = spm.Fee;
             IsActive = Convert.ToBoolean(spm.IsActive);
             IsBillable = Convert.ToBoolean(spm.IsBillable);
+            IsHourly = Convert.ToBoolean(spm.IsHourly);
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
             NameOfClient = spm.NameOfClient;
             ClientCompanyName = spm.ClientCompanyName;
@@ -567,11 +634,41 @@ namespace SOCE.Library.UI
                 DateInvoiced = DateTime.ParseExact(spm.SubEnd.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
             }
 
+            if (spm?.DateSent != null && spm?.SubEnd != 0)
+            {
+                DateSent = DateTime.ParseExact(spm.DateSent.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
+            
+
             PercentComplete = spm.PercentComplete;
 
             IsAddService = Convert.ToBoolean(spm.IsAdservice);
             NumberOrder = spm.NumberOrder;
             IsScheduleActive = Convert.ToBoolean(spm.IsScheduleActive);
+
+            UpdateVis();
+        }
+
+        private void UpdateVis()
+        {
+            if (IsHourly && Fee <= 0)
+            {
+                FeeBaseVis = true;
+                FeeOnlyVis = false;
+                FeeandHourlyBaseVis = false;
+            }
+            else if (IsHourly && Fee > 0)
+            {
+                FeeBaseVis = true;
+                FeeOnlyVis = true;
+                FeeandHourlyBaseVis = true;
+            }
+            else
+            {
+                FeeBaseVis = false;
+                FeeOnlyVis = true;
+                FeeandHourlyBaseVis = false;
+            }
         }
 
         public void UpdateSubProject()
@@ -607,18 +704,23 @@ namespace SOCE.Library.UI
                 IsInvoiced = IsInvoiced ? 1 : 0,
                 SubStart = DateInitiated != null ? (int)long.Parse(DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
                 SubEnd = DateInvoiced != null ? (int)long.Parse(DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
+                DateSent = DateSent != null ? (int)long.Parse(DateSent?.ToString("yyyyMMdd")) : (int?)null,
                 NameOfClient = NameOfClient,
                 ClientCompanyName = ClientCompanyName,
                 ClientAddress = ClientAddress,
+                ClientCity = ClientCity,
                 EmployeeIdSigned = EmployeeIdSigned,
                 ExpandedDescription = ExpandedDescription,
                 IsAdservice = IsAddService ? 1 : 0,
                 IsBillable = IsBillable ? 1 : 0,
+                IsHourly = IsHourly ? 1 : 0,
                 NumberOrder = NumberOrder,
-                IsScheduleActive = IsScheduleActive ? 1 : 0
+                IsScheduleActive = IsScheduleActive ? 1 : 0,
+                PersonToAddress = PersonAddressed
             };
 
             SQLAccess.UpdateSubAddService(subproject);
+            UpdateVis();
         }
     }
 }

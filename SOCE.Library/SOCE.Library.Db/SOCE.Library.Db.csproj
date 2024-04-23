@@ -53,6 +53,8 @@
   <ItemGroup>
     <Compile Include="Models\ClientDbModel.cs" />
     <Compile Include="Models\EmployeeDbModel.cs" />
+    <Compile Include="Models\InvoicingModelDb.cs" />
+    <Compile Include="Models\InvoicingRowsDb.cs" />
     <Compile Include="Models\MarketDbModel.cs" />
     <Compile Include="Models\ProjectDbModel.cs" />
     <Compile Include="Models\ProjectFormatResultDb.cs" />

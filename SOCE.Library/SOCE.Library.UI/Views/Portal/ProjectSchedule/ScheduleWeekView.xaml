@@ -18,8 +18,6 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <Grid Grid.Row="0" Margin="0 15 0 0" >
-            
-         
             <StackPanel Orientation="Horizontal">
                 <TextBlock  Text="Scheduling Plan"  FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" />
                 <Button VerticalAlignment="Center" Margin="20 0 0 0" HorizontalAlignment="Left" Foreground="Black" BorderBrush="Black" BorderThickness="2" Style="{StaticResource MaterialDesignFlatButton}" Height="22" Width="50"                     
@@ -50,6 +48,7 @@
                     </EventTrigger>
                 </TextBlock.Triggers>
             </TextBlock>
+
         </Grid>
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
@@ -323,16 +322,24 @@
                         <TextBox  Text="{Binding ClientNumber}" FontSize="16"  Foreground="Black" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
                     </StackPanel>-->
 
-                            <StackPanel Grid.Column="4" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0 0 0">
-                                <TextBlock  Text="Hours Spent"  FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCEGray}" VerticalAlignment="Center"/>
-                                <TextBox  Text="{Binding HoursSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" FontSize="16" Foreground="{StaticResource SOCERed}" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
-                            </StackPanel>
-                    <StackPanel Grid.Column="5" Orientation="Horizontal" VerticalAlignment="Center" Margin="10 0 0 0">
-                        <TextBlock  Text="Hours Left"  FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCEGray}" VerticalAlignment="Center"/>
-                        <TextBox  Text="{Binding HoursLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" FontSize="16" Foreground="{StaticResource SOCEGreenCompliment}" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
-                    </StackPanel>
+                    <Grid Grid.Column="4" VerticalAlignment="Center" Margin="10 0 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="Hours Spent"  FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCEGray}" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding HoursSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" FontSize="16" Foreground="{StaticResource SOCERed}" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                    </Grid>
+                    <Grid Grid.Column="5" VerticalAlignment="Center" Margin="10 0 0 0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0"  Text="Hours Left"  FontSize="16" FontWeight="SemiBold" Foreground="{StaticResource SOCEGray}" VerticalAlignment="Center"/>
+                        <TextBox Grid.Column="1" Text="{Binding HoursLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}" FontSize="16" Foreground="{StaticResource SOCEGreenCompliment}" IsReadOnly="True" Margin="10 0 0 0" VerticalAlignment="Center"/>
+                    </Grid>
                 </Grid>
-                <!--<Grid Grid.Row="1" HorizontalAlignment="Stretch"  Margin="0 15 0 0">
+                <!--<Grid Grid.Row="1" HorizontalAlignment="Stretch"  Margin="0 15 0 0">        
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="120"/>
                         <ColumnDefinition Width="200"/>
@@ -373,14 +380,14 @@
                         <ColumnDefinition Width="360"/>
                     </Grid.ColumnDefinitions>
                     <Grid Grid.Column="5" >
-                        <ProgressBar Margin="10 0 30 0" Height="15" Orientation="Horizontal" Padding="5" Value="{Binding PercentTotalFeeSpent}" Foreground="Yellow" Background="Transparent" BorderThickness="1" BorderBrush="Black"/>
+                        <ProgressBar Margin="10 0 0 0" Height="15" Orientation="Horizontal" Padding="5" Value="{Binding PercentTotalFeeSpent}" Foreground="Yellow" Background="Transparent" BorderThickness="1" BorderBrush="Black"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                             <TextBlock Text="Fee Spent: " FontSize="10" FontWeight="SemiBold"/>
                             <TextBlock Text="{Binding PercentTotalFeeSpent, StringFormat='{}{0:#,0.##} %'}" FontSize="10" FontWeight="SemiBold"/>
                         </StackPanel>
                     </Grid>
                 </Grid>
-                
+
                 <Grid Grid.Row="2">
                     <Grid.Resources>
                         <local:DatetoStringFullConverter x:Key="DatetoStringFullConverter"/>
@@ -430,22 +437,28 @@
                             </StackPanel>
                         </Button>
                     </StackPanel>
-                    <Grid Grid.Column="2" Margin="0 0 10 0"  HorizontalAlignment="Stretch" >
+                    <Grid Grid.Column="2"  HorizontalAlignment="Stretch" >
                         <Grid.RowDefinitions>
                             <RowDefinition Height="*"/>
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
+                        <Button Grid.Row="1" Style="{StaticResource DefaultButton}" Command="{Binding OpenManagerStatus}" HorizontalAlignment="Right" Margin="0 0 213 0"
+                         VerticalAlignment="Center" HorizontalContentAlignment="Center" 
+                             Foreground="{Binding ColorStatusPM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                BorderBrush="{Binding ColorStatusPM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="2">
+                            <TextBlock Text="PM STATUS" VerticalAlignment="Center"/>
+                        </Button>
                         <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenEmployeeSummary}" BorderBrush="Black"
-                         VerticalAlignment="Bottom" HorizontalAlignment="Right"  BorderThickness="2" HorizontalContentAlignment="Center"  Margin="0 0 10 0" Width="175" >
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                                <TextBlock Text="Show Summary" VerticalAlignment="Center" Margin="0 0 20 0"/>
+                         VerticalAlignment="Bottom" HorizontalAlignment="Right"  BorderThickness="2" HorizontalContentAlignment="Center" Width="200" >
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" >
+                                <TextBlock Text="Employee Summary" VerticalAlignment="Center" Margin="0 0 15 0"/>
                                 <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Width="20" Height="20"/>
                             </StackPanel>
                         </Button>
                     </Grid>
                 </Grid>
-                
-                
+
+
 
                 <Grid Grid.Row="3">
                     <Grid.ColumnDefinitions>
@@ -459,7 +472,7 @@
                             <ItemsControl.Template>
                                 <ControlTemplate>
                                     <!--<ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False" VerticalScrollBarVisibility="Visible">-->
-                                        <ItemsPresenter/>
+                                    <ItemsPresenter/>
                                     <!--</ScrollViewer>-->
                                 </ControlTemplate>
                             </ItemsControl.Template>
@@ -470,8 +483,8 @@
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
                     </ScrollViewer>
-                    
- 
+
+
 
                     <Border Grid.Column="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Width="320" Margin="20 20 0 0"
                             BorderThickness="2" BorderBrush="Black" CornerRadius="3">
@@ -574,8 +587,8 @@
                                                     IsReadOnly="True">
                                                 </TextBox>
                                             </Grid>
-                                            
-                                            
+
+
                                             <!--<ItemsControl Grid.Column="1" ItemsSource="{Binding Entries, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Stretch">
                                                 <ItemsControl.ItemTemplate>
                                                     <DataTemplate>

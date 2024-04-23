@@ -15,7 +15,120 @@ namespace SOCE.Library.DbBatch
         {
             //RunProgram();
             //RunBudgetProgram();
-            RunUpdateScheduling();
+            //RunUpdateScheduling();
+            //RunUpdateTimesheetData();
+            RunSummary();
+        }
+
+        public static void RunSummary()
+        {
+            List<ProjectDbModel> projects = SQLAccess.LoadProjects();
+            List<TimesheetRowDbModel> alltimesheetdata = SQLAccess.LoadAllTimeSheetData();
+            List<ClientDbModel> allclient = SQLAccess.LoadClients();
+            List<MarketDbModel> allmarket = SQLAccess.LoadMarkets();
+
+            List<ClientFoundInfo> clientinfo = new List<ClientFoundInfo>();
+            List<MarketFoundInfo> marketinfo = new List<MarketFoundInfo>();
+
+            foreach (TimesheetRowDbModel time in alltimesheetdata)
+            {
+                if (time.Date > 20230000 && time.Date < 20240000)
+                {
+                    time.Invoiced = 0;
+
+                    SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(time.SubProjectId);
+
+                    ProjectDbModel projfound = projects.Where(x => x.Id == sub.ProjectId).FirstOrDefault();
+
+                    if (projfound != null)
+                    {
+                        ClientDbModel clienta = allclient.Where(x => x.Id == projfound.ClientId).FirstOrDefault();
+
+                        if (clienta != null)
+                        {
+                            ClientFoundInfo cfi = clientinfo.Where(x => x.client.Id == clienta.Id).FirstOrDefault();
+
+                            if (cfi == null)
+                            {
+                                clientinfo.Add(new ClientFoundInfo() { client = clienta, Budget = time.BudgetSpent, Hours = time.TimeEntry });
+                            }
+                            else
+                            {
+                                cfi.Hours += time.TimeEntry;
+                                cfi.Budget += time.BudgetSpent;
+                            }
+                        }
+
+                        MarketDbModel marketa = allmarket.Where(x => x.Id == projfound.MarketId).FirstOrDefault();
+
+                        if (clienta != null)
+                        {
+                            MarketFoundInfo mfi = marketinfo.Where(x => x.market.Id == marketa.Id).FirstOrDefault();
+
+                            if (mfi == null)
+                            {
+                                marketinfo.Add(new MarketFoundInfo() { market = marketa, Budget = time.BudgetSpent, Hours = time.TimeEntry });
+                            }
+                            else
+                            {
+                                mfi.Hours += time.TimeEntry;
+                                mfi.Budget += time.BudgetSpent;
+                            }
+                        }
+
+                    }
+                }
+            }
+
+            // Set a variable to the Documents path.
+            string docPath =
+              Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
+            // Write the string array to a new file named "WriteLines.txt".
+            using (StreamWriter outputFile = new StreamWriter(Path.Combine(docPath, "WriteLines.txt")))
+            {
+                outputFile.WriteLine("Clients");
+                clientinfo.OrderBy(x => x.client.ClientNumber);
+                foreach (ClientFoundInfo clientline in clientinfo)
+                {
+                    string line = $"{clientline.client.ClientNumber}  {clientline.client.ClientName}  {clientline.Hours:n} hrs.  ${clientline.Budget:n}";
+                    Console.WriteLine(line);
+                    outputFile.WriteLine(line);
+                }
+
+                outputFile.WriteLine("Markets");
+                foreach (MarketFoundInfo marketline in marketinfo)
+                {
+                    string line = $"{marketline.market.MarketName}  {marketline.Hours:n} hrs.  ${marketline.Budget:n}";
+                    Console.WriteLine(line);
+                    outputFile.WriteLine(line);
+                }
+            }
+
+        }
+
+        
+
+        public static void RunUpdateTimesheetData()
+        {
+            List<ProjectDbModel> projects = SQLAccess.LoadProjects();
+            List<TimesheetRowDbModel> alltimesheetdata = SQLAccess.LoadAllTimeSheetData();
+
+            foreach (TimesheetRowDbModel time in alltimesheetdata)
+            {
+                time.Invoiced = 0;
+
+                SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(time.SubProjectId);
+
+                ProjectDbModel projfound = projects.Where(x => x.Id == sub.ProjectId).FirstOrDefault();
+
+                if (projfound != null)
+                {
+                    time.ProjIdRef = projfound.Id;
+                    SQLAccess.AddTimesheetData(time);
+                    Console.WriteLine($"Updated Timesheet Id: {time.Id}");
+                }
+            }
         }
 
         public static void RunUpdateScheduling()
@@ -33,7 +146,7 @@ namespace SOCE.Library.DbBatch
 
                 if (subdb != null)
                 {
-                    
+
                     ProjectDbModel projdb = SQLAccess.LoadProjectsById(subdb.ProjectId);
 
                     foreach (SchedulingDataDbModel sched in schedlist)
@@ -53,7 +166,7 @@ namespace SOCE.Library.DbBatch
                         Console.WriteLine($"{sched.Id}, { sched.PhaseName}, {sched.ProjectName}");
                     }
                 }
-                
+
             }
 
 

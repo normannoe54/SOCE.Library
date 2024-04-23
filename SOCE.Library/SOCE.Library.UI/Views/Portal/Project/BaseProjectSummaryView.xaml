@@ -10,7 +10,7 @@
              xmlns:component="clr-namespace:SOCE.Library.UI.Components"
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              mc:Ignorable="d" 
-             Background="Transparent" Width="1300">
+             Background="Transparent" Width="1320">
     <UserControl.Resources>
         <ResourceDictionary>
             <DataTemplate DataType="{x:Type viewmodels:ProjectSummaryVM}">
@@ -18,6 +18,12 @@
             </DataTemplate>
             <DataTemplate DataType="{x:Type viewmodels:HoursVM}">
                 <views:HoursView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:AddServiceVM}">
+                <views:AddServiceManagerView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type viewmodels:InvoicingSummaryVM}">
+                <views:InvoicingSummaryView/>
             </DataTemplate>
         </ResourceDictionary>
     </UserControl.Resources>

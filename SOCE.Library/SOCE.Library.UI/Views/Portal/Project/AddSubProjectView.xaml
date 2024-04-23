@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height ="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
@@ -51,8 +52,24 @@
                 <TextBlock Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding BaseProject.ProjectNumber, StringFormat= ' [{0}]'}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" HorizontalAlignment="Left"/>
             </VirtualizingStackPanel>
         </Grid>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <CheckBox Grid.Column="0" HorizontalAlignment="Left" IsChecked="{Binding BillableInput}" Margin="0 10 0 0" Background="{StaticResource SOCERed}">
+                <CheckBox.Content>
+                    <TextBlock Text="BILLABLE"/>
+                </CheckBox.Content>
+            </CheckBox>
+            <CheckBox Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding HourlyInput}" Margin="20 10 0 0" Background="{StaticResource SOCERed}">
+                <CheckBox.Content>
+                    <TextBlock Text="HOURLY"/>
+                </CheckBox.Content>
+            </CheckBox>
+        </Grid>
 
-        <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}" Grid.Row="2" Background="Transparent" Margin="0 10 0 0">
+        <TabControl Style="{StaticResource MaterialDesignNavigatilRailTabControl}" Grid.Row="3" Background="Transparent" Margin="0 10 0 0">
             <TabItem Style="{StaticResource MaterialDesignNavigationRailTabItem}" Padding="0" IsSelected="{Binding PhaseSelected}" Background="{StaticResource SOCELightRed}" Width="90">
                 <TabItem.Header>
                     <StackPanel Orientation="Vertical">
@@ -178,7 +195,7 @@
             </TabItem>
         </TabControl>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="0 16 0 0" HorizontalAlignment="Center">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddSubProjectCommand}">
                 <TextBlock Text="ACCEPT"/>
             </Button>

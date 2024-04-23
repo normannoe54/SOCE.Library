@@ -329,6 +329,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _isHourly { get; set; }
+        public bool IsHourly
+        {
+            get
+            {
+                return _isHourly;
+            }
+            set
+            {
+                _isHourly = value;
+                RaisePropertyChanged(nameof(IsHourly));
+            }
+        }
+
         private bool _editSubFieldState = true;
         public bool EditSubFieldState
         {
@@ -397,8 +411,8 @@ namespace SOCE.Library.UI
         }
 
 
-        private bool? _isBillable { get; set; } = true;
-        public bool? IsBillable
+        private bool _isBillable { get; set; } = true;
+        public bool IsBillable
         {
             get
             {
@@ -430,7 +444,7 @@ namespace SOCE.Library.UI
             IsActive = Convert.ToBoolean(spm.IsActive);
             IsBillable = Convert.ToBoolean(spm.IsBillable);
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
-
+            IsHourly = Convert.ToBoolean(spm.IsHourly);
             PercentComplete = spm.PercentComplete;
             //PercentBudget = spm.PercentBudget;
             IsAddService = Convert.ToBoolean(spm.IsAdservice);
@@ -461,6 +475,8 @@ namespace SOCE.Library.UI
                 PercentComplete =  PercentComplete,
                 PercentBudget = PercentBudget,
                 IsInvoiced = IsInvoiced ? 1 : 0,
+                IsBillable = IsBillable ? 1: 0,
+                IsHourly = IsHourly ? 1: 0,
                 //SubStart = DateInitiated != null ? (int)long.Parse(spm.DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
                 //SubEnd = DateInvoiced != null ? (int)long.Parse(spm.DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
                 ExpandedDescription = ExpandedDescription,

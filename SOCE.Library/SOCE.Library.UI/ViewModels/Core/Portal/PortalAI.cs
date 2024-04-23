@@ -115,6 +115,7 @@ namespace SOCE.Library.UI.ViewModels
         private TimesheetReviewVM timesheetReviewVM;
         private ProjectScheduleVM projectScheduleVM;
         private NetworkSearchVM networkSearchVM;
+        private InvoicingVM invoicingVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
         private PortalPage currentPage;
@@ -122,26 +123,37 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand GoToNewViewCommand { get; set; }
 
         public ICommand GoToLoginCommand { get; set; }
-
+        public ICommand ReloadCommand { get; set; }
         public PortalAI()
         {
             //LoggedInEmployee = employee;
             //CurrentPage = new TimesheetVM(employee);
             GoToNewViewCommand = new RelayCommand<PortalPage>(GoToPage);
             GoToLoginCommand = new RelayCommand(GoToLogin);
-            
+            ReloadCommand = new RelayCommand(Reload);
+
         }
 
-        public void Initiate(EmployeeModel employee)
+        public async void Initiate(EmployeeModel employee)
         {
             LoggedInEmployee = employee;
-            employeeVM = new EmployeeVM(employee);
             timesheetVM = new TimesheetVM(employee);
-            timesheetReviewVM = new TimesheetReviewVM(employee);
-            projectScheduleVM = new ProjectScheduleVM(employee);
-            //projectDataVM = new ProjectDataVM(employee);
-            projectVM = new ProjectVM(employee);
-            networkSearchVM = new NetworkSearchVM(employee);
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                    employeeVM = new EmployeeVM(employee);
+                    timesheetReviewVM = new TimesheetReviewVM(employee);
+                    projectScheduleVM = new ProjectScheduleVM(employee);
+                    projectVM = new ProjectVM(employee);
+                    networkSearchVM = new NetworkSearchVM(employee);
+                    //invoicingVM = new InvoicingVM(employee);
+            }));
+        }
+
+        public void Reload()
+        {
+            PortalPage curpage = currentPage; 
+            Initiate(LoggedInEmployee);
+            GoToPage(curpage);
         }
 
         public void RefreshViews()
@@ -150,8 +162,8 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         public async void GoToPage(PortalPage page)
-        {  
-            if (currentPage == page )
+        {
+            if (currentPage == page)
             {
                 return;
             }
@@ -185,8 +197,8 @@ namespace SOCE.Library.UI.ViewModels
                     case PortalPage.NetworkSearch:
                         CurrentPage = networkSearchVM;
                         break;
-                    //case PortalPage.LicenseManager:
-                    //    CurrentPage = new LicenseManagerVM(LoggedInEmployee);
+                    //case PortalPage.Invoicing:
+                    //    CurrentPage = invoicingVM;
                     //    break;
                     case PortalPage.Projects:
                         projectVM.Reload();
@@ -203,7 +215,7 @@ namespace SOCE.Library.UI.ViewModels
         public void GoToTimesheetByDate(DateTime date)
         {
             currentPage = PortalPage.Timesheet;
-            CurrentPage = new TimesheetVM(LoggedInEmployee,date);
+            CurrentPage = new TimesheetVM(LoggedInEmployee, date);
         }
 
         public void GoToLogin()

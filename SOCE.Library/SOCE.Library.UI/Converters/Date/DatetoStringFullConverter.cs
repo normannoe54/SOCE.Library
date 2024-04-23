@@ -11,6 +11,11 @@ namespace SOCE.Library.UI
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value is null)
+            {
+                return "";
+            }
+
             if (value is DateTime)
             {
                 DateTime dt = (DateTime)value;

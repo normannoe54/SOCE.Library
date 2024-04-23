@@ -194,6 +194,8 @@
       <DependentUpon>BindablePasswordBox.xaml</DependentUpon>
     </Compile>
     <Compile Include="Converters\BooleanOrConverter.cs" />
+    <Compile Include="Converters\InverseFontWeightConverter.cs" />
+    <Compile Include="Converters\FontWeightConverter.cs" />
     <Compile Include="Converters\InverseBoolToVisConverter.cs" />
     <Compile Include="Converters\BooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringPartialConverter.cs" />
@@ -216,6 +218,13 @@
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
     <Compile Include="Models\Generic\ClientLowResModel.cs" />
     <Compile Include="Models\Generic\EmployeeLowResModel.cs" />
+    <Compile Include="Models\Invoicing\HourEntryModel.cs" />
+    <Compile Include="Models\Invoicing\HourSummaryIndModel.cs" />
+    <Compile Include="Models\Invoicing\HourSummaryModel.cs" />
+    <Compile Include="Models\Invoicing\InvoicingModel.cs" />
+    <Compile Include="Models\Invoicing\InvoicingRows.cs" />
+    <Compile Include="Models\Invoicing\ProjectInvoicingModel.cs" />
+    <Compile Include="Models\Invoicing\SettingsEnum.cs" />
     <Compile Include="Models\NetworkSearch\FolderModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
@@ -240,7 +249,10 @@
     <Compile Include="Models\Generic\SubProjectLowResModel.cs" />
     <Compile Include="Models\Timesheet\TimesheetRowAlertStatus.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeInfoVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Invoicing\CreateInvoiceVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Invoicing\InvoicingSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\NetworkSearch\NetworkSearchVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ManagerStatusVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\EmployeeScheduleSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\IndividualSingleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\PMScheduleVM.cs" />
@@ -251,6 +263,7 @@
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectScheduleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddServiceVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddAddServiceVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Invoicing\InvoicingVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\MarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BaseProjectSummaryVM.cs" />
@@ -331,8 +344,17 @@
     <Compile Include="Views\Portal\Employee\EmployeeInfoView.xaml.cs">
       <DependentUpon>EmployeeInfoView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\Invoicing\InvoicingSummaryView.xaml.cs">
+      <DependentUpon>InvoicingSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Invoicing\InvoicingView.xaml.cs">
+      <DependentUpon>InvoicingView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\NetworkSearch\NetworkSearchView.xaml.cs">
       <DependentUpon>NetworkSearchView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\ProjectSchedule\ManagerStatusView.xaml.cs">
+      <DependentUpon>ManagerStatusView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\ProjectSchedule\PMReportView.xaml.cs">
       <DependentUpon>PMReportView.xaml</DependentUpon>
@@ -357,6 +379,9 @@
     </Compile>
     <Compile Include="Views\Portal\Project\ClientInfoView.xaml.cs">
       <DependentUpon>ClientInfoView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Invoicing\CreateInvoiceView.xaml.cs">
+      <DependentUpon>CreateInvoiceView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Project\HoursView.xaml.cs">
       <DependentUpon>HoursView.xaml</DependentUpon>
@@ -506,7 +531,19 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\Invoicing\InvoicingSummaryView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\Portal\Invoicing\InvoicingView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\NetworkSearch\NetworkSearchView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\ProjectSchedule\ManagerStatusView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -541,6 +578,10 @@
     <Page Include="Views\Portal\Project\ClientInfoView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Invoicing\CreateInvoiceView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\Portal\Project\HoursView.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -690,6 +731,7 @@
     <EmbeddedResource Include="Resources\PMSchedule.xlsx" />
     <EmbeddedResource Include="Resources\WeeklySchedule.xlsx" />
     <EmbeddedResource Include="Resources\AddServiceTrackingLog.xlsx" />
+    <None Include="Resources\EmployeeSummary.xlsx" />
     <Resource Include="license.txt" />
     <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Resources\ProjectDataExport.xlsx" />
@@ -745,6 +787,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\fallingsnow.gif" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\Butterflies.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

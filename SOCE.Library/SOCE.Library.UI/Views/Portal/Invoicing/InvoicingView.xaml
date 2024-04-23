@@ -1,0 +1,396 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.InvoicingView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:views="clr-namespace:SOCE.Library.UI.Views"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" x:Name="MainWindow">
+    <!--<materialDesign:DrawerHost HorizontalAlignment="Center" VerticalAlignment="Center" IsRightDrawerOpen ="{Binding RightDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" RightDrawerCloseOnClickAway="True">
+        <materialDesign:DrawerHost.RightDrawerContent >
+            <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+            -->
+    <!--<views:AddSubProjectView/>-->
+    <!--
+        </materialDesign:DrawerHost.RightDrawerContent>-->
+    <Grid Margin="30 10 20 20">
+        <Grid.Resources>
+            <ResourceDictionary Source="pack://application:,,,/MaterialDesignThemes.Wpf;component/Themes/MaterialDesignTheme.PopupBox.xaml"/>
+        </Grid.Resources>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" HorizontalAlignment="Stretch">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="Invoicing" HorizontalAlignment="Left" Style="{StaticResource PageHeader}"/>
+
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
+
+                <!--Counter Title-->
+                <Grid HorizontalAlignment="Stretch" Margin="0 10 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="*"/>
+                            <RowDefinition Height="50"/>
+                        </Grid.RowDefinitions>
+                        <Grid Grid.Row="0" Height="30">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton Grid.Column="0" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowFeeNotMetOnly}" Content="Fee Not Complete" BorderBrush="{StaticResource SOCERed}" />
+                            <RadioButton Grid.Column="1" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowFeeNotMetOnly, Converter={StaticResource InvertBooleanConverter}}" Content="All Fee Status" BorderBrush="{StaticResource SOCERed}"/>
+                        </Grid>
+                        <Grid Grid.Row="1" Height="30" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <RadioButton Grid.Column="0" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowUninvoicedHours}" Content="Uninvoiced Hours" BorderBrush="{StaticResource SOCERed}" />
+                            <RadioButton Grid.Column="1" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowUninvoicedHours, Converter={StaticResource InvertBooleanConverter}}" Content="All Hours" BorderBrush="{StaticResource SOCERed}" />
+                        </Grid>
+                        <!--<Grid Grid.Row="0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="Settings" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold" Margin="0 10 20 0"/>
+                            <ComboBox Grid.Column="1" materialDesign:HintAssist.Hint="Select One"  
+                              Margin="0 10 0 0"
+                              VerticalAlignment="Stretch"
+                              VerticalContentAlignment="Bottom"
+                              HorizontalAlignment="Stretch"
+                              materialDesign:TextFieldAssist.HasClearButton="True"
+                              Foreground="Black"
+                              ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:SettingsEnum}}}" 
+                              DisplayMemberPath="Description" 
+                              SelectedValue="{Binding Status}"  
+                              SelectedValuePath="Value"
+                              Style="{StaticResource MaterialDesignComboBox}"
+                              SelectedItem="{Binding SelectedSettings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextSearch.TextPath="ClientName"
+                              IsTextSearchEnabled="True" IsEditable="False" 
+                              StaysOpenOnEdit="True"                         
+                              MaxDropDownHeight="250">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel MaxWidth="300"/>
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                        </Grid>-->
+
+                        <Grid Grid.Row="2" Width="260" Margin="0 10 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Center" >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="140"/>
+                            </Grid.ColumnDefinitions>
+                            <ToggleButton Grid.Column="0" Style="{StaticResource MaterialDesignSwitchToggleButton}" 
+                                  IsChecked="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                  Content="{materialDesign:PackIcon Kind=No}" 
+                                  VerticalAlignment="Center" HorizontalAlignment="Left"
+                                          
+                                  materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Check}">
+                                <materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
+                                    <SolidColorBrush Color="#1d9719" />
+                                </materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
+                                <materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
+                                    <SolidColorBrush Color="#c92127" />
+                                </materialDesign:ToggleButtonAssist.SwitchTrackOffBackground>
+                            </ToggleButton>
+                            <TextBlock Grid.Column="1" Foreground="{StaticResource SOCEGreenCompliment}" Margin="5 0 10 0" Text="ACTIVE" FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Right" VerticalAlignment="Center" Visibility="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+                            <!--<TextBlock.Effect>
+                                    <DropShadowEffect BlurRadius="10" ShadowDepth="0" Opacity="1" Color="Black"/>
+                                </TextBlock.Effect>-->
+                            <TextBlock Grid.Column="1" Foreground="{StaticResource SOCERed}" Margin="5 0 10 0" Text="INACTIVE" FontWeight="SemiBold" FontSize="16" HorizontalAlignment="Right"  VerticalAlignment="Center" Visibility="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
+
+                            <Grid HorizontalAlignment="Right" Grid.Column="2" Visibility="{Binding ShowActiveProjects, Converter={StaticResource InverseBoolToVisConverter}}">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding YearInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"  IsEnabled="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                     HorizontalAlignment="Stretch" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Specify Year"/>
+                                <Button Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding AddYearCommand}" BorderThickness="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="5 0 1 0"
+                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Add Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                    <materialDesign:PackIcon Kind="plus" VerticalAlignment="Center"  Width="12" Height="12"/>
+                                </Button>
+                                <Button Grid.Column="2" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubtractYearCommand}" BorderThickness="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="1 0 0 0"
+                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Subtract Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                    <materialDesign:PackIcon Kind="Minus" VerticalAlignment="Center"  Width="12" Height="12"/>
+                                </Button>
+                                <Button Grid.Column="3" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SearchCommand}" BorderThickness="0" VerticalContentAlignment="Stretch" VerticalAlignment="Bottom" Margin="5 0 0 5"
+                                Height="22" Width="22" Padding="0" Background="Transparent" Foreground="Black" ToolTip="Search" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                    <materialDesign:PackIcon Kind="Search" VerticalAlignment="Center"  Width="18" Height="18"/>
+                                </Button>
+                            </Grid>
+                        </Grid>
+                    </Grid>
+
+                    <Grid Grid.Column="2" HorizontalAlignment="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="Auto"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Row="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="200"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Grid.Row="0" Text="PM" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold" Margin="0 5 20 5"/>
+                            <ComboBox Grid.Column="1" Grid.Row="0" materialDesign:HintAssist.Hint="Select One"  
+                              Margin="0 0 0 0"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Stretch"
+                              materialDesign:TextFieldAssist.HasClearButton="True"
+                              Foreground="Black"
+                              Style="{StaticResource MaterialDesignComboBox}"
+                              SelectedItem="{Binding SelectedPM, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding ProjectManagers, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextSearch.TextPath="FullName"
+                              IsTextSearchEnabled="True" IsEditable="False" 
+                              StaysOpenOnEdit="True"                         
+                              MaxDropDownHeight="250"
+                              DisplayMemberPath="FullName">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel MaxWidth="300"/>
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+                            <TextBlock Grid.Column="0" Grid.Row="1" Text="Client" VerticalAlignment="Center" FontSize="16" FontWeight="DemiBold" Margin="0 10 20 0"/>
+                            <ComboBox Grid.Column="1" Grid.Row="1" materialDesign:HintAssist.Hint="Select One"  
+                              Margin="0 10 0 0"
+                              VerticalAlignment="Center"
+                              HorizontalAlignment="Stretch"
+                              materialDesign:TextFieldAssist.HasClearButton="True"
+                              Foreground="Black"
+                              Style="{StaticResource MaterialDesignComboBox}"
+                              SelectedItem="{Binding SelectedClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              ItemsSource="{Binding Clients, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                              TextSearch.TextPath="ClientName"
+                              IsTextSearchEnabled="True" IsEditable="False" 
+                              StaysOpenOnEdit="True"                         
+                              MaxDropDownHeight="250"
+                              DisplayMemberPath="ClientName">
+                                <ComboBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel MaxWidth="300"/>
+                                    </ItemsPanelTemplate>
+                                </ComboBox.ItemsPanel>
+                            </ComboBox>
+
+
+                            <TextBox Text="{Binding SearchableText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="2" Grid.ColumnSpan="2" Margin="0 10 0 0"
+                         HorizontalAlignment="Stretch" VerticalAlignment="Bottom"
+                         materialDesign:TextFieldAssist.HasClearButton="True"
+                         materialDesign:HintAssist.Hint="Seach by Name or #">
+                                <TextBox.InputBindings>
+                                    <KeyBinding Command="{Binding SearchCommand}"  Key="Enter"/>
+                                </TextBox.InputBindings>
+                            </TextBox>
+                        </Grid>
+
+                        <Grid Grid.Column="2" HorizontalAlignment="Right">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="*"/>
+                                <RowDefinition Height="auto"/>
+                            </Grid.RowDefinitions>
+                            <Button Grid.Row="0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding ClearSearchParamters}" BorderThickness="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" 
+                                Height="Auto" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10 0 10 10" ToolTip="Clear" >
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon  Kind="Clear" VerticalAlignment="Center"  Width="25" Height="25"/>
+                                </StackPanel>
+                            </Button>
+                            <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SearchCommand}" BorderThickness="0"
+                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10 0" ToolTip="Search">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="Search"  VerticalAlignment="Center"  Width="20" Height="20"/>
+                                </StackPanel>
+                            </Button>
+                        </Grid>
+                    </Grid>
+                </Grid>
+                <!--<TextBlock Text="{Binding TextProjects}" Grid.Row="2" FontSize="18" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left" VerticalAlignment="Center"/>-->
+
+                <!--Add Button-->
+                <Grid Grid.Row="1" Margin="-10 20 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="250"/>
+                        <ColumnDefinition Width="155"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Open"/>
+                    <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Name" Margin="10 0 10 0"/>
+                    <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Number" Margin="-5 0 0 0" />
+                    <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Client"/>
+                    <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="PM"/>
+                    <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="left" VerticalAlignment="Center" Margin="10 0 0 0" Text="   Date of&#10;Last Invoice"    />
+                    <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="left" VerticalAlignment="Center"  Text="% Total Fee&#10;   Invoiced"  />
+                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="left" VerticalAlignment="Center"  Text="UnInvoiced&#10;    Hours" />
+                </Grid>
+
+                <!--<ScrollViewer Grid.Row="4" Margin="0 0 5 5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">-->
+                <!--<ScrollViewer.Resources>
+                    <local:InvoicedColorConverter x:Key="valueconverter"/>
+                </ScrollViewer.Resources>-->
+                <ItemsControl Grid.Row="2" HorizontalAlignment="Stretch" HorizontalContentAlignment="Center"
+                              VerticalAlignment="Stretch" ItemsSource="{Binding Projects}" BorderBrush="Black" BorderThickness="1">
+                    <ItemsControl.Template>
+                        <ControlTemplate>
+                            <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
+                                <ItemsPresenter />
+                            </ScrollViewer>
+                        </ControlTemplate>
+                    </ItemsControl.Template>
+
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <!--<Expander Background="Transparent" IsExpanded="{Binding CanExpand, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" x:Name="exp1">-->
+                            <!--<Expander Background="Transparent" IsExpanded="False" IsEnabled="{Binding Path=DataContext.IsEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}">-->
+                            <!--TODO-->
+                            <!--<Expander.Header>-->
+                            <Grid Margin="0 10 0 10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="60"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="250"/>
+                                    <ColumnDefinition Width="150"/>
+                                    <ColumnDefinition Width="120"/>
+                                    <ColumnDefinition Width="100"/>
+                                    <ColumnDefinition Width="100"/>
+                                </Grid.ColumnDefinitions>
+
+
+                                <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"
+                                            Command="{Binding Path=DataContext.GoToOpenProjectSummary, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}" ToolTip="Open" Foreground="White">
+                                    <Button.Content>
+                                        <Border CornerRadius="3" Background="{StaticResource SOCEBlueCompliment}" Height="26" Width="26">
+                                            <materialDesign:PackIcon  Kind="Download" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20"/>
+                                        </Border>
+                                    </Button.Content>
+                                </Button>
+
+                                <TextBox Grid.Column="1" 
+                                                 IsReadOnly ="True"
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding ProjectName}" 
+                                                 TextAlignment="Left" 
+                                                 FontSize="16" 
+                                                 FontWeight="Bold" 
+                                                 VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="2" 
+                                                 Margin="10 0 10 0" 
+                                                 IsReadOnly ="True"
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding ProjectNumber}" 
+                                                 TextAlignment="Left" 
+                                                 FontSize="16" 
+                                                 FontWeight="Bold" 
+                                                 VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="3" 
+                                                 Margin="10 0 10 0" 
+                                                 IsReadOnly ="True"    
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding Client.ClientName}" 
+                                                 TextAlignment="Left" 
+                                                 FontSize="14" 
+                                                 FontWeight="Regular" 
+                                                 VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="4" 
+                                                 Margin="10 0 10 0" 
+                                                 IsReadOnly ="True"    
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding ProjectManager.FullName}" 
+                                                 TextAlignment="Left" 
+                                                 FontSize="14" 
+                                                 FontWeight="Regular" 
+                                                 VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="5" 
+                                         Margin="10 0 10 0"
+                                                 IsReadOnly ="True"    
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding DateOfLastInvoice,StringFormat='{}{0:MM/dd/yyyy}'}" 
+                                                 TextAlignment="Left" 
+                                                 FontSize="16" 
+                                                 FontWeight="DemiBold" 
+                                                 VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="6" 
+                                                 Margin="10 0 10 0" 
+                                                 IsReadOnly ="True"    
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding PercentOfTotalFeeInvoiced, StringFormat=' {0:#,0.##}%'}" 
+                                                 TextAlignment="Center" 
+                                                 FontSize="16" 
+                                                 FontWeight="DemiBold" 
+                                                 VerticalAlignment="Center"/>
+
+                                <TextBox Grid.Column="7" 
+                                                 Margin="10 0 10 0" 
+                                                 IsReadOnly ="True"    
+                                                 HorizontalAlignment="Stretch" 
+                                                 Text="{Binding HoursSpentSinceLastInvoice, StringFormat=' {0:#,0.##} hr.'}" 
+                                                 TextAlignment="Center" 
+                                                 FontSize="16" 
+                                                 FontWeight="DemiBold" 
+                                                 VerticalAlignment="Center"/>
+
+                            </Grid>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+                <!--</ScrollViewer>-->
+            </Grid>
+        </Grid>
+    </Grid>
+    <!--</materialDesign:DrawerHost>-->
+</UserControl>

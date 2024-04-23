@@ -45,8 +45,8 @@
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
             <lvc:CartesianChart Grid.Column="0" Series="{Binding OverallData, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
-                                LegendPosition="Hidden" ZoomMode="Both" XAxes="{Binding XAxes}" YAxes="{Binding YAxes}" 
-                                DrawMarginFrame="{Binding Frame}" TooltipFindingStrategy="CompareAllTakeClosest">
+                                LegendPosition="Hidden" ZoomMode="{Binding Zoom, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" XAxes="{Binding XAxes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" YAxes="{Binding YAxes, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                DrawMarginFrame="{Binding Frame}" TooltipFindingStrategy="CompareAllTakeClosest" TooltipTextSize="14">
             </lvc:CartesianChart>
 
             <ItemsControl Grid.Column="1" ItemsSource="{Binding RelevantEmployees}" Margin="0 20 30 0" HorizontalAlignment="Stretch" Foreground="Black" >

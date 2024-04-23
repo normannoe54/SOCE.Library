@@ -120,46 +120,38 @@ namespace SOCE.Library.UI.ViewModels
         private static readonly SKColor outline = new SKColor(60, 60, 60);
         private static readonly SKColor s_crosshair = new SKColor(255, 171, 145);
 
-        public Axis[] XAxes { get; set; } =
+        private Axis[] _xAxes;
+        public Axis[] XAxes
         {
-        new Axis
-        {
-            Labeler = value => new DateTime((long) value).ToString("MM/dd/yy"),
-            MinStep = TimeSpan.FromDays(1).Ticks,
-            Name = "Date Saved",
-            NamePaint = new SolidColorPaint(SKColors.Black),
-            TextSize = 12,
-            UnitWidth = 0.09,
-            Padding = new Padding(5, 15, 5, 5),
-            LabelsPaint = new SolidColorPaint(SKColors.Black),
-            SeparatorsPaint = new SolidColorPaint
+            get { return _xAxes; }
+            set
             {
-                    Color = seperators,
-                    StrokeThickness = 1,
-                    ZIndex = 1
-            },
+                _xAxes = value;
+                RaisePropertyChanged("XAxes");
             }
-        };
+        }
 
-        public Axis[] YAxes { get; set; } =
+        private Axis[] _yAxes;
+        public Axis[] YAxes
         {
-        new Axis
-        {
-            Name = "Total Hours (hr.)",
-            NamePaint = new SolidColorPaint(SKColors.Black),
-            TextSize = 12,
-            UnitWidth = 0.09,
-            Padding = new Padding(5, 15, 5, 5),
-            LabelsPaint = new SolidColorPaint(SKColors.Black),
-            SeparatorsPaint = new SolidColorPaint
+            get { return _yAxes; }
+            set
             {
-                    Color = seperators,
-                    StrokeThickness = 1,
-                    ZIndex = 1,
-                    PathEffect = new DashEffect(new float[] { 3, 3 })
-            },
+                _yAxes = value;
+                RaisePropertyChanged("YAxes");
             }
-        };
+        }
+
+        private LiveChartsCore.Measure.ZoomAndPanMode _zoom;
+        public LiveChartsCore.Measure.ZoomAndPanMode Zoom
+        {
+            get { return _zoom; }
+            set
+            {
+                _zoom = value;
+                RaisePropertyChanged("Zoom");
+            }
+        }
 
         public DrawMarginFrame Frame { get; set; } =
         new DrawMarginFrame()
@@ -307,6 +299,72 @@ namespace SOCE.Library.UI.ViewModels
                     j++;
                 }
             }
+
+            CreateAxis();
+        }
+
+        private void CreateAxis()
+        {
+            List<DateTime> dates = new List<DateTime>();
+            List<double> hours = new List<double>();
+            for (int i = 0; i < OverallData.Count; i++)
+            {
+                LineSeries<DateTimePoint> series = (LineSeries<DateTimePoint>)OverallData[i];
+                dates.AddRange(series.Values.Select(x => x.DateTime.Date).ToList());
+                hours.AddRange(series.Values.Select(x => (double)x.Value).ToList());
+            }
+
+            Zoom = hours.Count > 1 ? LiveChartsCore.Measure.ZoomAndPanMode.Both : LiveChartsCore.Measure.ZoomAndPanMode.None;
+            DateTime maxfinaldate = dates.Max();
+            DateTime minfinaldate = dates.Min();
+
+            double maxhours = hours.Max();
+            double minhours = hours.Min();
+
+            Axis[] xstart = new Axis[]{
+
+                new Axis
+                {
+                Labeler = value => new DateTime((long) value).ToString("MM/dd/yy"),
+                MinStep = TimeSpan.FromDays(1).Ticks,
+                MaxLimit = maxfinaldate.Date.AddDays(5).Ticks,
+                MinLimit = minfinaldate.Date.AddDays(-5).Ticks,
+                Name = "Date Saved",
+                NamePaint = new SolidColorPaint(SKColors.Black),
+                TextSize = 12,
+                UnitWidth = 0.09,
+                Padding = new Padding(5, 15, 5, 5),
+                LabelsPaint = new SolidColorPaint(SKColors.Black),
+                SeparatorsPaint = new SolidColorPaint
+                {
+                        Color = seperators,
+                        StrokeThickness = 1,
+                        ZIndex = 1
+                }
+                } };
+
+            Axis[] ystart = new Axis[] {
+            new Axis
+            {
+                Name = "Total Hours (hr.)",
+                NamePaint = new SolidColorPaint(SKColors.Black),
+                TextSize = 12,
+                UnitWidth = 0.09,
+                MaxLimit = maxhours+10,
+                MinLimit = 0,
+                Padding = new Padding(5, 15, 5, 5),
+                LabelsPaint = new SolidColorPaint(SKColors.Black),
+                SeparatorsPaint = new SolidColorPaint
+                {
+                    Color = seperators,
+                    StrokeThickness = 1,
+                    ZIndex = 1,
+                    PathEffect = new DashEffect(new float[] { 3, 3 })
+                },
+            }};
+
+            XAxes = xstart;
+            YAxes = ystart;
         }
 
         public LineSeries<DateTimePoint> CreateLineSeries(EmployeeVisualModel EmployeeVis, List<TimesheetRowDbModel> TimesheetData)
@@ -327,6 +385,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 DateTime dt = DateTime.ParseExact(data.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
                 DateTimePoint dtp = new DateTimePoint() { DateTime = dt };
+                //ObservablePoint obs = new ObservablePoint()
 
                 //if (SelectedDataType == DataTypeEnum.IncBudget)
                 //{
@@ -350,19 +409,31 @@ namespace SOCE.Library.UI.ViewModels
                 values.Add(dtp);
             }
 
+            //LineSeries<DateTimePoint> ls = new LineSeries<DateTimePoint> { };
+            //ls.Name = EmployeeVis.Name;
+            //ls.Values = values;
+            //ls.GeometrySize = 10;
+            //ls.LineSmoothness = 0;
+            //ls.Stroke = new SolidColorPaint(new SKColor(EmployeeVis.VisualColor.Color.R, EmployeeVis.VisualColor.Color.G, EmployeeVis.VisualColor.Color.B)) { StrokeThickness = 2 };
+            //ls.GeometryFill = new SolidColorPaint(SKColors.White);
+            //ls.Fill = null;
+            //ls.TooltipLabelFormatter = (chartPoint) => $"{EmployeeVis.Name} [{chartPoint.PrimaryValue}hr.]";
+
             LineSeries<DateTimePoint> ls = new LineSeries<DateTimePoint>
             {
-                TooltipLabelFormatter = (chartPoint) => $"{EmployeeVis.Name} [{chartPoint.PrimaryValue}hr.]",
+                
                 Name = EmployeeVis.Name,
                 Values = values,
-                GeometrySize = 10,
+                GeometrySize = 7,
                 LineSmoothness = 0,
                 Stroke = new SolidColorPaint(new SKColor(EmployeeVis.VisualColor.Color.R, EmployeeVis.VisualColor.Color.G, EmployeeVis.VisualColor.Color.B)) { StrokeThickness = 2 },
-                GeometryStroke = new SolidColorPaint(new SKColor(EmployeeVis.VisualColor.Color.R, EmployeeVis.VisualColor.Color.G, EmployeeVis.VisualColor.Color.B)),
-                GeometryFill = new SolidColorPaint(SKColors.White),
+                GeometryStroke = new SolidColorPaint(new SKColor(EmployeeVis.VisualColor.Color.R, EmployeeVis.VisualColor.Color.G, EmployeeVis.VisualColor.Color.B)) { StrokeThickness = 2 },
+                //GeometryFill = new SolidColorPaint(new SKColor(EmployeeVis.VisualColor.Color.R, EmployeeVis.VisualColor.Color.G, EmployeeVis.VisualColor.Color.B, 100)),
+                GeometryFill = new SolidColorPaint(new SKColor(211, 211, 211)),
+
                 Fill = null
             };
-
+            ls.TooltipLabelFormatter = (x) => $"{new DateTime((long)x.SecondaryValue): MM/dd/yyyy}: {EmployeeVis.TruncatedName} ({x.PrimaryValue}hr.)";
             return ls;
         }
 

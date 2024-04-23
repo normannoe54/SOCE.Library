@@ -57,7 +57,33 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged("AdditionalServicesFee");
             }
         }
-        
+
+        private bool _hourlyInput = true;
+        public bool HourlyInput
+        {
+            get { return _hourlyInput; }
+            set
+            {
+
+                _hourlyInput = value;
+                RaisePropertyChanged("HourlyInput");
+
+            }
+        }
+
+        private bool _billableInput = true;
+        public bool BillableInput
+        {
+            get { return _billableInput; }
+            set
+            {
+
+                _billableInput = value;
+                RaisePropertyChanged("BillableInput");
+
+            }
+        }
+
         private bool _phaseSelected = true;
         public bool PhaseSelected
         {
@@ -354,7 +380,8 @@ namespace SOCE.Library.UI.ViewModels
             ObservableCollection<SubProjectDbModel> TotalSubProjects = new ObservableCollection<SubProjectDbModel>();
 
             BaseProject = pm;
-
+            HourlyInput = false;
+            BillableInput = true;
             //get latest adservice
             List<SubProjectSummaryModel> spms = baseViewModel.SubProjects.ToList();
 
@@ -401,6 +428,8 @@ namespace SOCE.Library.UI.ViewModels
                 IsInvoiced = 0,
                 PercentComplete = 0,
                 PercentBudget = 0,
+                IsHourly = Convert.ToInt32(HourlyInput),
+                IsBillable = Convert.ToInt32(BillableInput),
                 NumberOrder = Convert.ToInt32(BigNumOrder) +1,
                 Fee = 0
             };

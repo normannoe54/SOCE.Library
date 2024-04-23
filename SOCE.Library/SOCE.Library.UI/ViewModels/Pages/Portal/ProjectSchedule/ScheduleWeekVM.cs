@@ -32,6 +32,7 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand PreviousCommand { get; set; }
         public ICommand NextCommand { get; set; }
         public ICommand CurrentCommand { get; set; }
+        public ICommand OpenManagerStatus { get; set; }
         //public ICommand KeyDownCommand { get; set; }
 
         private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
@@ -64,6 +65,20 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _employeeDatesummary = value;
                 RaisePropertyChanged(nameof(EmployeeDateSummary));
+            }
+        }
+
+        
+
+
+        private Brush _colorStatusPM;
+        public Brush ColorStatusPM
+        {
+            get { return _colorStatusPM; }
+            set
+            {
+                _colorStatusPM = value;
+                RaisePropertyChanged(nameof(ColorStatusPM));
             }
         }
 
@@ -496,6 +511,7 @@ namespace SOCE.Library.UI.ViewModels
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
             this.OpenEmployeeSummary = new RelayCommand(OpenRightDrawer);
+            this.OpenManagerStatus = new RelayCommand(OpenRightManager);
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
 
             List<EmployeeScheduleModel> totalemployees = new List<EmployeeScheduleModel>();
@@ -515,9 +531,42 @@ namespace SOCE.Library.UI.ViewModels
             LoadProjects();
             ProjectList = BaseProjectList;
             CollectEmployeeSummary();
+            CheckStatusColor();
             //CollectEmployeeSummary();
             //UpdateLists();
             //LoadSchedulingData();
+        }
+
+        private void CheckStatusColor()
+        {
+            bool iswrong = true;
+            foreach (EmployeeScheduleModel employee in Employees)
+            {
+                if ((employee.Status == AuthEnum.Principal || employee.Status == AuthEnum.PM) && !employee.ScheduleWeekCheck)
+                {
+                    iswrong = false;
+                    break;
+                }
+            }
+
+            ColorStatusPM = !iswrong ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : (SolidColorBrush)new BrushConverter().ConvertFrom("#1d9719");
+        }
+
+        public void ReloadEmployees()
+        {
+            List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
+
+            List<EmployeeScheduleModel> totalemployees = new List<EmployeeScheduleModel>();
+
+            foreach (EmployeeDbModel employeenew in employeesDb)
+            {
+                EmployeeScheduleModel em = new EmployeeScheduleModel(employeenew);
+                totalemployees.Add(em);
+            }
+            ObservableCollection<EmployeeScheduleModel> ordered = new ObservableCollection<EmployeeScheduleModel>(totalemployees.OrderBy(x => x.LastName).ToList());
+            Employees = ordered;
+            CollectEmployeeSummary();
+            CheckStatusColor();
         }
 
         public void ClearSelected()
@@ -597,7 +646,7 @@ namespace SOCE.Library.UI.ViewModels
         //        Brush brush8 = hours8 > em.ScheduledTotalHours ? (SolidColorBrush)new BrushConverter().ConvertFrom("#c92127") : Brushes.Black;
 
 
-        //        SDEntryModel hours1entry = new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = hours1, CellColor = brush1 };
+                //SDEntryModel hours1entry = new SDEntryModel() { Date = DateSummary[0].Value, TimeEntry = hours1, CellColor = brush1 };
         //        SDEntryModel hours2entry = new SDEntryModel() { Date = DateSummary[1].Value, TimeEntry = hours2, CellColor = brush2 };
         //        SDEntryModel hours3entry = new SDEntryModel() { Date = DateSummary[2].Value, TimeEntry = hours3, CellColor = brush3 };
         //        SDEntryModel hours4entry = new SDEntryModel() { Date = DateSummary[3].Value, TimeEntry = hours4, CellColor = brush4 };
@@ -856,6 +905,36 @@ namespace SOCE.Library.UI.ViewModels
             CurrentPage.MakeClear();
         }
 
+        private async void OpenRightManager()
+        {
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+                BaseAI CurrentPage2 = IoCPortal.Application as BaseAI;
+                PortalAI portAI = (PortalAI)CurrentPage2;
+
+                ManagerStatusView cv = new ManagerStatusView();
+                portAI.RightViewToShow = cv;
+
+                ObservableCollection<EmployeeScheduleModel> employeesforref = new ObservableCollection<EmployeeScheduleModel>();
+
+                foreach (EmployeeScheduleModel em in Employees)
+                {
+                    if (em.Status == AuthEnum.PM || em.Status == AuthEnum.Principal)
+                    {
+                        employeesforref.Add(new EmployeeScheduleModel() { Id = em.Id, FullName = em.FullName, ScheduleWeekCheck = em.ScheduleWeekCheck });
+                    }
+                }
+
+                ManagerStatusVM cvm = new ManagerStatusVM(employeesforref, this);
+                portAI.RightViewToShow.DataContext = cvm;
+                portAI.RightDrawerOpen = true;
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
+        }
 
         //private void ListPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         //{
@@ -1035,7 +1114,7 @@ namespace SOCE.Library.UI.ViewModels
                             if (SelectedProject != null && SelectedProject.DueDate != null)
                             {
                                 double diff = ((DateTime)SelectedProject.DueDate - DateSummary[0].Value).TotalDays;
-                                double roundup = Math.Ceiling(diff/7);
+                                double roundup = Math.Ceiling((diff+0.01)/7);
                                 Brush redbrush = (SolidColorBrush)new BrushConverter().ConvertFrom("#f9aeae");
                                 if (roundup == 1) { brush1 = Brushes.Red; }
                                 else if (roundup == 2) { brush2 = redbrush; }

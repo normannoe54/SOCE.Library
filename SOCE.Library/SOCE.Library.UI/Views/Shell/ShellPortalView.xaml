@@ -12,7 +12,7 @@
     </Window.Resources>-->
     <materialDesign:DrawerHost HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
                                IsRightDrawerOpen ="{Binding RightDrawerOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
-                               RightDrawerCloseOnClickAway="True">
+                               RightDrawerCloseOnClickAway="False">
         <materialDesign:DrawerHost.RightDrawerContent >
             <ContentControl Content="{Binding RightViewToShow, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Focusable="True" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
             <!--<views:AddSubProjectView/>-->
@@ -44,12 +44,17 @@
                                 <Grid>
                                     <Border Background="#ffffff" CornerRadius="50" Width="45" Height="45"/>
 
-                                    <Border Width="45" Height="45" BorderThickness="3" BorderBrush="#ffffff" CornerRadius="50">
-                                        <!--<Border.Effect>
+                                    <Button Grid.Row="5" Width="45" Height="45" Padding="0"
+                                           Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding ReloadCommand}">
+                                        <Border Width="45" Height="45" BorderThickness="3" BorderBrush="#ffffff" CornerRadius="50">
+                                            <!--<Border.Effect>
                                         <DropShadowEffect BlurRadius="10" Opacity="0.3"/>
                                     </Border.Effect>-->
-                                        <Image  Source="/SOCE.Library.UI;component/Resources/SOCEIcon.png" />
-                                    </Border>
+                                            <Image  Source="/SOCE.Library.UI;component/Resources/SOCEIcon.png" />
+                                        </Border>
+                                    </Button>
+
+
                                 </Grid>
 
                                 <TextBlock Text="SOCE" Foreground="#ffffff" FontSize="30" Margin="10 0 0 3">
@@ -141,7 +146,12 @@
                                     <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
-
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Invoicing" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <materialDesign:PackIcon Kind="CurrencyUsd" Style="{StaticResource menuButtonIcon}"/>
+                                    <TextBlock Text="Invoicing" Style="{StaticResource menuButtonText}"/>
+                                </StackPanel>
+                            </Button>-->
                         </StackPanel>
 
                         <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom">

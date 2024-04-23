@@ -963,7 +963,9 @@ namespace SOCE.Library.UI.ViewModels
                                 Submitted = submit,
                                 Approved = 0,
                                 TimeEntry = trentry.TimeEntry,
-                                BudgetSpent = CurrentEmployee.Rate * trentry.TimeEntry
+                                BudgetSpent = CurrentEmployee.Rate * trentry.TimeEntry,
+                                ProjIdRef = trm.Project.Id,
+                                Invoiced = 0
                             };
 
                             SQLAccess.AddTimesheetData(dbmodel);

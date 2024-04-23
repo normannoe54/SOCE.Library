@@ -168,6 +168,7 @@
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
+                        <ColumnDefinition Width="60"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Phase" />
                     <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Description" />
@@ -183,7 +184,8 @@
                     <TextBlock Grid.Column="13" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Budget&#10;Left" TextAlignment="Center"/>
                     <TextBlock Grid.Column="14" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="% Planned&#10;Budget Spent"/>
                     <TextBlock Grid.Column="15" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Active?"/>
-                    <TextBlock Grid.Column="16" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Invoiced?"/>
+                    <TextBlock Grid.Column="16" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Billable?"/>
+                    <TextBlock Grid.Column="17" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Hourly?"/>
                 </Grid>
 
                 <ItemsControl ItemsSource="{Binding SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
@@ -227,6 +229,7 @@
                                         <ColumnDefinition Width="75"/>
                                         <ColumnDefinition Width="75"/>
                                         <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="60"/>
                                         <ColumnDefinition Width="60"/>
                                     </Grid.ColumnDefinitions>
@@ -289,7 +292,8 @@
                                     <TextBlock Grid.Column="14" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding FeeLeft, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"/>
                                     <TextBlock Grid.Column="15" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentSpent, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"/>
                                     <CheckBox Grid.Column="16" IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsActive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray" />
-                                    <CheckBox Grid.Column="17" IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsInvoiced, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
+                                    <CheckBox Grid.Column="17" IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
+                                    <CheckBox Grid.Column="18" IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" Background="DarkGray"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>

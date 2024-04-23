@@ -853,8 +853,8 @@ namespace SOCE.Library.UI.ViewModels
                 ItemToDelete = spm;
                 LeftDrawerOpen = true;
             }
-
         }
+
         private void AddRole()
         {
             if (SelectedProjectPhase != null)

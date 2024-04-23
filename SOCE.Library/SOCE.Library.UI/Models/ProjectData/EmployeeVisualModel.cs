@@ -19,6 +19,17 @@ namespace SOCE.Library.UI
             }
         }
 
+        private string _truncatedName;
+        public string TruncatedName
+        {
+            get { return _truncatedName; }
+            set
+            {
+                _truncatedName = value;
+                RaisePropertyChanged(nameof(TruncatedName));
+            }
+        }
+
         private SolidColorBrush _visualColor;
         public SolidColorBrush VisualColor
         {
@@ -69,6 +80,7 @@ namespace SOCE.Library.UI
         public EmployeeVisualModel(EmployeeDbModel employeedbmodel)
         {
             Name = employeedbmodel.FullName;
+            TruncatedName = employeedbmodel.FirstName;
             Rate = employeedbmodel.Rate;
         }
 

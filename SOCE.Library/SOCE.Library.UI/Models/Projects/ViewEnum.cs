@@ -17,5 +17,8 @@ namespace SOCE.Library.UI
 
         [Description("Timeline")]
         Timeline,
+
+        //[Description("Invoicing")]
+        //Invoicing,
     }
 }

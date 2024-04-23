@@ -36,6 +36,8 @@ namespace SOCE.Library.Db
         public double FridayHours { get; set; }
 
         public object PMSignature { get; set; }
+
+        public int ScheduleWeekCheck { get; set; }
         public string FullName
         {
             get

@@ -68,6 +68,15 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = em.FirstName + " " + em.LastName;
         }
 
+        public YesNoVM(ProjectListModel plm)
+        {
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+            Message = "Do you want to make this project inactive:";
+            SubMessage = $"{plm.ProjectName} [{plm.ProjectNumber}]";
+        }
+
         public YesNoVM(ClientModel cm)
         {
             Result = false;
@@ -175,9 +184,9 @@ namespace SOCE.Library.UI.ViewModels
 
                     SQLAccess.DeleteSubProject(itemtodelete.Id);
                     AddServiceSummary.SubProjects.Remove(itemtodelete);
-                    AddServiceSummary.ItemToDelete = null;
-                    AddServiceSummary.LeftDrawerOpen = false;
                 }
+                AddServiceSummary.ItemToDelete = null;
+                AddServiceSummary.LeftDrawerOpen = false;
             }
             else
             {

@@ -40,6 +40,11 @@ namespace SOCE.Library.UI.ViewModels
                     case ViewEnum.AddService:
                         SelectedVM = new AddServiceVM(BaseProject, CurrentEmployee);
                         break;
+                    //case ViewEnum.Invoicing:
+                    //    ProjectSummaryVM Psummaryvm2 = new ProjectSummaryVM(BaseProject, CurrentEmployee);
+                    //    SelectedVM = Psummaryvm2;
+                    //    SelectedVM = new InvoicingSummaryVM(BaseProject);
+                    //    break;
                     default:
                         break;
                 }

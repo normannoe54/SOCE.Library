@@ -245,7 +245,7 @@ namespace SOCE.Library.UI.ViewModels
 
             if (SubProjects.Count > 0)
             {
-                SelectedAddService = SubProjects[0];
+                SelectedAddService = SubProjects.Last();
             }
         }
 
@@ -332,7 +332,19 @@ namespace SOCE.Library.UI.ViewModels
                     exinst.WriteCell(row, 5, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
                     exinst.WriteCell(row, 6, submodel.IsBillable ? "YES" : "NO");
                     exinst.WriteCell(row, 7, submodel.DateInvoiced?.ToString("MM/dd/yyyy"));
-                    exinst.WriteCell(row, 8, submodel.Fee.ToString());
+
+                    if (submodel.IsHourly && submodel.Fee <= 0)
+                    {
+                        exinst.WriteCell(row, 8, "Hourly");
+                    }
+                    else if (submodel.IsHourly && submodel.Fee > 0)
+                    {
+                        exinst.WriteCell(row, 8, $"Hourly Not to Exceed (${submodel.Fee:n0})");
+                    }
+                    else
+                    {
+                        exinst.WriteCell(row, 8, $" ${submodel.Fee:n0}");
+                    }
 
                     row++;
                 }
@@ -341,29 +353,45 @@ namespace SOCE.Library.UI.ViewModels
 
                 foreach (SubProjectAddServiceModel submodel in SubProjects)
                 {
-                    exinst.CopyFirstWorksheet($"Proposal #{submodel.PointNumber.Substring(2)}", "Default");
-                    exinst.WriteCell(7, 4, submodel.PersonAddressed);
-                    exinst.WriteCell(9, 4, submodel.ClientAddress);
-                    exinst.WriteCell(11, 4, submodel.ClientCity);
-                    //exinst.WriteCell(11, 4, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
-                    exinst.WriteCell(13, 4, submodel.NameOfClient);
-                    string date = submodel.DateInitiated?.ToString("MMMM dd, yyyy");
-                    //exinst.WriteCell(7, 10, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
-                    exinst.WriteCell(7, 10, date);
-                    exinst.WriteCell(9, 10, BaseProject.ProjectName);
-                    exinst.WriteCell(11, 10, $"{BaseProject.ProjectNumber}{submodel.PointNumber.Substring(1)}");
-                    exinst.WriteCell(13, 10, submodel.ClientCompanyName);
-                    exinst.WriteCell(16, 5, submodel.Description);
-                    exinst.WriteCell(23, 5, submodel.Fee.ToString());
-                    exinst.WriteCell(32, 5, submodel.SelectedEmployee?.FullName);
-
-                    if (submodel.SelectedEmployee?.SignatureOfPM != null)
+                    if (submodel.IsBillable)
                     {
+                        exinst.CopyFirstWorksheet($"Proposal #{submodel.PointNumber.Substring(2)}", "Default");
+                        exinst.WriteCell(7, 4, submodel.PersonAddressed);
+                        exinst.WriteCell(9, 4, submodel.ClientAddress);
+                        exinst.WriteCell(11, 4, submodel.ClientCity);
+                        //exinst.WriteCell(11, 4, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
+                        exinst.WriteCell(13, 4, submodel.NameOfClient);
+                        string date = submodel.DateSent?.ToString("MMMM dd, yyyy");
+                        //exinst.WriteCell(7, 10, submodel.DateInitiated?.ToString("MM/dd/yyyy"));
+                        exinst.WriteCell(7, 10, date);
+                        exinst.WriteCell(9, 10, BaseProject.ProjectName);
+                        exinst.WriteCell(11, 10, $"{BaseProject.ProjectNumber}{submodel.PointNumber.Substring(1)}");
+                        exinst.WriteCell(13, 10, submodel.ClientCompanyName);
+                        exinst.WriteCell(16, 5, submodel.Description);
 
-                        exinst.AddPicture(31, 4, submodel.SelectedEmployee.SignatureOfPM);
+                        if (submodel.IsHourly && submodel.Fee <= 0)
+                        {
+                            exinst.WriteCell(23, 5, "Hourly");
+                        }
+                        else if (submodel.IsHourly && submodel.Fee > 0)
+                        {
+                            exinst.WriteCell(23, 5, $"Hourly Not to Exceed (${submodel.Fee:n0})");
+                        }
+                        else
+                        {
+                            exinst.WriteCell(23, 5, $" ${submodel.Fee:n0}");
+                        }
+
+                        exinst.WriteCell(32, 5, submodel.SelectedEmployee?.FullName);
+
+                        if (submodel.SelectedEmployee?.SignatureOfPM != null)
+                        {
+
+                            exinst.AddPicture(31, 4, submodel.SelectedEmployee.SignatureOfPM);
+                        }
+
+                        exinst.SaveDocument();
                     }
-
-                    exinst.SaveDocument();
                 }
             }
             catch
@@ -373,11 +401,9 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-
-
         private void DeleteSub(SubProjectAddServiceModel spm)
         {
-            if (SubProjects.Count > 1)
+            if (SubProjects.Count > 0)
             {
                 LeftViewToShow = new YesNoView();
                 YesNoVM aysvm = new YesNoVM(spm, this);
@@ -389,10 +415,18 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddSubProject()
         {
+            SubProjectAddServiceModel basemodel = null;
+            if (SubProjects.Count > 0)
+            {
+                basemodel = SubProjects.Last();
+            }
+
             LeftViewToShow = new AddAddServiceView();
-            AddAddServiceVM addsubvm = new AddAddServiceVM(BaseProject, this);
+            AddAddServiceVM addsubvm = new AddAddServiceVM(BaseProject, this, basemodel);
             LeftViewToShow.DataContext = addsubvm;
             LeftDrawerOpen = true;
+
+
         }
 
         //private void CloseWindow()

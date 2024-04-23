@@ -139,6 +139,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _isHourly = false;
+        public bool IsHourly
+        {
+            get { return _isHourly; }
+            set
+            {
+
+                _isHourly = value;
+                RaisePropertyChanged("IsHourly");
+
+            }
+        }
+
         private string _errorMessage = "";
         public string ErrorMessage
         {
@@ -157,8 +170,9 @@ namespace SOCE.Library.UI.ViewModels
 
         //private ProjectSummaryVM baseViewModel;
 
-        public AddAddServiceVM(ProjectViewResModel pm, AddServiceVM psvm)
+        public AddAddServiceVM(ProjectViewResModel pm, AddServiceVM psvm, SubProjectAddServiceModel sub)
         {
+
             baseViewModel = psvm;
             this.AddSubProjectCommand = new RelayCommand(this.AddSubProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
@@ -189,11 +203,24 @@ namespace SOCE.Library.UI.ViewModels
                 }
                 maxnumberorder = Math.Max(spm.NumberOrder, maxnumberorder);
             }
-            ClientCompanyNameInp = pm.Client.ClientName;
-            ClientAddressInp = pm.Client.ClientAddress;
-            ClientCityInp = pm.Client.ClientCity;
-            NameOfClientInp = pm.Client.NameOfClient;
-            PersonAddressedInp = pm.Client.ClientName;
+
+            if (sub != null)
+            {
+                ClientCompanyNameInp = sub.ClientCompanyName;
+                ClientAddressInp = sub.ClientAddress;
+                ClientCityInp = sub.ClientCity;
+                NameOfClientInp = sub.NameOfClient;
+                PersonAddressedInp = sub.PersonAddressed;
+            }
+            else
+            {
+                ClientCompanyNameInp = pm.Client.ClientName;
+                ClientAddressInp = pm.Client.ClientAddress;
+                ClientCityInp = pm.Client.ClientCity;
+                NameOfClientInp = pm.Client.NameOfClient;
+                PersonAddressedInp = pm.Client.ClientName;
+            }
+
             LatestAdServiceNumber = pointmax + 0.1;
             BigNumOrder = maxnumberorder;
         }
@@ -211,6 +238,7 @@ namespace SOCE.Library.UI.ViewModels
                 ClientCity = ClientCityInp,
                 NameOfClient = NameOfClientInp,
                 IsBillable = IsBillable ? 1 : 0,
+                IsHourly = IsHourly ? 1 : 0,
                 ClientCompanyName = ClientCompanyNameInp,
                 PercentComplete = 0,
                 PercentBudget = 0,

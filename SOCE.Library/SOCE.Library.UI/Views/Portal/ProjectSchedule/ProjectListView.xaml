@@ -199,7 +199,15 @@
                                         </Border>
                                     </Button.Content>
                                 </Button>-->
-                                <Button Grid.Column="0" Height="26" Width="26"  Style="{StaticResource MaterialDesignRaisedButton}" Background="{Binding ColorForListButton, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                <Button Height="26" Width="26"  Style="{StaticResource MaterialDesignRaisedButton}" Background="{StaticResource SOCERed}" 
+                                        Command="{Binding Path = DataContext.ArchiveProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" 
+                                        CommandParameter="{Binding}" HorizontalAlignment="Right" VerticalAlignment="Center" BorderBrush="Transparent" ToolTip="Archive" Padding="0">
+                                    <!--<Border CornerRadius="3"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">-->
+                                    <materialDesign:PackIcon Kind="ArrowDownBold" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White"/>
+                                    <!--</Border>-->
+                                </Button>
+                                
+                                <Button  Height="26" Width="26" Margin="5 0 0 0"  Style="{StaticResource MaterialDesignRaisedButton}" Background="{Binding ColorForListButton, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                         Command="{Binding ButtonPress}"  HorizontalAlignment="Right" VerticalAlignment="Center" BorderBrush="Transparent" ToolTip="{Binding TooltipforList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Padding="0">
                                     <!--<Border CornerRadius="3"  VerticalAlignment="Stretch" HorizontalAlignment="Stretch">-->
                                     <materialDesign:PackIcon Kind="{Binding IconForListButton, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Foreground="White"/>
