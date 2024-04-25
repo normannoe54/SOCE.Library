@@ -18,6 +18,7 @@ namespace SOCE.Library.UI.ViewModels
         ProjectSchedule = 10,
         NetworkSearch = 11,
         Invoicing = 12,
-        Default =13
+        Proposals = 13,
+        Default =14
     }
 }

@@ -118,6 +118,7 @@ namespace SOCE.Library.UI.ViewModels
         private InvoicingVM invoicingVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
+        private ProposalsVM proposalsVM;
         private PortalPage currentPage;
 
         public ICommand GoToNewViewCommand { get; set; }
@@ -145,6 +146,7 @@ namespace SOCE.Library.UI.ViewModels
                     projectScheduleVM = new ProjectScheduleVM(employee);
                     projectVM = new ProjectVM(employee);
                     networkSearchVM = new NetworkSearchVM(employee);
+                    proposalsVM = new ProposalsVM(employee);
                     //invoicingVM = new InvoicingVM(employee);
             }));
         }
@@ -196,6 +198,9 @@ namespace SOCE.Library.UI.ViewModels
                         break;
                     case PortalPage.NetworkSearch:
                         CurrentPage = networkSearchVM;
+                        break;
+                    case PortalPage.Proposals:
+                        CurrentPage = proposalsVM;
                         break;
                     //case PortalPage.Invoicing:
                     //    CurrentPage = invoicingVM;

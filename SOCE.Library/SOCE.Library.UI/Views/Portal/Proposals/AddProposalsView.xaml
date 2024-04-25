@@ -1,0 +1,152 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.AddProposalsView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:views="clr-namespace:SOCE.Library.UI.Views"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="Transparent">
+    <Grid Margin="16">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid Grid.Row="0" >
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid Grid.Column="0" Width="500">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions >
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="0" Text="New Proposal" FontSize="24" />
+
+                    <TextBlock Margin="30 0 0 0" Grid.Column="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                        <TextBlock.Triggers>
+                            <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                            <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                            <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                        </DoubleAnimationUsingKeyFrames>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                        </TextBlock.Triggers>
+                    </TextBlock>
+                </Grid>
+
+                <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Proposal Name" Text="{Binding ProposalsNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16" MaxLength="34"/>
+                <TextBox  Grid.Row="2" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp,StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
+                <ComboBox  Grid.Row="3" Margin="0 8 0 0" FontSize="16" ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:ProposalStatusEnum}}}"
+                           DisplayMemberPath="Description" SelectedValue="{Binding ProposalStatusInp}" SelectedValuePath="Value" Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                           materialDesign:HintAssist.Hint="Select Status"  MaxDropDownHeight="200"/>
+                <ComboBox Grid.Row="4" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  materialDesign:HintAssist.Hint="Select Client"        
+                  ItemsSource="{Binding ClientsAvailable}" 
+                  DisplayMemberPath="ClientName" 
+                          MaxDropDownHeight="200"
+                  SelectedItem="{Binding Path= ClientInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <TextBox Grid.Row="5" Visibility="{Binding IsClientInputVisible}" materialDesign:HintAssist.Hint="Type Client Name" Text="{Binding MiscClientInput}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16" MaxLength="34"/>
+                <ComboBox Grid.Row="6" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  materialDesign:HintAssist.Hint="Select Market"
+                  ItemsSource="{Binding MarketsAvailable}" 
+                  DisplayMemberPath="MarketName"  MaxDropDownHeight="200"
+                  SelectedItem="{Binding Path= MarketInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <ComboBox Grid.Row="7" Margin="0 8 0 0" FontSize="16"
+                  Style="{StaticResource MaterialDesignFloatingHintComboBox}"
+                  materialDesign:HintAssist.Hint="Select Sender"
+                  ItemsSource="{Binding PMsAvailable}" 
+                  DisplayMemberPath="FullName" MaxDropDownHeight="200"
+                  SelectedItem="{Binding Path= PMInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                    <ComboBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <VirtualizingStackPanel/>
+                        </ItemsPanelTemplate>
+                    </ComboBox.ItemsPanel>
+                </ComboBox>
+                <DatePicker Grid.Row="8" materialDesign:HintAssist.Hint="Specify Date Sent"  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
+                                            FontWeight="Regular" FontSize="16" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="0 15 0 0"
+                                            SelectedDate="{Binding Path=DateSentInp,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                <Grid Grid.Row="9"  Margin="0 8 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    <TextBox materialDesign:HintAssist.Hint="Cost Per" materialDesign:TextFieldAssist.PrefixText="$"
+                         Text="{Binding CostMetricValueInp, StringFormat=N2}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" FontSize="16" HorizontalAlignment="Stretch" TextAlignment="Left"/>
+                    <TextBox Text="{Binding CostMetricInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"  FontSize="14" FontStyle="Italic" HorizontalAlignment="Right" TextAlignment="Right" MinWidth="100"/>
+                </Grid>
+                
+
+                <Grid Grid.Row="10" Margin="0 8 0 0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding OpenFolderCommand}" Width="40" Padding="0" 
+                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Foreground="Black" ToolTip="Select Folder" Background="Transparent" >
+                        <StackPanel Orientation="Horizontal">
+                            <materialDesign:PackIcon Kind="Folder"  VerticalAlignment="Center" Width="20" Height="20"/>
+                        </StackPanel>
+                    </Button>
+                    <TextBox Grid.Column="1" materialDesign:HintAssist.Hint="   Folder Link" IsReadOnly="True" materialDesign:TextFieldAssist.PrefixText="   "
+                         Text="{Binding FolderLinkInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}"  FontSize="16"/>
+                </Grid>
+
+                <TextBox Grid.Row="11" TextWrapping="Wrap" VerticalAlignment="Stretch" Margin="0 8 0 0" Height="120"
+                             AcceptsReturn="True" VerticalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" materialDesign:HintAssist.Hint="Additional Comments" Text="{Binding RemarksInp}"/>
+
+            </Grid>
+            
+        </Grid>
+        <Grid Grid.Row="1" Margin="0 16 0 0">
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
+                <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProposalCommand}">
+                    <TextBlock Text="ACCEPT"/>
+                </Button>
+                <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+                    <TextBlock Text="CANCEL"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+    </Grid>
+</UserControl>

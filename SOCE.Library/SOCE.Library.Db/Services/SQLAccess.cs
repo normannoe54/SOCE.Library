@@ -1386,5 +1386,89 @@ namespace SOCE.Library.Db
         }
 
         #endregion
+
+        #region Proposals
+        public static void UpdateProposal(ProposalDbModel proposal)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                cnn.Execute("UPDATE Proposals SET ProposalName = @ProposalName, Status = @Status, Fee = @Fee, ClientId = @ClientId,"
+                          + "MarketId = @MarketId, SenderId = @SenderId, DateSent = @DateSent, CostMetricValue = @CostMetricValue, " +
+                          "Remarks = @Remarks, MiscClient = @MiscClient, LinkFolder = @LinkFolder, CostMetric = @CostMetric WHERE Id = @Id",
+                        new
+                        {
+                            proposal.ProposalName,
+                            proposal.Status,
+                            proposal.Fee,
+                            proposal.ClientId,
+                            proposal.MarketId,
+                            proposal.SenderId,
+                            proposal.DateSent,
+                            proposal.CostMetricValue,
+                            proposal.Remarks,
+                            proposal.MiscClient,
+                            proposal.LinkFolder,
+                            proposal.CostMetric,
+                            proposal.Id
+                        });
+            }
+        }
+
+
+        public static List<ProposalDbModel> LoadProposals()
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<ProposalDbModel>("SELECT * FROM Proposals", new DynamicParameters());
+
+                //var output = cnn.Query<ProjectDbModel>("SELECT * FROM Projects WHERE IsCurrActive = 1", new DynamicParameters());
+                return output.ToList();
+            }
+        }
+
+        public static List<ProposalDbModel> LoadProposalsBydates(DateTime startdate, DateTime enddate)
+        {
+            int stint = (int)long.Parse(startdate.Date.ToString("yyyyMMdd"));
+            int eint = (int)long.Parse(enddate.Date.ToString("yyyyMMdd"));
+
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+
+                var output = cnn.Query<ProposalDbModel>("SELECT * FROM Proposals WHERE DateSent >= @stint AND DateSent <= @eint", new { stint, eint });
+
+                return output.ToList();
+            }
+        }
+
+        public static int AddProposal(ProposalDbModel proposal)
+        {
+            int output = 0;
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    int id = cnn.QuerySingle<int>("INSERT INTO Proposals (ProposalName, Status, Fee, ClientId, MarketId, SenderId, DateSent, CostMetricValue, Remarks, MiscClient, LinkFolder, CostMetric)" +
+                     " VALUES (@ProposalName, @Status, @Fee, @ClientId, @MarketId, @SenderId, @DateSent, @CostMetricValue, @Remarks, @MiscClient, @LinkFolder, @CostMetric) returning id;", proposal);
+                    output = id;
+                }
+                catch
+                {
+
+                }
+
+            }
+            return output;
+        }
+
+        public static void DeleteProposal(int id)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Execute("DELETE FROM Proposals WHERE Id = @id", new { id });
+            }
+        }
+        #endregion
     }
 }

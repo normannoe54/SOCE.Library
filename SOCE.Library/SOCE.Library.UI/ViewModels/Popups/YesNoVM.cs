@@ -135,6 +135,15 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = pm.ProjectName;
         }
 
+        public YesNoVM(ProposalViewResModel pm)
+        {
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+            Message = "Are you sure you want to delete:";
+            SubMessage = pm.ProposalName;
+        }
+
         private string GetEnumDescription(Enum value)
         {
             // Get the Description attribute value for the enum value

@@ -202,6 +202,7 @@
     <Compile Include="Converters\DescriptionConverter.cs" />
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
     <Compile Include="Converters\InvertBooleanConverter.cs" />
+    <Compile Include="Converters\BackgroundEnumConverter.cs" />
     <Compile Include="Converters\TimesheetColorAlertConverter.cs" />
     <Compile Include="Converters\IsNullColorConverter.cs" />
     <Compile Include="Converters\IsStringEmptyConverter.cs" />
@@ -238,11 +239,13 @@
     <Compile Include="Models\ProjectSchedule\SDEntryModel.cs" />
     <Compile Include="Models\ProjectSchedule\PMScheduleModel.cs" />
     <Compile Include="Models\ProjectSchedule\WeeklyScheduleModel.cs" />
-    <Compile Include="Models\Projects\ProjectSummaryModel.cs" />
     <Compile Include="Models\Projects\ProjectViewResModel.cs" />
     <Compile Include="Models\Projects\RoleSummaryModel.cs" />
     <Compile Include="Models\Projects\SubProjectSummaryModel.cs" />
     <Compile Include="Models\Projects\ViewEnum.cs" />
+    <Compile Include="Models\Proposals\CostValueEnum.cs" />
+    <Compile Include="Models\Proposals\ProposalStatusEnum.cs" />
+    <Compile Include="Models\Proposals\ProposalViewResModel.cs" />
     <Compile Include="Models\ResultEnum.cs" />
     <Compile Include="Models\StatusEnum.cs" />
     <Compile Include="Models\Generic\ProjectLowResModel.cs" />
@@ -300,6 +303,10 @@
     <Compile Include="ViewModels\Pages\Login\ResetPasswordVM.cs" />
     <Compile Include="ViewModels\Pages\Login\SignupVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\AddEmployeeVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Proposals\AddProposalsVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Proposals\ExportConfirmProposalVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Proposals\ProposalSummaryVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Proposals\ProposalsVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\EmployeeSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetReviewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetViewerVM.cs" />
@@ -388,6 +395,18 @@
     </Compile>
     <Compile Include="Views\Portal\Project\AddServiceManagerView.xaml.cs">
       <DependentUpon>AddServiceManagerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Proposals\AddProposalsView.xaml.cs">
+      <DependentUpon>AddProposalsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Proposals\ExportConfirmProposalsView.xaml.cs">
+      <DependentUpon>ExportConfirmProposalsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Proposals\ProposalSummaryView.xaml.cs">
+      <DependentUpon>ProposalSummaryView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Proposals\ProposalsView.xaml.cs">
+      <DependentUpon>ProposalsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\TimesheetReview\ProgressBarView.xaml.cs">
       <DependentUpon>ProgressBarView.xaml</DependentUpon>
@@ -591,6 +610,22 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\Proposals\AddProposalsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Proposals\ExportConfirmProposalsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Proposals\ProposalSummaryView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Proposals\ProposalsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\TimesheetReview\ProgressBarView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -732,6 +767,7 @@
     <EmbeddedResource Include="Resources\WeeklySchedule.xlsx" />
     <EmbeddedResource Include="Resources\AddServiceTrackingLog.xlsx" />
     <None Include="Resources\EmployeeSummary.xlsx" />
+    <EmbeddedResource Include="Resources\ProposalDataExport.xlsx" />
     <Resource Include="license.txt" />
     <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Resources\ProjectDataExport.xlsx" />
