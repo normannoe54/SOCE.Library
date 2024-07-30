@@ -759,8 +759,8 @@ namespace SOCE.Library.UI
                     break;
                 case AuthEnum.Principal:
                     IsEditable = true;
-                    CanEditorDelete = false;
-                    CanEditPTO = false;
+                    CanEditorDelete = true;
+                    CanEditPTO = true;
                     break;
                 case AuthEnum.PM:
                     IsEditable = false;

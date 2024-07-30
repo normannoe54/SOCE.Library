@@ -60,7 +60,7 @@
                     </TextBlock>
                 </Grid>
 
-                <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16" MaxLength="34"/>
+                <TextBox Grid.Row="1" materialDesign:HintAssist.Hint="Project Name" Text="{Binding ProjectNameInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0"  FontSize="16" MaxLength="50"/>
                 <TextBox IsEnabled="{Binding IsProjectNumEnabled}"  Grid.Row="4" materialDesign:HintAssist.Hint="Project Number" Text="{Binding ProjectNumberInp}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16" MaxLength="6"/>
                 <TextBox  Grid.Row="5" materialDesign:HintAssist.Hint="Total Fee" Text="{Binding TotalFeeInp,StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 8 0 0" FontSize="16"/>
                 <ComboBox Grid.Row="2" Margin="0 8 0 0" FontSize="16"

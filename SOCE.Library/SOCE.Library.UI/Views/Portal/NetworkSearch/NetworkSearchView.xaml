@@ -22,9 +22,38 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="350"/>
                 <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
+            <StackPanel Grid.Column="0" Orientation="Horizontal" HorizontalAlignment="Right" Panel.ZIndex="1">
+                <!--<ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Foreground="White" IsChecked="{Binding IsFolderorFile, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right" >
+                    <ToggleButton.Content>
+                        <Border CornerRadius="3" Background="Transparent" Height="20" Width="20" ToolTip="Folder">
+                            <materialDesign:PackIcon Kind="Folder" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20" Foreground="Black"/>
+                        </Border>
+                    </ToggleButton.Content>
+                    <materialDesign:ToggleButtonAssist.OnContent>
+                        <Border Background="Transparent" Height="20" Width="20" ToolTip="File">
+                            <materialDesign:PackIcon Kind="File" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20" Foreground="Black"/>
+                        </Border>
+                    </materialDesign:ToggleButtonAssist.OnContent>
+                </ToggleButton>-->
+                <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Foreground="White" IsChecked="{Binding IsCaseSensitive, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                          Background="Transparent" BorderBrush="Transparent" HorizontalAlignment="Right">
+                    <ToggleButton.Content>
+                        <Border CornerRadius="3" Background="Transparent" Height="20" Width="20" ToolTip="Not Case Sensitive">
+                            <materialDesign:PackIcon Kind="CaseSensitiveAlt" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20" Foreground="Black"/>
+                        </Border>
+                    </ToggleButton.Content>
+                    <materialDesign:ToggleButtonAssist.OnContent>
+                        <Border Background="Transparent" Height="20" Width="20" ToolTip="Case Sensitive">
+                            <materialDesign:PackIcon Kind="FormatLetterCaseUpper" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="20" Width="20" Foreground="Black"/>
+                        </Border>
+                    </materialDesign:ToggleButtonAssist.OnContent>
+                </ToggleButton>
+            </StackPanel>
+
             <TextBox Grid.Column="0" Text="{Binding TextSearch, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Keyword" TextAlignment="Left"
-                      materialDesign:TextFieldAssist.HasClearButton="True"
                        VerticalAlignment="Center" FontWeight="SemiBold" Foreground="Black">
                 <TextBox.InputBindings>
                     <KeyBinding Command="{Binding SearchCommand}"  Key="Enter"/>
@@ -36,6 +65,14 @@
                     <materialDesign:PackIcon Kind="Search"  VerticalAlignment="Center"  Width="20" Height="20"/>
                 </StackPanel>
             </Button>
+
+            <!--<Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenSearchFiltersCommand}" BorderBrush="Black"
+                         VerticalAlignment="Bottom"  BorderThickness="1" HorizontalContentAlignment="right" Width="165" Margin="0 0 10 0" HorizontalAlignment="Right">
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                    <TextBlock Text="Search Filters" VerticalAlignment="Center" Margin="0 0 20 0"/>
+                    <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" Width="20" Height="20"/>
+                </StackPanel>
+            </Button>-->
         </Grid>
         
         

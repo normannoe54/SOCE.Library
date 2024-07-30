@@ -1203,7 +1203,7 @@ namespace SOCE.Library.UI
             List<RolePerSubProjectModel> allrolesummary = new List<RolePerSubProjectModel>();
             //total
             //get all subprojectIds associated with projectId
-            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadAllSubProjectsByProject(Id);
+            List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(Id);
             //foreach (SubProjectDbModel sub in subdbmodels)
             //{
             //    totalfee += sub.Fee;

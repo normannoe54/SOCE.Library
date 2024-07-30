@@ -160,7 +160,7 @@ namespace SOCE.Library.UI.ViewModels
 
             UpdateDateSummary(DateTime.Today);
 
-            ObservableCollection<EmployeeLowResModel> ordered = new ObservableCollection<EmployeeLowResModel>(totalemployees.OrderBy(x => x.LastName).ToList());
+            ObservableCollection<EmployeeLowResModel> ordered = new ObservableCollection<EmployeeLowResModel>(totalemployees.OrderBy(x => x.FullName).ToList());
             Employees = ordered;
             SelectedEmployee = ordered.Where(x => x.Id == employee.Id).FirstOrDefault();
             //LoadScheduling();

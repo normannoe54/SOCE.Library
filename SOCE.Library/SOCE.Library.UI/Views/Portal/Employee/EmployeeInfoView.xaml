@@ -88,12 +88,13 @@
                 <Grid Grid.Row="1">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="70"/>
-                        <ColumnDefinition Width="150"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="100"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="120"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
+                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="Review" HorizontalAlignment="Center" VerticalAlignment="Center"/>
@@ -103,7 +104,8 @@
                     <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT"/>
                     <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick"/>
                     <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Holiday"/>
-                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status" Margin="0 0 20 0"/>
+                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Expenses"/>
+                    <TextBlock Grid.Column="8" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status" Margin="0 0 20 0"/>
                 </Grid>
 
                 <ItemsControl ItemsSource="{Binding SelectedEmployee.TimesheetSubmissions}" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
@@ -130,12 +132,13 @@
                                     </Grid.Resources>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition Width="70"/>
-                                        <ColumnDefinition Width="150"/>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="100"/>
-                                        <ColumnDefinition Width="100"/>
+                                        <ColumnDefinition Width="120"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
+                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding Path=DataContext.CanReviewTimesheet, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type Expander}}}" 
@@ -151,8 +154,10 @@
                                     <TextBlock Grid.Column="4" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}"/>
                                     <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}"/>
                                     <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HolidayHours, StringFormat = ' {0} hr.'}"/>
+                                    <TextBlock Grid.Column="7" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                               Text="{Binding ExpensesCost, StringFormat = '{}{0:c}'}"  />
 
-                                    <Border Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="120" Margin="0 0 20 0">
+                                    <Border Grid.Column="8" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="120" Margin="0 0 20 0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
                                                 <Style.Triggers>

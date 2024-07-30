@@ -216,7 +216,7 @@ namespace SOCE.Library.UI.ViewModels
                 totalemployees.Add(new EmployeeScheduleModel(employeenew));
             }
 
-            ObservableCollection<EmployeeScheduleModel> ordered = new ObservableCollection<EmployeeScheduleModel>(totalemployees.OrderBy(x => x.LastName).ToList());
+            ObservableCollection<EmployeeScheduleModel> ordered = new ObservableCollection<EmployeeScheduleModel>(totalemployees.OrderBy(x => x.FullName).ToList());
             //OverallFee = overallfee;
             Employees = ordered;
 

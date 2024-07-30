@@ -137,6 +137,7 @@ namespace SOCE.Library.UI
             set
             {
                 _percentComplete = value;
+                IsInvoicedEditable = PercentComplete <= 0;
                 RaisePropertyChanged(nameof(PercentComplete));
             }
         }
@@ -424,6 +425,22 @@ namespace SOCE.Library.UI
                 RaisePropertyChanged(nameof(IsBillable));
             }
         }
+
+        private bool _isInvoicedEditable { get; set; } = false;
+        public bool IsInvoicedEditable
+        {
+            get
+            {
+                return _isInvoicedEditable;
+            }
+            set
+            {
+                _isInvoicedEditable = value;
+                RaisePropertyChanged(nameof(IsInvoicedEditable));
+            }
+        }
+
+        
         public ProjectSummaryVM projectsummary;
 
         public ProjectViewResModel baseproject;
@@ -464,6 +481,11 @@ namespace SOCE.Library.UI
             //    List<SubProjectDbModel> subs = SQLAccess.LoadAllSubProjectsByProject(baseproject.Id);
             //    bool found = subs.Any(x => x.IsActive == 1);
             //}
+
+            if (IsHourly)
+            {
+                Fee = 0;
+            }
 
             SubProjectDbModel subproject = new SubProjectDbModel()
             {

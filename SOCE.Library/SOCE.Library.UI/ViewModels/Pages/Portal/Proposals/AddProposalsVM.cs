@@ -240,20 +240,24 @@ namespace SOCE.Library.UI.ViewModels
             {
                 TotalMark.Add(new MarketModel(mark));
             }
+            List<MarketModel> newmarkets = TotalMark.OrderBy(x => x.MarketName).ToList();
+            MarketsAvailable = new ObservableCollection<MarketModel>(newmarkets);
 
             foreach (ClientDbModel client in Clients)
             {
                 TotalClients.Add(new ClientModel(client));
             }
+            List<ClientModel> newclients = TotalClients.OrderBy(x => x.ClientName).ToList();
+            ClientsAvailable = new ObservableCollection<ClientModel>(newclients);
 
             foreach (EmployeeDbModel pm in PMs)
             {
                 TotalPMs.Add(new EmployeeLowResModel(pm));
             }
+            List<EmployeeLowResModel> newpms = TotalPMs.OrderBy(x => x.FullName).ToList();
+            PMsAvailable = new ObservableCollection<EmployeeLowResModel>(newpms);
+
             CostMetricInp = "sq.ft.";
-            MarketsAvailable = TotalMark;
-            ClientsAvailable = TotalClients;
-            PMsAvailable = TotalPMs;
             EmployeeLowResModel selectem = PMsAvailable.Where(x => x.Id == employee.Id).FirstOrDefault();
             
             if (selectem != null)

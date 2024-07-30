@@ -551,7 +551,7 @@ namespace SOCE.Library.UI.ViewModels
             if (ynvm.Result)
             {
                 SQLAccess.DeleteProject(pm.Id);
-                List<SubProjectDbModel> subprojs = SQLAccess.LoadAllSubProjectsByProject(pm.Id);
+                List<SubProjectDbModel> subprojs = SQLAccess.LoadSubProjectsByProject(pm.Id);
                 foreach (SubProjectDbModel spm in subprojs)
                 {
                     SQLAccess.DeleteSubProject(spm.Id);
@@ -626,8 +626,7 @@ namespace SOCE.Library.UI.ViewModels
                 clients.Add(new ClientModel(cdbm));
             }
 
-            List<ClientModel> newclients = clients.OrderBy(x => x.ClientNumber).ToList();
-
+            List<ClientModel> newclients = clients.OrderBy(x => x.ClientName).ToList();
             Clients = new ObservableCollection<ClientModel>(newclients);
         }
 
@@ -652,7 +651,8 @@ namespace SOCE.Library.UI.ViewModels
                 members.Add(new MarketModel(mdbm));
             }
 
-            Markets = members;
+            List<MarketModel> newmarkets = members.OrderBy(x => x.MarketName).ToList();
+            Markets = new ObservableCollection<MarketModel>(newmarkets);
         }
 
 
@@ -667,7 +667,8 @@ namespace SOCE.Library.UI.ViewModels
                 members.Add(new EmployeeLowResModel(edbm));
             }
 
-            ProjectManagers = members;
+            List<EmployeeLowResModel> newemployees = members.OrderBy(x => x.FullName).ToList();
+            ProjectManagers = new ObservableCollection<EmployeeLowResModel>(newemployees);
         }
     }
 }

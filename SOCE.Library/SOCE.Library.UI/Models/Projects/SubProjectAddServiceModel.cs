@@ -137,6 +137,7 @@ namespace SOCE.Library.UI
             set
             {
                 _percentComplete = value;
+                IsInvoicedEditable = PercentComplete <= 0;
                 RaisePropertyChanged(nameof(PercentComplete));
             }
         }
@@ -597,12 +598,91 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _isChangedLog { get; set; }
+        public bool IsChangedLog
+        {
+            get
+            {
+                return _isChangedLog;
+            }
+            set
+            {
+                _isChangedLog = value;
+                RaisePropertyChanged(nameof(IsChangedLog));
+            }
+        }
+
+        //private bool _printLogAddService { get; set; }
+        //public bool PrintLogAddService
+        //{
+        //    get
+        //    {
+        //        return _printLogAddService;
+        //    }
+        //    set
+        //    {
+        //        _printLogAddService = value;
+        //        RaisePropertyChanged(nameof(PrintLogAddService));
+        //    }
+        //}
+
+
+        private bool _selectedLogAddService { get; set; }
+        public bool SelectedLogAddService
+        {
+            get
+            {
+                return _selectedLogAddService;
+            }
+            set
+            {
+                _selectedLogAddService = value;
+                //if (!_selectedLogAddService)
+                //{
+                //    PrintLogAddService = false;
+                //}
+                RaisePropertyChanged(nameof(SelectedLogAddService));
+            }
+        }
+
+        private AddServiceLogStatusEnum _logStatus { get; set; }
+        public AddServiceLogStatusEnum LogStatus
+        {
+            get
+            {
+                return _logStatus;
+            }
+            set
+            {
+                _logStatus = value;
+                RaisePropertyChanged(nameof(LogStatus));
+            }
+        }
+
+        private bool _isInvoicedEditable { get; set; } = false;
+        public bool IsInvoicedEditable
+        {
+            get
+            {
+                return _isInvoicedEditable;
+            }
+            set
+            {
+                _isInvoicedEditable = value;
+                RaisePropertyChanged(nameof(IsInvoicedEditable));
+            }
+        }
+
         public ProjectViewResModel baseproject;
+        public SubProjectDbModel basesub;
+        public AddServiceVM BaseVM;
         public SubProjectAddServiceModel()
         { }
 
-        public SubProjectAddServiceModel(SubProjectDbModel spm, ProjectViewResModel pm, EmployeeLowResModel elrm)
+        public SubProjectAddServiceModel(SubProjectDbModel spm, ProjectViewResModel pm, EmployeeLowResModel elrm, AddServiceVM basevm)
         {
+            BaseVM = basevm;
+            basesub = spm;
             TotalFee = pm.Fee;
             baseproject = pm;
             Id = spm.Id;
@@ -645,6 +725,9 @@ namespace SOCE.Library.UI
             IsAddService = Convert.ToBoolean(spm.IsAdservice);
             NumberOrder = spm.NumberOrder;
             IsScheduleActive = Convert.ToBoolean(spm.IsScheduleActive);
+            IsChangedLog = Convert.ToBoolean(spm.IsChangedLog);
+
+            //check logs
 
             UpdateVis();
         }
@@ -671,7 +754,9 @@ namespace SOCE.Library.UI
             }
         }
 
-        public void UpdateSubProject()
+
+
+        public void UpdateSubProject(bool updateauto = false)
         {
             if (IsScheduleActive)
             {
@@ -691,6 +776,22 @@ namespace SOCE.Library.UI
             //    List<SubProjectDbModel> subs = SQLAccess.LoadAllSubProjectsByProject(baseproject.Id);
             //    bool found = subs.Any(x => x.IsActive == 1);
             //}
+
+            if (!updateauto)
+            {
+                if (basesub.PointNumber != PointNumber || basesub.Description != Description || basesub.Fee != Fee || basesub.SubStart != (DateInitiated != null ? (int)long.Parse(DateInitiated?.ToString("yyyyMMdd")) : (int?)null)
+                    || basesub.SubEnd != (DateInvoiced != null ? (int)long.Parse(DateInvoiced?.ToString("yyyyMMdd")) : (int?)null) || basesub.DateSent != (DateSent != null ? (int)long.Parse(DateSent?.ToString("yyyyMMdd")) : (int?)null)
+                    || basesub.NameOfClient != NameOfClient || basesub.ClientCompanyName != ClientCompanyName || basesub.ClientAddress != ClientAddress || basesub.ClientCity != ClientCity || basesub.EmployeeIdSigned != EmployeeIdSigned
+                    || basesub.ExpandedDescription != ExpandedDescription || basesub.IsBillable != (IsBillable ? 1 : 0) || basesub.IsHourly != (IsHourly ? 1 : 0) || basesub.PersonToAddress != PersonAddressed)
+                {
+                    IsChangedLog = true;
+                }
+                else
+                {
+                    IsChangedLog = false;
+                }
+            }
+
 
             SubProjectDbModel subproject = new SubProjectDbModel()
             {
@@ -716,11 +817,16 @@ namespace SOCE.Library.UI
                 IsHourly = IsHourly ? 1 : 0,
                 NumberOrder = NumberOrder,
                 IsScheduleActive = IsScheduleActive ? 1 : 0,
+                IsChangedLog = IsChangedLog ? 1 : 0,
                 PersonToAddress = PersonAddressed
             };
 
             SQLAccess.UpdateSubAddService(subproject);
             UpdateVis();
+            if (!updateauto)
+            {
+                BaseVM.LoadAdservice();
+            }
         }
     }
 }

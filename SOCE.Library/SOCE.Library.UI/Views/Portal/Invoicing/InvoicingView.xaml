@@ -47,7 +47,7 @@
                 <!--Counter Title-->
                 <Grid HorizontalAlignment="Stretch" Margin="0 10 0 0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="340"/>
                         <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="Auto"/>
                     </Grid.ColumnDefinitions>
@@ -62,16 +62,16 @@
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Column="0" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowFeeNotMetOnly}" Content="Fee Not Complete" BorderBrush="{StaticResource SOCERed}" />
-                            <RadioButton Grid.Column="1" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowFeeNotMetOnly, Converter={StaticResource InvertBooleanConverter}}" Content="All Fee Status" BorderBrush="{StaticResource SOCERed}"/>
+                            <RadioButton Grid.Column="0" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowFeeNotMetOnly}" Content="Not Fully Invoiced" BorderBrush="{StaticResource SOCERed}" />
+                            <RadioButton Grid.Column="1" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowFeeNotMetOnly, Converter={StaticResource InvertBooleanConverter}}" Content="Include Fully Invoiced" BorderBrush="{StaticResource SOCERed}"/>
                         </Grid>
                         <Grid Grid.Row="1" Height="30" >
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <RadioButton Grid.Column="0" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowUninvoicedHours}" Content="Uninvoiced Hours" BorderBrush="{StaticResource SOCERed}" />
-                            <RadioButton Grid.Column="1" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowUninvoicedHours, Converter={StaticResource InvertBooleanConverter}}" Content="All Hours" BorderBrush="{StaticResource SOCERed}" />
+                            <RadioButton Grid.Column="0" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowUninvoicedHours}" Content="Outstanding Hours" BorderBrush="{StaticResource SOCERed}" />
+                            <RadioButton Grid.Column="1" Style="{StaticResource MaterialDesignTabRadioButton}" Height="20" Padding="0" IsChecked="{Binding ShowUninvoicedHours, Converter={StaticResource InvertBooleanConverter}}" Content="Include Completed Hours" BorderBrush="{StaticResource SOCERed}" />
                         </Grid>
                         <!--<Grid Grid.Row="0">
                             <Grid.ColumnDefinitions>

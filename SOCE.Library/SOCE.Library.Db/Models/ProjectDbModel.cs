@@ -41,5 +41,7 @@ namespace SOCE.Library.Db
         public string Remarks { get; set; }
 
         public string AdserviceFile { get; set; }
+
+        public int IsHourlyProjection { get; set; }
     }
 }

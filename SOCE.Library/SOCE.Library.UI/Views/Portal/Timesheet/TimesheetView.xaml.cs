@@ -30,29 +30,50 @@ namespace SOCE.Library.UI.Views
             //this.RequestBringIntoView += new RequestBringIntoViewEventHandler(ComboBox_RequestBringIntoView);
         }
 
-        //private void ComboBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+        //private void ItemsControl_KeyDown(object sender, KeyEventArgs e)
         //{
-        //    if (isactive)
+        //    var list = sender as ItemsControl;
+        //    switch (e.Key)
         //    {
-        //        e.Handled = true;
+        //        case Key.Right:
+        //            if (!list.Items.MoveCurrentToNext()) list.Items.MoveCurrentToLast();
+        //            break;
+
+        //        case Key.Left:
+        //            if (!list.Items.MoveCurrentToPrevious()) list.Items.MoveCurrentToFirst();
+        //            break;
         //    }
-        //}
 
-        //private async void ComboBox_KeyDown(object sender, KeyEventArgs e)
-        //{
-        //    timer = DateTime.Now.TimeOfDay;
-
-        //    isactive = false;
-
-        //    await Task.Delay(200);
-
-        //    TimeSpan difftime = DateTime.Now.TimeOfDay - timer;
-        //    TimeSpan limit = TimeSpan.FromSeconds(0.15);
-
-        //    if (!isactive && difftime >= limit)
-        //    {
-        //        isactive = true;
-        //    }
+        //    e.Handled = true;
+        //    //if (list.Items. != null)
+        //    //{
+        //    (Keyboard.FocusedElement as UIElement).MoveFocus(new TraversalRequest(FocusNavigationDirection.Next));
         //}
     }
+
+    //private void ComboBox_RequestBringIntoView(object sender, RequestBringIntoViewEventArgs e)
+    //{
+    //    if (isactive)
+    //    {
+    //        e.Handled = true;
+    //    }
+    //}
+
+    //private async void ComboBox_KeyDown(object sender, KeyEventArgs e)
+    //{
+    //    timer = DateTime.Now.TimeOfDay;
+
+    //    isactive = false;
+
+    //    await Task.Delay(200);
+
+    //    TimeSpan difftime = DateTime.Now.TimeOfDay - timer;
+    //    TimeSpan limit = TimeSpan.FromSeconds(0.15);
+
+    //    if (!isactive && difftime >= limit)
+    //    {
+    //        isactive = true;
+    //    }
+    //}
 }
+

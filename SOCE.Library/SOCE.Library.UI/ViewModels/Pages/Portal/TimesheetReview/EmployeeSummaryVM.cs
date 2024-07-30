@@ -36,7 +36,7 @@ namespace SOCE.Library.UI.ViewModels
         }
 
         public ICommand OpenTimesheetSubmission { get; set; }
-
+        public ICommand OpenExpenseReport { get; set; }
         public ICommand ApproveAllCommand { get; set; }
         public ICommand EmailReminder { get; set; }
 
@@ -45,6 +45,8 @@ namespace SOCE.Library.UI.ViewModels
         public EmployeeSummaryVM(TimesheetReviewVM vmbase)
         {
             this.OpenTimesheetSubmission = new RelayCommand<TimesheetSubmissionModel>(OpenTimeSheet);
+            this.OpenExpenseReport = new RelayCommand<TimesheetSubmissionModel>(OpenExpense);
+
             this.EmailReminder = new RelayCommand<TimesheetSubmissionModel>(SendEmail);
             this.ApproveAllCommand = new RelayCommand(ApproveAll);
 
@@ -52,6 +54,15 @@ namespace SOCE.Library.UI.ViewModels
 
             LoadTimesSheetSubmissionData(vmbase.firstdate);
         }
+        private async void OpenExpense(TimesheetSubmissionModel item)
+        {
+            ExpenseReviewView ynv = new ExpenseReviewView();
+            ExpenseReportVM ynvm = new ExpenseReportVM(item.Employee, basevm.firstdate, basevm.lastdate);
+            ynv.DataContext = ynvm;
+
+            var result2 = await DialogHost.Show(ynv, "RootDialog");
+        }
+
 
         private async void ApproveAll()
         {
@@ -150,6 +161,7 @@ namespace SOCE.Library.UI.ViewModels
             List<EmployeeModel> allemployees = LoadActiveEmployees();
             TimesheetSubmissions.Clear();
             int DateTimesheet = (int)long.Parse(startdate.Date.ToString("yyyyMMdd"));
+
             foreach (EmployeeModel em in allemployees)
             {
                 TimesheetSubmissionDbModel tsdbm = SQLAccess.LoadTimeSheetSubmissionData(DateTimesheet, em.Id);
@@ -166,8 +178,8 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     TimesheetSubmissions.Add(new TimesheetSubmissionModel(tsdbm, em));
                 }
-
             }
+
             //NumSubmittedEmployees = TimesheetSubmissions.Where(x => x.Missing == false).Count();
             //NumApprovedEmployees = TimesheetSubmissions.Where(x => x.Approved).Count();
             //NumTotalEmployees = TimesheetSubmissions.Count();

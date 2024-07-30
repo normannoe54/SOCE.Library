@@ -35,7 +35,11 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand HighlightStuffAsDateCommand { get; set; }
         public ICommand CreateInvoiceCommand { get; set; }
+        public ICommand ReviseInvoiceCommand { get; set; }
         public ICommand GoToDateCommand { get; set; }
+        public ICommand SelectAllCommand { get; set; }
+        public ICommand OpenLink { get; set; }
+
 
         private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
         public ObservableCollection<DateWrapper> DateSummary
@@ -78,6 +82,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _invoices = value;
                 RaisePropertyChanged(nameof(Invoices));
+            }
+        }
+
+        private ObservableCollection<ExpenseInvoiceModel> _expenses = new ObservableCollection<ExpenseInvoiceModel>();
+        public ObservableCollection<ExpenseInvoiceModel> Expenses
+        {
+            get { return _expenses; }
+            set
+            {
+                _expenses = value;
+                RaisePropertyChanged(nameof(Expenses));
             }
         }
 
@@ -136,6 +151,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private bool _selectTrigger = false;
+        public bool SelectTrigger
+        {
+            get { return _selectTrigger; }
+            set
+            {
+                _selectTrigger = value;
+                RaisePropertyChanged("SelectTrigger");
+            }
+        }
+
         private UserControl _leftViewToShow = new UserControl();
         public UserControl LeftViewToShow
         {
@@ -172,6 +198,10 @@ namespace SOCE.Library.UI.ViewModels
             this.GoToDateCommand = new RelayCommand<DateTime>(GoToDate);
             this.DeleteInvoiceCommand = new RelayCommand<InvoicingModel>(DeleteInvoice);
             this.ViewInvoiceCommand = new RelayCommand<InvoicingModel>(ViewInvoice);
+            this.SelectAllCommand = new RelayCommand(SelectAll);
+            this.OpenLink = new RelayCommand<InvoicingModel>(OpenLinkLocation);
+            this.ReviseInvoiceCommand = new RelayCommand<InvoicingModel>(ReviseInvoice);
+
             List<EmployeeDbModel> employeesDb = SQLAccess.LoadEmployees();
 
             List<EmployeeLowResModel> totalemployees = new List<EmployeeLowResModel>();
@@ -187,11 +217,55 @@ namespace SOCE.Library.UI.ViewModels
             Reload(pm.Id, pm.ProjectManager);
         }
 
+        private void OpenLinkLocation(InvoicingModel invoice)
+        {
+            if (invoice.LocationofLink != null)
+            {
+                try
+                {
+                    Process.Start(invoice.LocationofLink);
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        private void SelectAll()
+        {
+            SelectedTimesheetInfo = new List<HourEntryModel>();
+
+            if (!SelectTrigger)
+            {
+                List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByUninvoiced(BaseProject.Id);
+
+                foreach (TimesheetRowDbModel dbmod in time)
+                {
+                    DateTime dt = DateTime.ParseExact(dbmod.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+
+                    HourEntryModel hem = new HourEntryModel()
+                    {
+                        TimeId = dbmod.Id,
+                        SubId = dbmod.SubProjectId,
+                        Invoiced = false,
+                        Date = dt,
+                        TimeEntry = dbmod.TimeEntry,
+                        BudgetSpent = dbmod.BudgetSpent,
+                        IsSelectedForInvoicing = true
+                    };
+                    SelectedTimesheetInfo.Add(hem);
+                }
+            }
+
+            GoToDate(DateSummary.First().Value);
+            SelectTrigger = !SelectTrigger;
+        }
+
         public void Reload(int pmid, EmployeeLowResModel projman)
         {
             SelectedTimesheetInfo = new List<HourEntryModel>();
 
-            //BaseProject = pm;
             ProjectDbModel pdb = SQLAccess.LoadProjectsById(pmid);
             ProjectInvoicingModel basemod = new ProjectInvoicingModel(pdb);
             basemod.ProjectManager = projman;
@@ -207,7 +281,46 @@ namespace SOCE.Library.UI.ViewModels
                 invmodels.Add(invnew);
             }
 
-            Invoices = new ObservableCollection<InvoicingModel>(invmodels);
+
+            foreach (InvoicingModel invprev in invmodels)
+            {
+                List<InvoicingModel> founditems = invmodels.Where(x => x.InvoiceId == invprev.InvoiceId).ToList();
+
+                if (founditems != null && founditems.Count() > 1)
+                {
+                    invprev.RevisedButton = false;
+                }
+            }
+
+            List<InvoicingModel> orderedinvoices = invmodels.OrderBy(x => x.InvoiceId).ToList();
+
+            if (invmodels.Count > 0)
+            {
+                InvoicingModel maxitem = orderedinvoices.OrderByDescending(x => x.Id).FirstOrDefault();
+
+                if (maxitem != null)
+                {
+                    maxitem.CanDelete = true;
+                }
+            }
+
+            Invoices = new ObservableCollection<InvoicingModel>(orderedinvoices);
+
+            //expenses
+            List<ExpenseReportDbModel> expenses = SQLAccess.LoadExpensesByProjectId(pmid);
+            List<ExpenseInvoiceModel> expensemodels = new List<ExpenseInvoiceModel>();
+
+            foreach (ExpenseReportDbModel expense in expenses)
+            {
+                if (Convert.ToBoolean(expense.IsClientBillable))
+                {
+                    ExpenseInvoiceModel invnew = new ExpenseInvoiceModel(expense);
+                    expensemodels.Add(invnew);
+                }
+
+            }
+
+            Expenses = new ObservableCollection<ExpenseInvoiceModel>(expensemodels);
 
             Current();
         }
@@ -281,33 +394,6 @@ namespace SOCE.Library.UI.ViewModels
 
             CalculateSelected();
 
-            //if (anyselectedforinvoicing)
-            //{
-            //    //sum hours
-            //    //List<TimesheetRowDbModel> time = SQLAccess.LoadUninvoicedTimeSheetDatabySubIdAndDate(hemval.SubId, hemval.Date);
-            //    //SelectedTimesheetIds = time.Select(x => x.Id).ToList();
-            //    HoursTotalSelection = SelectedTimesheetInfo.Sum(x => x.TimeEntry);
-            //    BudgetTotalSelection = SelectedTimesheetInfo.Sum(x => x.BudgetSpent);
-            //    DateOfSelection = hemval.Date;
-            //}
-            //else
-            //{
-            //    BlankSelection();
-            //}
-
-            //foreach (HourSummaryModel hsm in HourSummary)
-            //{
-            //    double sum = 0;
-            //    foreach (HourEntryModel hem in SelectedTimesheetInfo)
-            //    {
-            //        if (hem.SubId == hsm.PhaseId)
-            //        {
-            //            sum += hem.TimeEntry;
-            //        }
-            //    }
-            //    hsm.SelectedHours = sum;
-            //}
-
         }
 
         private void HighlightFromDate(DateWrapper hemval)
@@ -332,7 +418,7 @@ namespace SOCE.Library.UI.ViewModels
                 }
             }
 
-            
+
             if (hems.Count > 0)
             {
                 HourEntryModel hemofinterest = hems.OrderBy(x => x.Date).Last();
@@ -387,33 +473,12 @@ namespace SOCE.Library.UI.ViewModels
                                     }
                                 }
                             }
-
-                            //if (hem.IsSelectedForInvoicing)
-                            //{
-                            //    sum += hem.TimeEntry;
-                            //}
                         }
                     }
                 }
             }
 
-            //if (anyselectedforinvoicing)
-            //{
-
-            //    //sum hours
-            //    //List<TimesheetRowDbModel> time = SQLAccess.LoadUninvoicedTimeSheetDatabyProjIdAndDate(BaseProject.Id, hemval.Value);
-            //    //SelectedTimesheetIds = time.Select(x => x.Id).ToList();
-            //    HoursTotalSelection = SelectedTimesheetInfo.Sum(x => x.TimeEntry);
-            //    BudgetTotalSelection = SelectedTimesheetInfo.Sum(x => x.BudgetSpent);
-            //    DateOfSelection = hemval.Value;
-            //}
-            //else
-            //{
-            //    BlankSelection();
-            //}
-
             CalculateSelected();
-            //sum hours
         }
 
         private void CalculateSelected()
@@ -421,7 +486,7 @@ namespace SOCE.Library.UI.ViewModels
             double hourstotal = 0;
             double budgettotal = 0;
             DateTime? dateoflast = null;
-                
+
             foreach (HourSummaryModel hsm in HourSummary)
             {
                 if (hsm.HoursSelectableVis)
@@ -431,7 +496,7 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         if (hem.SubId == hsm.PhaseId)
                         {
-                            if (dateoflast == null || hem.Date> dateoflast)
+                            if (dateoflast == null || hem.Date > dateoflast)
                             {
                                 dateoflast = hem.Date;
                             }
@@ -448,13 +513,6 @@ namespace SOCE.Library.UI.ViewModels
             BudgetTotalSelection = budgettotal;
             DateOfSelection = dateoflast;
         }
-
-        //private void BlankSelection()
-        //{
-        //    HoursTotalSelection = 0;
-        //    BudgetTotalSelection = 0;
-        //    DateOfSelection = null;
-        //}
 
         private void Previous()
         {
@@ -549,12 +607,20 @@ namespace SOCE.Library.UI.ViewModels
 
             List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
 
+            SolidColorBrush billablecolor = Brushes.Green;
+            SolidColorBrush nonbillablecolor = Brushes.Red;
+
             foreach (SubProjectDbModel sub in subs)
             {
+                bool billable = Convert.ToBoolean(sub.IsBillable);
+
                 HourSummaryModel hsma = new HourSummaryModel()
                 {
                     PhaseId = sub.Id,
                     PhaseName = sub.PointNumber,
+                    Invoiced = Convert.ToBoolean(sub.IsInvoiced),
+                    IsBillableKind = billable ? PackIconKind.CurrencyUsd : PackIconKind.CurrencyUsdOff,
+                    IsBillableKindBackground = billable ? billablecolor : nonbillablecolor
                 };
 
                 List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(sub.Id);
@@ -564,6 +630,12 @@ namespace SOCE.Library.UI.ViewModels
                 foreach (RolePerSubProjectDbModel role in roles)
                 {
                     EmployeeLowResModel em = Employees.Where(x => x.Id == role.EmployeeId).FirstOrDefault();
+
+                    if (em == null)
+                    {
+                        EmployeeDbModel emfind = SQLAccess.LoadEmployeeById(role.EmployeeId);
+                        em = new EmployeeLowResModel(emfind);
+                    }
 
                     if (em != null)
                     {
@@ -615,9 +687,7 @@ namespace SOCE.Library.UI.ViewModels
                         employeesummary.Add(hsim);
                     }
                 }
-
                 hsma.EmployeeSummary = new ObservableCollection<HourSummaryIndModel>(employeesummary);
-
 
                 if (hsma.EmployeeSummary.Count > 0)
                 {
@@ -632,32 +702,120 @@ namespace SOCE.Library.UI.ViewModels
                     }
 
                     hsma.HoursSelectableVis = hsma.OutstandingHours > 0 ? true : false;
-
-
-
+                    hsm.Add(hsma);
+                }
+                else if (billable)
+                {
                     hsm.Add(hsma);
                 }
             }
-            
+
             return hsm;
+        }
+
+        public void DeletefromUI(int index)
+        {
+            if (Invoices.Count > 0)
+            {
+                InvoicingModel invoi = Invoices[index];
+
+                List<InvoicingRowsDb> rows = SQLAccess.LoadInvoiceRows(invoi.Id);
+
+                foreach (InvoicingRowsDb row in rows)
+                {
+                    double percentcomplete = 0;
+                    double previoussubhourlyfee = 0;
+                    if (row.SubId != 0)
+                    {
+                        SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(row.SubId);
+
+                        if (index > 0)
+                        {
+                            InvoicingModel invprev = Invoices[index - 1];
+                            InvoicingRowsDb dbprev = SQLAccess.LoadInvoiceRowsByInvoiceAndSubId(row.SubId, invprev.Id);
+
+                            if (dbprev != null)
+                            {
+                                percentcomplete = dbprev.PercentComplete;
+
+                                if (Convert.ToBoolean(sub.IsHourly))
+                                {
+                                    previoussubhourlyfee = dbprev.PreviousInvoiced + dbprev.ThisPeriodInvoiced;
+                                }
+                            }
+                        }
+
+                        if (sub.Id != 0)
+                        {
+                            if (row.ThisPeriodInvoiced > 0)
+                            {
+                                SQLAccess.UpdateInvoiced(row.SubId, 0, 0, percentcomplete);
+
+                                if (sub?.IsHourly != null)
+                                {
+                                    if (Convert.ToBoolean(sub?.IsHourly))
+                                    {
+                                        SQLAccess.UpdateSubFee(row.SubId, previoussubhourlyfee);
+                                        double diff = BaseProject.Fee - sub.Fee - previoussubhourlyfee;
+                                        SQLAccess.UpdateFee(BaseProject.Id, diff);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    SQLAccess.DeleteInvoiceRows(row.Id);
+
+                    //int invoiced = percentcomplete >= 100 ? 1 : 0;
+
+                }
+
+                SQLAccess.DeleteInvoice(invoi.Id);
+
+
+                foreach (int time in invoi.TimesheetIds)
+                {
+                    SQLAccess.UpdateInvoiceStatusTime(time, 0);
+
+                }
+
+                if (invoi.ExpenseReportIds != null)
+                {
+                    foreach (int exid in invoi.ExpenseReportIds)
+                    {
+                        SQLAccess.UpdateInvoiced(exid, 0);
+                    }
+                }
+            }
+
+            Reload(BaseProject.Id, BaseProject.ProjectManager);
         }
 
         private void DeleteInvoice(InvoicingModel invoice)
         {
-            List<InvoicingRowsDb> rows =  SQLAccess.LoadInvoiceRows(invoice.Id);
+            int index = Invoices.IndexOf(invoice);
+            LeftViewToShow = new YesNoView();
+            YesNoVM addsubvm = new YesNoVM(index, this);
+            addsubvm.Message = "Are you sure you want to delete";
 
-            foreach (InvoicingRowsDb row in rows)
+            addsubvm.SubMessage = $"(Invoice: {invoice.InvoiceId}) ";
+            LeftViewToShow.DataContext = addsubvm;
+            LeftDrawerOpen = true;
+        }
+
+        public void UpdateInvoicewithOverhead(InvoicingModel invoice)
+        {
+            List<int> timeids = invoice.TimesheetIds;
+            foreach (HourEntryModel hem in SelectedTimesheetInfo)
             {
-                SQLAccess.DeleteInvoiceRows(row.Id);
+                timeids.Add(hem.TimeId);
+                SQLAccess.UpdateInvoiceStatusTime(hem.TimeId, 1);
             }
 
-            SQLAccess.DeleteInvoice(invoice.Id);
+            int[] timeidsnew = timeids.ToArray();
+            string result = string.Join(",", timeidsnew);
 
-
-            foreach (int time in invoice.TimesheetIds)
-            {
-                SQLAccess.UpdateInvoiceStatusTime(time, 0);
-            }
+            SQLAccess.UpdateInvoiceTime(invoice.Id, result);
             Reload(BaseProject.Id, BaseProject.ProjectManager);
         }
 
@@ -685,20 +843,53 @@ namespace SOCE.Library.UI.ViewModels
             //}
             //Reload(BaseProject.Id, BaseProject.ProjectManager);
         }
+        private void ReviseInvoice(InvoicingModel invoice)
+        {
+            List<ExpenseInvoiceModel> selectedexpenses = Expenses.Where(x => x.IsSelected && !x.IsInvoiced).ToList();
+
+            LeftViewToShow = new CreateInvoiceView();
+            CreateInvoiceVM addsubvm = new CreateInvoiceVM(BaseProject, this, invoice, selectedexpenses);
+            LeftViewToShow.DataContext = addsubvm;
+            LeftDrawerOpen = true;
+
+        }
 
         private void CreateInvoice()
         {
-            if (DateOfSelection != null)
+            List<ExpenseInvoiceModel> selectedexpenses = Expenses.Where(x => x.IsSelected && !x.IsInvoiced).ToList();
+
+            if (DateOfSelection != null || selectedexpenses.Count > 0)
             {
-                LeftViewToShow = new CreateInvoiceView();
-                //List<int> ids = new List<int>();
-                //if (SelectedTimesheetInfo.Count > 0)
-                //{
-                //    ids = SelectedTimesheetInfo.Select(x => x.TimeId).ToList();
-                //}
-                CreateInvoiceVM addsubvm = new CreateInvoiceVM(BaseProject, this, HoursTotalSelection, BudgetTotalSelection, (DateTime)DateOfSelection, SelectedTimesheetInfo);
-                LeftViewToShow.DataContext = addsubvm;
-                LeftDrawerOpen = true;
+                bool subcheck = false;
+                List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
+
+                foreach (SubProjectDbModel sub in subs)
+                {
+                    if (Convert.ToBoolean(sub.IsBillable) && sub.PercentComplete < 100)
+                    {
+                        subcheck = true;
+                        break;
+                    }
+                }
+
+                if (!subcheck)
+                {
+                    InvoicingModel invlatest = Invoices.LastOrDefault();
+                    YesNoVM addsubvm = new YesNoVM(invlatest, this);
+                    addsubvm.Message = $"Project is fully invoiced {Environment.NewLine} Add overhead time to";
+                    addsubvm.SubMessage = $"Invoice Number {Environment.NewLine} {invlatest.InvoiceId}";
+
+                    LeftViewToShow = new YesNoView();
+                    LeftViewToShow.DataContext = addsubvm;
+                    LeftDrawerOpen = true;
+                }
+                else
+                {
+                    LeftViewToShow = new CreateInvoiceView();
+                    CreateInvoiceVM addsubvm = new CreateInvoiceVM(BaseProject, this, HoursTotalSelection, BudgetTotalSelection, (DateTime)DateOfSelection, SelectedTimesheetInfo, selectedexpenses);
+                    LeftViewToShow.DataContext = addsubvm;
+                    LeftDrawerOpen = true;
+                }
             }
         }
     }

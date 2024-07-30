@@ -17,5 +17,7 @@ namespace SOCE.Library.Db
         public double SickHours { get; set; }
         public double HolidayHours { get; set; }
         public int Approved { get; set; }
+
+        public double ExpensesCost { get; set; }
     }
 }

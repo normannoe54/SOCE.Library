@@ -308,7 +308,7 @@ namespace SOCE.Library.UI.ViewModels
                 clients.Add(new ClientLowResModel(cdbm));
             }
 
-            List<ClientLowResModel> newclients = clients.OrderBy(x => x.ClientNumber).ToList();
+            List<ClientLowResModel> newclients = clients.OrderBy(x => x.ClientName).ToList();
 
             Clients = new ObservableCollection<ClientLowResModel>(newclients);
         }
@@ -324,8 +324,9 @@ namespace SOCE.Library.UI.ViewModels
             {
                 members.Add(new EmployeeLowResModel(edbm));
             }
+            List<EmployeeLowResModel> newpms = members.OrderBy(x => x.FullName).ToList();
+            ProjectManagers = new ObservableCollection<EmployeeLowResModel>(newpms);
 
-            ProjectManagers = members;
         }
 
         private void LoadSchedulingProjects()

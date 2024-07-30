@@ -97,7 +97,7 @@
             <TextBox materialDesign:HintAssist.Hint="Client Address" Text="{Binding ClientAddressInp}" Grid.Row="3"
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
 
-            <TextBox materialDesign:HintAssist.Hint="Client City" Text="{Binding ClientCityInp}" Grid.Row="4"
+            <TextBox materialDesign:HintAssist.Hint="Client City, State, Zip Code" Text="{Binding ClientCityInp}" Grid.Row="4"
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
 
             <TextBox materialDesign:HintAssist.Hint="Title" Text="{Binding Description}" Grid.Row="5"
@@ -109,7 +109,7 @@
             <!--<TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding ExpandedDescription}" 
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>-->
             <TextBox materialDesign:HintAssist.Hint="Additional Services Fee" Grid.Row="7" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$"
-                             Margin="0 8 0 0"/>
+                             Margin="0 8 0 0" Visibility="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
             <TextBox materialDesign:HintAssist.Hint="Send To" Text="{Binding PersonAddressedInp}" Grid.Row="8"
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>
         </Grid>

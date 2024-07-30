@@ -101,6 +101,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _forecastHours { get; set; }
+        public bool ForecastHours
+        {
+            get
+            {
+                return _forecastHours;
+            }
+            set
+            {
+                _forecastHours = value;
+                RaisePropertyChanged(nameof(ForecastHours));
+            }
+        }
+
         private double _percentComplete { get; set; }
         public double PercentComplete
         {
@@ -335,6 +349,7 @@ namespace SOCE.Library.UI
             Drawingsfolder = pm.Drawingsfolder;
             Architectfolder = pm.Architectfolder;
             Plotfolder = pm.Plotfolder;
+            ForecastHours = Convert.ToBoolean(pm.IsHourlyProjection);
             onstartup = true;
         }
 

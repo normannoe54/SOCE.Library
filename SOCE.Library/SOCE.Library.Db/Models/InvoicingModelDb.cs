@@ -22,5 +22,15 @@ namespace SOCE.Library.Db
         public double AmountDue { get; set; }
         public int EmployeeSignedId { get; set; }
         public string TimesheetIds { get; set; }
+
+        public int AddServicesDate { get; set; }
+
+        public string ExpenseReportIds { get; set; }
+
+        public string Link { get; set; }
+
+        public int IsLogged { get; set; }
+        public int IsRevised { get; set; }
+
     }
 }

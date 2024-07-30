@@ -188,7 +188,7 @@ namespace SOCE.Library.UI
 
             if (invoices.Count > 0)
             {
-                InvoicingModelDb closest = invoices.OrderByDescending(x => x.Date).First();
+                InvoicingModelDb closest = invoices.OrderBy(x => x.Date).LastOrDefault();
                 DateOfLastInvoice = DateTime.ParseExact(closest.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
                 TotalFeeInvoiced = closest.PreviousSpent + closest.AmountDue;
                 PercentOfTotalFeeInvoiced = (TotalFeeInvoiced / Fee) * 100;

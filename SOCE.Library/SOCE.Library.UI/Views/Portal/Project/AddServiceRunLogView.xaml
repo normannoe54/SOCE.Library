@@ -1,0 +1,169 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.AddServiceRunLogView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="Transparent" Width="485" >
+
+    <Grid Margin="16" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height ="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" Text="Select Add-Services to Log" FontSize="24" />
+            <TextBlock Grid.Row="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="1" Margin="0 5 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <VirtualizingStackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Grid.Column="0"  Foreground="{StaticResource SOCERed}" materialDesign:HintAssist.Hint="Project Name" 
+                           Text="{Binding BaseProject.ProjectName}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" />
+                <TextBlock Grid.Column="1"  Foreground="{StaticResource SOCERed}" materialDesign:HintAssist.Hint="Project Number" 
+                           Text="{Binding BaseProject.ProjectNumber, StringFormat= ' [{0}]'}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" HorizontalAlignment="Left"/>
+            </VirtualizingStackPanel>
+        </Grid>
+        <Border Grid.Row="2" Margin="0 10 18 0" BorderBrush="Black" BorderThickness="0 0 0 1">
+            <Grid >
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="40"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="40"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Print" />
+                <TextBlock Grid.Column="1" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="#" Margin="2.5 0 0 0"/>
+                <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Description" Margin="10 0 0 0"/>
+                <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Status" Margin="2.5 0 0 0"/>
+                <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Billable"/>
+            </Grid>
+        </Border>
+        
+        <ItemsControl Grid.Row="3" Margin="0 5 0 0" ItemsSource="{Binding SubProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+            <ItemsControl.Resources>
+                <local:IsBillableKindConverter x:Key="valueconverter"/>
+            </ItemsControl.Resources>
+            <ItemsControl.Template>
+                <ControlTemplate>
+                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ItemsControl.Template>
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <!--<Border Visibility="{Binding IsVisible, Converter={StaticResource BooleanToVisibilityConverter}}" BorderBrush="LightGray" BorderThickness="0 0.5 0 0.5"  Background="{Binding IsInvoiced, Converter={StaticResource valueconverter}}" 
+                                    IsEnabled="{Binding Path=DataContext.BaseProject.IsActive, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">-->
+                    <Grid Margin="0 5 0 5">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="40"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="40"/>
+                        </Grid.ColumnDefinitions>
+                        <CheckBox Grid.Column="0" Style="{StaticResource MaterialDesignCheckBox}" 
+                                      IsChecked="{Binding SelectedLogAddService, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     HorizontalAlignment="Center" Background="DarkGray" />
+                        <TextBox Grid.Column="1" IsReadOnly="True" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center"
+                                 Text="{Binding PointNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0"  materialDesign:TextFieldAssist.PrefixText="[" materialDesign:TextFieldAssist.SuffixText="]"/>
+                        <TextBox Grid.Column="2" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                 Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 0"/>
+                        <Border Grid.Column="3" Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Stretch" CornerRadius="3" BorderThickness="2" Padding="5 0 5 0">
+                            <Border.Style>
+                                <Style TargetType="{x:Type Border}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Missing">
+                                            <Setter Property="BorderBrush" Value="{StaticResource SOCERed}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Complete">
+                                            <Setter Property="BorderBrush" Value="{StaticResource SOCEGreenCompliment}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Incomplete">
+                                            <Setter Property="BorderBrush" Value="{StaticResource SOCEOrangeCompliment}"/>
+                                        </DataTrigger>
+                                        <!-- etc -->
+                                    </Style.Triggers>
+                                </Style>
+                            </Border.Style>
+                            <TextBlock  FontSize="12" FontWeight="DemiBold" VerticalAlignment="Center" HorizontalAlignment="Center">
+                                <TextBlock.Style>
+                                    <Style TargetType="{x:Type TextBlock}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Missing">
+                                                <Setter Property="Text" Value="Missing" />
+                                                <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Complete">
+                                                <Setter Property="Text" Value="Complete" />
+                                                <Setter Property="Foreground" Value="{StaticResource SOCEGreenCompliment}"/>
+                                            </DataTrigger>
+                                            <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Incomplete">
+                                                <Setter Property="Text" Value="Incomplete" />
+                                                <Setter Property="Foreground" Value="{StaticResource SOCEOrangeCompliment}"/>
+                                            </DataTrigger>
+                                            <!-- etc -->
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Border>
+                        <materialDesign:PackIcon Grid.Column="4"  Margin="5 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Center" Height="25" Width="25" materialDesign:HintAssist.Hint="Is Billable?"
+                                                 Kind="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource valueconverter}}"/>
+
+
+                    </Grid>
+                    <!--</Border>-->
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0" HorizontalAlignment="Center">
+            <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AcceptCommand}">
+                <TextBlock Text="ACCEPT"/>
+            </Button>
+            <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+                <TextBlock Text="CANCEL"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

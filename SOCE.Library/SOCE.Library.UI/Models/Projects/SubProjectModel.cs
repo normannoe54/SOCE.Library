@@ -644,6 +644,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _isChangedLog { get; set; } = true;
+        public bool IsChangedLog
+        {
+            get
+            {
+                return _isChangedLog;
+            }
+            set
+            {
+                _isChangedLog = value;
+                RaisePropertyChanged(nameof(IsChangedLog));
+            }
+        }
+
         public SubProjectModel()
         {
             onstartup = false;
@@ -677,6 +691,7 @@ namespace SOCE.Library.UI
             ClientCompanyName = spm.ClientCompanyName;
             ClientAddress = spm.ClientAddress;
             EmployeeIdSigned = spm.EmployeeIdSigned;
+            IsChangedLog = Convert.ToBoolean(spm.IsChangedLog);
 
             if (spm?.SubStart != null && spm?.SubStart != 0)
             {

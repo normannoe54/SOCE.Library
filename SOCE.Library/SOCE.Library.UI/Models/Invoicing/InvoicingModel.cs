@@ -48,6 +48,53 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _logged { get; set; }
+        public bool Logged
+        {
+            get
+            {
+                return _logged;
+            }
+            set
+            {
+                _logged = value;
+
+                if (!onstartup)
+                {
+                    SQLAccess.UpdateInvoiceLogged(Id, Convert.ToInt32(Logged));
+                }
+                RaisePropertyChanged(nameof(Logged));
+            }
+        }
+
+        private bool _revisedButton { get; set; } = true;
+        public bool RevisedButton
+        {
+            get
+            {
+                return _revisedButton;
+            }
+            set
+            {
+                _revisedButton = value;
+                RaisePropertyChanged(nameof(RevisedButton));
+            }
+        }
+
+        private bool _revised { get; set; }
+        public bool Revised
+        {
+            get
+            {
+                return _revised;
+            }
+            set
+            {
+                _revised = value;
+                RaisePropertyChanged(nameof(Revised));
+            }
+        }
+
         private DateTime _date { get; set; }
         public DateTime Date
         {
@@ -188,11 +235,52 @@ namespace SOCE.Library.UI
             }
         }
 
-        public List<int> TimesheetIds { get; set; }
-
-        public InvoicingModel()
+        private DateTime? _addServicesDate { get; set; } = null;
+        public DateTime? AddServicesDate
         {
+            get
+            {
+                return _addServicesDate;
+            }
+            set
+            {
+                _addServicesDate = value;
+                RaisePropertyChanged(nameof(AddServicesDate));
+            }
+        }
 
+        public List<int> TimesheetIds { get; set; } = new List<int>();
+        public List<int> ExpenseReportIds { get; set; } = new List<int>();
+
+
+        private bool onstartup = true;
+
+        private bool _canDelete { get; set; } = false;
+        public bool CanDelete
+        {
+            get
+            {
+                return _canDelete;
+            }
+            set
+            {
+                _canDelete = value;
+                RaisePropertyChanged(nameof(CanDelete));
+            }
+        }
+
+        private string _locationofLink { get; set; } = null;
+        public string LocationofLink
+        {
+            get
+            {
+                return _locationofLink;
+            }
+            set
+            {
+                _locationofLink = value;
+                RaisePropertyChanged(nameof(LocationofLink));
+            }
         }
 
         byte[] ObjectToByteArray(object obj)
@@ -228,24 +316,30 @@ namespace SOCE.Library.UI
             ClientAddress = iDb.ClientAddress;
             ClientCity = iDb.ClientCity;
             EmployeeSignedId = iDb.EmployeeSignedId;
+            LocationofLink = iDb.Link;
+            Logged = Convert.ToBoolean(iDb.IsLogged);
+            Revised = Convert.ToBoolean(iDb.IsRevised);
 
+            if (iDb.AddServicesDate != 0)
+            {
+                AddServicesDate = DateTime.ParseExact(iDb.AddServicesDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            }
             try
             {
-
-                //TimesheetIds = (List<int>)iDb.TimesheetIds;
-                //byte[] bytes = ObjectToByteArray(iDb.TimesheetIds);
-                //byte[] bytes = (byte[])iDb.TimesheetIds;
-                //List<int> myAnythingList = (iDb.TimesheetIds as IEnumerable<int>).Cast<int>().ToList();
-                //List<int> timeids = ToListOf<int>((byte[])iDb.TimesheetIds, BitConverter.ToInt32);
-                //TimesheetIds = Enumerable.Range(0, bytes.Length / 4).Select(i => BitConverter.ToInt32(bytes, i * 4)).ToList();
                 string input = iDb.TimesheetIds;
                 List<int> TagIds = input.Split(',').Select(int.Parse).ToList();
                 TimesheetIds = TagIds;
+
+                string input2 = iDb.ExpenseReportIds;
+                List<int> TagIdsex = input2.Split(',').Select(int.Parse).ToList();
+                ExpenseReportIds = TagIdsex;
             }
             catch
             {
 
             }
+
+            onstartup = false;
 
         }
     }

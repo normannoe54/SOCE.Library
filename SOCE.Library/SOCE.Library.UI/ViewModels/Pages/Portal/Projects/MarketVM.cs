@@ -89,7 +89,8 @@ namespace SOCE.Library.UI.ViewModels
                 members.Add(new MarketModel(mdbm));
             }
 
-            Markets = members;
+            List<MarketModel> newmarkets = members.OrderBy(x => x.MarketName).ToList();
+            Markets = new ObservableCollection<MarketModel>(newmarkets);
             baseproject.LoadMarkets();
         }
 

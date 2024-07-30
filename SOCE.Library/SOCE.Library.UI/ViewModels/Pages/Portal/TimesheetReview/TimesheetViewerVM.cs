@@ -473,7 +473,8 @@ namespace SOCE.Library.UI.ViewModels
                             OTHours = SubmittedTimesheet.OTHours,
                             SickHours = SubmittedTimesheet.SickHours,
                             HolidayHours = SubmittedTimesheet.HolidayHours,
-                            Approved = Convert.ToInt32(approve)
+                            Approved = Convert.ToInt32(approve),
+                            ExpensesCost = SubmittedTimesheet.ExpensesCost
                         };
 
                         SQLAccess.UpdateTimesheetSubmission(dbmodel2);

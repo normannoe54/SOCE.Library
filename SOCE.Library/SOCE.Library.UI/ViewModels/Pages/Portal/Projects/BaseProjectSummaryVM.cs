@@ -40,11 +40,14 @@ namespace SOCE.Library.UI.ViewModels
                     case ViewEnum.AddService:
                         SelectedVM = new AddServiceVM(BaseProject, CurrentEmployee);
                         break;
-                    //case ViewEnum.Invoicing:
-                    //    ProjectSummaryVM Psummaryvm2 = new ProjectSummaryVM(BaseProject, CurrentEmployee);
-                    //    SelectedVM = Psummaryvm2;
-                    //    SelectedVM = new InvoicingSummaryVM(BaseProject);
-                    //    break;
+                    case ViewEnum.Expenses:
+                        SelectedVM = new ExpenseProjectVM(BaseProject, CurrentEmployee);
+                        break;
+                    case ViewEnum.Invoicing:
+                        ProjectSummaryVM Psummaryvm2 = new ProjectSummaryVM(BaseProject, CurrentEmployee);
+                        SelectedVM = Psummaryvm2;
+                        SelectedVM = new InvoicingSummaryVM(BaseProject);
+                        break;
                     default:
                         break;
                 }
@@ -88,17 +91,27 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand CloseCommand { get; set; }
         public EmployeeModel CurrentEmployee { get; set; }
         public ProjectViewResModel BaseProject { get; set; }
-        public BaseProjectSummaryVM(EmployeeModel employee, ProjectViewResModel baseproject, ViewEnum viewselection)
+
+        public InvoicingVM invm { get; set; }
+        public BaseProjectSummaryVM(EmployeeModel employee, ProjectViewResModel baseproject, ViewEnum viewselection, InvoicingVM invoicing = null)
         {
             this.CloseCommand = new RelayCommand(this.CloseWindow);
             CurrentEmployee = employee;
             BaseProject = baseproject;
+            if (invoicing != null)
+            {
+                invm = invoicing;
+            }
             //Psummaryvm = new ProjectSummaryVM(baseproject, employee);
             SelectedViewEnum = viewselection;
         }
 
         private void CloseWindow()
         {
+            if (invm != null)
+            {
+                invm.LoadProjects();
+            }
             DialogHost.Close("RootDialog");
         }
     }

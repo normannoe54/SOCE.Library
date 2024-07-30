@@ -13,8 +13,16 @@ namespace SOCE.Library.UI.ViewModels
     public class YesNoVM : BaseVM
     {
         public bool Result { get; set; }
+        public ExpenseProjectModel expenseobject {get;set;}
         private ProjectSummaryVM ProjectSummary { get; set; }
+        private ExpenseProjectVM ExpenseProject { get; set; }
+
         private AddServiceVM AddServiceSummary { get; set; }
+
+        private InvoicingSummaryVM invoicingsummaryvm { get; set; }
+
+        private InvoicingModel baseinvoice { get; set; }
+        private int baseindex { get; set; }
         public string Message { get; set; } = "";
 
         private bool _isSubVisible = false;
@@ -95,6 +103,24 @@ namespace SOCE.Library.UI.ViewModels
             SubMessage = mm.MarketName;
         }
 
+        public YesNoVM(int index, InvoicingSummaryVM basevm)
+        {
+            baseindex = index;
+            invoicingsummaryvm = basevm;
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+        }
+
+        public YesNoVM(InvoicingModel invoice, InvoicingSummaryVM basevm)
+        {
+            baseinvoice = invoice;
+            invoicingsummaryvm = basevm;
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+        }
+
         public YesNoVM(SubProjectSummaryModel spm, ProjectSummaryVM psm)
         {
             ProjectSummary = psm;
@@ -103,6 +129,17 @@ namespace SOCE.Library.UI.ViewModels
             this.CloseCommand = new RelayCommand(this.CancelCommand);
             Message = "Are you sure you want to delete:";
             SubMessage = $"Phase: {spm.PointNumber}";
+        }
+
+        public YesNoVM(ExpenseProjectModel epm, ExpenseProjectVM epvm)
+        {
+            ExpenseProject = epvm;
+            Result = false;
+            this.YesCommand = new RelayCommand(this.YesDoTheAction);
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+            expenseobject = epm;
+            Message = "Are you sure you want to delete:";
+            SubMessage = $"Expense by {epm.EmployeeExp} ({epm.DateExp.ToString("MM/dd/yyyy")})";
         }
 
         public YesNoVM(SubProjectAddServiceModel spm, AddServiceVM psm)
@@ -173,10 +210,40 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            if (ProjectSummary == null && AddServiceSummary == null)
+            if (ProjectSummary == null && AddServiceSummary == null && invoicingsummaryvm == null && baseinvoice == null && ExpenseProject == null)
             {
                 bool val = DialogHost.IsDialogOpen("RootDialog");
                 DialogHost.Close("RootDialog");
+            }
+            else if(invoicingsummaryvm != null && baseinvoice == null)
+            {
+                if (Result)
+                {
+                    invoicingsummaryvm.DeletefromUI(baseindex);
+                }
+
+                invoicingsummaryvm.LeftDrawerOpen = false;
+            }
+            else if (invoicingsummaryvm != null && baseinvoice != null)
+            {
+                if (Result)
+                {
+                    invoicingsummaryvm.UpdateInvoicewithOverhead(baseinvoice);
+                }
+
+                invoicingsummaryvm.LeftDrawerOpen = false;
+            }
+            else if (ExpenseProject != null)
+            {
+                if (Result)
+                {
+                    if (expenseobject != null)
+                    {
+                        SQLAccess.DeleteExpenseReport(expenseobject.Id);
+                        ExpenseProject.LoadExpensesForViewing();
+                    }
+                }
+                ExpenseProject.LeftDrawerOpen = false;
             }
             else if (AddServiceSummary != null)
             {

@@ -184,21 +184,32 @@ namespace SOCE.Library.UI.ViewModels
 
                 foreach(SchedulingDataDbModel sched in previousweekschedulingdata)
                 {
-                    if (sched.Hours2 != 0 || sched.Hours3 != 0 || sched.Hours4 != 0 || sched.Hours5 != 0 || sched.Hours6 != 0 || sched.Hours7 != 0 || sched.Hours8 != 0)
+                    SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(sched.PhaseId);
+                    if (sub != null)
                     {
-                        sched.Date = (int)long.Parse(thisMonday.ToString("yyyyMMdd"));
-                        sched.Hours1 = sched.Hours2;
-                        sched.Hours2 = sched.Hours3;
-                        sched.Hours3 = sched.Hours4;
-                        sched.Hours4 = sched.Hours5;
-                        sched.Hours5 = sched.Hours6;
-                        sched.Hours6 = sched.Hours7;
-                        sched.Hours7 = sched.Hours8;
-                        sched.Hours8 = 0;
-                        SQLAccess.AddSchedulingData(sched);
+                        ProjectDbModel proj = SQLAccess.LoadProjectsById(sub.ProjectId);
+                        if (proj != null)
+                        {
+                            if (sched.Hours2 != 0 || sched.Hours3 != 0 || sched.Hours4 != 0 || sched.Hours5 != 0 || sched.Hours6 != 0 || sched.Hours7 != 0 || sched.Hours8 != 0)
+                            {
+                                sched.Date = (int)long.Parse(thisMonday.ToString("yyyyMMdd"));
+                                sched.Hours1 = sched.Hours2;
+                                sched.Hours2 = sched.Hours3;
+                                sched.Hours3 = sched.Hours4;
+                                sched.Hours4 = sched.Hours5;
+                                sched.Hours5 = sched.Hours6;
+                                sched.Hours6 = sched.Hours7;
+                                sched.Hours7 = sched.Hours8;
+                                sched.Hours8 = 0;
+                                sched.ManagerId = proj.ManagerId;
+                                sched.PhaseName = sub.PointNumber;
+                                sched.ProjectName = proj.ProjectName;
+                                sched.ProjectNumber = proj.ProjectNumber;
+                                SQLAccess.AddSchedulingData(sched);
+                            }
+                        }
                     }
                 }
-
             }
 
             WeeklyScheduleVM wsvm = new WeeklyScheduleVM(CurrentEmployee);

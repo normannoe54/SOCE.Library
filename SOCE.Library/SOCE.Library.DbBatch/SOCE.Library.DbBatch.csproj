@@ -65,6 +65,10 @@
       <Project>{7f96f6cb-24af-4dad-9505-469f70377154}</Project>
       <Name>SOCE.Library.Db</Name>
     </ProjectReference>
+    <ProjectReference Include="..\SOCE.Library.Excel\SOCE.Library.Excel.csproj">
+      <Project>{ebb6a425-65b0-4812-98d6-693e894cbd6b}</Project>
+      <Name>SOCE.Library.Excel</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets" Condition="Exists('..\packages\Stub.System.Data.SQLite.Core.NetFramework.1.0.116.0\build\net46\Stub.System.Data.SQLite.Core.NetFramework.targets')" />

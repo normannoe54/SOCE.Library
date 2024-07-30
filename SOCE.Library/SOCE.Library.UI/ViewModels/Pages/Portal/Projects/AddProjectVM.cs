@@ -473,23 +473,29 @@ namespace SOCE.Library.UI.ViewModels
             {
                 TotalMark.Add(new MarketModel(mark));
             }
+            List<MarketModel> newmarkets = TotalMark.OrderBy(x => x.MarketName).ToList();
+            MarketsAvailable = new ObservableCollection<MarketModel>(newmarkets);
 
             foreach (ClientDbModel client in Clients)
             {
                 TotalClients.Add(new ClientModel(client));
             }
+            List<ClientModel> newclients = TotalClients.OrderBy(x => x.ClientName).ToList();
+            ClientsAvailable = new ObservableCollection<ClientModel>(newclients);
 
             foreach (EmployeeDbModel pm in PMs)
             {
                 TotalPMs.Add(new EmployeeModel(pm));
             }
+            List<EmployeeModel> newpms = TotalPMs.OrderBy(x => x.FullName).ToList();
+            PMsAvailable = new ObservableCollection<EmployeeModel>(newpms);
 
             SetSubs();
             CDPhase = true;
             CAPhase = true;
-            MarketsAvailable = TotalMark;
-            ClientsAvailable = TotalClients;
-            PMsAvailable = TotalPMs;
+            //MarketsAvailable = TotalMark;
+            //ClientsAvailable = TotalClients;
+            //PMsAvailable = TotalPMs;
 
         }
 
@@ -736,7 +742,8 @@ namespace SOCE.Library.UI.ViewModels
                 Architectfolder = "",
                 Plotfolder = "",
                 ProjectStart = (int)long.Parse(DateTime.Now.ToString("yyyyMMdd")),
-                MiscName = MiscClientInput
+                MiscName = MiscClientInput,
+                IsHourlyProjection = Convert.ToInt32(EstimateHours)
             };
 
             int id = SQLAccess.AddProject(project);

@@ -22,8 +22,8 @@
         <!--<TextBlock Text="Time Sheet" Grid.Row="0" FontSize="32" FontWeight="SemiBold" Foreground="{StaticResource SOCERed}" HorizontalAlignment="Left"/>-->
         <StackPanel Grid.Row="0" HorizontalAlignment="Left" Orientation="Horizontal">
             <TextBlock  Text="Time Sheet"  Style="{StaticResource PageHeader}" />
-            <materialDesign:PackIcon Margin="10 0 0 0" Kind="InformationCircleOutline" Width="20" Height="20" Foreground="{StaticResource SOCERed}" 
-                                     ToolTip="Any items highlighted in red are &#10; inactive and are subject for review."/>
+            <!--<materialDesign:PackIcon Margin="10 0 0 0" Kind="InformationCircleOutline" Width="20" Height="20" Foreground="{StaticResource SOCERed}" 
+                                     ToolTip="Any items highlighted in red are &#10; inactive and are subject for review."/>-->
         </StackPanel>
         
         <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Top" Visibility="{Binding MessageVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
@@ -95,13 +95,18 @@
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="380"/>
+                <ColumnDefinition Width="Auto"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!--Counter Title-->
-            <StackPanel Grid.Column="0" Orientation="Vertical">
+            <Grid Grid.Column="0" HorizontalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="auto"/>
+                    <RowDefinition Height="auto"/>
+                </Grid.RowDefinitions>
 
-                <Grid>
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
@@ -121,17 +126,17 @@
                         </ToggleButton>-->
                     </StackPanel>
 
-                    <Border Grid.Column="1" Width="110" CornerRadius="3" BorderThickness="1" BorderBrush="Black" Margin="20 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="2">
-                        <StackPanel Orientation="Horizontal">
+                    <!--<Border Grid.Column="1" Width="110" CornerRadius="3" BorderThickness="1" BorderBrush="Black" Margin="20 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right" Padding="2">-->
+                    <StackPanel Grid.Column="1" Orientation="Horizontal" Width="110" Margin="20 0 0 0" VerticalAlignment="Center" HorizontalAlignment="Right">
                             <TextBlock Text="Due in:" FontSize="14" FontWeight="Regular" FontStyle="Italic"/>
                             <TextBlock Text="{Binding DueDateValue}" FontSize="14" FontWeight="SemiBold" Margin="7 0 0 0"/>
                             <TextBlock Text=" days" FontSize="14" FontWeight="Regular" FontStyle="Italic"/>
                         </StackPanel>
-                    </Border>
+                    <!--</Border>-->
                 </Grid>
 
 
-                <StackPanel Orientation="Vertical"  VerticalAlignment="Bottom" Margin="0 10 0 0">
+                <StackPanel Grid.Row="1" Orientation="Vertical"  VerticalAlignment="Bottom" Margin="0 10 0 0">
                     <Grid>
                         <ProgressBar Height="15" Orientation="Horizontal" Value="{Binding PercentComplete}" Background="Transparent" Foreground="{StaticResource SOCELightGray}" BorderThickness="1" BorderBrush="{StaticResource SOCELightGray}"/>
                         <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
@@ -147,7 +152,16 @@
                         </StackPanel>
                     </Grid>
                 </StackPanel>
-            </StackPanel >
+            </Grid >
+            <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Height="65" HorizontalAlignment="Left" VerticalAlignment="Stretch" Padding="5"
+                    Margin="10 0 0 0" ToolTip="Expense Report" Command="{Binding OpenExpenseReport}">
+                <Button.Content>
+                    <materialDesign:PackIcon Width="40" Height="117" Foreground="{Binding ExpensePresent}" Kind="TextBoxPlus" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                    <!--<StackPanel Orientation="Horizontal">
+                        <TextBlock Text="EXPENSE&#10; REPORT" Foreground="black" VerticalAlignment="Center"/>
+                    </StackPanel>-->
+                </Button.Content>
+            </Button>
 
             <Grid Grid.Column="2">
                 <Grid.RowDefinitions>

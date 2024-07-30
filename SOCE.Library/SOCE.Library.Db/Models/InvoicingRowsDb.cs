@@ -16,6 +16,7 @@ namespace SOCE.Library.Db
         public double PreviousInvoiced { get; set; }
         public double ThisPeriodInvoiced { get; set; }
         public string ScopeName { get; set; }
-
+        //public int ExpenseEnum { get; set; }
+        public int IsExpense { get; set; }
     }
 }

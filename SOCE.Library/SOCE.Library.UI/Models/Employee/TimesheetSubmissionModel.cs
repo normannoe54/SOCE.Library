@@ -56,6 +56,19 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _expensesPresent;
+        public bool ExpensesPresent
+        {
+            get
+            {
+                return _expensesPresent;
+            }
+            set
+            {
+                _expensesPresent = value;
+                RaisePropertyChanged(nameof(ExpensesPresent));
+            }
+        }
 
         private bool _approved = false;
         public bool Approved
@@ -141,6 +154,19 @@ namespace SOCE.Library.UI
             }
         }
 
+        private double _expensesCost { get; set; }
+        public double ExpensesCost
+        {
+            get
+            {
+                return _expensesCost;
+            }
+            set
+            {
+                _expensesCost = value;
+                RaisePropertyChanged(nameof(ExpensesCost));
+            }
+        }
 
         public TimesheetSubmissionModel()
         { }
@@ -156,6 +182,8 @@ namespace SOCE.Library.UI
             HolidayHours = emdb.HolidayHours;
             OTHours = emdb.OTHours;
             Approved = Convert.ToBoolean(emdb.Approved);
+            ExpensesCost = emdb.ExpensesCost;
+            ExpensesPresent = ExpensesCost > 0;
             Missing = false;
 
             if (Approved)
@@ -188,6 +216,7 @@ namespace SOCE.Library.UI
             tsm.EmailRemind = true;
             tsm.SubmittedEnabled = false;
             tsm.Status = StatusEnum.Incomplete;
+            tsm.ExpensesPresent = false;
             return tsm;
         }
     }

@@ -118,7 +118,7 @@ namespace SOCE.Library.UI.ViewModels
         private InvoicingVM invoicingVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
-        private ProposalsVM proposalsVM;
+        //private ProposalsVM proposalsVM;
         private PortalPage currentPage;
 
         public ICommand GoToNewViewCommand { get; set; }
@@ -135,26 +135,38 @@ namespace SOCE.Library.UI.ViewModels
 
         }
 
-        public async void Initiate(EmployeeModel employee)
+        public async Task Initiate(EmployeeModel employee)
         {
             LoggedInEmployee = employee;
             timesheetVM = new TimesheetVM(employee);
             await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
             {
-                    employeeVM = new EmployeeVM(employee);
+                employeeVM = new EmployeeVM(employee);
+
+                if (employee.Status != AuthEnum.Standard)
+                {
                     timesheetReviewVM = new TimesheetReviewVM(employee);
-                    projectScheduleVM = new ProjectScheduleVM(employee);
-                    projectVM = new ProjectVM(employee);
-                    networkSearchVM = new NetworkSearchVM(employee);
-                    proposalsVM = new ProposalsVM(employee);
+                }
+
+                networkSearchVM = new NetworkSearchVM(employee);
+
+                projectScheduleVM = new ProjectScheduleVM(employee);
+                projectVM = new ProjectVM(employee);
+                //proposalsVM = new ProposalsVM(employee);
+                if (employee.Status == AuthEnum.Admin || employee.Status == AuthEnum.Principal)
+                {
                     //invoicingVM = new InvoicingVM(employee);
+                }
             }));
         }
 
-        public void Reload()
+        public async void Reload()
         {
-            PortalPage curpage = currentPage; 
-            Initiate(LoggedInEmployee);
+            PortalPage curpage = currentPage;
+            //Task.Run(async () => { await Initiate(LoggedInEmployee); }).Wait();
+            await Initiate(LoggedInEmployee);
+            //task.Wait();
+            //var result = task.IsCompleted;
             GoToPage(curpage);
         }
 
@@ -199,12 +211,12 @@ namespace SOCE.Library.UI.ViewModels
                     case PortalPage.NetworkSearch:
                         CurrentPage = networkSearchVM;
                         break;
-                    case PortalPage.Proposals:
-                        CurrentPage = proposalsVM;
-                        break;
-                    //case PortalPage.Invoicing:
-                    //    CurrentPage = invoicingVM;
+                    //case PortalPage.Proposals:
+                    //    CurrentPage = proposalsVM;
                     //    break;
+                    case PortalPage.Invoicing:
+                        CurrentPage = invoicingVM;
+                        break;
                     case PortalPage.Projects:
                         projectVM.Reload();
                         CurrentPage = projectVM;

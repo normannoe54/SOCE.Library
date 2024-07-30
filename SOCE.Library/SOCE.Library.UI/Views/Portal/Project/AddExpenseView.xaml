@@ -1,0 +1,126 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.AddExpenseView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             xmlns:wpf="clr-namespace:MaterialDesignThemes.Wpf;assembly=MaterialDesignThemes.Wpf"
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="Transparent" Width="485" >
+
+    <Grid Margin="16" VerticalAlignment="Stretch">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height ="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0" Text="New Expense" FontSize="24" />
+            <TextBlock Margin="20 0 0 0" Grid.Column="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
+                <TextBlock.Triggers>
+                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                        <BeginStoryboard>
+                            <Storyboard>
+                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                                </DoubleAnimationUsingKeyFrames>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </EventTrigger>
+                </TextBlock.Triggers>
+            </TextBlock>
+        </Grid>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <VirtualizingStackPanel Grid.Column="1" Orientation="Horizontal">
+                <TextBlock Grid.Column="0" materialDesign:HintAssist.Hint="Project Name" Text="{Binding BaseProject.ProjectName}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" />
+                <TextBlock Grid.Column="1" materialDesign:HintAssist.Hint="Project Number" Text="{Binding BaseProject.ProjectNumber, StringFormat= ' [{0}]'}" Style="{DynamicResource MaterialDesignButtonTextBlock}" Margin="0 8 0 0" FontSize="16" HorizontalAlignment="Left"/>
+            </VirtualizingStackPanel>
+        </Grid>
+
+        <Grid VerticalAlignment="Stretch" Margin="10 10 0 0" Grid.Row="2" Background="Transparent" >
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+
+            <Grid Grid.Row="0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <DatePicker Grid.Column="0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                                 Text="{Binding DateExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right" Margin="20 0 0 0">
+                    <CheckBox Grid.Column="0" HorizontalAlignment="Left" IsChecked="{Binding IsClientBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Background="{StaticResource SOCERed}">
+                        <CheckBox.Content>
+                            <TextBlock Text="BILLABLE"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                    <CheckBox Grid.Column="1" HorizontalAlignment="Right" IsChecked="{Binding IsReimbursable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="20 0 0 0" Background="{StaticResource SOCERed}">
+                        <CheckBox.Content>
+                            <TextBlock Text="REIMBURSABLE"/>
+                        </CheckBox.Content>
+                    </CheckBox>
+                </StackPanel>
+            </Grid>
+
+            <TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding DescriptionExp}" Grid.Row="1"
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" AcceptsReturn="True" TextWrapping="Wrap"/>
+
+            <ComboBox Grid.Row="2" ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:ExpenseEnum}}}" Margin="0 10 0 0"
+                      DisplayMemberPath="Description" SelectedValue="{Binding TypeExpense}" SelectedValuePath="Value"/>
+
+            <Grid Grid.Row="3" HorizontalAlignment="Stretch" Margin="0 10 0 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBox Grid.Column="0" Width="60" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center" 
+                                         Text="{Binding Rate, StringFormat='{}{0:#,0.##}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         materialDesign:TextFieldAssist.PrefixText="$" materialDesign:TextFieldAssist.SuffixText="/mi."
+                                         Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <TextBox Grid.Column="1" Width="60" Margin="10 0 10 0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center"
+                                         Text="{Binding MileageExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.SuffixText="/mi."
+                                         Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                <TextBox Grid.Column="2" FontSize="12" TextAlignment="Left" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                         Text="{Binding TotalCostExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  materialDesign:TextFieldAssist.PrefixText="$"
+                                         IsReadOnly="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Total Cost"/>
+            </Grid>
+
+        </Grid>
+
+
+
+
+        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0" HorizontalAlignment="Center">
+            <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddExpenseCommand}">
+                <TextBlock Text="ACCEPT"/>
+            </Button>
+            <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+                <TextBlock Text="CANCEL"/>
+            </Button>
+        </StackPanel>
+    </Grid>
+
+</UserControl>

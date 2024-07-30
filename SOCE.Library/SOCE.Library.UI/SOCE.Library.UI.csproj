@@ -98,6 +98,10 @@
     <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Office.Interop.Excel, Version=15.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Office.Interop.Excel.15.0.4795.1001\lib\net20\Microsoft.Office.Interop.Excel.dll</HintPath>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.3.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\WindowsAPICodePack.1.1.3\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
     </Reference>
@@ -151,6 +155,7 @@
     <Reference Include="System.Drawing.Common, Version=4.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Drawing.Common.4.5.1\lib\net461\System.Drawing.Common.dll</HintPath>
     </Reference>
+    <Reference Include="System.IO.Compression.FileSystem" />
     <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
@@ -203,6 +208,9 @@
     <Compile Include="Converters\Date\DatetoStringFullConverter.cs" />
     <Compile Include="Converters\InvertBooleanConverter.cs" />
     <Compile Include="Converters\BackgroundEnumConverter.cs" />
+    <Compile Include="Converters\IsBillableColorConverter.cs" />
+    <Compile Include="Converters\InvoicedColorConverterForSelection.cs" />
+    <Compile Include="Converters\IsBillableKindConverter.cs" />
     <Compile Include="Converters\TimesheetColorAlertConverter.cs" />
     <Compile Include="Converters\IsNullColorConverter.cs" />
     <Compile Include="Converters\IsStringEmptyConverter.cs" />
@@ -219,6 +227,7 @@
     <Compile Include="Models\Employee\TimesheetSubmissionModel.cs" />
     <Compile Include="Models\Generic\ClientLowResModel.cs" />
     <Compile Include="Models\Generic\EmployeeLowResModel.cs" />
+    <Compile Include="Models\Invoicing\ExpenseInvoiceModel.cs" />
     <Compile Include="Models\Invoicing\HourEntryModel.cs" />
     <Compile Include="Models\Invoicing\HourSummaryIndModel.cs" />
     <Compile Include="Models\Invoicing\HourSummaryModel.cs" />
@@ -226,6 +235,7 @@
     <Compile Include="Models\Invoicing\InvoicingRows.cs" />
     <Compile Include="Models\Invoicing\ProjectInvoicingModel.cs" />
     <Compile Include="Models\Invoicing\SettingsEnum.cs" />
+    <Compile Include="Models\NetworkSearch\SearchSettingsModel.cs" />
     <Compile Include="Models\NetworkSearch\FolderModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />
     <Compile Include="Models\ProjectData\EmployeeVisualModel.cs" />
@@ -239,6 +249,8 @@
     <Compile Include="Models\ProjectSchedule\SDEntryModel.cs" />
     <Compile Include="Models\ProjectSchedule\PMScheduleModel.cs" />
     <Compile Include="Models\ProjectSchedule\WeeklyScheduleModel.cs" />
+    <Compile Include="Models\Projects\AddServiceLogStatusEnum.cs" />
+    <Compile Include="Models\Projects\ExpenseProjectModel.cs" />
     <Compile Include="Models\Projects\ProjectViewResModel.cs" />
     <Compile Include="Models\Projects\RoleSummaryModel.cs" />
     <Compile Include="Models\Projects\SubProjectSummaryModel.cs" />
@@ -250,11 +262,15 @@
     <Compile Include="Models\StatusEnum.cs" />
     <Compile Include="Models\Generic\ProjectLowResModel.cs" />
     <Compile Include="Models\Generic\SubProjectLowResModel.cs" />
+    <Compile Include="Models\Timesheet\ExpenseEnum.cs" />
+    <Compile Include="Models\Timesheet\ProjectSelectionModel.cs" />
     <Compile Include="Models\Timesheet\TimesheetRowAlertStatus.cs" />
+    <Compile Include="Models\Timesheet\ExpenseReportModel.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeInfoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Invoicing\CreateInvoiceVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Invoicing\InvoicingSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\NetworkSearch\NetworkSearchVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\NetworkSearch\SearchFiltersVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ManagerStatusVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\EmployeeScheduleSummaryVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\IndividualSingleVM.cs" />
@@ -264,9 +280,12 @@
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\WeeklyScheduleVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ScheduleWeekVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\ProjectSchedule\ProjectScheduleVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddExpenseVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\AddServiceLogVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddServiceVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\AddAddServiceVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Invoicing\InvoicingVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Projects\ExpenseProjectVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\MarketVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\ClientVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Projects\BaseProjectSummaryVM.cs" />
@@ -311,6 +330,7 @@
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetReviewVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\TimesheetViewerVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\TimesheetReview\ProgressBarVM.cs" />
+    <Compile Include="ViewModels\Pages\Portal\Timesheet\ExpenseReportVM.cs" />
     <Compile Include="ViewModels\Popups\SelectionBoxVM.cs" />
     <Compile Include="ViewModels\Popups\YesNoVM.cs" />
     <Compile Include="ViewModels\Pages\Portal\Employee\EmployeeVM.cs" />
@@ -357,6 +377,9 @@
     <Compile Include="Views\Portal\Invoicing\InvoicingView.xaml.cs">
       <DependentUpon>InvoicingView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\NetworkSearch\SearchFiltersView.xaml.cs">
+      <DependentUpon>SearchFiltersView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\NetworkSearch\NetworkSearchView.xaml.cs">
       <DependentUpon>NetworkSearchView.xaml</DependentUpon>
     </Compile>
@@ -381,6 +404,12 @@
     <Compile Include="Views\Portal\Project\AddAddServiceView.xaml.cs">
       <DependentUpon>AddAddServiceView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\Project\AddExpenseView.xaml.cs">
+      <DependentUpon>AddExpenseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Project\ExpenseProjectView.xaml.cs">
+      <DependentUpon>ExpenseProjectView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\Project\BaseProjectSummaryView.xaml.cs">
       <DependentUpon>BaseProjectSummaryView.xaml</DependentUpon>
     </Compile>
@@ -396,6 +425,9 @@
     <Compile Include="Views\Portal\Project\AddServiceManagerView.xaml.cs">
       <DependentUpon>AddServiceManagerView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\Portal\Project\AddServiceRunLogView.xaml.cs">
+      <DependentUpon>AddServiceRunLogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Portal\Proposals\AddProposalsView.xaml.cs">
       <DependentUpon>AddProposalsView.xaml</DependentUpon>
     </Compile>
@@ -407,6 +439,9 @@
     </Compile>
     <Compile Include="Views\Portal\Proposals\ProposalsView.xaml.cs">
       <DependentUpon>ProposalsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\TimesheetReview\ExpenseReviewView.xaml.cs">
+      <DependentUpon>ExpenseReviewView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\TimesheetReview\ProgressBarView.xaml.cs">
       <DependentUpon>ProgressBarView.xaml</DependentUpon>
@@ -476,6 +511,9 @@
     </Compile>
     <Compile Include="Views\Portal\TimesheetReview\TimesheetViewerView.xaml.cs">
       <DependentUpon>TimesheetViewerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Portal\Timesheet\ExpenseReportView.xaml.cs">
+      <DependentUpon>ExpenseReportView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\Portal\Timesheet\TimesheetView.xaml.cs">
       <DependentUpon>TimesheetView.xaml</DependentUpon>
@@ -558,6 +596,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\NetworkSearch\SearchFiltersView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\NetworkSearch\NetworkSearchView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -590,6 +632,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\Project\AddExpenseView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\Project\ExpenseProjectView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\Project\BaseProjectSummaryView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -610,6 +660,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\Portal\Project\AddServiceRunLogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\Portal\Proposals\AddProposalsView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -623,6 +677,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\Portal\Proposals\ProposalsView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Portal\TimesheetReview\ExpenseReviewView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
@@ -718,6 +776,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Portal\Timesheet\ExpenseReportView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Portal\Timesheet\TimesheetView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -766,8 +828,9 @@
     <EmbeddedResource Include="Resources\PMSchedule.xlsx" />
     <EmbeddedResource Include="Resources\WeeklySchedule.xlsx" />
     <EmbeddedResource Include="Resources\AddServiceTrackingLog.xlsx" />
-    <None Include="Resources\EmployeeSummary.xlsx" />
+    <EmbeddedResource Include="Resources\EmployeeSummary.xlsx" />
     <EmbeddedResource Include="Resources\ProposalDataExport.xlsx" />
+    <EmbeddedResource Include="Resources\InvoiceTemplate.xlsx" />
     <Resource Include="license.txt" />
     <Resource Include="Windows Logo.png" />
     <EmbeddedResource Include="Resources\ProjectDataExport.xlsx" />

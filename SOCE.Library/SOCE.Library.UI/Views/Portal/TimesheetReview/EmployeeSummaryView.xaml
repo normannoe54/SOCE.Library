@@ -42,7 +42,7 @@
 
         <!--</StackPanel>-->
 
-        <Grid Grid.Row="1" Margin="0 20 0 0">
+        <Grid Grid.Row="1" Margin="0 20 20 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="250"/>
@@ -51,15 +51,17 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="170"/>
+                <ColumnDefinition Width="100"/>
+                <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
             <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Employee"/>
             <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Title" Margin="20 0 0 0"/>
             <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status"/>
-            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="PTO Hours"/>
-            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick Hours"/>
-            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT Hours"/>
-            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total Hours" />
+            <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Expenses"/>
+            <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="PTO Hours"/>
+            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick Hours"/>
+            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT Hours"/>
+            <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total Hours" />
         </Grid>
 
         <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0 10 0 0">
@@ -75,13 +77,16 @@
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="160"/>
+                                <ColumnDefinition Width="40"/>
+
                                 <!--<ColumnDefinition Width="auto"/>-->
 
                             </Grid.ColumnDefinitions>
                             <TextBox Grid.Column="0"  IsReadOnly="True" Text="{Binding Path=Employee.FullName}" TextAlignment="Left" FontSize="16" FontWeight="DemiBold" VerticalAlignment="Center" Margin="0 0 10 0"/>
                             <TextBox Grid.Column="1"  IsReadOnly="True" Text="{Binding Path=Employee.DefaultRole, Converter={StaticResource DesConverter}}" TextAlignment="Left" FontStyle="Italic" FontSize="16" VerticalAlignment="Center" Margin="10 0 10 0"/>
-                            <Border Grid.Column="2" Margin="10 0 10 0" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="120">
+                            <Border Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="120">
                                 <Border.Style>
                                     <Style TargetType="{x:Type Border}">
                                         <Style.Triggers>
@@ -120,16 +125,28 @@
                                     </TextBlock.Style>
                                 </TextBlock>
                             </Border>
+                            <TextBox Grid.Column="3" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" 
+                                     Text="{Binding ExpensesCost, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                     materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 10 0"/>
+                            <TextBox Grid.Column="4" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
+                            <TextBox Grid.Column="5" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
+                            <TextBox Grid.Column="6" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
+                            <TextBox Grid.Column="7" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
 
-                            <TextBox Grid.Column="3" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-                            <TextBox Grid.Column="4" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-                            <TextBox Grid.Column="5" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-                            <TextBox Grid.Column="6" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-
-                            <Button Margin="10 0 0 0" Grid.Column="7" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.OpenTimesheetSubmission, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                            <Button Margin="10 0 0 0" Grid.Column="8" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.OpenTimesheetSubmission, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                     CommandParameter="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"  BorderBrush="Black" BorderThickness="1">
                                 <TextBlock Text="Open Time Sheet" Foreground="black" VerticalAlignment="Center"/>
+                            </Button
+                                    >
+                            <Button Grid.Column="9" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Padding="5" 
+                                    Visibility="{Binding ExpensesPresent,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Margin="10 0 0 0" ToolTip="Expense Report" Command="{Binding Path=DataContext.OpenExpenseReport, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                                    CommandParameter="{Binding}">
+                                <Button.Content>
+                                    <materialDesign:PackIcon Width="30" Height="30" Foreground="Black" Kind="TextBoxPlus" VerticalAlignment="Center" HorizontalAlignment="Center" />
+                                </Button.Content>
                             </Button>
+                            
 
                             <!--<Button Margin="10 0 0 0" Grid.Column="8" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.EmailReminder, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" 
                                     CommandParameter="{Binding}" IsEnabled="{Binding EmailRemind}" HorizontalAlignment="Center" VerticalAlignment="Center"  BorderBrush="Black" BorderThickness="1">

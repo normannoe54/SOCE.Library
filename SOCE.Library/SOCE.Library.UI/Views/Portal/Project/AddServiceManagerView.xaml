@@ -55,6 +55,7 @@
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="Auto"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" HorizontalAlignment ="Left" VerticalAlignment="Center" FontSize="20" FontWeight="SemiBold" Text="ADD-SERVICE" />
@@ -72,26 +73,43 @@
                         <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0"/>
                     </Button>
 
-                    <!--<Button Grid.Column="2" Margin="10 0 0 0" IsEnabled="{Binding BaseProject.IsActive}"
-                                                    Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
-                                                    Foreground="{StaticResource SOCEBlueCompliment}" Background="Transparent"
+                    <Button Grid.Column="2" Margin="10 0 0 0" IsEnabled="{Binding BaseProject.IsActive}"
+                                                    Background="Transparent"
                                                     BorderBrush="Transparent"
                                                     Command="{Binding ImortalizeCommand}"
                                                     HorizontalAlignment="Center"
-                                                    ToolTip="Immortalize Add-Service Log">
+                                                    ToolTip="Create Add-Service Log">
+                        <Button.Style>
+                            <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Missing">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Complete">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEGreenCompliment}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Incomplete">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEOrangeCompliment}"/>
+                                    </DataTrigger>
+                                    <!-- etc -->
+                                </Style.Triggers>
+                            </Style>
+                        </Button.Style>
 
                         <materialDesign:PackIcon Kind="DownloadBox" VerticalAlignment="Center" Padding="0" Height="30" Width="30"/>
-                    </Button>-->
-
-                    <Border Grid.Column="3" Margin="0 0 70 5" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Width="130">
+                    </Button>
+                    <Border Grid.Column="3" Margin="15 0 70 0" VerticalAlignment="Center" HorizontalAlignment="Right" CornerRadius="3" BorderThickness="2" Padding="5 0 5 0">
                         <Border.Style>
                             <Style TargetType="{x:Type Border}">
                                 <Style.Triggers>
-                                    <DataTrigger Binding="{Binding BaseProject.IsActive}" Value="False">
+                                    <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Missing">
                                         <Setter Property="BorderBrush" Value="{StaticResource SOCERed}"/>
                                     </DataTrigger>
-                                    <DataTrigger Binding="{Binding BaseProject.IsActive}" Value="True">
+                                    <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Complete">
                                         <Setter Property="BorderBrush" Value="{StaticResource SOCEGreenCompliment}"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Incomplete">
+                                        <Setter Property="BorderBrush" Value="{StaticResource SOCEOrangeCompliment}"/>
                                     </DataTrigger>
                                     <!-- etc -->
                                 </Style.Triggers>
@@ -101,13 +119,17 @@
                             <TextBlock.Style>
                                 <Style TargetType="{x:Type TextBlock}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding BaseProject.IsActive}" Value="False">
-                                            <Setter Property="Text" Value="Inactive" />
+                                        <DataTrigger Binding="{Binding AddServiceLogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Missing">
+                                            <Setter Property="Text" Value="Missing Log" />
                                             <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
                                         </DataTrigger>
-                                        <DataTrigger Binding="{Binding BaseProject.IsActive}" Value="True">
-                                            <Setter Property="Text" Value="Active" />
+                                        <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Complete">
+                                            <Setter Property="Text" Value="Complete Log" />
                                             <Setter Property="Foreground" Value="{StaticResource SOCEGreenCompliment}"/>
+                                        </DataTrigger>
+                                        <DataTrigger Binding="{Binding AddServiceLogStatus}" Value="Incomplete">
+                                            <Setter Property="Text" Value="Incomplete Log" />
+                                            <Setter Property="Foreground" Value="{StaticResource SOCEOrangeCompliment}"/>
                                         </DataTrigger>
                                         <!-- etc -->
                                     </Style.Triggers>
@@ -132,7 +154,7 @@
                     <TextBlock Grid.Column="1" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Point Number" />
                     <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Left" Margin="15 0 0 0" VerticalAlignment="Center" Text="Description" />
                     <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Fee" TextAlignment="Center"/>
-                    <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Date Initiated" TextAlignment="Center"/>
+                    <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Date Published" TextAlignment="Center"/>
                     <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Date Sent" TextAlignment="Center" />
                     <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Date Invoiced" TextAlignment="Center" />
                     <TextBlock Grid.Column="7" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Billable?"/>
@@ -176,7 +198,8 @@
 
                                     <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="15 0 0 0" IsEnabled="{Binding Path=DataContext.CanEditPhase, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}">
                                         <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20" IsEnabled="{Binding CanDelete}"
-                                            Command="{Binding Path=DataContext.DeleteSubProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                            Command="{Binding Path=DataContext.DeleteSubProject, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" 
+                                                IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" ToolTip="Delete">
                                             <Button.Content>
                                                 <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </Button.Content>
@@ -189,26 +212,65 @@
                                                 <materialDesign:PackIcon Kind="Lock" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                             </materialDesign:ToggleButtonAssist.OnContent>
                                         </ToggleButton>
+                                        <TextBlock Text="*" FontWeight="Bold" VerticalAlignment="Top">
+                                            <TextBlock.Style>
+                                                <Style TargetType="{x:Type TextBlock}">
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding LogStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Value="Missing">
+                                                            <Setter Property="materialDesign:HintAssist.Hint" Value="Missing Log"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LogStatus}" Value="Complete">
+                                                            <Setter Property="materialDesign:HintAssist.Hint" Value="Complete Log"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource SOCEGreenCompliment}"/>
+                                                        </DataTrigger>
+                                                        <DataTrigger Binding="{Binding LogStatus}" Value="Incomplete">
+                                                            <Setter Property="materialDesign:HintAssist.Hint" Value="Incomplete Log"/>
+                                                            <Setter Property="Foreground" Value="{StaticResource SOCEOrangeCompliment}"/>
+                                                        </DataTrigger>
+                                                        <!-- etc -->
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </TextBlock.Style>
+                                        </TextBlock>
                                     </VirtualizingStackPanel>
 
-                                    <TextBox Grid.Column="1" IsReadOnly="{Binding EditSubFieldState}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PointNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 10 0"  materialDesign:TextFieldAssist.PrefixText="[" materialDesign:TextFieldAssist.SuffixText="]"/>
-                                    <TextBox Grid.Column="2" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Left" VerticalAlignment="Center" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="20 0 0 0"/>
-                                    <TextBox Grid.Column="3" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" Margin="25 0 0 0"  HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$"/>
+                                    <TextBox Grid.Column="1" IsReadOnly="{Binding EditSubFieldState}" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" 
+                                             VerticalAlignment="Center" TextAlignment="Center" Text="{Binding PointNumber, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                             Margin="0 0 10 0"  materialDesign:TextFieldAssist.PrefixText="[" materialDesign:TextFieldAssist.SuffixText="]" 
+                                             IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Grid.Column="2" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" 
+                                             TextAlignment="Left" VerticalAlignment="Center" Text="{Binding Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="20 0 0 0"
+                                             IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                    <TextBox Grid.Column="3" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" Margin="25 0 0 0"  HorizontalAlignment="Stretch" 
+                                             TextAlignment="Left" VerticalAlignment="Center" Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" 
+                                             IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.PrefixText="$"
+                                             Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
+
+                                    <StackPanel Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Center" Orientation="Horizontal"  Margin="25 0 0 0" 
+                                                Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock  FontWeight="Bold" FontSize="8" VerticalAlignment="Top" Text="H" />
+                                        <TextBlock  Margin="3 0 0 0" FontWeight="Regular" FontSize="12" FontStyle="Italic" VerticalAlignment="Center" 
+                                             Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='(${0:#,0.##})'}"/>
+                                    </StackPanel>
+
                                     <DatePicker Grid.Column="4"  IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
                                             FontWeight="Regular" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="25 0 0 0"
-                                            SelectedDate="{Binding Path=DateInitiated,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                            SelectedDate="{Binding Path=DateInitiated,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                            IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DatePicker Grid.Column="5"  IsEnabled="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
                                             FontWeight="Regular" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="25 0 0 0"
-                                            SelectedDate="{Binding Path=DateSent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                            SelectedDate="{Binding Path=DateSent,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                            IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     <DatePicker Grid.Column="6"  IsEnabled="False" 
                                             FontWeight="Regular" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="25 0 0 0"
                                             SelectedDate="{Binding Path=DateInvoiced,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
                                     <CheckBox Grid.Column="7" IsEnabled="{Binding EditSubFieldState,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
                                               Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="25 0 0 0"
-                                              HorizontalAlignment="Center" Background="DarkGray" />
+                                              HorizontalAlignment="Center" Background="DarkGray" IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                                     <CheckBox Grid.Column="8" IsEnabled="{Binding EditSubFieldState,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
                                               Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="25 0 0 0"
-                                              HorizontalAlignment="Center" Background="DarkGray"/>
+                                              HorizontalAlignment="Center" Background="DarkGray" IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -311,7 +373,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="0 0 0 6" Text="Architect:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
                                 <TextBox Grid.Column="1" Margin="10 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" Text="{Binding SelectedAddService.ClientCompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Architect"/>
+                                         VerticalAlignment="Center" Text="{Binding SelectedAddService.ClientCompanyName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Architect"/>
                             </Grid>
                             <Grid  Margin="10 0 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Column="1">
                                 <Grid.ColumnDefinitions>
@@ -321,9 +384,11 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="0 0 0 6" Text="Address:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
                                 <TextBox Grid.Column="1" Margin="10 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Address" Text="{Binding SelectedAddService.ClientAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Address" Text="{Binding SelectedAddService.ClientAddress, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                 <TextBox Grid.Column="2" Margin="10 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="City" Text="{Binding SelectedAddService.ClientCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="City" Text="{Binding SelectedAddService.ClientCity, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                             <Grid  Margin="10 0 10 0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Column="2">
                                 <Grid.ColumnDefinitions>
@@ -332,7 +397,9 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="0 0 0 6" Text="Attention:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
                                 <TextBox Grid.Column="1" Margin="10 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Client Name" Text="{Binding SelectedAddService.NameOfClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Client Name"
+                                         Text="{Binding SelectedAddService.NameOfClient, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                         IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
 
                             <Grid  Margin="10 0 10 0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Column="3">
@@ -343,7 +410,8 @@
                                 <TextBlock Margin="0 0 0 6" Text="Date:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
                                 <DatePicker Grid.Column="5"  IsEnabled="{Binding SelectedAddService.EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
                                             FontWeight="Regular" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="10 0 10 0"
-                                            SelectedDate="{Binding Path=SelectedAddService.DateSent, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
+                                            SelectedDate="{Binding Path=SelectedAddService.DateSent, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"
+                                            IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                             </Grid>
                         </Grid>
                         <Grid  Margin="10 0 10 0" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Row="2">
@@ -353,10 +421,13 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Margin="0 0 0 6" Text="Description / Summary:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
                             <TextBox Grid.Column="1" Margin="10 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Description" Text="{Binding SelectedAddService.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                                         VerticalAlignment="Center" materialDesign:HintAssist.Hint="Description"
+                                     IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                      Text="{Binding SelectedAddService.Description, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         </Grid>
-                        <TextBox Margin="10 20 10 20" VerticalAlignment="Stretch" Grid.Row="3" Style="{StaticResource MaterialDesignOutlinedTextBox}" AcceptsReturn="True"  IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                          Text="{Binding SelectedAddService.ExpandedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Scope of Work"/>
+                        <TextBox Margin="10 20 10 20" VerticalAlignment="Stretch" Grid.Row="3" Style="{StaticResource MaterialDesignOutlinedTextBox}" AcceptsReturn="True" TextWrapping="Wrap"  IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
+                                          Text="{Binding SelectedAddService.ExpandedDescription, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Scope of Work"
+                                 IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                         <Grid Grid.Row="4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="350"/>
@@ -383,7 +454,8 @@
                                                Visibility="{Binding SelectedAddService.FeeandHourlyBaseVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
                                     <TextBox Grid.Column="2" Margin="5 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch" 
                                              Visibility="{Binding SelectedAddService.FeeOnlyVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
-                                         VerticalAlignment="Center" Text="{Binding SelectedAddService.Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" materialDesign:HintAssist.Hint="Fee"/>
+                                         VerticalAlignment="Center" Text="{Binding SelectedAddService.Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}"
+                                             IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.PrefixText="$" materialDesign:HintAssist.Hint="Fee"/>
 
                                 </Grid>
                                 
@@ -395,7 +467,8 @@
                                 </Grid.ColumnDefinitions>
                                 <TextBlock Margin="0 0 0 6" Text="To:"  HorizontalAlignment="Left" FontSize="14" FontWeight="SemiBold" VerticalAlignment="Bottom"/>
                                 <TextBox Grid.Column="1" Margin="10 0 0 0" IsReadOnly="{Binding SelectedAddService.EditSubFieldState}" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Stretch"
-                                         VerticalAlignment="Center" Text="{Binding SelectedAddService.PersonAddressed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Client"/>
+                                         VerticalAlignment="Center" IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         Text="{Binding SelectedAddService.PersonAddressed, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:HintAssist.Hint="Client"/>
                             </Grid>
                             <Grid  Margin="10 0 0 10" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Grid.Column="2">
                                 <Grid.ColumnDefinitions>
@@ -408,7 +481,8 @@
                                               ItemsSource="{Binding Path=DataContext.ProjectManagers, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}"
                                               DisplayMemberPath="FullName" 
                                               MaxDropDownHeight="200"
-                                              SelectedItem="{Binding SelectedAddService.SelectedEmployee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                              SelectedItem="{Binding SelectedAddService.SelectedEmployee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                           IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <ComboBox.ItemsPanel>
                                         <ItemsPanelTemplate>
                                             <VirtualizingStackPanel />

@@ -8,6 +8,10 @@ using SOCE.Library.Db;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Globalization;
+using Microsoft.WindowsAPICodePack.Dialogs;
+using System.IO;
+using System.Diagnostics;
+using System.Threading;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -26,6 +30,16 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _errorMessage = "";
+        public string ErrorMessage
+        {
+            get { return _errorMessage; }
+            set
+            {
+                _errorMessage = value;
+                RaisePropertyChanged(nameof(ErrorMessage));
+            }
+        }
 
         private ProjectInvoicingModel baseProject = new ProjectInvoicingModel();
         public ProjectInvoicingModel BaseProject
@@ -56,6 +70,9 @@ namespace SOCE.Library.UI.ViewModels
             set
             {
                 _selectedPM = value;
+
+                _selectedPM.LoadSignature();
+
                 RaisePropertyChanged(nameof(SelectedPM));
             }
         }
@@ -81,6 +98,18 @@ namespace SOCE.Library.UI.ViewModels
                 RaisePropertyChanged("InvoiceDateInp");
             }
         }
+
+        private DateTime? _invoiceDateRevisedInp;
+        public DateTime? InvoiceDateRevisedInp
+        {
+            get { return _invoiceDateRevisedInp; }
+            set
+            {
+                _invoiceDateRevisedInp = value;
+                RaisePropertyChanged("InvoiceDateRevisedInp");
+            }
+        }
+
 
         private string _clientNameInp;
         public string ClientNameInp
@@ -148,6 +177,19 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _linkLocation;
+        public string LinkLocation
+        {
+            get { return _linkLocation; }
+            set
+            {
+                _linkLocation = value;
+                RaisePropertyChanged("LinkLocation");
+            }
+        }
+
+
+
         private ObservableCollection<InvoicingRows> _nonAdServicePhases = new ObservableCollection<InvoicingRows>();
         public ObservableCollection<InvoicingRows> NonAdServicePhases
         {
@@ -181,6 +223,17 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private ObservableCollection<InvoicingRows> _expenses = new ObservableCollection<InvoicingRows>();
+        public ObservableCollection<InvoicingRows> Expenses
+        {
+            get { return _expenses; }
+            set
+            {
+                _expenses = value;
+                RaisePropertyChanged(nameof(Expenses));
+            }
+        }
+
         private DateTime? _dateofServicesAreComplete;
         public DateTime? DateofServicesAreComplete
         {
@@ -200,6 +253,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _doBasicServicesExist = value;
                 RaisePropertyChanged("DoBasicServicesExist");
+            }
+        }
+
+        private bool _isRevised = false;
+        public bool IsRevised
+        {
+            get { return _isRevised; }
+            set
+            {
+                _isRevised = value;
+                RaisePropertyChanged("IsRevised");
             }
         }
 
@@ -380,14 +444,86 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private double _thisPeriodSpent;
+        public double ThisPeriodSpent
+        {
+            get { return _thisPeriodSpent; }
+            set
+            {
+                _thisPeriodSpent = value;
+                RaisePropertyChanged("ThisPeriodSpent");
+            }
+        }
+
+        private double _thisAdPeriodSpent;
+        public double ThisAdPeriodSpent
+        {
+            get { return _thisAdPeriodSpent; }
+            set
+            {
+                _thisAdPeriodSpent = value;
+                RaisePropertyChanged("ThisAdPeriodSpent");
+            }
+        }
+
+        private bool _isReimbursablesVis;
+        public bool IsReimbursablesVis
+        {
+            get { return _isReimbursablesVis; }
+            set
+            {
+                _isReimbursablesVis = value;
+                RaisePropertyChanged("IsReimbursablesVis");
+            }
+        }
+
+        private double _reimbursableToDate;
+        public double ReimbursableToDate
+        {
+            get { return _reimbursableToDate; }
+            set
+            {
+                _reimbursableToDate = value;
+                RaisePropertyChanged("ReimbursableToDate");
+            }
+        }
+
+        private double _reimbursablePrevious;
+        public double ReimbursablePrevious
+        {
+            get { return _reimbursablePrevious; }
+            set
+            {
+                _reimbursablePrevious = value;
+                RaisePropertyChanged("ReimbursablePrevious");
+            }
+        }
+
+        private double _reimbursableThisPeriod;
+        public double ReimbursableThisPeriod
+        {
+            get { return _reimbursableThisPeriod; }
+            set
+            {
+                _reimbursableThisPeriod = value;
+                RaisePropertyChanged("ReimbursableThisPeriod");
+            }
+        }
+
         private InvoicingSummaryVM baseViewModel;
 
-        public List<HourEntryModel> timesheetidstoinvoice;
+        public List<HourEntryModel> timesheetidstoinvoice = new List<HourEntryModel>();
         public ICommand CreateInvoiceCommand { get; set; }
         public ICommand CloseCommand { get; set; }
+        public ICommand SelectInvoiceLocation { get; set; }
         public List<InvoicingModelDb> previousinvoices { get; set; } = new List<InvoicingModelDb>();
-        public CreateInvoiceVM(ProjectInvoicingModel pm, InvoicingSummaryVM psvm, double hours, double budget, DateTime dateinitial, List<HourEntryModel> hourentry)
+
+        public List<ExpenseInvoiceModel> selectedexpenses { get; set; } = new List<ExpenseInvoiceModel>();
+
+        public InvoicingModel revisedinvoice;
+        public CreateInvoiceVM(ProjectInvoicingModel pm, InvoicingSummaryVM psvm, double hours, double budget, DateTime dateinitial, List<HourEntryModel> hourentry, List<ExpenseInvoiceModel> expenses)
         {
+            selectedexpenses = expenses;
             Istouchable = true;
             BaseProject = pm;
             baseViewModel = psvm;
@@ -397,6 +533,7 @@ namespace SOCE.Library.UI.ViewModels
             //this.CreateInvoiceCommand = new RelayCommand(this.CreateInvoice);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
             this.CreateInvoiceCommand = new RelayCommand(this.CreateInvoice);
+            this.SelectInvoiceLocation = new RelayCommand(this.ClickInvoice);
             //TotalHoursInvoicedInp = hours;
             //TotalBudgetInvoiced = budget;
             DateofServicesAreComplete = dateinitial;
@@ -405,7 +542,24 @@ namespace SOCE.Library.UI.ViewModels
             ProjectNumberInp = BaseProject.ProjectNumber;
             LoadProjectManagers();
             LoadInfo();
+        }
 
+        public CreateInvoiceVM(ProjectInvoicingModel pm, InvoicingSummaryVM psvm, InvoicingModel invoice, List<ExpenseInvoiceModel> expenses)
+        {
+            IsRevised = true;
+            selectedexpenses = expenses;
+            Istouchable = true;
+            BaseProject = pm;
+            baseViewModel = psvm;
+            this.CloseCommand = new RelayCommand(this.CloseWindow);
+            this.CreateInvoiceCommand = new RelayCommand(this.CreateInvoice);
+            this.SelectInvoiceLocation = new RelayCommand(this.ClickInvoice);
+            BaseProject = pm;
+            ProjectNameInp = BaseProject.ProjectName;
+            ProjectNumberInp = BaseProject.ProjectNumber;
+            revisedinvoice = invoice;
+            LoadProjectManagers();
+            ShowInvoice(invoice);
         }
 
         public CreateInvoiceVM(ProjectInvoicingModel pm, InvoicingModel invoice)
@@ -413,14 +567,30 @@ namespace SOCE.Library.UI.ViewModels
             Istouchable = false;
             this.CloseCommand = new RelayCommand(this.CloseWindow);
             BaseProject = pm;
+            IsRevised = invoice.Revised;
+            ProjectNameInp = BaseProject.ProjectName;
+            ProjectNumberInp = BaseProject.ProjectNumber;
+            LinkLocation = invoice.LocationofLink;
+
+            ShowInvoice(invoice);
+        }
+
+        private void ShowInvoice(InvoicingModel invoice)
+        {
             ClientAddressInp = invoice.ClientAddress;
             ClientNameInp = invoice.ClientName;
             ClientCompanyNameInp = invoice.ClientCompany;
             ClientCityInp = invoice.ClientCity;
-            InvoiceDateInp = invoice.Date;
-            ProjectNameInp = BaseProject.ProjectName;
-            ProjectNumberInp = BaseProject.ProjectNumber;
+            InvoiceDateInp = DateTime.Today;
             InvoiceNumberInp = invoice.InvoiceId;
+            InvoiceDateRevisedInp = invoice.Date;
+
+            if (invoice.AddServicesDate != null)
+            {
+                //DateTime datefoundinvoice = DateTime.ParseExact(invoice.AddServicesDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                DateofServicesAreComplete = invoice.AddServicesDate;
+            }
+
             EmployeeDbModel signer = SQLAccess.LoadEmployeeById(invoice.EmployeeSignedId);
 
             if (signer != null)
@@ -434,7 +604,7 @@ namespace SOCE.Library.UI.ViewModels
 
             List<TimesheetRowDbModel> timesheettime = new List<TimesheetRowDbModel>();
 
-            foreach(int timeid in invoice.TimesheetIds)
+            foreach (int timeid in invoice.TimesheetIds)
             {
                 TimesheetRowDbModel trdbm = SQLAccess.LoadTimeSheetDatabyId(timeid);
                 timesheettime.Add(trdbm);
@@ -443,42 +613,69 @@ namespace SOCE.Library.UI.ViewModels
             foreach (InvoicingRowsDb rowoi in rows)
             {
                 InvoicingRows irn = new InvoicingRows(rowoi);
+                irn.viewmodel = this;
 
-                SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(rowoi.SubId);
-
-                List<TimesheetRowDbModel> trdbmforsub = timesheettime.Where(x => x.SubProjectId == sub.Id).ToList();
-                double budgetspent = trdbmforsub.Sum(x => x.BudgetSpent);
-
-                irn.BudgetSpent = budgetspent;
-                irn.ContractFee = sub.Fee;
-                if (sub.IsAdservice == 1)
+                if (!Convert.ToBoolean(rowoi.IsExpense))
                 {
-                    if (rowoi.PercentComplete == 100 && rowoi.ThisPeriodInvoiced != 0)
+                    SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(rowoi.SubId);
+
+                    List<TimesheetRowDbModel> trdbmforsub = timesheettime.Where(x => x.SubProjectId == sub.Id).ToList();
+                    double budgetspent = trdbmforsub.Sum(x => x.BudgetSpent);
+
+                    irn.IsBillable = Convert.ToBoolean(sub.IsBillable);
+                    irn.BudgetSpent = budgetspent;
+                    irn.ContractFee = sub.Fee;
+                    irn.IsHourly = Convert.ToBoolean(sub.IsHourly);
+                    irn.PercentComplete = rowoi.PercentComplete;
+
+
+                    if (sub.IsAdservice == 1)
                     {
-                        //irn.DateOfInvoice = DateTime.ParseExact(rowoi.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString("MMMM dd, yyyy");
-                        AdServicePhasesInvoiced.Add(irn);
+                        if (rowoi.PercentComplete == 100 && rowoi.ThisPeriodInvoiced == 0)
+                        {
+                            previousinvoices = SQLAccess.LoadInvoices(BaseProject.Id);
+                            int numinvoices = previousinvoices.Count() + 1;
+                            List<InvoicingModelDb> sortedprevious = previousinvoices.OrderBy(x => x.Date).ToList();
+                            InvoicingModelDb first = sortedprevious[0];
+                            irn.DateOfInvoice = DateTime.ParseExact(first.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString("MMMM dd, yyyy");
+                            AdServicePhasesInvoiced.Add(irn);
+                        }
+                        else
+                        {
+                            AdServicePhasesUnInvoiced.Add(irn);
+                        }
                     }
                     else
                     {
-                        previousinvoices = SQLAccess.LoadInvoices(BaseProject.Id);
-                        int numinvoices = previousinvoices.Count() + 1;
-                        List<InvoicingModelDb> sortedprevious = previousinvoices.OrderBy(x => x.Date).ToList();
-                        InvoicingModelDb first = sortedprevious[0];
-                        irn.DateOfInvoice = first.Date.ToString("MMMM dd, yyyy");
-                        AdServicePhasesUnInvoiced.Add(irn);
+                        irn.IsHourly = Convert.ToBoolean(sub.IsHourly);
+                        NonAdServicePhases.Add(irn);
                     }
                 }
                 else
                 {
-                    NonAdServicePhases.Add(irn);
+                    irn.InvoicedtoDate = irn.ThisPeriodInvoiced + irn.PreviousInvoiced;
+                    irn.IsHourly = true;
+                    //irn.BudgetSpent = irn.BudgetSpent;
+                    Expenses.Add(irn);
+                    //ExpenseEnum enumtofind = (ExpenseEnum)rowoi.ExpenseEnum;    
                 }
+
             }
-
-            IsPreviousAdServiceVis = AdServicePhasesInvoiced.Count > 0 ? true : false;
-            DoBasicServicesExist = NonAdServicePhases.Count > 0 ? true : false;
-            DoAdservicesExist = AdServicePhasesUnInvoiced.Count > 0 ? true : false;
-
             SumValues();
+        }
+
+        public void ClickInvoice()
+        {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
+
+            // Process open file dialog box results
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //save file
+                LinkLocation = dialog.FileName;
+            }
         }
 
         public void LoadInfo()
@@ -489,14 +686,17 @@ namespace SOCE.Library.UI.ViewModels
 
             previousinvoices = SQLAccess.LoadInvoices(BaseProject.Id);
             int numinvoices = previousinvoices.Count() + 1;
-            List<InvoicingModelDb> sortedprevious = previousinvoices.OrderBy(x => x.Date).ToList();
+            int numinvoice = 0;
+            List<InvoicingModelDb> sortedprevious = previousinvoices.OrderBy(x => x.InvoiceNumber).ToList();
             if (previousinvoices.Count > 0)
             {
-                InvoicingModelDb first = previousinvoices[0];
+                InvoicingModelDb first = sortedprevious.Last();
                 ClientAddressInp = first.ClientAddress;
                 ClientNameInp = first.ClientName;
                 ClientCompanyNameInp = first.ClientCompany;
                 ClientCityInp = first.ClientCity;
+                LinkLocation = first.Link;
+                numinvoice = first.InvoiceNumber - (BaseProject.ProjectNumber * 1000);
 
             }
             else
@@ -550,19 +750,42 @@ namespace SOCE.Library.UI.ViewModels
                     bool iseditable = true;
                     bool foundprevious = false;
                     string datefoundinvoice = "";
+                    double basepercentcomplete = 0;
+
                     if (previousinvoices.Count > 0)
                     {
-                        InvoicingModelDb first = sortedprevious[0];
-                        InvoicingRowsDb founditem = SQLAccess.LoadInvoiceRowsByInvoiceAndSubId(sub.Id, first.Id);
-                        previousinvoiced = founditem.ThisPeriodInvoiced + founditem.PreviousInvoiced;
-                        scopename = founditem.ScopeName;
+                        InvoicingModelDb first = null;
+                        InvoicingRowsDb founditem = null;
 
-                        if (founditem.PercentComplete == 100 && founditem.ThisPeriodInvoiced != 0)
+                        foreach (InvoicingModelDb invsingle in sortedprevious)
                         {
-                            foundprevious = true;
-                            datefoundinvoice = DateTime.ParseExact(first.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString("MMMM dd, yyyy");
-                            iseditable = false;
-                            percentcomplete = 100;
+                            InvoicingRowsDb rowfound = SQLAccess.LoadInvoiceRowsByInvoiceAndSubId(sub.Id, invsingle.Id);
+
+                            if (first == null || founditem == null || rowfound.PercentComplete > founditem.PercentComplete)
+                            {
+                                first = invsingle;
+                                founditem = rowfound;
+                            }
+                        }
+
+                        if (founditem != null)
+                        {
+                            previousinvoiced = founditem.ThisPeriodInvoiced + founditem.PreviousInvoiced;
+                            scopename = founditem.ScopeName;
+                            basepercentcomplete = Math.Max(founditem.PercentComplete, sub.PercentComplete);
+
+                            if (founditem.PercentComplete == 100)
+                            {
+                                foundprevious = true;
+                                datefoundinvoice = DateTime.ParseExact(first.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None).ToString("MMMM dd, yyyy");
+                                iseditable = false;
+                                percentcomplete = 100;
+                            }
+                        }
+                        else
+                        {
+                            previousinvoiced = 0;
+                            scopename = sub.Description;
                         }
                     }
                     else
@@ -571,30 +794,35 @@ namespace SOCE.Library.UI.ViewModels
                         scopename = sub.Description;
                     }
 
-                    List<HourEntryModel> hours = timesheetidstoinvoice.Where(x => x.SubId == sub.Id).ToList();
-
                     double budgetspent = 0;
-                    if (hours.Count > 0)
-                    {
-                        budgetspent = hours.Sum(x => x.BudgetSpent);
-                    }
 
-                    if (iseditable)
+                    if (timesheetidstoinvoice != null && timesheetidstoinvoice.Count > 0)
                     {
-                        if (sub.Fee != 0)
+                        List<HourEntryModel> hours = timesheetidstoinvoice.Where(x => x.SubId == sub.Id).ToList();
+
+
+                        if (hours.Count > 0)
                         {
-                            double estimatedpercent = ((previousinvoiced + budgetspent) / sub.Fee) * 100;
-                            double roundedestimatepercent = Math.Round(estimatedpercent / 5.0) * 5;
-                            double estimatedperiodinvoiced = (roundedestimatepercent / 100 * sub.Fee) - previousinvoiced;
-                            ThisPeriodInvoiced = Math.Min(sub.Fee - previousinvoiced, estimatedperiodinvoiced);
-                            percentcomplete = Math.Min(roundedestimatepercent, 100);
-                        }
-                        else
-                        {
-                            ThisPeriodInvoiced = budgetspent;
-                            percentcomplete = 0;
+                            budgetspent = hours.Sum(x => x.BudgetSpent);
                         }
 
+                        if (iseditable)
+                        {
+                            if (sub.Fee != 0 && !Convert.ToBoolean(sub.IsHourly))
+                            {
+                                double estimatedpercent = ((previousinvoiced + budgetspent) / sub.Fee) * 100;
+                                double roundedestimatepercent = Math.Round(estimatedpercent / 5.0) * 5;
+                                double estimatedperiodinvoiced = (roundedestimatepercent / 100 * sub.Fee) - previousinvoiced;
+                                ThisPeriodInvoiced = Math.Min(sub.Fee - previousinvoiced, estimatedperiodinvoiced);
+                                percentcomplete = Math.Min(roundedestimatepercent, 100);
+                            }
+                            else
+                            {
+                                ThisPeriodInvoiced = budgetspent;
+                                percentcomplete = basepercentcomplete;
+                            }
+
+                        }
                     }
 
                     InvoicingRows row = new InvoicingRows()
@@ -604,10 +832,14 @@ namespace SOCE.Library.UI.ViewModels
                         PreviousInvoiced = previousinvoiced,
                         ScopeName = scopename,
                         ContractFee = sub.Fee,
-                        PercentComplete = percentcomplete,
                         BudgetSpent = budgetspent,
+                        IsBillable = Convert.ToBoolean(sub.IsBillable),
+                        IsHourly = Convert.ToBoolean(sub.IsHourly),
+                        BasePercentComplete = basepercentcomplete
                     };
+
                     row.ThisPeriodInvoiced = ThisPeriodInvoiced;
+                    row.PercentComplete = percentcomplete;
 
                     if (sub.IsAdservice == 1)
                     {
@@ -628,11 +860,80 @@ namespace SOCE.Library.UI.ViewModels
                 }
             }
 
-            InvoiceNumberInp = (BaseProject.ProjectNumber * 1000) + numinvoices;
+            //if (sortedprevious.Count > 0)
+            //{
+            foreach (InvoicingModelDb invmod in sortedprevious)
+            {
+                //InvoicingModelDb latestinvoice = sortedprevious.Last();
+                List<InvoicingRowsDb> expenses = SQLAccess.LoadInvoiceRows(invmod.Id);
 
-            IsPreviousAdServiceVis = AdServicePhasesInvoiced.Count > 0 ? true : false;
-            DoBasicServicesExist = NonAdServicePhases.Count > 0 ? true : false;
-            DoAdservicesExist = AdServicePhasesUnInvoiced.Count > 0 ? true : false;
+                foreach (InvoicingRowsDb inv in expenses)
+                {
+                    if (Convert.ToBoolean(inv.IsExpense))
+                    {
+                        InvoicingRows eim = new InvoicingRows()
+                        {
+                            viewmodel = this,
+                            PreviousInvoiced = inv.PreviousInvoiced + inv.ThisPeriodInvoiced,
+                            ThisPeriodInvoiced = 0,
+                            InvoicedtoDate = inv.PreviousInvoiced + inv.ThisPeriodInvoiced,
+                            ScopeName = inv.ScopeName,
+                            IsHourly = true,
+                        };
+
+                        List<InvoicingRows> exfound = Expenses.Where(x => x.ScopeName == inv.ScopeName).ToList();
+
+                        if (exfound.Count > 0)
+                        {
+                            InvoicingRows exitem = exfound.OrderByDescending(x => x.InvoicedtoDate).FirstOrDefault();
+                            int index = Expenses.ToList().FindIndex(s => s == exitem);
+
+                            if (index != -1)
+                            {
+                                Expenses[index] = exitem;
+                            }
+                        }
+                        else
+                        {
+                            Expenses.Add(eim);
+
+                        }
+
+
+                    }
+                }
+            }
+
+            //}
+
+            foreach (ExpenseInvoiceModel eim in selectedexpenses)
+            {
+                InvoicingRows found = Expenses.Where(x => x.ScopeName == eim.DescriptionExp).FirstOrDefault();
+
+                if (found != null)
+                {
+                    found.PreviousInvoiced = found.InvoicedtoDate;
+                    found.ThisPeriodInvoiced = eim.TotalCost;
+                    found.InvoicedtoDate = found.PreviousInvoiced + found.ThisPeriodInvoiced;
+                }
+                else
+                {
+                    InvoicingRows eimnew = new InvoicingRows()
+                    {
+                        viewmodel = this,
+                        PreviousInvoiced = 0,
+                        BudgetSpent = eim.TotalCost,
+                        ThisPeriodInvoiced = eim.TotalCost,
+                        InvoicedtoDate = eim.TotalCost,
+                        ScopeName = eim.DescriptionExp,
+                        IsHourly = true,
+                    };
+                    Expenses.Add(eimnew);
+                }
+
+            }
+
+            InvoiceNumberInp = (BaseProject.ProjectNumber * 1000) + numinvoice + 1;
 
             SumValues();
         }
@@ -651,53 +952,119 @@ namespace SOCE.Library.UI.ViewModels
             PreviousTotalAd = 0;
             ThisPeriodTotalAd = 0;
             TotalContractAdFee = 0;
+            ThisPeriodSpent = 0;
+            ReimbursablePrevious = 0;
+            ReimbursableThisPeriod = 0;
+            ReimbursableToDate = 0;
+
             foreach (InvoicingRows row in NonAdServicePhases)
             {
-                TotalContractFee += row.ContractFee;
-
+                //if (row.IsBillable)
+                //{
+                if (!row.IsHourly)
+                {
+                    TotalContractFee += row.ContractFee;
+                }
                 InvoicedToDateTotal += row.InvoicedtoDate;
+                InvoicedToDateTotalToDate += row.InvoicedtoDate;
                 PreviousTotal += row.PreviousInvoiced;
+                PreviousTotalToDate += row.PreviousInvoiced;
                 ThisPeriodTotal += row.ThisPeriodInvoiced;
                 ThisPeriodTotalToDate += row.ThisPeriodInvoiced;
                 TotalAmountDue += row.ThisPeriodInvoiced;
+                ThisPeriodSpent += row.BudgetSpent;
+                //}
             }
 
             foreach (InvoicingRows row in AdServicePhasesInvoiced)
             {
+                //if (row.IsBillable)
+                //{
                 InvoicedToDateTotalToDate += row.InvoicedtoDate;
                 PreviousTotalToDate += row.PreviousInvoiced;
                 TotalAmountDue += row.ThisPeriodInvoiced;
+                ThisAdPeriodSpent += row.BudgetSpent;
+                //}
             }
 
             foreach (InvoicingRows row in AdServicePhasesUnInvoiced)
             {
-                TotalContractAdFee += row.ContractFee;
+                //if (row.IsBillable)
+                //{
+                if (!row.IsHourly)
+                {
+                    TotalContractAdFee += row.ContractFee;
+                }
                 InvoicedToDateTotalAd += row.InvoicedtoDate;
+                InvoicedToDateTotalToDate += row.InvoicedtoDate;
                 PreviousTotalAd += row.PreviousInvoiced;
+                PreviousTotalToDate += row.PreviousInvoiced;
                 ThisPeriodTotalAd += row.ThisPeriodInvoiced;
                 ThisPeriodTotalToDate += row.ThisPeriodInvoiced;
                 TotalAmountDue += row.ThisPeriodInvoiced;
+                //}
             }
+
+            foreach (InvoicingRows row in Expenses)
+            {
+                ReimbursableToDate += row.InvoicedtoDate;
+                ReimbursablePrevious += row.PreviousInvoiced;
+                ReimbursableThisPeriod += row.ThisPeriodInvoiced;
+                TotalAmountDue += row.ThisPeriodInvoiced;
+            }
+
+            IsPreviousAdServiceVis = AdServicePhasesInvoiced.Count > 0 ? true : false;
+            DoBasicServicesExist = NonAdServicePhases.Count > 0 ? true : false;
+            DoAdservicesExist = AdServicePhasesUnInvoiced.Count > 0 ? true : false;
+
             IsTotalContractAdFee = TotalContractAdFee == 0 ? false : true;
             IsTotalContractFee = TotalContractFee == 0 ? false : true;
+
+            IsReimbursablesVis = Expenses.Count() > 0;
         }
 
         public void CreateInvoice()
         {
-            int duedatevar = 0;
+            if (TotalAmountDue <= 0)
+            {
+                ErrorMessage = $"Total amount to invoice needs{Environment.NewLine} to be greater than 0";
+                return;
+            }
 
+            if (String.IsNullOrEmpty(LinkLocation))
+            {
+                ErrorMessage = $"Specify an invoice location{Environment.NewLine} before creating the invoice.";
+                return;
+            }
+
+            int duedatevar = 0;
+            int addates = 0;
             if (InvoiceDateInp != null)
             {
                 duedatevar = (int)long.Parse(InvoiceDateInp?.ToString("yyyyMMdd"));
+            }
+
+            if (DateofServicesAreComplete != null)
+            {
+                addates = (int)long.Parse(DateofServicesAreComplete?.ToString("yyyyMMdd"));
             }
 
             //var bytes = timesheetidstoinvoice.Select(i => BitConverter.GetBytes(i.TimeId)).ToArray();
             int[] timeids = timesheetidstoinvoice.Select(x => x.TimeId).ToArray();
             string result = string.Join(",", timeids);
 
+            int[] expenseids = selectedexpenses.Select(x => x.Id).ToArray();
+            string result2 = string.Join(",", expenseids);
+
+            double previousspent = BaseProject.TotalFeeInvoiced;
+
+            if (IsRevised)
+            {
+                previousspent = revisedinvoice.PreviousSpent;
+            }
+
             InvoicingModelDb invoice = new InvoicingModelDb()
             {
-
                 ProjectId = BaseProject.Id,
                 InvoiceNumber = InvoiceNumberInp,
                 Date = duedatevar,
@@ -705,11 +1072,29 @@ namespace SOCE.Library.UI.ViewModels
                 ClientCompany = ClientCompanyNameInp,
                 ClientAddress = ClientAddressInp,
                 ClientCity = ClientCityInp,
-                PreviousSpent = BaseProject.TotalFeeInvoiced,
-                AmountDue = ThisPeriodTotalToDate,
+                PreviousSpent = previousspent,
+                AmountDue = TotalAmountDue,
                 EmployeeSignedId = SelectedPM.Id,
                 TimesheetIds = result,
+                AddServicesDate = addates,
+                ExpenseReportIds = result2,
+                Link = LinkLocation,
+                IsRevised = Convert.ToInt32(IsRevised)
             };
+
+            if (Directory.Exists(LinkLocation))
+            {
+                string projname = InvoiceNumberInp.ToString();
+                if (IsRevised)
+                {
+                    projname = projname + "R";
+                }
+
+                string generalpath = LinkLocation + "\\" + projname + " - Invoice - " + ProjectNameInp + ".xlsx";
+
+                File.WriteAllBytes(generalpath, Properties.Resources.InvoiceTemplate);
+                CreateLog(generalpath);
+            }
 
             int id = SQLAccess.AddInvoice(invoice);
 
@@ -723,6 +1108,8 @@ namespace SOCE.Library.UI.ViewModels
 
                 foreach (InvoicingRows nonadrow in NonAdServicePhases)
                 {
+                    //if (nonadrow.IsBillable)
+                    //{
                     InvoicingRowsDb invoicerow = new InvoicingRowsDb()
                     {
                         SubId = nonadrow.SubId,
@@ -733,10 +1120,31 @@ namespace SOCE.Library.UI.ViewModels
                         ScopeName = nonadrow.ScopeName,
                     };
                     SQLAccess.AddInvoiceRow(invoicerow);
+
+                    SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(nonadrow.SubId);
+
+                    if (sub.PercentComplete < nonadrow.PercentComplete)
+                    {
+                        SQLAccess.UpdatePercentComplete(nonadrow.SubId, nonadrow.PercentComplete);
+                    }
+
+                    if (nonadrow.PercentComplete == 100)
+                    {
+                        SQLAccess.UpdateInvoiced(nonadrow.SubId, 1, duedatevar, 100);
+                    }
+
+                    if (nonadrow.IsHourly)
+                    {
+                        SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee + nonadrow.ThisPeriodInvoiced);
+                        SQLAccess.UpdateSubFee(nonadrow.SubId, nonadrow.InvoicedtoDate);
+                    }
+                    //}
                 }
 
                 foreach (InvoicingRows adrow in AdServicePhasesUnInvoiced)
                 {
+                    //if (adrow.IsBillable)
+                    //{
                     InvoicingRowsDb invoicerow = new InvoicingRowsDb()
                     {
                         SubId = adrow.SubId,
@@ -747,23 +1155,326 @@ namespace SOCE.Library.UI.ViewModels
                         ScopeName = adrow.ScopeName,
                     };
                     SQLAccess.AddInvoiceRow(invoicerow);
+
+                    SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(adrow.SubId);
+
+                    if (sub.PercentComplete < adrow.PercentComplete)
+                    {
+                        SQLAccess.UpdatePercentComplete(adrow.SubId, adrow.PercentComplete);
+                    }
+
+                    if (adrow.PercentComplete == 100)
+                    {
+                        SQLAccess.UpdateInvoiced(adrow.SubId, 1, duedatevar, 100);
+                    }
+
+                    if (adrow.IsHourly)
+                    {
+                        SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee + adrow.ThisPeriodInvoiced);
+                        SQLAccess.UpdateSubFee(adrow.SubId, adrow.InvoicedtoDate);
+                    }
+
+                }
+
+                foreach (InvoicingRows adrow in AdServicePhasesInvoiced)
+                {
+                    //if (adrow.IsBillable)
+                    //{
+                    InvoicingRowsDb invoicerow = new InvoicingRowsDb()
+                    {
+                        SubId = adrow.SubId,
+                        InvoiceId = id,
+                        PercentComplete = adrow.PercentComplete,
+                        PreviousInvoiced = adrow.PreviousInvoiced,
+                        ThisPeriodInvoiced = adrow.ThisPeriodInvoiced,
+                        ScopeName = adrow.ScopeName,
+                        IsExpense = 0,
+                        //ExpenseEnum = 0
+                    };
+                    SQLAccess.AddInvoiceRow(invoicerow);
+                    //SQLAccess.UpdatePercentComplete(adrow.SubId, adrow.PercentComplete);
+                    //}
+                }
+
+                foreach (InvoicingRows adrow in Expenses)
+                {
+                    //if (adrow.IsBillable)
+                    //{
+                    InvoicingRowsDb invoicerow = new InvoicingRowsDb()
+                    {
+                        SubId = 0,
+                        InvoiceId = id,
+                        PercentComplete = 0,
+                        PreviousInvoiced = adrow.PreviousInvoiced,
+                        ThisPeriodInvoiced = adrow.ThisPeriodInvoiced,
+                        ScopeName = adrow.ScopeName,
+                        IsExpense = 1,
+                        //ExpenseEnum = 0
+                    };
+                    SQLAccess.AddInvoiceRow(invoicerow);
+                    //SQLAccess.UpdatePercentComplete(adrow.SubId, adrow.PercentComplete);
+                    //}
                 }
 
                 foreach (HourEntryModel idval in timesheetidstoinvoice)
                 {
                     SQLAccess.UpdateInvoiceStatusTime(idval.TimeId, 1);
                 }
+
+                foreach (ExpenseInvoiceModel eim in selectedexpenses)
+                {
+                    SQLAccess.UpdateInvoiced(eim.Id, 1);
+                }
+
+
+                Process.Start(LinkLocation);
+                //Process.Start(adservicefolderpath);
             }
-
-            //if (id > 0)
-            //{
-            //    foreach (int idval in timesheetidstoinvoice)
-            //    {
-            //        SQLAccess.UpdateInvoiceStatusTime(idval, 1);
-            //    }
-            //}
-
             CloseWindow();
+        }
+
+        private void CreateLog(string path)
+        {
+            //List<SubProjectAddServiceModel> SubsOrdered = SubProjects.ToList().OrderBy(t => Convert.ToDouble(t.PointNumber)).ToList();
+            //List<foundpage> foundpages = new List<foundpage>();
+            try
+            {
+                Excel.Excel exinst = new Excel.Excel(path);
+                Thread.Sleep(200);
+                string invnum = InvoiceNumberInp.ToString();
+                if (IsRevised)
+                {
+                    invnum = invnum + "R";
+                }
+                exinst.WriteCell(4, 7, invnum);
+
+                if (IsRevised)
+                {
+                    exinst.WriteCell(6, 1, InvoiceDateInp?.ToString("MMMM dd, yyyy") + " (Revised)");
+                    exinst.WriteCell(7, 1, InvoiceDateInp?.ToString("MMMM dd, yyyy"));
+                }
+                else
+                {
+                    exinst.WriteCell(7, 1, InvoiceDateInp?.ToString("MMMM dd, yyyy"));
+                }
+
+                exinst.WriteCell(10, 1, ClientNameInp);
+                exinst.WriteCell(11, 1, ClientCompanyNameInp);
+                exinst.WriteCell(12, 1, ClientAddressInp);
+                exinst.WriteCell(13, 1, ClientCityInp);
+                exinst.WriteCell(17, 2, ProjectNameInp);
+                //exinst.WriteCell(17, 7, ProjectNumberInp.ToString());
+                int row = 22;
+
+                foreach (InvoicingRows nonadrow in NonAdServicePhases)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, nonadrow.ScopeName);
+
+                    if (nonadrow.IsHourly)
+                    {
+                        exinst.WriteCell(row, 3, "HOURLY");
+                    }
+                    else
+                    {
+                        exinst.SetCellAsAccounting(row, 3);
+                        exinst.WriteCell(row, 3, nonadrow.ContractFee.ToString());
+                    }
+                    double percent = nonadrow.PercentComplete / 100;
+                    exinst.SetCellAsPercentage(row, 4);
+                    exinst.WriteCell(row, 4, percent.ToString());
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteCell(row, 5, nonadrow.InvoicedtoDate.ToString());
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteCell(row, 6, nonadrow.PreviousInvoiced.ToString());
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteCell(row, 7, nonadrow.ThisPeriodInvoiced.ToString());
+                    exinst.InsertBlankRowBelow(row);
+
+                    //exinst.SaveDocument();
+                    row++;
+                }
+
+                if (NonAdServicePhases.Count > 0)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Total Basic Services");
+                    exinst.SetCellAsAccounting(row, 3);
+                    exinst.WriteFormula(row, 3, $"SUM(C22:C{row - 1})");
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteFormula(row, 5, $"SUM(E22:E{row - 1})");
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteFormula(row, 6, $"SUM(F22:F{row - 1})");
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteFormula(row, 7, $"SUM(G22:G{row - 1})");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    //exinst.InsertBlankRowBelow(row);
+                    exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                }
+
+                if (AdServicePhasesUnInvoiced.Count > 0)
+                {
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Additional Services");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, $"Services Through {DateofServicesAreComplete?.ToString("MMMM dd, yyyy")}");
+                    row++;
+                }
+
+                foreach (InvoicingRows adrowun in AdServicePhasesUnInvoiced)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, adrowun.ScopeName);
+
+                    if (adrowun.IsHourly)
+                    {
+                        exinst.WriteCell(row, 3, "HOURLY");
+                    }
+                    else
+                    {
+                        exinst.SetCellAsAccounting(row, 3);
+                        exinst.WriteCell(row, 3, adrowun.ContractFee.ToString());
+                    }
+                    double percent = adrowun.PercentComplete / 100;
+                    exinst.SetCellAsPercentage(row, 4);
+                    exinst.WriteCell(row, 4, percent.ToString());
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteCell(row, 5, adrowun.InvoicedtoDate.ToString());
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteCell(row, 6, adrowun.PreviousInvoiced.ToString());
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteCell(row, 7, adrowun.ThisPeriodInvoiced.ToString());
+                    exinst.InsertBlankRowBelow(row);
+                    //exinst.SaveDocument();
+                    row++;
+                }
+
+                if (AdServicePhasesUnInvoiced.Count > 0)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Total Additional Services This Invoice");
+                    exinst.SetCellAsAccounting(row, 3);
+                    exinst.WriteFormula(row, 3, $"SUM(C{row - AdServicePhasesUnInvoiced.Count}:C{row - 1})");
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteFormula(row, 5, $"SUM(E{row - AdServicePhasesUnInvoiced.Count}:E{row - 1})");
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteFormula(row, 6, $"SUM(F{row - AdServicePhasesUnInvoiced.Count}:F{row - 1})");
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteFormula(row, 7, $"SUM(G{row - AdServicePhasesUnInvoiced.Count}:G{row - 1})");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    //exinst.InsertBlankRowBelow(row);
+                    exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                }
+
+                if (AdServicePhasesInvoiced.Count > 0)
+                {
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Previous Additional Services");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                }
+
+                foreach (InvoicingRows adrownonun in AdServicePhasesInvoiced)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, $"Services Through {adrownonun.DateOfInvoice}");
+
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteCell(row, 5, adrownonun.InvoicedtoDate.ToString());
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteCell(row, 6, adrownonun.PreviousInvoiced.ToString());
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteCell(row, 7, adrownonun.ThisPeriodInvoiced.ToString());
+                    exinst.InsertBlankRowBelow(row);
+                    //exinst.SaveDocument();
+                    row++;
+                }
+
+                if (AdServicePhasesInvoiced.Count > 0)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Total Services To Date");
+                    exinst.SetCellAsAccounting(row, 3);
+                    exinst.WriteFormula(row, 3, $"SUM(C{row - AdServicePhasesInvoiced.Count}:C{row - 1})");
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteFormula(row, 5, $"SUM(E{row - AdServicePhasesInvoiced.Count}:E{row - 1})");
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteFormula(row, 6, $"SUM(F{row - AdServicePhasesInvoiced.Count}:F{row - 1})");
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteFormula(row, 7, $"SUM(G{row - AdServicePhasesInvoiced.Count}:G{row - 1})");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    //exinst.InsertBlankRowBelow(row);
+                    exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                }
+
+                if (Expenses.Count > 0)
+                {
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Reimbursable Expenses");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                }
+
+                foreach (InvoicingRows adrownonun in Expenses)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, adrownonun.ScopeName);
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteCell(row, 5, adrownonun.InvoicedtoDate.ToString());
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteCell(row, 6, adrownonun.PreviousInvoiced.ToString());
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteCell(row, 7, adrownonun.ThisPeriodInvoiced.ToString());
+                    exinst.InsertBlankRowBelow(row);
+                    //exinst.SaveDocument();
+                    row++;
+                }
+
+                if (Expenses.Count > 0)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Total Reimbursable Expenses");
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteFormula(row, 5, $"SUM(E{row - Expenses.Count}:E{row - 1})");
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteFormula(row, 6, $"SUM(F{row - Expenses.Count}:F{row - 1})");
+                    exinst.SetCellAsAccounting(row, 7);
+                    exinst.WriteFormula(row, 7, $"SUM(G{row - Expenses.Count}:G{row - 1})");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    //exinst.InsertBlankRowBelow(row);
+                    exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                }
+                exinst.SetCellAsAccounting(row + 2, 7);
+                exinst.WriteCell(row + 2, 7, TotalAmountDue.ToString());
+                exinst.WriteCell(row + 7, 1, SelectedPM.FullName + ", P.E.");
+                exinst.SaveDocument();
+
+                if (SelectedPM.SignatureOfPM != null)
+                {
+                    exinst.AddPicture(row+5, 1, SelectedPM.SignatureOfPM, 100);
+                    exinst.SaveDocument();
+                }
+                exinst.Close();
+
+
+
+            }
+            catch
+            {
+                ErrorMessage = "Error has occured, double check existing add-service files are not open.";
+            }
         }
 
         private void LoadProjectManagers()

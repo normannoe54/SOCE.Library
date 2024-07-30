@@ -1,0 +1,349 @@
+﻿<UserControl x:Class="SOCE.Library.UI.Views.ExpenseReportView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:SOCE.Library.UI"
+             xmlns:s="clr-namespace:System;assembly=mscorlib"
+             xmlns:component="clr-namespace:SOCE.Library.UI.Components"
+             xmlns:ie="clr-namespace:Microsoft.Xaml.Behaviors;assembly=Microsoft.Xaml.Behaviors"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" Height="500">
+    
+    <Grid Grid.Column="1" Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="auto"/>
+        </Grid.RowDefinitions>
+
+        <!--Page Title-->
+        <TextBlock  Grid.Row="0" HorizontalAlignment="Left" Text="Expense Report"  Style="{StaticResource PageHeader}" />
+
+        <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Visibility="{Binding MessageVisible, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+            <ProgressBar Value="75" Style="{StaticResource MaterialDesignCircularProgressBar}" IsIndeterminate="True" Foreground="{StaticResource SOCEBlueCompliment}"/>
+            <TextBlock Grid.Row="0" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCEBlueCompliment}"  VerticalAlignment="Bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="Saving..."/>
+        </StackPanel>
+        <TextBlock Grid.Row="0" FontSize="22" FontWeight="SemiBold" Foreground="{StaticResource SOCEBlueCompliment}"  VerticalAlignment="bottom" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding Message}" 
+                   Visibility="{Binding MessageVisible, Converter={StaticResource InverseBoolToVisConverter}, Mode=TwoWay, NotifyOnTargetUpdated=True, UpdateSourceTrigger=PropertyChanged}">
+            <TextBlock.Triggers>
+                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:2" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:3" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </TextBlock.Triggers>
+        </TextBlock>
+
+
+        <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0 15 0 0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Grid Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="top">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" Text="Employee Name" FontSize="14" FontWeight="DemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource SOCELightRed}"/>
+                <Separator Grid.Column="1" Background="Black" Margin="5 0 5 0">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90" />
+                    </Separator.LayoutTransform>
+                </Separator>
+                <TextBox Grid.Column="2" Text="{Binding CurrentEmployee.FullName}" FontSize="14" FontWeight="Bold" HorizontalAlignment="Left" VerticalAlignment="Center" IsReadOnly="True"/>
+            </Grid>
+
+
+            <Grid Grid.Column="1" HorizontalAlignment="Right">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!--<TextBlock Grid.Row="0" Grid.Column="0" Text="Mileage Rate" FontSize="14" FontWeight="DemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{StaticResource SOCELightRed}"/>-->
+                <TextBlock Grid.Row="0" Grid.Column="0" Text="Pay Period Beginning" FontSize="14" FontWeight="DemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 5 0 0" Foreground="{StaticResource SOCELightRed}"/>
+                <TextBlock Grid.Row="1" Grid.Column="0" Text="Pay Period Ending" FontSize="14" FontWeight="DemiBold" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0 5 0 0" Foreground="{StaticResource SOCELightRed}"/>
+                <Separator Grid.Column="1" Grid.RowSpan="3" Background="Black" Margin="5 0 5 0">
+                    <Separator.LayoutTransform>
+                        <RotateTransform Angle="90"/>
+                    </Separator.LayoutTransform>
+                </Separator>
+                <!--<TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Mileagerate, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$" materialDesign:TextFieldAssist.SuffixText="/mi."
+                           FontSize="14" FontWeight="Bold" HorizontalAlignment="Stretch" IsReadOnly="True" VerticalAlignment="Center"/>-->
+                <TextBox Grid.Row="0" Grid.Column="2" Text="{Binding Payperiodbeginning, StringFormat={}{0:MM/dd/yyyy}}" FontSize="14" FontWeight="Bold" HorizontalAlignment="Stretch" Margin="0 5 0 0" IsReadOnly="True" VerticalAlignment="Center"/>
+                <TextBox Grid.Row="1" Grid.Column="2" Text="{Binding Payperiodend, StringFormat={}{0:MM/dd/yyyy}}" FontSize="14" FontWeight="Bold" HorizontalAlignment="Stretch" Margin="0 5 0 0" IsReadOnly="True" VerticalAlignment="Center"/>
+            </Grid>
+
+        </Grid>
+
+        <Button Grid.Row="2" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" 
+                 Background="Transparent" Foreground="Black" HorizontalAlignment="Left" Padding="0">
+            <StackPanel Orientation="Horizontal">
+                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
+                <TextBlock Text="Add Expense" FontWeight="SemiBold"/>
+            </StackPanel>
+        </Button>
+
+        <Grid Grid.Row="3" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="Auto"/>
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0" HorizontalAlignment="Stretch" Background="{StaticResource SOCELightGray}" Height="30">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="380"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Left"
+                         Text="Project" Margin="10 0 0 0"/>
+                <TextBlock Grid.Column="1" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="Date" Margin="5 0 0 0"/>
+                <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="Type" Margin="10 0 0 0"/>
+                <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="Description" Margin="10 0 0 0"/>
+                <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" Text="Cost" Margin="10 0 0 0"/>
+                <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center"  Text="Reimbursable" TextAlignment="Center" />
+                <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center"  Text="Billable" TextAlignment="Center" />
+            </Grid>
+            
+            <ListView Grid.Row="1" Margin="0 0 -20 0"
+                    Background="Transparent" 
+                        x:Name="listview"
+                          SelectionMode="Single"             
+                          ItemsSource="{Binding Rowdata, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                          SelectedItem="{Binding SelectedRow,UpdateSourceTrigger=PropertyChanged}">
+                <ListView.Resources>
+                    <!--<local:CustomBoolToVisibilityConverter x:Key="BoolToVis" TrueValue="Visible" FalseValue="Hidden"/>
+                <local:TableColorConverter x:Key="valueconverter"/>-->
+                    <local:IsNullColorConverter x:Key="IsNullColorConverter"/>
+                    <local:TimesheetColorAlertConverter x:Key="TimesheetColorAlertConverter"/>
+                </ListView.Resources>
+
+                <ListView.Template>
+                    <ControlTemplate>
+                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" VerticalScrollBarVisibility="Visible" Focusable="False">
+                            <ItemsPresenter />
+                        </ScrollViewer>
+                    </ControlTemplate>
+                </ListView.Template>
+
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="{x:Type ListViewItem}">
+                        <Setter Property="Background" Value="Transparent" />
+                        <Setter Property="IsEnabled" Value="{Binding Path=DataContext.IsSubEditable, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListViewItem}">
+                                    <ContentPresenter/>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <!-- Set the Template for each row to a TextBlock and another ItemsControl -->
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <Grid >
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="380"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="100"/>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="240"/>
+                                <ColumnDefinition Width="80"/>
+                                <ColumnDefinition Width="80"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid Grid.Column="0" >
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Button Grid.Column="0" HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" 
+                                            Command="{Binding Path=DataContext.RemoveRowCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" CommandParameter="{Binding}" ToolTip="Remove">
+                                    <Button.Content>
+                                        <materialDesign:PackIcon Foreground="{StaticResource SOCERed}" Kind="Minus" VerticalAlignment="Center" Height="10" Width="20"/>
+                                    </Button.Content>
+                                </Button>
+                                <local:MyCustomComboBox Grid.Column="1" x:Name="combo" 
+                                                        Margin="0 0 0 3"
+                                                            VerticalAlignment="Stretch" HorizontalAlignment="Stretch"
+                                                            Foreground="Black" BorderThickness="0 0 0 1"
+                                                            Background="{Binding AlertStatus, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource TimesheetColorAlertConverter}}"
+                                                            VerticalContentAlignment="Center"
+                                                            SelectedItem="{Binding Path=Project, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            ItemsSource="{Binding Path=ProjectList, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            MaxDropDownHeight="255"  
+                                                            ToolTip="Select Project"
+                                                            BorderBrush="{Binding Path=Project, Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource IsNullColorConverter}}"
+                                                            IsEditable="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                                            IsDropDownOpen="{Binding ComboOpen, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                                            StaysOpenOnEdit="True"      
+                                                            IsTextSearchEnabled="False"
+                                                            TextSearch.TextPath="CombinedName">
+                                    <ie:Interaction.Triggers>
+                                        <ie:EventTrigger EventName="KeyUp">
+                                            <ie:InvokeCommandAction Command="{Binding SelectedItemChangedCommand}"  CommandParameter="{Binding ElementName=combo, Path=Text}"/>
+                                        </ie:EventTrigger>
+                                    </ie:Interaction.Triggers>
+                                    <ComboBox.Resources>
+                                        <Style TargetType="{x:Type materialDesign:SmartHint}">
+                                            <Setter Property="VerticalAlignment" Value="Center"/>
+                                            <Setter Property="Foreground" Value="{StaticResource SOCERed}"/>
+                                            <Setter Property="Opacity" Value="1"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                            <Setter Property="FontSize" Value="14"/>
+                                        </Style>
+                                    </ComboBox.Resources>
+                                    <ComboBox.Style>
+                                        <Style TargetType="{x:Type ComboBox}"  BasedOn="{StaticResource MaterialDesignDataGridComboBox}">
+                                            <Style.Triggers>
+                                                <Trigger Property="IsEditable" Value="True">
+                                                    <Setter Property="materialDesign:HintAssist.Hint" Value="Select Project" />
+                                                    <!--<Setter Property="ToolTip" Value="Select Project" />-->
+                                                </Trigger>
+                                                <Trigger Property="IsEditable" Value="False">
+                                                    <Setter Property="materialDesign:HintAssist.Hint" Value="" />
+                                                    <!--<Setter Property="ToolTip" Value="" />-->
+                                                </Trigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ComboBox.Style>
+                                    <ComboBox.ItemsPanel>
+                                        <ItemsPanelTemplate>
+                                            <VirtualizingStackPanel />
+                                        </ItemsPanelTemplate>
+                                    </ComboBox.ItemsPanel>
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate DataType="ProjectLowResModel">
+                                            <VirtualizingStackPanel Orientation="Horizontal" Width="300">
+                                                <TextBlock Text="{Binding ProjectNumber, StringFormat=[{0}]}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="Regular" Margin="5 0 0 0" />
+                                                <TextBlock Text="{Binding ProjectName}" TextBlock.TextAlignment="Left" FontSize="14" FontWeight="DemiBold" Margin="5 0 0 0" />
+                                            </VirtualizingStackPanel>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+                                </local:MyCustomComboBox>
+
+                                <Button Grid.Column="1" HorizontalAlignment="Right" Style="{StaticResource MaterialDesignFlatButton}" Padding="0" 
+                                            Command="{Binding ClearSelectedProjectCommand}" 
+                                            Visibility="{Binding IsThisEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}" ToolTip="Remove" Margin="0 0 20 0">
+                                    <Button.Content>
+                                        <materialDesign:PackIcon Foreground="{StaticResource SOCEGray}" Kind="CancelCircle" VerticalAlignment="Center" Height="15" Width="15"/>
+                                    </Button.Content>
+                                </Button>
+                            </Grid>
+
+                            <DatePicker Grid.Column="1" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                                 Text="{Binding DateExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0"
+                                        DisplayDateStart="{Binding Path=DataContext.Payperiodbeginning, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" 
+                                        DisplayDateEnd="{Binding Path=DataContext.Payperiodend, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"/>
+
+                            <ComboBox Grid.Column="2" Margin="10 0 0 0" FontSize="12"
+                                  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
+                                  ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:ExpenseEnum}}}" 
+                                  DisplayMemberPath="Description" 
+                                  SelectedValue="{Binding TypeExpense}"  
+                                  SelectedValuePath="Value"/>
+
+                            <TextBox Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                                 Text="{Binding DescriptionExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0"/>
+
+                            <Grid Grid.Column="4" Margin="10 0 0 0" HorizontalAlignment="Stretch">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBox Grid.Column="0" Width="60" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center"
+                                         Text="{Binding Rate, StringFormat='{}{0:#,0.##}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         materialDesign:TextFieldAssist.PrefixText="$" materialDesign:TextFieldAssist.SuffixText="/mi."
+                                         Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <TextBox Grid.Column="1" Width="60" Margin="10 0 10 0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center"
+                                         Text="{Binding MileageExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.SuffixText="/mi."
+                                         Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                                <TextBox Grid.Column="2" FontSize="12" TextAlignment="Left" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                         Text="{Binding TotalCostExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  materialDesign:TextFieldAssist.PrefixText="$"
+                                         IsReadOnly="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
+                            </Grid>
+
+                            <CheckBox Grid.Column="5"
+                                      Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsReimbursable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                      HorizontalAlignment="Center" Background="DarkGray" />
+                            <CheckBox Grid.Column="6"
+                                      Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsClientBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                      HorizontalAlignment="Center" Background="DarkGray" />
+                        </Grid>
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+
+            <Grid Grid.Row="2" Height="30" HorizontalAlignment="Stretch" Background="{StaticResource SOCELightGray}" Margin="0 0 0 20">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="380"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="200"/>
+                    <ColumnDefinition Width="240"/>
+                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="80"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Grid.Column="0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Left"
+                         Text="Totals" Margin="10 0 0 0"/>
+               
+                <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Left"
+                         Text="{Binding TotalTotal, StringFormat='{}{0:C}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="2 0 0 0"/>
+            </Grid>
+        </Grid>
+        <Grid Grid.Row="4" HorizontalAlignment="Right">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <Button Grid.Column="0" Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveExpenseReport}" 
+                    Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <Button.CommandParameter>
+                    <s:Int32>0</s:Int32>
+                </Button.CommandParameter>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="ContentSave" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                    <TextBlock Text="Save"/>
+                </StackPanel>
+            </Button>
+            <Button Grid.Column="1" Width="100" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding CancelCommand}" 
+                    Background="LightGray" Foreground="Black" HorizontalAlignment="Right" Margin="15 0 0 0">
+                <Button.CommandParameter>
+                    <s:Int32>0</s:Int32>
+                </Button.CommandParameter>
+                <StackPanel Orientation="Horizontal">
+                    <materialDesign:PackIcon Kind="Cancel" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                    <TextBlock Text="Cancel"/>
+                </StackPanel>
+            </Button>
+        </Grid>
+    </Grid>
+</UserControl>

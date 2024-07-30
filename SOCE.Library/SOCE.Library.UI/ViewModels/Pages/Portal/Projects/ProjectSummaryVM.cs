@@ -241,6 +241,70 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private string _forecastChipName = "";
+        public string ForecastChipName
+        {
+            get { return _forecastChipName; }
+            set
+            {
+                _forecastChipName = value;
+                RaisePropertyChanged("ForecastChipName");
+            }
+        }
+
+        private bool _isForecastHoursChecked;
+        public bool IsForecastHoursChecked
+        {
+            get { return _isForecastHoursChecked; }
+            set
+            {
+
+                if (value)
+                {
+                    ForecastChipName = "FORECAST HOURS";
+                    //IsSelectionVisible = false;
+                }
+                else
+                {
+                    ForecastChipName = "STANDARD HOURS";
+                    //IsSelectionVisible = true;
+                }
+
+                if (value != _isForecastHoursChecked && !firstload)
+                {
+                    if (BaseProject.ForecastHours != value)
+                    {
+                        SQLAccess.UpdateForecastStatus(BaseProject.Id, Convert.ToInt32(value));
+                        BaseProject.ForecastHours = value;
+                    }
+
+                    CollectSubProjectsInfo();
+                    //    if (value)
+                    //    {
+                    //        foreach (SubProjectSummaryModel sub in SubProjects)
+                    //        {
+                    //            if (sub.IsScheduleActive)
+                    //            {
+                    //                sub.IsScheduleActive = false;
+                    //                SQLAccess.UpdateScheduleActive(sub.Id, 0);
+                    //            }
+                    //        }
+                    //    }
+                    //    else
+                    //    {
+                    //        SQLAccess.UpdateScheduleActive(SubProjects[0].Id, 1);
+                    //        SubProjects[0].IsScheduleActive = true;
+                    //        SelectedActiveProjectPhase = SubProjects[0];
+
+                    //    }
+
+                }
+
+                _isForecastHoursChecked = value;
+                RaisePropertyChanged("IsForecastHoursChecked");
+            }
+        }
+
         bool firstload = true;
         private bool _isOnHoldChecked;
         public bool IsOnHoldChecked
@@ -512,7 +576,8 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             //OverallFee = overallfee;
-            Employees = totalemployees;
+            List<EmployeeLowResModel> newems = totalemployees.OrderBy(x => x.FullName).ToList();
+            Employees = new ObservableCollection<EmployeeLowResModel>(newems);
 
             CollectSubProjectsInfo();
 
@@ -524,6 +589,7 @@ namespace SOCE.Library.UI.ViewModels
             //pm.FormatData(true);
             //SubProjects = pm.SubProjects;
             IsOnHoldChecked = pm.IsOnHold;
+            IsForecastHoursChecked = pm.ForecastHours;
 
             if (!BaseProject.IsActive || IsOnHoldChecked)
             {
@@ -549,7 +615,14 @@ namespace SOCE.Library.UI.ViewModels
 
             foreach (SubProjectDbModel spdm in subdbmodels)
             {
-                totalfee += spdm.Fee;
+                //if (Convert.ToBoolean(spdm.IsBillable) && !Convert.ToBoolean(spdm.IsHourly))
+                //{
+                //    totalfee += spdm.Fee;
+                //}
+                if (Convert.ToBoolean(spdm.IsBillable))
+                {
+                    totalfee += spdm.Fee;
+                }
             }
 
             //update overall fee
@@ -625,8 +698,11 @@ namespace SOCE.Library.UI.ViewModels
                 spm.PercentBudget = (plannedbudget / TotalBudget) * 100;
                 spm.TotalHours = budgethours;
                 spm.FeeUsed = budgetspent;
-                spm.FeeLeft = plannedbudget - budgetspent;
-                spm.PercentSpent = (budgetspent / plannedbudget) * 100;
+
+                spm.FeeLeft = BaseProject.ForecastHours ? (plannedbudget - budgetspent) : (spm.Fee - budgetspent);
+
+                
+                spm.PercentSpent = BaseProject.ForecastHours ? (budgetspent / plannedbudget) * 100 : (budgetspent / spm.Fee) * 100;
                 subs.Add(spm);
 
                 hoursspent += spenthours;
@@ -639,7 +715,7 @@ namespace SOCE.Library.UI.ViewModels
             TotalRegulatedBudget = totalregbudget;
             PercentofInvoicedFee = (TotalBudget / totalregbudget)*100;
             BudgetSpent = totalbudgetspent;
-            BudgetLeft = totalregbudget - totalbudgetspent;
+            BudgetLeft = BaseProject.ForecastHours ? (totalregbudget - totalbudgetspent) : (BaseProject.Fee - totalbudgetspent);
             HoursLeft = hoursleft;
             HoursSpent = hoursspent;
             PercentTotalFeeSpent = (BudgetSpent / TotalBudget)*100;
@@ -657,11 +733,6 @@ namespace SOCE.Library.UI.ViewModels
             subs.Add(allphases);
             int id = 0;
 
-            if (SelectedProjectPhase != null)
-            {
-                id = SubProjectsForSelection.IndexOf(SelectedProjectPhase);
-            }
-
             foreach (SubProjectSummaryModel subcheck in SubProjects)
             {
                 if (subcheck.IsScheduleActive)
@@ -671,8 +742,31 @@ namespace SOCE.Library.UI.ViewModels
                 }
             }
 
-            SubProjectsForSelection = new ObservableCollection<SubProjectSummaryModel>(subs);
-            SelectedProjectPhase = SubProjectsForSelection[id];
+            if (SelectedProjectPhase != null)
+            {
+                int idforselection = SelectedProjectPhase.Id;
+
+                SubProjectsForSelection = new ObservableCollection<SubProjectSummaryModel>(subs);
+
+                if (idforselection >= 0)
+                {
+                    SubProjectSummaryModel subm = SubProjectsForSelection.Where(x => x.Id == idforselection).FirstOrDefault();
+                    if (subm != null)
+                    {
+                        SelectedProjectPhase = subm;
+                    }
+                    else
+                    {
+                        SelectedProjectPhase = SubProjectsForSelection.LastOrDefault();
+                    }
+                }
+            }
+            else
+            {
+                SubProjectsForSelection = new ObservableCollection<SubProjectSummaryModel>(subs);
+                SelectedProjectPhase = SubProjectsForSelection.LastOrDefault();
+            }
+            
         }
 
         private async void RunExport()

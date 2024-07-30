@@ -34,6 +34,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand OpenProjectCommand { get; set; }
         public ICommand SearchCommand { get; set; }
 
+        public ICommand OpenSearchFiltersCommand { get; set; }
+
         private string _textSearch;
         public string TextSearch
         {
@@ -42,6 +44,28 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _textSearch = value;
                 RaisePropertyChanged(nameof(TextSearch));
+            }
+        }
+
+        private bool _isCaseSensitive;
+        public bool IsCaseSensitive
+        {
+            get { return _isCaseSensitive; }
+            set
+            {
+                _isCaseSensitive = value;
+                RaisePropertyChanged(nameof(IsCaseSensitive));
+            }
+        }
+
+        private bool _isFolderorFile;
+        public bool IsFolderorFile
+        {
+            get { return _isFolderorFile; }
+            set
+            {
+                _isFolderorFile = value;
+                RaisePropertyChanged(nameof(IsFolderorFile));
             }
         }
 
@@ -111,7 +135,16 @@ namespace SOCE.Library.UI.ViewModels
             CurrentEmployee = loggedinEmployee;
             this.OpenProjectCommand = new RelayCommand<object>(this.OpenProject);
             this.SearchCommand = new RelayCommand(this.RunSearch);
+            this.OpenSearchFiltersCommand = new RelayCommand(this.OpenSearchFilters);
+        }
 
+        public async void OpenSearchFilters()
+        {
+            var view = new SearchFiltersView();
+            SearchFiltersVM vm = new SearchFiltersVM(CurrentEmployee);
+            view.DataContext = vm;
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
         }
 
         public async void RunSearch()
@@ -129,9 +162,19 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         string final = indd.Remove(0, drawing.Length + 1);
 
-                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                        if (!IsCaseSensitive)
                         {
-                            DrawingFolders.Add(new FolderModel(indd, final));
+                            if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                            {
+                                DrawingFolders.Add(new FolderModel(indd, final));
+                            }
+                        }
+                        else
+                        {
+                            if (final.Contains(TextSearch))
+                            {
+                                DrawingFolders.Add(new FolderModel(indd, final));
+                            }
                         }
                     }
 
@@ -141,9 +184,19 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         string final = indd.Remove(0, plot.Length + 1);
 
-                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                        if (!IsCaseSensitive)
                         {
-                            PlotFolders.Add(new FolderModel(indd, final));
+                            if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                            {
+                                PlotFolders.Add(new FolderModel(indd, final));
+                            }
+                        }
+                        else
+                        {
+                            if (final.Contains(TextSearch))
+                            {
+                                PlotFolders.Add(new FolderModel(indd, final));
+                            }
                         }
                     }
 
@@ -153,9 +206,19 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         string final = indd.Remove(0, architectural.Length + 1);
 
-                        if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                        if (!IsCaseSensitive)
                         {
-                            ArchitecturalFolders.Add(new FolderModel(indd, final));
+                            if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                            {
+                                ArchitecturalFolders.Add(new FolderModel(indd, final));
+                            }
+                        }
+                        else
+                        {
+                            if (final.Contains(TextSearch))
+                            {
+                                ArchitecturalFolders.Add(new FolderModel(indd, final));
+                            }
                         }
                     }
 
@@ -174,9 +237,19 @@ namespace SOCE.Library.UI.ViewModels
                             {
                                 string final = indd.Remove(0, subdirectory2.Length + 1);
 
-                                if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                                if (!IsCaseSensitive)
                                 {
-                                    ProjectFolders.Add(new FolderModel(indd, final));
+                                    if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                                    {
+                                        ProjectFolders.Add(new FolderModel(indd, final));
+                                    }
+                                }
+                                else
+                                {
+                                    if (final.Contains(TextSearch))
+                                    {
+                                        ProjectFolders.Add(new FolderModel(indd, final));
+                                    }
                                 }
                             }
                         }
@@ -193,9 +266,19 @@ namespace SOCE.Library.UI.ViewModels
                         {
                             string final = indd.Remove(0, subdirectory1.Length + 1);
 
-                            if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                            if (!IsCaseSensitive)
                             {
-                                ArchiveFolders.Add(new FolderModel(indd, final));
+                                if (final.ToUpper().Contains(TextSearch.ToUpper()))
+                                {
+                                    ArchiveFolders.Add(new FolderModel(indd, final));
+                                }
+                            }
+                            else
+                            {
+                                if (final.Contains(TextSearch))
+                                {
+                                    ArchiveFolders.Add(new FolderModel(indd, final));
+                                }
                             }
                         }
                     }

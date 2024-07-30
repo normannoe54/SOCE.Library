@@ -4,6 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows.Media;
+using MaterialDesignThemes.Wpf;
 using SOCE.Library.Db;
 
 namespace SOCE.Library.UI
@@ -82,6 +83,20 @@ namespace SOCE.Library.UI
             }
         }
 
+        private bool _invoiced { get; set; }
+        public bool Invoiced
+        {
+            get
+            {
+                return _invoiced;
+            }
+            set
+            {
+                _invoiced = value;
+                RaisePropertyChanged(nameof(Invoiced));
+            }
+        }
+
         private bool _hoursSelectableVis { get; set; }
         public bool HoursSelectableVis
         {
@@ -93,6 +108,34 @@ namespace SOCE.Library.UI
             {
                 _hoursSelectableVis = value;
                 RaisePropertyChanged(nameof(HoursSelectableVis));
+            }
+        }
+
+        private PackIconKind _isBillableKind { get; set; }
+        public PackIconKind IsBillableKind
+        {
+            get
+            {
+                return _isBillableKind;
+            }
+            set
+            {
+                _isBillableKind = value;
+                RaisePropertyChanged(nameof(IsBillableKind));
+            }
+        }
+
+        private SolidColorBrush _isBillableKindBackground { get; set; }
+        public SolidColorBrush IsBillableKindBackground
+        {
+            get
+            {
+                return _isBillableKindBackground;
+            }
+            set
+            {
+                _isBillableKindBackground = value;
+                RaisePropertyChanged(nameof(IsBillableKindBackground));
             }
         }
     }

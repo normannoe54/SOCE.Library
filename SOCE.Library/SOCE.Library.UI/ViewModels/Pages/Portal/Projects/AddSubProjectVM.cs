@@ -495,26 +495,26 @@ namespace SOCE.Library.UI.ViewModels
                     SQLAccess.AddSubProject(subproject);
                 }
             }
-            else if (AdSelected)
-            {
-                subproject.IsAdservice = 1;
+            //else if (AdSelected)
+            //{
+            //    subproject.IsAdservice = 1;
 
-                if (String.IsNullOrEmpty(Description) || LatestAdServiceNumber == 0)
-                {
-                    ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
-                    return;
-                }
+            //    if (String.IsNullOrEmpty(Description) || LatestAdServiceNumber == 0)
+            //    {
+            //        ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+            //        return;
+            //    }
 
-                subproject.PointNumber = LatestAdServiceNumber.ToString();
-                subproject.ExpandedDescription = ExpandedDescription;
-                subproject.Fee = AdditionalServicesFee;
-                subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee+ AdditionalServicesFee) *100,2);
-                SQLAccess.AddSubProject(subproject);
+            //    subproject.PointNumber = LatestAdServiceNumber.ToString();
+            //    subproject.ExpandedDescription = ExpandedDescription;
+            //    subproject.Fee = AdditionalServicesFee;
+            //    subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee+ AdditionalServicesFee) *100,2);
+            //    SQLAccess.AddSubProject(subproject);
 
-                //update project overall fee
-                BaseProject.Fee += AdditionalServicesFee;
-                SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee);
-            }
+            //    //update project overall fee
+            //    BaseProject.Fee += AdditionalServicesFee;
+            //    SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee);
+            //}
             else if (CustomSelected)
             {
                 subproject.IsAdservice = 0;
@@ -527,6 +527,12 @@ namespace SOCE.Library.UI.ViewModels
 
                 subproject.PointNumber = CustomAdServiceNumber.ToString();
                 subproject.ExpandedDescription = ExpandedDescription;
+
+                if (HourlyInput)
+                {
+                    AdditionalServicesFee = 0;
+                }
+
                 subproject.Fee = AdditionalServicesFee;
                 subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee + AdditionalServicesFee) * 100, 2);
                 SQLAccess.AddSubProject(subproject);

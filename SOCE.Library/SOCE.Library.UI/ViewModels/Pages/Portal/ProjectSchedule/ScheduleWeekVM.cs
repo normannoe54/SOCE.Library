@@ -524,7 +524,7 @@ namespace SOCE.Library.UI.ViewModels
                 totalemployees.Add(em);
             }
 
-            ObservableCollection<EmployeeScheduleModel> ordered = new ObservableCollection<EmployeeScheduleModel>(totalemployees.OrderBy(x => x.LastName).ToList());
+            ObservableCollection<EmployeeScheduleModel> ordered = new ObservableCollection<EmployeeScheduleModel>(totalemployees.OrderBy(x => x.FullName).ToList());
             //OverallFee = overallfee;
             Employees = ordered;
             //LoadProjectManagers();
@@ -977,7 +977,7 @@ namespace SOCE.Library.UI.ViewModels
             // The (... + 7) % 7 ensures we end up with a value in the range [0, 6]
             int daysUntilMonday = ((int)DayOfWeek.Monday - (int)currdate.DayOfWeek + 7) % 7;
             DateTime nextMonday = currdate.AddDays(daysUntilMonday);
-            WeekDate = nextMonday.AddDays(7).ToString("MM/dd/yyyy");
+            WeekDate = nextMonday.ToString("MM/dd/yyyy");
             dates.Add(new DateWrapper(nextMonday));
             employeeDates.Add(new DateWrapper(nextMonday));
             dates.Add(new DateWrapper(nextMonday.AddDays(7)));
@@ -994,6 +994,7 @@ namespace SOCE.Library.UI.ViewModels
 
             FirstDate = DateSummary[0].Value;
         }
+
 
         //private void LoadSummary()
         //{

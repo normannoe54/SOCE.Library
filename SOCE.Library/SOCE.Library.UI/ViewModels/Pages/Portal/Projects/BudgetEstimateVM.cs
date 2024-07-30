@@ -8,6 +8,7 @@ using SOCE.Library.Db;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Linq;
 
 namespace SOCE.Library.UI.ViewModels
 {
@@ -99,8 +100,8 @@ namespace SOCE.Library.UI.ViewModels
                 totalemployees.Add(new EmployeeModel(employee));
             }
 
-            //OverallFee = overallfee;
-            Employees = totalemployees;
+            List<EmployeeModel> newems = totalemployees.OrderBy(x => x.FullName).ToList();
+            Employees = new ObservableCollection<EmployeeModel>(newems);
             //RolesPerSub = totalrolespersub;
         }
 

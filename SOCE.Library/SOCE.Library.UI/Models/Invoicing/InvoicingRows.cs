@@ -70,7 +70,7 @@ namespace SOCE.Library.UI
             set
             {
                 _contractFee = value;
-                IsContractVisible = _contractFee == 0 ? false : true; 
+                //IsContractVisible = _contractFee == 0 ? false : true; 
                 RaisePropertyChanged(nameof(ContractFee));
             }
         }
@@ -89,22 +89,108 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _isContractVisible { get; set; } = true;
-        public bool IsContractVisible
+        private ExpenseEnum _typeOfExpense { get; set; } = ExpenseEnum.Miscellaneous;
+        public ExpenseEnum TypeOfExpense
         {
             get
             {
-                return _isContractVisible;
+                return _typeOfExpense;
             }
             set
             {
-                _isContractVisible = value;
-                RaisePropertyChanged(nameof(IsContractVisible));
+                _typeOfExpense = value;
+                RaisePropertyChanged(nameof(TypeOfExpense));
+            }
+        }
+        private bool _isExpense { get; set; } = false;
+        public bool IsExpense
+        {
+            get
+            {
+                return _isExpense;
+            }
+            set
+            {
+                _isExpense = value;
+                RaisePropertyChanged(nameof(IsExpense));
             }
         }
 
+        //private bool _isContractVisible { get; set; } = true;
+        //public bool IsContractVisible
+        //{
+        //    get
+        //    {
+        //        return _isContractVisible;
+        //    }
+        //    set
+        //    {
+        //        _isContractVisible = value;
+        //        RaisePropertyChanged(nameof(IsContractVisible));
+        //    }
+        //}
+
+        private bool _isBillable { get; set; } = true;
+        public bool IsBillable
+        {
+            get
+            {
+                return _isBillable;
+            }
+            set
+            {
+                _isBillable = value;
+                RaisePropertyChanged(nameof(IsBillable));
+            }
+        }
+
+        private bool _editFieldState = true;
+        public bool EditFieldState
+        {
+            get { return _editFieldState; }
+            set
+            {
+                if (!_editFieldState && value)
+                {
+                    if (!IsHourly && !IsExpense)
+                    {
+                        if (BasePercentComplete > PercentComplete)
+                        {
+                            PercentComplete = BasePercentComplete;
+                        }
+                        else if (PercentComplete > 100)
+                        {
+                            PercentComplete = 100;
+                        }
+
+                        InvoicedtoDate = ((PercentComplete / 100) * ContractFee);
+                        ThisPeriodInvoiced = InvoicedtoDate - PreviousInvoiced;
+                    }
+                    else
+                    {
+                        double outstanding = Math.Max(ContractFee - ThisPeriodInvoiced - InvoicedtoDate,0);
+
+                        if (outstanding < 0)
+                        {
+                            ThisPeriodInvoiced = 0;
+                        }
+                        else
+                        {
+                            InvoicedtoDate = ThisPeriodInvoiced + PreviousInvoiced;
+                        }
+                    }
+
+                    //RaisePropertyChanged(nameof(PercentComplete));
+                    viewmodel.SumValues();
+                }
+
+                _editFieldState = value;
+                RaisePropertyChanged(nameof(EditFieldState));
+            }
+        }
 
         bool firstload = true;
+        public double BasePercentComplete { get; set; } = 0;
         private double _percentComplete { get; set; }
         public double PercentComplete
         {
@@ -114,34 +200,88 @@ namespace SOCE.Library.UI
             }
             set
             {
-                if (!firstload)
+                //if (!firstload)
+                //{
+                //    if (value <= 100 && value >= BasePercentComplete && IsContractVisible)
+                //    {
+                //        _percentComplete = value;
+                //        InvoicedtoDate = ((value / 100) * ContractFee) - PreviousInvoiced;
+                //        ThisPeriodInvoiced = InvoicedtoDate - PreviousInvoiced;
+                //        RaisePropertyChanged(nameof(PercentComplete));
+                //        viewmodel.SumValues();
+                //    }
+
+                //}
+                //else
+                //{
+                //    if (IsContractVisible)
+                //    {
+                //        InvoicedtoDate = ((value / 100) * ContractFee) - PreviousInvoiced;
+
+                //    }
+                //    BasePercentComplete = value;
+                //    _percentComplete = value;
+                //    RaisePropertyChanged(nameof(PercentComplete));
+                //    firstload = !firstload;
+                //}
+
+                if (firstload)
                 {
-                    if (value <= 100 && value >= BasePercentComplete && IsContractVisible)
+                    if (!IsHourly)
                     {
-                        _percentComplete = value;
-                        InvoicedtoDate = ((value / 100) * ContractFee) - PreviousInvoiced;
-                        ThisPeriodInvoiced = InvoicedtoDate - PreviousInvoiced;
-                        RaisePropertyChanged(nameof(PercentComplete));
-                        viewmodel.SumValues();
+                        if (ContractFee > 0)
+                        {
+                            InvoicedtoDate = ((value / 100) * ContractFee);
+                        }
+                    }
+                    else
+                    {
+                        InvoicedtoDate = PreviousInvoiced + ThisPeriodInvoiced;
                     }
 
-                }
-                else
-                {
-                    if (IsContractVisible)
-                    {
-                        InvoicedtoDate = ((value / 100) * ContractFee) - PreviousInvoiced;
-
-                    }
-                    _percentComplete = value;
-                    RaisePropertyChanged(nameof(PercentComplete));
+                    //BasePercentComplete = value;
                     firstload = !firstload;
                 }
+                
+                _percentComplete = value;
+                RaisePropertyChanged(nameof(PercentComplete));
 
             }
         }
 
-        public double BasePercentComplete { get; set; } = 0;
+        private bool _isHourly { get; set; }
+        public bool IsHourly
+        {
+            get
+            {
+                return _isHourly;
+            }
+            set
+            {
+                _isHourly = value;
+
+                //if (ContractFee > 0)
+                //{
+                //    HourlyStatement = ContractFee > 0 ? $"Hourly not to exceed ${ContractFee}" : "Hourly";
+                //}
+
+                RaisePropertyChanged(nameof(IsHourly));
+            }
+        }
+
+        private string _hourlyStatement { get; set; } = "Hourly";
+        public string HourlyStatement
+        {
+            get
+            {
+                return _hourlyStatement;
+            }
+            set
+            {
+                _hourlyStatement = value;
+                RaisePropertyChanged(nameof(HourlyStatement));
+            }
+        }
 
         private double _previousInvoiced { get; set; }
         public double PreviousInvoiced
@@ -181,12 +321,12 @@ namespace SOCE.Library.UI
             set
             {
                 _thisPeriodInvoiced = value;
-                InvoicedtoDate = _thisPeriodInvoiced + PreviousInvoiced;
+                //InvoicedtoDate = _thisPeriodInvoiced + PreviousInvoiced;
 
-                if (!IsContractVisible)
-                {
-                    viewmodel.SumValues();
-                }
+                //if (!IsContractVisible)
+                //{
+                    //viewmodel.SumValues();
+                //}
                 RaisePropertyChanged(nameof(ThisPeriodInvoiced));
             }
         }
@@ -261,12 +401,12 @@ namespace SOCE.Library.UI
             InvoiceId = iDb.InvoiceId;
             PreviousInvoiced = iDb.PreviousInvoiced;
 
-            if (iDb.PercentComplete == 100)
-            {
-                CanBeEdited = false;
-            }
-            BasePercentComplete = iDb.PercentComplete;
-            PercentComplete = iDb.PercentComplete;
+            //if (iDb.PercentComplete == 100)
+            //{
+            //    CanBeEdited = false;
+            //}
+            
+            //PercentComplete = iDb.PercentComplete;
             ThisPeriodInvoiced = iDb.ThisPeriodInvoiced;
             ScopeName = iDb.ScopeName;
         }

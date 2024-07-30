@@ -482,7 +482,6 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             List<ClientModel> newclients = clients.OrderBy(x => x.ClientName).ToList();
-
             Clients = new ObservableCollection<ClientModel>(newclients);
         }
 

@@ -244,6 +244,7 @@ namespace SOCE.Library.UI.ViewModels
                 PercentBudget = 0,
                 NumberOrder = Convert.ToInt32(BigNumOrder) + 1,
                 PersonToAddress = PersonAddressedInp,
+                IsChangedLog = 1,
                 Fee = 0
             };
 
@@ -261,6 +262,12 @@ namespace SOCE.Library.UI.ViewModels
 
             subproject.PointNumber = LatestAdServiceNumber.ToString();
             subproject.ExpandedDescription = ExpandedDescription;
+
+            if (IsHourly)
+            {
+                AdditionalServicesFee = 0;
+            }
+
             subproject.Fee = AdditionalServicesFee;
             subproject.PercentBudget = Math.Round(AdditionalServicesFee / (BaseProject.Fee + AdditionalServicesFee) * 100, 2);
             SQLAccess.AddSubProject(subproject);

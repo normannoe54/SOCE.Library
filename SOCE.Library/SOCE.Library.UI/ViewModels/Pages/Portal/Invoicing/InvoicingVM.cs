@@ -167,28 +167,27 @@ namespace SOCE.Library.UI.ViewModels
             this.SearchCommand = new RelayCommand(this.RunSearch);
             this.AddYearCommand = new RelayCommand(this.AddToYear);
             this.SubtractYearCommand = new RelayCommand(this.SubtractToYear);
-            //this.GoToOpenProjectSummary = new RelayCommand<object>(this.ExecuteOpenSubDialog);
+            this.GoToOpenProjectSummary = new RelayCommand<object>(this.ExecuteOpenSubDialog);
             LoadClients();
             LoadProjectManagers();
             LoadProjects();
 
-
             ShowActiveProjects = true;
         }
 
-        //private async void ExecuteOpenSubDialog(object o)
-        //{
-        //    ProjectInvoicingModel pm = (ProjectInvoicingModel)o;
-        //    ProjectDbModel pdb = SQLAccess.LoadProjectsById(pm.Id);
-        //    ProjectViewResModel pvrm = new ProjectViewResModel(pdb);
-        //    pvrm.ProjectManager = pm.ProjectManager;
-        //    pvrm.Client = pm.Client;
-        //    var view = new BaseProjectSummaryView();
-        //    BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee, pvrm, ViewEnum.Invoicing);
-        //    view.DataContext = vm;
-        //    //show the dialog
-        //    var result = await DialogHost.Show(view, "RootDialog");
-        //}
+        private async void ExecuteOpenSubDialog(object o)
+        {
+            ProjectInvoicingModel pm = (ProjectInvoicingModel)o;
+            ProjectDbModel pdb = SQLAccess.LoadProjectsById(pm.Id);
+            ProjectViewResModel pvrm = new ProjectViewResModel(pdb);
+            pvrm.ProjectManager = pm.ProjectManager;
+            pvrm.Client = pm.Client;
+            var view = new BaseProjectSummaryView();
+            BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee, pvrm, ViewEnum.Invoicing, this);
+            view.DataContext = vm;
+            //show the dialog
+            var result = await DialogHost.Show(view, "RootDialog");
+        }
 
         private async void ClearInputsandReload()
         {
@@ -270,6 +269,9 @@ namespace SOCE.Library.UI.ViewModels
 
         public void LoadProjects()
         {
+            SQLAccess sqldb = new SQLAccess();
+            sqldb.Open();
+
             List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
 
             ObservableCollection<ProjectInvoicingModel> members = new ObservableCollection<ProjectInvoicingModel>();
@@ -282,7 +284,6 @@ namespace SOCE.Library.UI.ViewModels
                 ProjectDbModel pdb = dbprojects[i];
                 ProjectInvoicingModel pm = new ProjectInvoicingModel(pdb);
 
-
                 EmployeeLowResModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
                 ClientModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
 
@@ -292,7 +293,7 @@ namespace SOCE.Library.UI.ViewModels
                 ProjectArray[i] = pm;
             }
             );
-
+            sqldb.Close();
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();
             AllProjects = ProjectArray.ToList();
             RunSearch();

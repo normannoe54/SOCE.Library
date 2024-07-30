@@ -115,7 +115,7 @@
                     </CheckBox>
                     <CheckBox IsEnabled="{Binding InvEnabled}" IsChecked="{Binding InvPhase}" Margin="0 10 0 10" Background="{StaticResource SOCERed}">
                         <CheckBox.Content>
-                            <TextBlock Text="Investigation Report [INV]"/>
+                            <TextBlock Text="Assessment [ASMT]"/>
                         </CheckBox.Content>
                     </CheckBox>
                 </StackPanel>
@@ -190,7 +190,10 @@
 
                     <!--<TextBox materialDesign:HintAssist.Hint="Description" Text="{Binding ExpandedDescription}" 
                              Style="{DynamicResource MaterialDesignFloatingHintTextBox}" Margin="0 15 0 0"/>-->
-                    <TextBox materialDesign:HintAssist.Hint="Service Fee" Grid.Row="4" Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" Style="{DynamicResource MaterialDesignFloatingHintTextBox}" materialDesign:TextFieldAssist.PrefixText="$" Margin="0 8 0 0" FontSize="16" />
+                    <TextBox materialDesign:HintAssist.Hint="Service Fee" Grid.Row="4" Visibility="{Binding HourlyInput, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged,Converter={StaticResource InverseBoolToVisConverter}}"
+                             Text="{Binding AdditionalServicesFee,StringFormat='{}{0:#,0.##}'}" 
+                             Style="{DynamicResource MaterialDesignFloatingHintTextBox}" 
+                             materialDesign:TextFieldAssist.PrefixText="$" Margin="0 8 0 0" FontSize="16" />
                 </Grid>
             </TabItem>
         </TabControl>

@@ -146,18 +146,18 @@
                                     <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Proposals" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Proposals" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="AccountCashOutline" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Proposals" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
-                            </Button>
-                            <!--<Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Invoicing" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            </Button>-->
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Invoicing" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="CurrencyUsd" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Invoicing" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
-                            </Button>-->
+                            </Button>
                         </StackPanel>
 
                         <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom">

@@ -23,7 +23,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 _currentEmployee = value;
 
-                if (_currentEmployee.Status == AuthEnum.Admin)
+                if (_currentEmployee.Status == AuthEnum.Admin || _currentEmployee.Status == AuthEnum.Principal)
                 {
                     CanAddEmployee = true;
                 }
@@ -174,7 +174,7 @@ namespace SOCE.Library.UI.ViewModels
         {
             Employees.Clear();
             List<EmployeeDbModel> dbemployees = SQLAccess.LoadEmployees();
-
+            List<EmployeeModel> employeelist = new List<EmployeeModel>();
             foreach (EmployeeDbModel emdb in dbemployees)
             {
                 EmployeeModel em = new EmployeeModel(emdb);
@@ -183,8 +183,11 @@ namespace SOCE.Library.UI.ViewModels
                 em.SetEmployeeModelfromUser(CurrentEmployee);
 
                 //members.Add(em);
-                Employees.Add(em);
+                employeelist.Add(em);
             }
+
+            List<EmployeeModel> employeeordered = employeelist.OrderBy(x => x.FullName).ToList();
+            Employees = new ObservableCollection<EmployeeModel>(employeeordered);
 
             var index = Employees.ToList().FindIndex(x => x.Id == CurrentEmployee.Id);
 
@@ -194,6 +197,8 @@ namespace SOCE.Library.UI.ViewModels
                 Employees[index] = Employees[0];
                 Employees[0] = item;
             }
+
+
         }
 
     }

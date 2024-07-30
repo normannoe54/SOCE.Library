@@ -27,6 +27,20 @@ namespace SOCE.Library.Excel
             }
         }
 
+        public Excel()
+        {
+            document = new XLWorkbook();
+            activeworksheet = document.Worksheets.Add("Employees");
+        }
+
+        public void Close()
+        {
+            document.Dispose(); 
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
         public void FitColumns()
         {
             activeworksheet.Columns().AdjustToContents(1,100,4.5,45);
@@ -43,6 +57,12 @@ namespace SOCE.Library.Excel
             activeworksheet.Name = name;
         }
 
+        public void DeleteRow(int row)
+        {
+            IXLRow rownew = activeworksheet.Row(row);
+            rownew.Delete();
+        }
+
         public void CopyFirstWorksheet(string name, string nametocopy)
         {
             IXLWorksheet value = GetSheet(nametocopy)?.CopyTo(name);
@@ -50,9 +70,19 @@ namespace SOCE.Library.Excel
             SetActiveSheet(value);
         }
 
+        public int GetActiveWorksheetNumber()
+        {
+            int numb = activeworksheet.Position;
+            return numb;
+        }
+
         public void DeleteWorksheet(string name)
         {
-            GetSheet(name).Delete();
+            IXLWorksheet sheet = GetSheet(name);
+            if (sheet != null)
+            {
+                sheet.Delete();
+            }
         }
 
         public IXLWorksheet GetSheet(string name)
@@ -68,6 +98,21 @@ namespace SOCE.Library.Excel
                 }
             }
             return sheetfound;
+        }
+
+        public void SetActiveSheetByName(string name)
+        {
+            IXLWorksheet sheet = GetSheet(name);
+
+            if (sheet != null)
+            {
+                SetActiveSheet(sheet);
+            }
+        }
+
+        public void HideActiveSheet()
+        {
+            activeworksheet.Hide();
         }
 
         public void SetActiveSheet(IXLWorksheet sheetToSetActive)
@@ -94,6 +139,12 @@ namespace SOCE.Library.Excel
             //document.Save();
         }
 
+        public void InsertBlankRowBelow(int row)
+        {
+            IXLRow rownew = activeworksheet.Row(row);
+            rownew.InsertRowsBelow(1);
+        }
+
         /// <summary>
         /// Insert Row
         /// </summary>
@@ -117,6 +168,23 @@ namespace SOCE.Library.Excel
 
             IXLCell cell= activeworksheet.Cell(row, startingcell);
             IXLRange rangeWithStrings = cell.InsertData(values, true);
+            //IXLRange rangeWithStrings = activeworksheet.Cell(row, startingcell).InsertData(values, true);
+
+            //document.Save();
+        }
+
+        public void MergeCellsInRow(int row, int firstcol, int secondcol)
+        {
+            activeworksheet.Range(row, firstcol, row, secondcol).Merge();
+            return;
+        }
+
+        public string GetCellValue(int row, int column)
+        {
+
+            IXLCell cell = activeworksheet.Cell(row, column);
+            string retvalue = cell.Value.ToString();
+            return retvalue;
             //IXLRange rangeWithStrings = activeworksheet.Cell(row, startingcell).InsertData(values, true);
 
             //document.Save();
@@ -153,6 +221,15 @@ namespace SOCE.Library.Excel
             }
         }
 
+        public void MakeRowLightBorderTop(int row, int startingcell, int lastcell)
+        {
+            for (int i = 0; i < lastcell; i++)
+            {
+                IXLCell cell = activeworksheet.Cell(row, startingcell + i);
+                cell.Style.Border.TopBorder = XLBorderStyleValues.Thin;
+            }
+        }
+
         public void MakeRowGray(int row, int startingcell, int lastcell)
         {
             for (int i = 0; i < lastcell; i++)
@@ -177,7 +254,22 @@ namespace SOCE.Library.Excel
 
         }
 
-        public void AddPicture(int row, int column, ImageSource image)
+        public void SetCellAsAccounting(int row, int column)
+        {
+            var cell = activeworksheet.Cell(row, column);
+            cell.DataType = XLDataType.Number;
+            cell.Style.NumberFormat.Format = "_ $* # ##0.00_ ;_ $* -# ##0.00_ ;_ $* \"-\"??_ ;_ @_ ";
+            cell.Style.NumberFormat.SetNumberFormatId(43);
+        }
+
+        public void SetCellAsPercentage(int row, int column)
+        {
+            var cell = activeworksheet.Cell(row, column);
+            cell.DataType = XLDataType.Number;
+            cell.Style.NumberFormat.Format = "0%";
+        }
+
+        public void AddPicture(int row, int column, ImageSource image, double minwidth = 400)
         {
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             var bitmapSource = image as BitmapSource;
@@ -193,10 +285,10 @@ namespace SOCE.Library.Excel
                         encoder.Save(stream);
                         IXLPicture picture = activeworksheet.AddPicture(stream);
                         picture.MoveTo(activeworksheet.Cell(row, column));
-                        double scalefactor = 50/Convert.ToDouble(picture.Height);
-                        scalefactor = Math.Min(400/ Convert.ToDouble(picture.Width), scalefactor);
+                        double scalefactor = 50 / Convert.ToDouble(picture.Height);
+                        scalefactor = Math.Min(minwidth / Convert.ToDouble(picture.Width), scalefactor);
                         picture.ScaleHeight(scalefactor);
-                        picture.ScaleWidth (scalefactor);
+                        picture.ScaleWidth(scalefactor);
 
                     }
                     catch
@@ -246,6 +338,11 @@ namespace SOCE.Library.Excel
             activeworksheet.Cell(row, column).FormulaA1 = cellvalue;
 
             //document.Save();
+        }
+
+        public void SaveAs(string filename)
+        {
+            document.SaveAs(filename);
         }
 
         public void Save()

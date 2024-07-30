@@ -30,6 +30,6 @@ namespace SOCE.Library.Db
         public int EmployeeIdSigned { get; set; }
         public int? IsHourly { get; set; }
         public int? DateSent { get; set; }
-
+        public int IsChangedLog { get; set; }
     }
 }
