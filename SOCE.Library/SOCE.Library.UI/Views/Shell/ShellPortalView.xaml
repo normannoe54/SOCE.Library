@@ -79,7 +79,8 @@
                             </StackPanel>
                         </Button>-->
 
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Timesheet" 
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="ClipboardTextPlayOutline" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Timesheet" Style="{StaticResource menuButtonText}"/>
@@ -100,25 +101,29 @@
                             </StackPanel>
                         </Button>-->
 
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Employee"
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Person" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Employees" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Projects"
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="EventsCheck" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Projects" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectSchedule">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="ProjectSchedule"
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Reschedule" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Project Schedule" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="NetworkSearch">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="NetworkSearch" 
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Search" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Network Search" Style="{StaticResource menuButtonText}"/>
@@ -140,7 +145,9 @@
                             </StackPanel>
                         </Button>-->
 
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="TimesheetReview" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="TimesheetReview" 
+                                    Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="PaperSearch" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Timesheet Review" Style="{StaticResource menuButtonText}"/>
@@ -152,7 +159,8 @@
                                     <TextBlock Text="Proposals" Style="{StaticResource menuButtonText}"/>
                                 </StackPanel>
                             </Button>-->
-                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Invoicing" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <Button Style="{StaticResource menuButton}" Command="{Binding GoToNewViewCommand}" CommandParameter="Invoicing" Visibility="{Binding AdminVisible, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="CurrencyUsd" Style="{StaticResource menuButtonIcon}"/>
                                     <TextBlock Text="Invoicing" Style="{StaticResource menuButtonText}"/>
@@ -160,7 +168,8 @@
                             </Button>
                         </StackPanel>
 
-                        <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom">
+                        <Button Grid.Row="1" Style="{StaticResource menuButton}" Command="{Binding GoToLoginCommand}" VerticalAlignment="Bottom"
+                                IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Logout" Style="{StaticResource menuButtonIcon}"/>
                                 <TextBlock Text="Logout" Style="{StaticResource menuButtonText}"/>

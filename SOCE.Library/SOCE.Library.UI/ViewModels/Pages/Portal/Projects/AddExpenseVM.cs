@@ -192,6 +192,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddExpenseVM(ProjectViewResModel pm, ExpenseProjectVM epvm, EmployeeModel curremployee)
         {
+            ButtonInAction = true;
+
             CurrentEmployee = curremployee;
             baseViewModel = epvm;
             TypeExpense = ExpenseEnum.Miscellaneous;
@@ -202,6 +204,12 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddExpense()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (String.IsNullOrEmpty(DescriptionExp) || DateExp == null || TotalCostExp == 0)
             {
                 ErrorMessage = "Please revise inputs and resubmit";
@@ -233,6 +241,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             baseViewModel.LoadExpensesForViewing();
             baseViewModel.LeftDrawerOpen = false;
         }

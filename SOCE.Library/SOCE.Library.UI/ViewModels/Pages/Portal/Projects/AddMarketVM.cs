@@ -37,12 +37,19 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddMarketVM()
         {
+            ButtonInAction = true;
             this.AddMarketCommand = new RelayCommand(this.AddMarket);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
         }
 
         public void AddMarket()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             MarketDbModel market = new MarketDbModel()
             { MarketName = MarketNameInp, IsActive = 1 };
 

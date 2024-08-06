@@ -66,6 +66,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddServiceLogVM(ProjectViewResModel pm, AddServiceVM psvm, List<SubProjectAddServiceModel> addservices)
         {
+            ButtonInAction = true;
+
             baseViewModel = psvm;
             BaseProject = pm;
             SubProjects = new ObservableCollection<SubProjectAddServiceModel>(addservices);
@@ -76,6 +78,11 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
 
             baseViewModel.LoadAdservice();
             baseViewModel.LeftDrawerOpen = false;
@@ -84,6 +91,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void Imortalize()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             List<SubProjectAddServiceModel> subslogged = SubProjects.Where(x => x.SelectedLogAddService).ToList();
 
             //bool checkfornonbillablepublish = subslogged.Any(x => !x.IsBillable && x.PrintLogAddService);

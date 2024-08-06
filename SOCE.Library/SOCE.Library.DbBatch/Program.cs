@@ -20,7 +20,7 @@ namespace SOCE.Library.DbBatch
             //RunUpdateTimesheetData();
             //RunSummary();
 
-            RunBillableHours();
+            //RunBillableHours();
         }
 
         public static void RunBillableHours()

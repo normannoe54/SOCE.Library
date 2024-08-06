@@ -52,6 +52,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public ExportConfirmVM(List<ProjectViewResModel> projects)
         {
+            ButtonInAction = true;
             Projects = projects;
             DoStuff();
             this.CancelCommand = new RelayCommand(this.CancelAction);
@@ -59,6 +60,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CancelAction()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             _cts.Cancel();
         }
 

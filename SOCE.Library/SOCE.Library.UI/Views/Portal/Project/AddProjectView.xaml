@@ -211,10 +211,12 @@
         </Grid>
         <Grid Grid.Row="1" Margin="0 16 0 0">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
-                <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProjectCommand}">
+                <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AddProjectCommand}"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Text="ACCEPT"/>
                 </Button>
-                <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}">
+                <Button Foreground="{StaticResource SOCERed}" IsCancel="True" Margin="8 0 0 0" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding CloseCommand}"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <TextBlock Text="CANCEL"/>
                 </Button>
             </StackPanel>

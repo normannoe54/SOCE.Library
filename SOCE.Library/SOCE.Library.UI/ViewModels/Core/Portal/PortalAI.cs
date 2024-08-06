@@ -155,7 +155,7 @@ namespace SOCE.Library.UI.ViewModels
                 //proposalsVM = new ProposalsVM(employee);
                 if (employee.Status == AuthEnum.Admin || employee.Status == AuthEnum.Principal)
                 {
-                    //invoicingVM = new InvoicingVM(employee);
+                    invoicingVM = new InvoicingVM(employee);
                 }
             }));
         }
@@ -177,8 +177,15 @@ namespace SOCE.Library.UI.ViewModels
 
         public async void GoToPage(PortalPage page)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (currentPage == page)
             {
+                ButtonInAction = true;
                 return;
             }
 
@@ -227,20 +234,29 @@ namespace SOCE.Library.UI.ViewModels
             ));
             await Task.Run(() => Task.Delay(600));
             CurrentPage2.MakeClear();
+            ButtonInAction = true;
         }
 
         public void GoToTimesheetByDate(DateTime date)
         {
             currentPage = PortalPage.Timesheet;
             CurrentPage = new TimesheetVM(LoggedInEmployee, date);
+
         }
 
         public void GoToLogin()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             currentPage = PortalPage.Default;
             CoreAI globalwindow = (CoreAI)IoCCore.Application;
             globalwindow.GoToLogin();
 
+            ButtonInAction = true;
             //IoCCore.Application.CurrentPage = IoCLogin.Application as BaseAI;          
         }
     }

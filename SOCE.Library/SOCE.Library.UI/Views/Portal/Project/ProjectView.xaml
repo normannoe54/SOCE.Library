@@ -31,14 +31,16 @@
             <TextBlock Grid.Column="0" Text="Projects" HorizontalAlignment="Left" Style="{StaticResource PageHeader}"/>
             <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0 0 0 10">
                 <Button Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenClientCommand}" BorderBrush="Black"
-                         VerticalAlignment="Bottom"  BorderThickness="1" HorizontalContentAlignment="Center"  Margin="0 0 10 0" Width="165" >
+                         VerticalAlignment="Bottom"  BorderThickness="1" HorizontalContentAlignment="Center"  Margin="0 0 10 0" Width="165" 
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" >
                         <TextBlock Text="Show Clients" VerticalAlignment="Center" Margin="0 0 20 0"/>
                         <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Width="20" Height="20" ToolTip="Export Current"/>
                     </StackPanel>
                 </Button>
                 <Button Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenMarketCommand}" BorderBrush="Black"
-                         VerticalAlignment="Bottom"  BorderThickness="1" HorizontalContentAlignment="Center" Width="165" Margin="0 0 10 0">
+                         VerticalAlignment="Bottom"  BorderThickness="1" HorizontalContentAlignment="Center" Width="165" Margin="0 0 10 0"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                         <TextBlock Text="Show Markets" VerticalAlignment="Center" Margin="0 0 20 0"/>
                         <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Width="20" Height="20" ToolTip="Export Current"/>
@@ -76,7 +78,8 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
                         <Button Grid.Row="0" IsEnabled="{Binding CanAddProject}" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black"
-                             Command="{Binding GoToAddProject}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 10 0 0" BorderThickness="1" BorderBrush="Black">
+                             Command="{Binding GoToAddProject}" HorizontalAlignment="Stretch" VerticalAlignment="Top" Margin="0 10 0 0" BorderThickness="1" BorderBrush="Black"
+                                IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                                 <TextBlock Text="Add New Project"/>
@@ -93,7 +96,7 @@
                                   IsChecked="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                   Content="{materialDesign:PackIcon Kind=No}" 
                                   VerticalAlignment="Center" HorizontalAlignment="Left"
-                                          
+                                          IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                   materialDesign:ToggleButtonAssist.OnContent="{materialDesign:PackIcon Kind=Check}">
                                 <materialDesign:ToggleButtonAssist.SwitchTrackOnBackground>
                                     <SolidColorBrush Color="#1d9719" />
@@ -118,15 +121,18 @@
                                 <TextBox Grid.Column="0" IsReadOnly="True" Text="{Binding YearInp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource MaterialDesignFloatingHintTextBox}"  IsEnabled="{Binding ShowActiveProjects, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                      HorizontalAlignment="Stretch" VerticalAlignment="Center" materialDesign:HintAssist.Hint="Specify Year"/>
                                 <Button Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding AddYearCommand}" BorderThickness="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="5 0 1 0"
-                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Add Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Add Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}"
+                                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <materialDesign:PackIcon Kind="plus" VerticalAlignment="Center"  Width="12" Height="12"/>
                                 </Button>
                                 <Button Grid.Column="2" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubtractYearCommand}" BorderThickness="0" HorizontalAlignment="Center"  VerticalAlignment="Center" Margin="1 0 0 0"
-                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Subtract Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                 Padding="0 12 0 0" Background="Transparent" Foreground="Black" ToolTip="Subtract Year" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}"
+                                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <materialDesign:PackIcon Kind="Minus" VerticalAlignment="Center"  Width="12" Height="12"/>
                                 </Button>
                                 <Button Grid.Column="3" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SearchCommand}" BorderThickness="0" VerticalContentAlignment="Stretch" VerticalAlignment="Bottom" Margin="5 0 0 5"
-                                Height="22" Width="22" Padding="0" Background="Transparent" Foreground="Black" ToolTip="Search" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}">
+                                Height="22" Width="22" Padding="0" Background="Transparent" Foreground="Black" ToolTip="Search" IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}"
+                                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                     <materialDesign:PackIcon Kind="Search" VerticalAlignment="Center"  Width="18" Height="18"/>
                                 </Button>
                             </Grid>
@@ -134,7 +140,8 @@
                             <!--HorizontalAlignment="Stretch" HorizontalContentAlignment="Stretch" Width="90" Text="{Binding DateTimeSelection, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  IsEnabled="{Binding ShowActiveProjects, Converter={StaticResource InvertBooleanConverter}}"/>-->
                         </Grid>
                         <Button Grid.Row="1" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportDataCommand}" BorderBrush="Black"
-                        IsEnabled="{Binding IsEditable}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0 0 0 0"  BorderThickness="1" >
+                                IsEnabled="{Binding IsEditable}" HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Margin="0 0 0 0"  BorderThickness="1"
+                                IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                             <StackPanel Orientation="Horizontal">
                                 <materialDesign:PackIcon Kind="Download" VerticalAlignment="Center" Margin="-5 1 8 0"  Width="20" Height="20" ToolTip="Export Current"/>
 
@@ -238,13 +245,15 @@
                                 <RowDefinition Height="auto"/>
                             </Grid.RowDefinitions>
                             <Button Grid.Row="0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding ClearSearchParamters}" BorderThickness="0" HorizontalAlignment="Stretch" VerticalContentAlignment="Stretch" 
-                                Height="Auto" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10" ToolTip="Clear" >
+                                Height="Auto" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10" ToolTip="Clear" 
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon  Kind="Clear" VerticalAlignment="Center"  Width="25" Height="25"/>
                                 </StackPanel>
                             </Button>
                             <Button Grid.Row="1" Grid.Column="1" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SearchCommand}" BorderThickness="0"
-                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10 0" ToolTip="Search">
+                                HorizontalAlignment="Stretch" VerticalAlignment="Bottom" Background="{StaticResource SOCEGray}" Foreground="White" Margin="10 0" ToolTip="Search"
+                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <StackPanel Orientation="Horizontal">
                                     <materialDesign:PackIcon Kind="Search"  VerticalAlignment="Center"  Width="20" Height="20"/>
                                 </StackPanel>
@@ -438,7 +447,7 @@
                                 <DatePicker Grid.Column="7"  IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}" 
                                             FontWeight="Regular" FontSize="14" HorizontalAlignment="Stretch" VerticalAlignment="Center" Margin="20 0 10 0"
                                             SelectedDate="{Binding Path=DueDate,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}"/>
-                                
+
                                 <TextBox Grid.Column="8"
                                                  materialDesign:TextFieldAssist.SuffixText="%"
                                                  Margin="10 0 20 0" 

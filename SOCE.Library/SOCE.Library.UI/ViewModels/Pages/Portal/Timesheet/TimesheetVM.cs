@@ -267,6 +267,8 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+
+
         private Brush _expensePresent;
         public Brush ExpensePresent
         {
@@ -276,7 +278,7 @@ namespace SOCE.Library.UI.ViewModels
                 _expensePresent = value;
                 RaisePropertyChanged(nameof(ExpensePresent));
             }
-        }  
+        }
 
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
@@ -295,7 +297,6 @@ namespace SOCE.Library.UI.ViewModels
             LoadCurrentTimesheet(date);
             SumTable();
             //SearchFilter = false;
-
         }
 
         private void Constructor(EmployeeModel loggedinEmployee)
@@ -310,7 +311,6 @@ namespace SOCE.Library.UI.ViewModels
             this.PreviousCommand = new RelayCommand(PreviousTimesheet);
             this.NextCommand = new RelayCommand(NextTimesheet);
             this.CurrentCommand = new RelayCommand(CurrentTimesheet);
-            //this.CopyPreviousCommand = new RelayCommand(CopyPrevious);
             this.ExportToExcel = new RelayCommand(ExportCurrentTimesheetToExcel);
             this.OpenExpenseReport = new RelayCommand(ExpenseReport);
         }
@@ -318,6 +318,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExpenseReport()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             ExpenseReportView ynv = new ExpenseReportView();
             ExpenseReportVM ynvm = new ExpenseReportVM(CurrentEmployee, DateSummary.FirstOrDefault().Value, DateSummary.LastOrDefault().Value, IsSubEditable, ProjectList.ToList());
             ynv.DataContext = ynvm;
@@ -325,6 +331,8 @@ namespace SOCE.Library.UI.ViewModels
             var result2 = await DialogHost.Show(ynv, "RootDialog");
 
             LoadExpenseData();
+
+            ButtonInAction = true;
         }
 
         private void Rowdata_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -334,12 +342,26 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddRowToCollection()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             Rowdata.Add(new TimesheetRowModel(ProjectList.ToList()) { Entries = AddNewBlankRow() });
+
+            ButtonInAction = true;
             //CollectDates();
         }
 
         private async void RemoveRow(TimesheetRowModel trm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (trm.Entries.Any(x => x.TimeEntry > 0))
             {
                 YesNoView view = new YesNoView();
@@ -352,16 +374,24 @@ namespace SOCE.Library.UI.ViewModels
 
                 if (!aysvm.Result)
                 {
+                    ButtonInAction = true;
                     return;
                 }
             }
-
             Rowdata.Remove(trm);
             SumTable();
+            ButtonInAction = true;
+
         }
 
         private async void ExportCurrentTimesheetToExcel()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -451,32 +481,49 @@ namespace SOCE.Library.UI.ViewModels
                     if (startdate != null && enddate != null)
                     {
                         List<ExpenseReportDbModel> edb = SQLAccess.LoadExpenses(startdate.Value, enddate.Value, CurrentEmployee.Id);
-                        
+
                         if (edb.Count > 0)
                         {
                             exinst.SetActiveSheetByName("ExpenseReport");
                             string name = $"{CurrentEmployee.FullName}";
-                            exinst.WriteCell(9, 3, name);
-                            exinst.WriteCell(9, 11, "0.67");
-                            exinst.WriteCell(10, 11, startdate.Value.ToString("MM/dd/yyyy"));
-                            exinst.WriteCell(11, 11, enddate.Value.ToString("MM/dd/yyyy"));
+                            exinst.WriteCell(10, 3, name);
+                            exinst.WriteCell(11, 6, startdate.Value.ToString("MM/dd/yyyy"));
+                            exinst.WriteCell(12, 6, enddate.Value.ToString("MM/dd/yyyy"));
 
                             int row = 16;
+                            bool mileagefound = true;
+
                             foreach (ExpenseReportDbModel rep in edb)
                             {
                                 DateTime date = DateTime.ParseExact(rep.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
                                 string description = rep.Description ?? "";
+
                                 ProjectDbModel project = SQLAccess.LoadProjectsById(rep.ProjectId);
                                 List<object> values = new List<object>();
                                 values.Add(date.ToString("MM/dd/yyyy"));
                                 values.Add(project.ProjectNumber);
                                 values.Add(description);
-                                //values.Add(rep.HotelCost);
-                                //values.Add(rep.TransportCost);
-                                //values.Add(rep.ParkingCost);
-                                //values.Add(rep.MealsCost);
-                                //values.Add(rep.MiscCost);
-                                values.Add(rep.Mileage);
+
+                                ExpenseEnum typeex = (ExpenseEnum)rep.TypeExpense;
+                                values.Add(typeex.ToString());
+
+                                if (rep.Mileage == 0)
+                                {
+                                    values.Add(" ");
+                                    values.Add(rep.TotalCost);
+
+                                }
+                                else
+                                {
+                                    if (mileagefound)
+                                    {
+                                        exinst.WriteCell(10, 6, rep.MileageRate.ToString());
+                                        mileagefound = false;
+                                    }
+                                    values.Add(rep.Mileage);
+                                    values.Add(rep.MileageRate * rep.Mileage);
+                                }
+
 
                                 if (row == 16)
                                 {
@@ -485,33 +532,21 @@ namespace SOCE.Library.UI.ViewModels
                                 else
                                 {
                                     exinst.InsertRowBelow(row - 1, values);
-                                    string formula1 = $"SUM(D{row} + E{row} + F{row} + G{row} + H{row} + J{row})";
-                                    exinst.WriteFormula(row, 11, formula1);
-                                    string formula2 = $"SUM(I{row}*K9)";
-                                    exinst.WriteFormula(row, 10, formula2);
+                                    //string formula1 = $"SUM(D{row} + E{row} + F{row} + G{row} + H{row} + J{row})";
+                                    //exinst.WriteFormula(row, 11, formula1);
+                                    //string formula2 = $"SUM(I{row}*K9)";
+                                    //exinst.WriteFormula(row, 10, formula2);
                                 }
                                 row++;
                             }
-                            string formulahotel = $"SUM(D16:D{row - 1})";
-                            string formulatransport = $"SUM(E16:E{row - 1})";
-                            string formulaparking = $"SUM(F16:F{row - 1})";
-                            string formulameals = $"SUM(G16:G{row - 1})";
-                            string formulamisc = $"SUM(H16:H{row - 1})";
-                            string formulamileage = $"SUM(I16:I{row - 1})";
-                            string formulamiltotal = $"SUM(J16:J{row - 1})";
-                            string formulatotal = $"SUM(K16:K{row - 1})";
-                            exinst.WriteFormula(row, 4, formulahotel);
-                            exinst.WriteFormula(row, 5, formulatransport);
-                            exinst.WriteFormula(row, 6, formulaparking);
-                            exinst.WriteFormula(row, 7, formulameals);
-                            exinst.WriteFormula(row, 8, formulamisc);
-                            exinst.WriteFormula(row, 9, formulamileage);
-                            exinst.WriteFormula(row, 10, formulamiltotal);
-                            exinst.WriteFormula(row, 11, formulatotal);
+                            string formulamileage = $"SUM(E16:E{row - 1})";
+                            string formulatotal = $"SUM(F16:F{row - 1})";
+                            exinst.WriteFormula(row, 5, formulamileage);
+                            exinst.WriteFormula(row, 6, formulatotal);
 
                             exinst.SaveDocument();
                         }
-                        else 
+                        else
                         {
                             exinst.DeleteWorksheet("ExpenseReport");
                             exinst.SaveDocument();
@@ -530,6 +565,7 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+            ButtonInAction = true;
         }
 
         /// <summary>
@@ -553,12 +589,6 @@ namespace SOCE.Library.UI.ViewModels
                     }
 
                     dblwrapper.Add(new DoubleWrapper(total));
-
-                    //Last one
-                    //if (i == numofentries-1)
-                    //{
-                    //    PercentComplete = (total / BaseHours) * 100;
-                    //}
                 }
                 TotalHeader = new AsyncObservableCollection<DoubleWrapper>(dblwrapper);
                 Total = TotalHeader.Sum(x => x.Value);
@@ -622,52 +652,10 @@ namespace SOCE.Library.UI.ViewModels
                 {
                     ProjectArray[i] = pm;
                 }
-
-                //pm.LoadSubProjects();
-
-                //if (pm.SubProjects.Count > 0 && activetest)
-                //{
             }
-
-            //Parallel.For(0, dbprojects.Count, i =>
-            //{
-            //    ProjectDbModel pdb = dbprojects[i];
-            //    ProjectModel pm = new ProjectModel(pdb);
-            //    bool activetest = submitted ? true : pm.IsActive;
-
-            //    //pm.LoadSubProjects();
-
-            //    //if (pm.SubProjects.Count > 0 && activetest)
-            //    //{
-
-            //    if (activetest)
-            //    {
-            //        ProjectArray[i] = pm;
-            //    }
-            //    //members.Add(pm);
-            //    //}
-            //}
-            //);
 
             ProjectArray = ProjectArray.Where(x => x != null).OrderByDescending(x => x.ProjectNumber).ToArray();
             ProjectList = new AsyncObservableCollection<ProjectLowResModel>(ProjectArray.ToList());
-            //SearchFilter = SearchFilter;
-            //ProjectList = new ObservableCollection<ProjectModel>(ProjectArray.ToList().OrderByDescending(x=>x.ProjectNumber));
-
-
-
-            //foreach (ProjectDbModel pdb in dbprojects)
-            //{
-            //    ProjectModel pm = new ProjectModel(pdb);
-            //pm.LoadSubProjects();
-            //bool activetest = submitted ? true : pm.IsActive;
-            //if (pm.SubProjects.Count > 0 && activetest)
-            //{
-            //    members.Add(pm);
-            //}
-            //}
-
-            //ProjectList = members;
         }
 
 
@@ -676,6 +664,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void PreviousTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -685,6 +679,7 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+            ButtonInAction = true;
         }
 
         /// <summary>
@@ -692,12 +687,19 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void NextTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
             await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => LoadCurrentTimesheet(DateSummary.Last().Value.AddDays(7))));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+            ButtonInAction = true;
 
         }
 
@@ -706,12 +708,19 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void CurrentTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
             await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => LoadCurrentTimesheet(DateTime.Now)));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+            ButtonInAction = true;
         }
 
         private bool LoadTimesheetSubmissionData()
@@ -886,6 +895,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void SubmitTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             YesNoView view = new YesNoView();
             YesNoVM aysvm = new YesNoVM();
             aysvm.Message = "Submit Time Sheet?";
@@ -958,6 +973,7 @@ namespace SOCE.Library.UI.ViewModels
                 SQLAccess.AddTimesheetSubmissionData(timesheetsubdbmodel);
                 LoadTimesheetSubmissionData();
             }
+            ButtonInAction = true;
         }
 
         /// <summary>
@@ -965,34 +981,14 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void SaveCommand(int submit)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             DateTime starttime = DateTime.Now;
-            //Message = "Timesheet Saved";
-
-
-
-
             MessageVisible = true;
-            //adding and modifying
-
-            //bool isallactive = !Rowdata.Any(x => x.AlertStatus != TimesheetRowAlertStatus.Active);
-
-            //bool result = true;
-
-            //if (!isallactive)
-            //{
-            //    YesNoView view = new YesNoView();
-            //    YesNoVM aysvm = new YesNoVM();
-            //    aysvm.Message = "One or more projects highlighted in red are not active.";
-            //    aysvm.SubMessage = "Do you still want to save?";
-            //    view.DataContext = aysvm;
-            //    var dialogres = await DialogHost.Show(view, "RootDialog");
-            //    aysvm = view.DataContext as YesNoVM;
-            //    result = aysvm.Result;
-            //}
-
-            //if (result)
-            //{
-            bool contains;
 
             try
             {
@@ -1106,8 +1102,6 @@ namespace SOCE.Library.UI.ViewModels
                     //ids++;
                 }
 
-
-
                 CopiedTimesheetData.Clear();
                 foreach (TimesheetRowModel trm in Rowdata)
                 {
@@ -1131,8 +1125,8 @@ namespace SOCE.Library.UI.ViewModels
                 Message = "Something went wrong!";
                 MessageVisible = false;
             }
-            //}
-            //Message = "";
+
+            ButtonInAction = true;
         }
 
 
@@ -1151,114 +1145,6 @@ namespace SOCE.Library.UI.ViewModels
             //CurrentPage.MakeClear();
 
         }
-
-        /// <summary>
-        /// Load Date of Timesheet
-        /// </summary>
-        /// <param name="currdate"></param>
-        //private async void CopyPrevious()
-        //{
-        //    if (Rowdata.Count == 0)
-        //    {
-        //        YesNoView view = new YesNoView();
-        //        YesNoVM aysvm = new YesNoVM();
-        //        aysvm.Message = "Copy the previous timesheet?";
-        //        view.DataContext = aysvm;
-        //        var result = await DialogHost.Show(view, "RootDialog");
-        //        aysvm = view.DataContext as YesNoVM;
-
-        //        if (aysvm.Result)
-        //        {
-
-        //            DateTime currdate = DateSummary.First().Value.AddDays(-1);
-        //            //UpdateDateSummary(currdate);
-        //            bool issubmitted = LoadTimesheetSubmissionData();
-        //            LoadProjects(issubmitted);
-        //            LoadTimesheetDataforCopyPrevious();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        //Message sorry fam
-        //    }
-
-        //}
-
-        //private void LoadTimesheetDataforCopyPrevious()
-        //{
-        //    //LoadCurrentTimesheet();
-
-        //    CopiedTimesheetData.Clear();
-        //    Rowdata.Clear();
-        //    DateTime currdate = DateSummary.First().Value.AddDays(-1);
-        //    DateTime firstdate;
-        //    DateTime lastdate;
-        //    if (currdate.Day > 16)
-        //    {
-        //        //second tier
-        //        firstdate = new DateTime(currdate.Year, currdate.Month, 17);
-        //        lastdate = new DateTime(currdate.Year, currdate.Month, DateTime.DaysInMonth(currdate.Year, currdate.Month));
-        //    }
-        //    else
-        //    {
-        //        //first tier
-        //        firstdate = new DateTime(currdate.Year, currdate.Month, 1);
-        //        lastdate = new DateTime(currdate.Year, currdate.Month, 16);
-        //    }
-
-        //    //update employee Id
-        //    List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(firstdate, lastdate, CurrentEmployee.Id);
-
-        //    //ObservableCollection<TimesheetRowModel> members = new ObservableCollection<TimesheetRowModel>();
-
-        //    var groupedlist = dbtimesheetdata.OrderBy(x => x.SubProjectId).GroupBy(x => x.SubProjectId).ToList();
-
-        //    foreach (var item in groupedlist)
-        //    {
-        //        TimesheetRowDbModel subitem = item.First();
-        //        SubProjectDbModel spdb = SQLAccess.LoadSubProjectsBySubProject(subitem.SubProjectId);
-        //        ProjectDbModel pdb = SQLAccess.LoadProjectsById(spdb.ProjectId);
-
-        //        try
-        //        {
-        //            ProjectModel pm = new ProjectModel(pdb);
-        //            SubProjectModel spm = new SubProjectModel(spdb);
-
-        //            ProjectModel pmnew = ProjectList.Where(x => x.Id == pm.Id)?.First();
-        //            TimesheetRowModel trm = new TimesheetRowModel(ProjectList.ToList())
-        //            {
-        //                Project = pmnew
-        //            };
-
-        //            SubProjectModel subpmnew = trm.SubProjects.Where(x => x.Id == spm.Id)?.First();
-
-        //            trm.SelectedSubproject = subpmnew;
-
-        //            ObservableCollection<TREntryModel> blanks = new ObservableCollection<TREntryModel>();
-
-        //            foreach (TREntryModel trentry in BlankEntry)
-        //            {
-        //                blanks.Add((TREntryModel)trentry.Clone());
-        //            }
-
-        //            trm.Entries = blanks;
-
-        //            Rowdata.Add(trm);
-        //        }
-        //        catch
-        //        {
-        //            continue;
-        //        }
-        //    }
-
-        //    //Rowdata = members;
-
-        //    foreach (TimesheetRowModel trm in Rowdata)
-        //    {
-        //        CopiedTimesheetData.Add((TimesheetRowModel)trm.Clone());
-        //    }
-
-        //}
 
         private void UpdateDateSummary(DateTime currdate)
         {

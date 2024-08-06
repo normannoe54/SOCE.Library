@@ -456,6 +456,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddProjectVM()
         {
+            ButtonInAction = true;
             MarketsAvailable.Clear();
             ClientsAvailable.Clear();
             Roles.CollectionChanged += CollectionChanged;
@@ -698,9 +699,16 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddProject()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (String.IsNullOrEmpty(ProjectNameInp) || ProjectNumberInp == 0 || ClientInp == null || MarketInp == null || PMInp == null)
             {
                 ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                ButtonInAction = true;
                 return;
             }
 
@@ -714,6 +722,8 @@ namespace SOCE.Library.UI.ViewModels
                     if (rspm.Employee == null)
                     {
                         ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                        ButtonInAction = true;
+
                         return;
                     }
                 }
@@ -751,6 +761,8 @@ namespace SOCE.Library.UI.ViewModels
             if (id == 0)
             {
                 ErrorMessage = $"Project number exists{Environment.NewLine}check inactive projects.";
+                ButtonInAction = true;
+
                 return;
             }
 
@@ -827,6 +839,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             DialogHost.Close("RootDialog");
         }
     }

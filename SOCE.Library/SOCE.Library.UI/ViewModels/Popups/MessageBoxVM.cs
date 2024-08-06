@@ -52,9 +52,24 @@ namespace SOCE.Library.UI.ViewModels
             Message = message;
             this.CloseCommand = new RelayCommand(this.CancelCommand);
         }
+        InvoicingSummaryVM civm;
+        public MessageBoxVM(string message, InvoicingSummaryVM vm)
+        {
+            civm = vm;
+            Message = message;
+            this.CloseCommand = new RelayCommand(this.CancelCommand);
+        }
+
         private void CancelCommand()
         {
-            DialogHost.Close("RootDialog");
+            if (civm != null)
+            {
+                civm.LeftDrawerOpen = false;
+            }
+            else
+            {
+                DialogHost.Close("RootDialog");
+            }
         }
     }
 }

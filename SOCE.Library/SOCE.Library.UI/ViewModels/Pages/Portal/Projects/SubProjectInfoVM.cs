@@ -76,6 +76,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public SubProjectInfoVM(SubProjectSummaryModel sub, ProjectSummaryVM proj)
         {
+            ButtonInAction = true;
             this.SaveSubProjectCommand = new RelayCommand(this.SaveSubProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
 
@@ -92,6 +93,12 @@ namespace SOCE.Library.UI.ViewModels
         private bool result = false;
         private void SaveSubProject()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             SubProjectDbModel subupdate = new SubProjectDbModel()
             {
                 Id = SubProject.Id,
@@ -117,21 +124,15 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            //if (result)
-            //{
-            //    //SubProjectModel sub = baseViewModel.SubProjects.Where(x => x.Id == SubProject.Id).FirstOrDefault();
-            //    sub.PointNumber = AdServiceNumber.ToString();
-            //    sub.Description = Description;
-            //    sub.Fee = AdditionalServicesFee;
-            //    sub.ExpandedDescription = ExpandedDescription;
-            //    baseViewModel.BaseProject.SubProjects = baseViewModel.SubProjects;
-            //    baseViewModel.BaseProject.UpdateSubProjects();
-            //    baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
-            //    baseViewModel.SelectedProjectPhase = sub;
-            //}
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
+
             baseViewModel.CollectSubProjectsInfo();
             baseViewModel.LeftDrawerOpen = false;
-            //DialogHost.Close("RootDialog");
         }
     }
 }

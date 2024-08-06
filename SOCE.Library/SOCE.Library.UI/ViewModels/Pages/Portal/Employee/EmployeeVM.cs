@@ -118,6 +118,12 @@ namespace SOCE.Library.UI.ViewModels
         public async void GoToEmployeeSummary(object o)
         {
 
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             EmployeeModel em = (EmployeeModel)o;
             em.CollectTimesheetSubmission();
             //em.IsEditable = true;
@@ -129,11 +135,18 @@ namespace SOCE.Library.UI.ViewModels
             var result = await DialogHost.Show(view, "RootDialog");
 
             em.EditFieldState = true;
-            //em.IsEditable = false;
+
+            ButtonInAction = true;
         }
 
         private async void ExecuteRunAddDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddEmployeeView();
 
@@ -147,10 +160,17 @@ namespace SOCE.Library.UI.ViewModels
             {
                 LoadEmployees();
             }
+            ButtonInAction = true;
         }
 
         private async void ExecuteRunDeleteDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             EmployeeModel em = o as EmployeeModel;
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             YesNoView view = new YesNoView();
@@ -167,7 +187,10 @@ namespace SOCE.Library.UI.ViewModels
             {
                 SQLAccess.ArchiveEmployee(em.Id);
                 LoadEmployees();
+            
             }
+            ButtonInAction = true;
+
         }
 
         private void LoadEmployees()

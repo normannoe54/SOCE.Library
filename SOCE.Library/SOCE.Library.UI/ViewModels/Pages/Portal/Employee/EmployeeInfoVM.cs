@@ -67,6 +67,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public EmployeeInfoVM(EmployeeModel employee)
         {
+            ButtonInAction = true;
             SelectedEmployee = employee;
             employee.LoadSignature();
             
@@ -130,6 +131,12 @@ namespace SOCE.Library.UI.ViewModels
 
         public void GoToTimesheet(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             TimesheetSubmissionModel tsm = (TimesheetSubmissionModel)o;
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
@@ -140,6 +147,13 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
+
             DialogHost.Close("RootDialog");
         }
     }

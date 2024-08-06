@@ -11,6 +11,16 @@ namespace SOCE.Library.UI.ViewModels
     //[AddINotifyPropertyChangedInterface]
     public class BaseVM : PropertyChangedBase
     {
+        private bool _buttonInAction = true;
+        public bool ButtonInAction
+        {
+            get { return _buttonInAction; }
+            set
+            {
+                _buttonInAction = value;
+                RaisePropertyChanged(nameof(ButtonInAction));
+            }
+        }
         /// <summary>
         /// The event that fires when any child property changes its value
         /// </summary>

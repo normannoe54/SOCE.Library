@@ -50,6 +50,7 @@ namespace SOCE.Library.UI.ViewModels
         private ProjectVM baseproject;
         public ClientVM( ProjectVM projectvm, bool canadd)
         {
+            ButtonInAction = true;
             baseproject = projectvm;
             this.GoToAddClient = new RelayCommand<object>(this.ExecuteRunAddClientDialog);
             this.GoBackCommand = new RelayCommand(this.GoBack);
@@ -60,6 +61,12 @@ namespace SOCE.Library.UI.ViewModels
         
         private void GoBack()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
 
@@ -68,6 +75,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunAddClientDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddClientView();
 
@@ -76,6 +89,7 @@ namespace SOCE.Library.UI.ViewModels
 
             LoadClients();
             baseproject.LoadClients();
+            ButtonInAction = true;
         }
 
         private void LoadClients()
@@ -95,6 +109,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+
+            ButtonInAction = false;
             ClientModel cm = (ClientModel)o;
 
             List<ProjectDbModel> project1 = SQLAccess.LoadProjects();
@@ -124,6 +144,7 @@ namespace SOCE.Library.UI.ViewModels
                     LoadClients();
                 }
             }
+            ButtonInAction = true;
         }
     }
 }

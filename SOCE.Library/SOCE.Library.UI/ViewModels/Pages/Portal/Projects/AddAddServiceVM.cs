@@ -172,7 +172,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddAddServiceVM(ProjectViewResModel pm, AddServiceVM psvm, SubProjectAddServiceModel sub)
         {
-
+            ButtonInAction = true;
             baseViewModel = psvm;
             this.AddSubProjectCommand = new RelayCommand(this.AddSubProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
@@ -227,6 +227,12 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddSubProject()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             SubProjectDbModel subproject = new SubProjectDbModel
             {
                 ProjectId = BaseProject.Id,
@@ -257,6 +263,7 @@ namespace SOCE.Library.UI.ViewModels
             if (String.IsNullOrEmpty(Description) || LatestAdServiceNumber == 0)
             {
                 ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                ButtonInAction = true;
                 return;
             }
 
@@ -283,31 +290,14 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            //baseViewModel.BaseProject.FormatData(result);
-
-            //List<SubProjectModel> subs = new List<SubProjectModel>();
-
-            //foreach (SubProjectModel sub in baseViewModel.BaseProject.SubProjects)
-            //{
-            //    if (sub.IsAddService)
-            //    {
-            //        subs.Add(sub);
-            //    }
-            //}
-
-
-            //baseViewModel.SubProjects = new ObservableCollection<SubProjectModel>(subs);
-
-            //if (baseViewModel.SubProjects.Count > 0)
-            //{
-            //    baseViewModel.SelectedAddService = baseViewModel.SubProjects[0];
-            //    baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
-            //}
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
 
             baseViewModel.LoadAdservice();
             baseViewModel.LeftDrawerOpen = false;
-
-            //DialogHost.Close("RootDialog");
         }
     }
 }

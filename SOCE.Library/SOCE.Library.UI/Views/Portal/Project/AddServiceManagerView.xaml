@@ -64,11 +64,11 @@
                                                     Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
                                                     Foreground="Black" Background="Transparent" 
                                                     BorderBrush="Transparent"
-                                                    
+                                                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                                     Command="{Binding AddSubCommand}"
                                                     CommandParameter="{Binding}"
                                                     ToolTip="Add Add-Service"
-                             HorizontalAlignment="Center">
+                            HorizontalAlignment="Center">
 
                         <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0"/>
                     </Button>
@@ -78,7 +78,8 @@
                                                     BorderBrush="Transparent"
                                                     Command="{Binding ImortalizeCommand}"
                                                     HorizontalAlignment="Center"
-                                                    ToolTip="Create Add-Service Log">
+                                                    ToolTip="Create Add-Service Log"
+                            IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <Button.Style>
                             <Style TargetType="{x:Type Button}" BasedOn="{StaticResource MaterialDesignFloatingActionMiniLightButton}">
                                 <Style.Triggers>

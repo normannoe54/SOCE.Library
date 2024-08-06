@@ -861,6 +861,7 @@ namespace SOCE.Library.UI.ViewModels
             if (DateOfSelection != null || selectedexpenses.Count > 0)
             {
                 bool subcheck = false;
+
                 List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
 
                 foreach (SubProjectDbModel sub in subs)
@@ -872,7 +873,17 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                if (!subcheck)
+                List<SubProjectDbModel> subsbillable = subs.Where(x=>x.IsBillable == 1).ToList();
+                if (subsbillable.Count == 0)
+                {
+                    string message = $"No billable phases in project, please revise.";
+                    MessageBoxVM addsubvm = new MessageBoxVM(message, this);
+
+                    LeftViewToShow = new MessageBoxView();
+                    LeftViewToShow.DataContext = addsubvm;
+                    LeftDrawerOpen = true;
+                }
+                else if (!subcheck)
                 {
                     InvoicingModel invlatest = Invoices.LastOrDefault();
                     YesNoVM addsubvm = new YesNoVM(invlatest, this);

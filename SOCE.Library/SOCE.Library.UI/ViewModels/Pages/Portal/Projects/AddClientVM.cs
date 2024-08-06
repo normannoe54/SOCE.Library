@@ -50,12 +50,19 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddClientVM()
         {
+            ButtonInAction = true;
             this.AddClientCommand = new RelayCommand(this.AddClient);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
         }
 
         public void AddClient()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             ClientDbModel client = new ClientDbModel()
             { ClientName = ClientNameInp, ClientNumber = ClientNumberInp, IsActive = 1};
 
@@ -64,6 +71,7 @@ namespace SOCE.Library.UI.ViewModels
             if (id == 0)
             {
                 ErrorMessage = $"Client number exists already";
+                ButtonInAction = true;
                 return;
             }
 
@@ -74,6 +82,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             DialogHost.Close("RootDialog");
         }
     }

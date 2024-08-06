@@ -327,6 +327,11 @@ namespace SOCE.Library.UI.ViewModels
 
         private void OpenRightDrawerClient()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
 
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
@@ -336,10 +341,17 @@ namespace SOCE.Library.UI.ViewModels
             ClientVM cvm = new ClientVM(this, CanAddProject);
             portAI.RightViewToShow.DataContext = cvm;
             portAI.RightDrawerOpen = true;
+            ButtonInAction = true;
         }
 
         private void OpenRightDrawerMarket()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
 
@@ -348,10 +360,19 @@ namespace SOCE.Library.UI.ViewModels
             MarketVM cvm = new MarketVM(this, CanAddProject);
             portAI.RightViewToShow.DataContext = cvm;
             portAI.RightDrawerOpen = true;
+
+            ButtonInAction = true;
+
         }
 
         private async void ClearInputsandReload()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -383,6 +404,8 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         private void SortProjects(bool sort)
@@ -400,6 +423,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void RunExport()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             TimeSpan time = TimeSpan.FromSeconds(Projects.Count * 0.4);
             YesNoView view = new YesNoView();
             YesNoVM aysvm = new YesNoVM();
@@ -422,10 +451,18 @@ namespace SOCE.Library.UI.ViewModels
                 ecv.DataContext = ecvm;
                 var newres = await DialogHost.Show(ecv, "RootDialog");
             }
+
+            ButtonInAction = true;
         }
 
         private async void RunSearch()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -464,21 +501,36 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         private async void ExecuteOpenSubDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             ProjectViewResModel pm = (ProjectViewResModel)o;
             var view = new BaseProjectSummaryView();
             BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee, pm, ViewEnum.ProjectSummary);
             view.DataContext = vm;
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
+            ButtonInAction = true;
         }
 
 
         private async void ExecuteRunAddDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddProjectView();
 
@@ -492,6 +544,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 LoadProjects();
             }
+            ButtonInAction = true;
         }
 
         //private async void ExecuteRunAddClientDialog(object o)
@@ -509,6 +562,11 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunAddMarketDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddMarketView();
 
@@ -517,11 +575,19 @@ namespace SOCE.Library.UI.ViewModels
             //if (result != null)
             //{
             LoadMarkets();
+            ButtonInAction = true;
+
             //}
         }
 
         private async void ExecuteRunDeleteDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             ProjectViewResModel pm = (ProjectViewResModel)o;
 
             List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(pm.Id);
@@ -536,7 +602,7 @@ namespace SOCE.Library.UI.ViewModels
                     mbvm.SubMessage = "Hours already saved to project.";
                     mbv.DataContext = mbvm;
                     var result = await DialogHost.Show(mbv, "RootDialog");
-
+                    ButtonInAction = true;
                     return;
                 }
             }
@@ -559,6 +625,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 LoadProjects();
             }
+            ButtonInAction = true;
         }
 
         //private void ClosingEventHandlerProjects(object sender, DialogClosingEventArgs eventArgs)

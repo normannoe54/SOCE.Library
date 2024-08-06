@@ -132,6 +132,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public ExpenseProjectVM(ProjectViewResModel baseproj, EmployeeModel currentemployee)
         {
+            ButtonInAction = true;
+
             CurrentEmployee = currentemployee;
             DeleteExpenseCommand = new RelayCommand<ExpenseProjectModel>(DeleteExpense);
             AddExpenseCommandCommand = new RelayCommand(AddExpense);
@@ -197,6 +199,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void DeleteExpense(ExpenseProjectModel epm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             LeftViewToShow = new YesNoView();
             YesNoVM aysvm = new YesNoVM(epm, this);
             LeftViewToShow.DataContext = aysvm;
@@ -205,6 +213,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddExpense()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             LeftViewToShow = new AddExpenseView();
             AddExpenseVM addsubvm = new AddExpenseVM(BaseProject, this, CurrentEmployee);
             LeftViewToShow.DataContext = addsubvm;

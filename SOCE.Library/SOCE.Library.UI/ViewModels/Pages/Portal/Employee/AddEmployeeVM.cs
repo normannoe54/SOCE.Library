@@ -170,16 +170,24 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddEmployeeVM()
         {
+            ButtonInAction = true;
             this.AddEmployeeCommand = new RelayCommand(this.AddEmployee);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
         }
 
         public void AddEmployee()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+
+            ButtonInAction = false;
             if (String.IsNullOrEmpty(FirstNameInp) || String.IsNullOrEmpty(LastNameInp) || String.IsNullOrEmpty(TitleInp) || SelectedAuthorization == null || SelectedDefaultRole == null || String.IsNullOrEmpty(EmailInp) ||
                  String.IsNullOrEmpty(PhoneNumberInp) || String.IsNullOrEmpty(ExtensionInp) || BillableRate == 0 || YearlyPTO == 0 || SickLeave == 0 || HolidayHours == 0 || String.IsNullOrEmpty(TemporaryPassInp))
             {
                 ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
+                ButtonInAction = true;
                 return;
             }
 
@@ -218,7 +226,15 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             DialogHost.Close("RootDialog");
+
+            //ButtonInAction = true;
         }
     }
 }

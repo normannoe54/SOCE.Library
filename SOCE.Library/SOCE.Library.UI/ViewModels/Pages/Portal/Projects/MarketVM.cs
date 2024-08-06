@@ -49,6 +49,7 @@ namespace SOCE.Library.UI.ViewModels
         private ProjectVM baseproject;
         public MarketVM(ProjectVM projectvm, bool canadd)
         {
+            ButtonInAction = true;
             baseproject = projectvm;
             this.GoToAddMarket = new RelayCommand<object>(this.ExecuteRunAddMarketDialog);
             this.GoBackCommand = new RelayCommand(this.GoBack);
@@ -59,6 +60,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void GoBack()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
 
@@ -67,6 +74,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunAddMarketDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddMarketView();
 
@@ -75,6 +88,7 @@ namespace SOCE.Library.UI.ViewModels
             //if (result != null)
             //{
             LoadMarkets();
+            ButtonInAction = true;
             //}
         }
 
@@ -96,6 +110,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteRunDeleteDialog(object o)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             MarketModel mm = (MarketModel)o;
 
             List<ProjectDbModel> project1 = SQLAccess.LoadProjects();
@@ -125,6 +145,7 @@ namespace SOCE.Library.UI.ViewModels
                     LoadMarkets();
                 }
             }
+            ButtonInAction = true;
         }
     }
 }

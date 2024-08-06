@@ -354,6 +354,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void DeleteSub(SubProjectAddServiceModel spm)
         {
+            if (spm.IsInvoicedEditable)
+            {
+                return;
+            }
+            spm.IsInvoicedEditable = false;
+
             if (SubProjects.Count > 0)
             {
                 LeftViewToShow = new YesNoView();
@@ -362,10 +368,17 @@ namespace SOCE.Library.UI.ViewModels
                 ItemToDelete = spm;
                 LeftDrawerOpen = true;
             }
+            spm.IsInvoicedEditable = true;
         }
 
         private void AddSubProject()
         {
+            if (ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             SubProjectAddServiceModel basemodel = null;
             if (SubProjects.Count > 0)
             {
@@ -376,14 +389,22 @@ namespace SOCE.Library.UI.ViewModels
             AddAddServiceVM addsubvm = new AddAddServiceVM(BaseProject, this, basemodel);
             LeftViewToShow.DataContext = addsubvm;
             LeftDrawerOpen = true;
+            ButtonInAction = true;
         }
 
         public void RunLogCommand()
         {
+            if (ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             LeftViewToShow = new AddServiceRunLogView();
             AddServiceLogVM addsubvm = new AddServiceLogVM(BaseProject, this, SubProjects.ToList());
             LeftViewToShow.DataContext = addsubvm;
             LeftDrawerOpen = true;
+            ButtonInAction = true;
         }
 
         //private void CloseWindow()

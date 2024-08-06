@@ -372,6 +372,8 @@ namespace SOCE.Library.UI.ViewModels
 
         public AddSubProjectVM(ProjectViewResModel pm, ProjectSummaryVM psvm)
         {
+            ButtonInAction = true;
+
             baseViewModel = psvm;
             this.AddSubProjectCommand = new RelayCommand(this.AddSubProject);
             this.CloseCommand = new RelayCommand(this.CloseWindow);
@@ -419,6 +421,12 @@ namespace SOCE.Library.UI.ViewModels
 
         public void AddSubProject()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             SubProjectDbModel subproject = new SubProjectDbModel
             {
                 ProjectId = BaseProject.Id,
@@ -548,10 +556,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
-            //baseViewModel.BaseProject.FormatData(result);
-            //baseViewModel.SubProjects = baseViewModel.BaseProject.SubProjects;
-            //baseViewModel.SubProjects = baseViewModel.SubProjects.Renumber(true);
-            //baseViewModel.Renumber(true);
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             baseViewModel.CollectSubProjectsInfo();
             //baseViewModel.SelectedProjectPhase = baseViewModel.SubProjects[0];
             baseViewModel.LeftDrawerOpen = false;

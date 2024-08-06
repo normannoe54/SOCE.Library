@@ -72,19 +72,22 @@
         <!--<Separator Height="1" Grid.Row="1" Background="{StaticResource SOCEGray}" Margin="0 -1 0 10"/>-->
 
         <StackPanel Grid.Column="1" Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Grid.Row="2">
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding PreviousCommand}"
+                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel Orientation="Horizontal">
                     <materialDesign:PackIcon Kind="ArrowLeft" VerticalAlignment="Center"  Foreground="Black"/>
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Previous"  Foreground="Black"/>
                 </StackPanel>
             </Button>
-            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}">
+            <Button Margin="20 0 20 0" Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding CurrentCommand}"
+                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel Orientation="Horizontal">
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Current" Margin="0 0 10 0"  Foreground="Black"/>
                     <materialDesign:PackIcon Kind="Calendar" VerticalAlignment="Center" Foreground="Black"/>
                 </StackPanel>
             </Button>
-            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}">
+            <Button Style="{StaticResource MaterialDesignFlatButton}" Padding="0 0 0 0" Command="{Binding NextCommand}"
+                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <StackPanel Orientation="Horizontal">
                     <Label VerticalAlignment="Center" HorizontalAlignment ="Left" Content="Next" Foreground="Black"/>
                     <materialDesign:PackIcon Kind="ArrowRight" VerticalAlignment="Center" Foreground="Black"/>
@@ -154,7 +157,8 @@
                 </StackPanel>
             </Grid >
             <Button Grid.Column="1" Style="{StaticResource MaterialDesignFlatButton}" Height="65" HorizontalAlignment="Left" VerticalAlignment="Stretch" Padding="5"
-                    Margin="10 0 0 0" ToolTip="Expense Report" Command="{Binding OpenExpenseReport}">
+                    Margin="10 0 0 0" ToolTip="Expense Report" Command="{Binding OpenExpenseReport}"
+                    IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                 <Button.Content>
                     <materialDesign:PackIcon Width="40" Height="117" Foreground="{Binding ExpensePresent}" Kind="TextBoxPlus" VerticalAlignment="Center" HorizontalAlignment="Center" />
                     <!--<StackPanel Orientation="Horizontal">
@@ -169,7 +173,8 @@
                     <RowDefinition Height="*"/>
                 </Grid.RowDefinitions>
                 <Button Grid.Row="0" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
-                        HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Black" BorderThickness="1">
+                        HorizontalAlignment="Right" VerticalAlignment="Center"  Height="30" Margin="5 0 5 0" BorderBrush="Black" BorderThickness="1"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="Export" Foreground="black" VerticalAlignment="Center"/>
 
@@ -195,7 +200,9 @@
                     <ColumnDefinition Width="60"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" Background="Transparent" Foreground="{StaticResource SOCEGreenCompliment}" HorizontalAlignment="Left">
+                <Button Grid.Column="0" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignFlatButton}" Command="{Binding AddRowCommand}" 
+                        Background="Transparent" Foreground="{StaticResource SOCEGreenCompliment}" HorizontalAlignment="Left"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Margin="0 0 8 0" Width="11" Height="11"/>
                         <TextBlock Text="Add Project" FontWeight="SemiBold"/>
@@ -607,7 +614,9 @@
             </Button>-->
 
             <StackPanel Orientation="Horizontal" Grid.Column="2">
-                <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <Button Width="100" IsEnabled="{Binding IsSubEditable}" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SaveTimesheetCommand}" 
+                        Background="LightGray" Foreground="Black" HorizontalAlignment="Right"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <Button.CommandParameter>
                         <s:Int32>0</s:Int32>
                     </Button.CommandParameter>
@@ -617,7 +626,9 @@
                     </StackPanel>
                 </Button>
 
-                <Button IsEnabled="{Binding IsSubEditable}" Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubmitTimeSheetCommand}" Background="LightGray" Foreground="Black" HorizontalAlignment="Right">
+                <Button IsEnabled="{Binding IsSubEditable}" Width="100" Margin="20 0 0 0" Style="{StaticResource MaterialDesignRaisedButton}" Command="{Binding SubmitTimeSheetCommand}" 
+                        Background="LightGray" Foreground="Black" HorizontalAlignment="Right"
+                        IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <StackPanel Orientation="Horizontal">
                         <materialDesign:PackIcon Kind="Upload" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
                         <TextBlock Text="Submit"/>

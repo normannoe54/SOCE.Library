@@ -211,13 +211,29 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddRowToCollection()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             Rowdata.Add(new ExpenseReportModel(ProjectList.ToList(), Payperiodbeginning, 0.67, this));
+
+            ButtonInAction = true;
         }
 
         private void RemoveRow(ExpenseReportModel trm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             Rowdata.Remove(trm);
             SumTable();
+
+            ButtonInAction = true;
         }
 
         public void SumTable()
@@ -347,6 +363,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void SaveCommand()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             MessageVisible = true;
 
             try
@@ -404,6 +426,7 @@ namespace SOCE.Library.UI.ViewModels
                 Message = "Something went wrong!";
                 MessageVisible = false;
             }
+            ButtonInAction = true;
 
         }
 
@@ -412,7 +435,16 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private void Cancel()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             DialogHost.Close("RootDialog");
+
+            ButtonInAction = false;
+
         }
     }
 }

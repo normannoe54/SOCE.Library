@@ -62,6 +62,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM()
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -69,6 +70,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(EmployeeModel em)
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -78,6 +80,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(ProjectListModel plm)
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -87,6 +90,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(ClientModel cm)
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -96,6 +100,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(MarketModel mm)
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -105,6 +110,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(int index, InvoicingSummaryVM basevm)
         {
+            ButtonInAction = true;
             baseindex = index;
             invoicingsummaryvm = basevm;
             Result = false;
@@ -114,6 +120,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(InvoicingModel invoice, InvoicingSummaryVM basevm)
         {
+            ButtonInAction = true;
             baseinvoice = invoice;
             invoicingsummaryvm = basevm;
             Result = false;
@@ -123,6 +130,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(SubProjectSummaryModel spm, ProjectSummaryVM psm)
         {
+            ButtonInAction = true;
             ProjectSummary = psm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
@@ -133,6 +141,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(ExpenseProjectModel epm, ExpenseProjectVM epvm)
         {
+            ButtonInAction = true;
             ExpenseProject = epvm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
@@ -144,6 +153,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(SubProjectAddServiceModel spm, AddServiceVM psm)
         {
+            ButtonInAction = true;
             AddServiceSummary = psm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
@@ -154,6 +164,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(RoleSummaryModel rpspm, ProjectSummaryVM psm)
         {
+            ButtonInAction = true;
             ProjectSummary = psm;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
@@ -165,6 +176,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(ProjectViewResModel pm)
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -174,6 +186,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public YesNoVM(ProposalViewResModel pm)
         {
+            ButtonInAction = true;
             Result = false;
             this.YesCommand = new RelayCommand(this.YesDoTheAction);
             this.CloseCommand = new RelayCommand(this.CancelCommand);
@@ -195,17 +208,33 @@ namespace SOCE.Library.UI.ViewModels
 
         public void YesDoTheAction()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             Result = true;
             //do stuff
 
             CloseWindow();
+
+
         }
 
         private void CancelCommand()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             Result = false;
             //do stuff
             CloseWindow();
+
+
         }
 
         private void CloseWindow()

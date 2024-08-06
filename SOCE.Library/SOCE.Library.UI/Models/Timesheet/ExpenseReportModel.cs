@@ -240,7 +240,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _isClientBillable;
+        private bool _isClientBillable = true;
         public bool IsClientBillable
         {
             get
@@ -254,7 +254,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        private bool _isReimbursable;
+        private bool _isReimbursable =true;
         public bool IsReimbursable
         {
             get
