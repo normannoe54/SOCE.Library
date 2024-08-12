@@ -510,6 +510,40 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private double _previousExpensesInvoicedToDate;
+        public double PreviousExpensesInvoicedToDate
+        {
+            get { return _previousExpensesInvoicedToDate; }
+            set
+            {
+                _previousExpensesInvoicedToDate = value;
+                RaisePropertyChanged("PreviousExpensesInvoicedToDate");
+            }
+        }
+
+        private DateTime _datePreviousExpenses;
+        public DateTime DatePreviousExpenses
+        {
+            get { return _datePreviousExpenses; }
+            set
+            {
+                _datePreviousExpenses = value;
+                RaisePropertyChanged("DatePreviousExpenses");
+            }
+        }
+
+        private bool _isPreviousExpenseVis = false;
+        public bool IsPreviousExpenseVis
+        {
+            get { return _isPreviousExpenseVis; }
+            set
+            {
+                _isPreviousExpenseVis = value;
+                RaisePropertyChanged("IsPreviousExpenseVis");
+            }
+        }
+
+
         private InvoicingSummaryVM baseViewModel;
 
         public List<HourEntryModel> timesheetidstoinvoice = new List<HourEntryModel>();
@@ -589,6 +623,14 @@ namespace SOCE.Library.UI.ViewModels
             {
                 //DateTime datefoundinvoice = DateTime.ParseExact(invoice.AddServicesDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
                 DateofServicesAreComplete = invoice.AddServicesDate;
+            }
+
+            if (invoice.ExpensePrevious > 0)
+            {
+                IsPreviousExpenseVis = true;
+                //PreviousExpensesPrevious = first.ExpensesPrevious;
+                PreviousExpensesInvoicedToDate = invoice.ExpensePrevious;
+                DatePreviousExpenses = invoice.DatePrevExpenses;
             }
 
             EmployeeDbModel signer = SQLAccess.LoadEmployeeById(invoice.EmployeeSignedId);
@@ -698,6 +740,13 @@ namespace SOCE.Library.UI.ViewModels
                 LinkLocation = first.Link;
                 numinvoice = first.InvoiceNumber - (BaseProject.ProjectNumber * 1000);
 
+                if ((first.ExpensesDue) > 0)
+                {
+                    IsPreviousExpenseVis = true;
+                    //PreviousExpensesPrevious = first.ExpensesPrevious;
+                    PreviousExpensesInvoicedToDate = first.ExpensesDue;
+                    DatePreviousExpenses = DateTime.ParseExact(first.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                }
             }
             else
             {
@@ -862,62 +911,62 @@ namespace SOCE.Library.UI.ViewModels
 
             //if (sortedprevious.Count > 0)
             //{
-            foreach (InvoicingModelDb invmod in sortedprevious)
-            {
-                //InvoicingModelDb latestinvoice = sortedprevious.Last();
-                List<InvoicingRowsDb> expenses = SQLAccess.LoadInvoiceRows(invmod.Id);
+            //foreach (InvoicingModelDb invmod in sortedprevious)
+            //{
+            //    //InvoicingModelDb latestinvoice = sortedprevious.Last();
+            //    List<InvoicingRowsDb> expenses = SQLAccess.LoadInvoiceRows(invmod.Id);
 
-                foreach (InvoicingRowsDb inv in expenses)
-                {
-                    if (Convert.ToBoolean(inv.IsExpense))
-                    {
-                        InvoicingRows eim = new InvoicingRows()
-                        {
-                            viewmodel = this,
-                            PreviousInvoiced = inv.PreviousInvoiced + inv.ThisPeriodInvoiced,
-                            ThisPeriodInvoiced = 0,
-                            InvoicedtoDate = inv.PreviousInvoiced + inv.ThisPeriodInvoiced,
-                            ScopeName = inv.ScopeName,
-                            IsHourly = true,
-                        };
+            //    foreach (InvoicingRowsDb inv in expenses)
+            //    {
+            //        if (Convert.ToBoolean(inv.IsExpense))
+            //        {
+            //            InvoicingRows eim = new InvoicingRows()
+            //            {
+            //                viewmodel = this,
+            //                PreviousInvoiced = inv.PreviousInvoiced + inv.ThisPeriodInvoiced,
+            //                ThisPeriodInvoiced = 0,
+            //                InvoicedtoDate = inv.PreviousInvoiced + inv.ThisPeriodInvoiced,
+            //                ScopeName = inv.ScopeName,
+            //                IsHourly = true,
+            //            };
 
-                        List<InvoicingRows> exfound = Expenses.Where(x => x.ScopeName == inv.ScopeName).ToList();
+            //            //List<InvoicingRows> exfound = Expenses.Where(x => x.ScopeName == inv.ScopeName).ToList();
 
-                        if (exfound.Count > 0)
-                        {
-                            InvoicingRows exitem = exfound.OrderByDescending(x => x.InvoicedtoDate).FirstOrDefault();
-                            int index = Expenses.ToList().FindIndex(s => s == exitem);
+            //            //if (exfound.Count > 0)
+            //            //{
+            //            //    InvoicingRows exitem = exfound.OrderByDescending(x => x.InvoicedtoDate).FirstOrDefault();
+            //            //    int index = Expenses.ToList().FindIndex(s => s == exitem);
 
-                            if (index != -1)
-                            {
-                                Expenses[index] = exitem;
-                            }
-                        }
-                        else
-                        {
-                            Expenses.Add(eim);
+            //            //    if (index != -1)
+            //            //    {
+            //            //        Expenses[index] = exitem;
+            //            //    }
+            //            //}
+            //            //else
+            //            //{
+            //                Expenses.Add(eim);
 
-                        }
+            //            //}
 
 
-                    }
-                }
-            }
+            //        }
+            //    }
+            //}
 
             //}
 
             foreach (ExpenseInvoiceModel eim in selectedexpenses)
             {
-                InvoicingRows found = Expenses.Where(x => x.ScopeName == eim.DescriptionExp).FirstOrDefault();
+                //InvoicingRows found = Expenses.Where(x => x.ScopeName == eim.DescriptionExp).FirstOrDefault();
 
-                if (found != null)
-                {
-                    found.PreviousInvoiced = found.InvoicedtoDate;
-                    found.ThisPeriodInvoiced = eim.TotalCost;
-                    found.InvoicedtoDate = found.PreviousInvoiced + found.ThisPeriodInvoiced;
-                }
-                else
-                {
+                //if (found != null)
+                //{
+                //    found.PreviousInvoiced = found.InvoicedtoDate;
+                //    found.ThisPeriodInvoiced = eim.TotalCost;
+                //    found.InvoicedtoDate = found.PreviousInvoiced + found.ThisPeriodInvoiced;
+                //}
+                //else
+                //{
                     InvoicingRows eimnew = new InvoicingRows()
                     {
                         viewmodel = this,
@@ -929,7 +978,7 @@ namespace SOCE.Library.UI.ViewModels
                         IsHourly = true,
                     };
                     Expenses.Add(eimnew);
-                }
+                //}
 
             }
 
@@ -1037,8 +1086,16 @@ namespace SOCE.Library.UI.ViewModels
                 return;
             }
 
+            if (SelectedPM == null)
+            {
+                ErrorMessage = $"Specify a project manager{Environment.NewLine} before creating the invoice.";
+                return;
+            }
+
             int duedatevar = 0;
             int addates = 0;
+            int dateexpprev = 0;
+
             if (InvoiceDateInp != null)
             {
                 duedatevar = (int)long.Parse(InvoiceDateInp?.ToString("yyyyMMdd"));
@@ -1047,6 +1104,11 @@ namespace SOCE.Library.UI.ViewModels
             if (DateofServicesAreComplete != null)
             {
                 addates = (int)long.Parse(DateofServicesAreComplete?.ToString("yyyyMMdd"));
+            }
+
+            if (DatePreviousExpenses != null)
+            {
+                dateexpprev = (int)long.Parse(DatePreviousExpenses.ToString("yyyyMMdd"));
             }
 
             //var bytes = timesheetidstoinvoice.Select(i => BitConverter.GetBytes(i.TimeId)).ToArray();
@@ -1062,6 +1124,8 @@ namespace SOCE.Library.UI.ViewModels
             {
                 previousspent = revisedinvoice.PreviousSpent;
             }
+
+            double expdue = Expenses.Sum(x => x.ThisPeriodInvoiced);
 
             InvoicingModelDb invoice = new InvoicingModelDb()
             {
@@ -1079,7 +1143,10 @@ namespace SOCE.Library.UI.ViewModels
                 AddServicesDate = addates,
                 ExpenseReportIds = result2,
                 Link = LinkLocation,
-                IsRevised = Convert.ToInt32(IsRevised)
+                ExpensesDue = expdue + PreviousExpensesInvoicedToDate,
+                ExpensesPrevious = PreviousExpensesInvoicedToDate,
+                IsRevised = Convert.ToInt32(IsRevised),
+                ExpensePreviousDate = dateexpprev,
             };
 
             if (Directory.Exists(LinkLocation))
@@ -1311,18 +1378,21 @@ namespace SOCE.Library.UI.ViewModels
                     row++;
                     //exinst.InsertBlankRowBelow(row);
                     exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
                 }
 
                 if (AdServicePhasesUnInvoiced.Count > 0)
                 {
-                    exinst.InsertBlankRowBelow(row);
-                    row++;
+                    //exinst.InsertBlankRowBelow(row);
+                    //row++;
                     exinst.MergeCellsInRow(row, 1, 2);
                     exinst.WriteCell(row, 1, "Additional Services");
                     exinst.InsertBlankRowBelow(row);
                     row++;
                     exinst.MergeCellsInRow(row, 1, 2);
                     exinst.WriteCell(row, 1, $"Services Through {DateofServicesAreComplete?.ToString("MMMM dd, yyyy")}");
+                    exinst.InsertBlankRowBelow(row);
                     row++;
                 }
 
@@ -1370,6 +1440,8 @@ namespace SOCE.Library.UI.ViewModels
                     row++;
                     //exinst.InsertBlankRowBelow(row);
                     exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
                 }
 
                 if (AdServicePhasesInvoiced.Count > 0)
@@ -1414,12 +1486,14 @@ namespace SOCE.Library.UI.ViewModels
                     row++;
                     //exinst.InsertBlankRowBelow(row);
                     exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
                 }
 
                 if (Expenses.Count > 0)
                 {
-                    exinst.InsertBlankRowBelow(row);
-                    row++;
+                    //exinst.InsertBlankRowBelow(row);
+                    //row++;
                     exinst.MergeCellsInRow(row, 1, 2);
                     exinst.WriteCell(row, 1, "Reimbursable Expenses");
                     exinst.InsertBlankRowBelow(row);
@@ -1455,21 +1529,51 @@ namespace SOCE.Library.UI.ViewModels
                     row++;
                     //exinst.InsertBlankRowBelow(row);
                     exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
                 }
-                exinst.SetCellAsAccounting(row + 2, 7);
-                exinst.WriteCell(row + 2, 7, TotalAmountDue.ToString());
-                exinst.WriteCell(row + 7, 1, SelectedPM.FullName + ", P.E.");
+
+                if (IsPreviousExpenseVis)
+                {
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, "Previous Reimbursable Expenses");
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    exinst.MergeCellsInRow(row, 1, 2);
+                    exinst.WriteCell(row, 1, $"Through {DatePreviousExpenses.ToString("MMMM dd, yyyy")}");
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteCell(row, 5, PreviousExpensesInvoicedToDate.ToString());
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteCell(row, 6, PreviousExpensesInvoicedToDate.ToString());
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+
+                    exinst.MergeCellsInRow(row, 1, 3);
+                    exinst.WriteCell(row, 1, "Previous Reimbursable Expenses To Date");
+                    exinst.SetCellAsAccounting(row, 5);
+                    exinst.WriteCell(row, 5, PreviousExpensesInvoicedToDate.ToString());
+                    exinst.SetCellAsAccounting(row, 6);
+                    exinst.WriteCell(row, 6, PreviousExpensesInvoicedToDate.ToString());                   
+                    exinst.InsertBlankRowBelow(row);
+                    row++;
+                    exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                    //exinst.InsertBlankRowBelow(row);
+                    //exinst.MakeRowLightBorderTop(row - 1, 1, 7);
+                    //exinst.InsertBlankRowBelow(row);
+
+                }
+                row++;
+                exinst.SetCellAsAccounting(row, 7);
+                exinst.WriteCell(row, 7, TotalAmountDue.ToString());
+                exinst.WriteCell(row + 5, 1, SelectedPM.FullName + ", P.E.");
                 exinst.SaveDocument();
 
                 if (SelectedPM.SignatureOfPM != null)
                 {
-                    exinst.AddPicture(row+5, 1, SelectedPM.SignatureOfPM, 100);
+                    exinst.AddPicture(row+3, 1, SelectedPM.SignatureOfPM, 100);
                     exinst.SaveDocument();
                 }
                 exinst.Close();
-
-
-
             }
             catch
             {

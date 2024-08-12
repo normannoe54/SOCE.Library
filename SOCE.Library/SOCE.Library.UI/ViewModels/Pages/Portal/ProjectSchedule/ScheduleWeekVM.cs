@@ -571,11 +571,25 @@ namespace SOCE.Library.UI.ViewModels
 
         public void ClearSelected()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             SelectedProject = null;
+
+            ButtonInAction = true;
         }
 
         public void AddNewPhase()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             List<SubProjectLowResModel> subsremaining = SubProjects.ToList();
             foreach (SchedulingControlView scv in SchedulingViews)
             {
@@ -595,7 +609,7 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             UpdatePhaseLists();
-
+            ButtonInAction = true;
         }
 
         public void UpdatePhaseLists()
@@ -669,6 +683,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void SelectionCombo(string project)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (SelectedProject == null)
             {
                 if (!String.IsNullOrEmpty(project))
@@ -684,11 +704,18 @@ namespace SOCE.Library.UI.ViewModels
 
                 //SelectedProject = null;
             }
+            ButtonInAction = true;
         }
 
 
         private void SaveData()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             MessageVisible = true;
             try
             {
@@ -820,12 +847,18 @@ namespace SOCE.Library.UI.ViewModels
                 Message = "Something went Wrong";
                 MessageVisible = false;
             }
-
+            ButtonInAction = true;
 
         }
 
         private async void PreviousTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -837,6 +870,8 @@ namespace SOCE.Library.UI.ViewModels
             }
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         /// <summary>
@@ -844,6 +879,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void NextTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -856,6 +897,8 @@ namespace SOCE.Library.UI.ViewModels
             }
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         /// <summary>
@@ -863,6 +906,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void CurrentTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -875,10 +924,18 @@ namespace SOCE.Library.UI.ViewModels
             }
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         private async void OpenRightDrawer()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -903,10 +960,18 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         private async void OpenRightManager()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -934,6 +999,8 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         //private void ListPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)

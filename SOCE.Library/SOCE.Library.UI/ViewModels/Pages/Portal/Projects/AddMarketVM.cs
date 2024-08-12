@@ -62,6 +62,7 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             //do stuff
+
             CloseWindow();
         }
 

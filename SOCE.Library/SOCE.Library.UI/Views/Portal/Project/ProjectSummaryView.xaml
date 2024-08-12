@@ -79,13 +79,15 @@
                                                     BorderBrush="Transparent"
                                                     Command="{Binding AddSubCommand}"
                                                     CommandParameter="{Binding}"
-                                                    ToolTip="Add Phase">
+                                                    ToolTip="Add Phase"
+                            IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
 
                         <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0"/>
                     </Button>
                     <CheckBox Grid.Column="2"  Margin="40 0 0 0" Width="120"
                               IsChecked="{Binding IsOnHoldChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" BorderBrush="Black" FontSize="16" FontWeight="SemiBold" 
-                              Content="{Binding ChipName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BaseProject.IsActive}">
+                              Content="{Binding ChipName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BaseProject.IsActive}" 
+                              IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                         <CheckBox.Style>
                             <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignFilterChipCheckBox}">
                                 <Style.Triggers>
@@ -118,7 +120,8 @@
 
                     <CheckBox Grid.Column="4"  Margin="0 0 10 0" Width="180" HorizontalAlignment="Right"
                               IsChecked="{Binding IsForecastHoursChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" BorderBrush="Black" FontSize="16" FontWeight="SemiBold" 
-                              Content="{Binding ForecastChipName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BaseProject.IsActive}" >
+                              Content="{Binding ForecastChipName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BaseProject.IsActive}" 
+                              IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                     <CheckBox.Style>
                         <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignFilterChipCheckBox}">
                             <Style.Triggers>
@@ -306,7 +309,8 @@
                                             </Button.Content>
                                         </Button>
                                         <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Background="Transparent" Foreground="Black" Height="20" Width="20" 
-                                                      IsChecked="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                      IsChecked="{Binding EditSubFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  
+                                                      IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                             <ToggleButton.Content>
                                                 <materialDesign:PackIcon Height="15" Width="15" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
                                             </ToggleButton.Content>
@@ -481,7 +485,7 @@
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
                             <Button Grid.Column="0" IsEnabled="{Binding SelectedProjectPhase.IsActive}" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Foreground="Black" Background="Transparent" 
-                                BorderBrush="Transparent" Command="{Binding AddRoleCommand}" ToolTip="Add Role">
+                                BorderBrush="Transparent" Command="{Binding AddRoleCommand}" ToolTip="Add Role" IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                 <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" Padding="0"/>
                             </Button>
                             <TextBlock Grid.Column="1" FontSize="12" FontWeight="SemiBold" FontStyle="Italic" VerticalAlignment="Center" Text="Role" TextAlignment="Center"/>

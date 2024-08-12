@@ -119,6 +119,7 @@ namespace SOCE.Library.UI.ViewModels
             SQLAccess.UpdateSubProjectSummary(subupdate);
 
             result = true;
+            ButtonInAction = true;
             CloseWindow();
         }
 

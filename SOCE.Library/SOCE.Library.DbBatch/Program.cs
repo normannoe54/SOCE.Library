@@ -20,7 +20,7 @@ namespace SOCE.Library.DbBatch
             //RunUpdateTimesheetData();
             //RunSummary();
 
-            //RunBillableHours();
+            RunBillableHours();
         }
 
         public static void RunBillableHours()
@@ -29,8 +29,8 @@ namespace SOCE.Library.DbBatch
             List<EmployeeDbModel> employees = SQLAccess.LoadAllEmployees();
             List<ClientDbModel> allclient = SQLAccess.LoadClients();
 
-            DateTime firstdate = new DateTime(2022, 1, 1);
-            DateTime lastdate = new DateTime(2023, 12, 31);
+            DateTime firstdate = new DateTime(2024, 1, 1);
+            DateTime lastdate = new DateTime(2024, 6, 30);
             List<EmployeeHours> employeelist = new List<EmployeeHours>();
             foreach (EmployeeDbModel em in employees)
             {

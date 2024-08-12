@@ -284,6 +284,8 @@ namespace SOCE.Library.UI.ViewModels
             SQLAccess.UpdateFee(BaseProject.Id, BaseProject.Fee);
 
             result = true;
+
+            ButtonInAction = true;
             //do stuff
             CloseWindow();
         }

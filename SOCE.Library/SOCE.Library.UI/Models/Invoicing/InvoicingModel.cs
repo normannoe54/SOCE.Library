@@ -151,6 +151,21 @@ namespace SOCE.Library.UI
             }
         }
 
+        private DateTime _datePrevExpenses { get; set; }
+        public DateTime DatePrevExpenses
+        {
+            get
+            {
+                return _datePrevExpenses;
+            }
+            set
+            {
+                _datePrevExpenses = value;
+                RaisePropertyChanged(nameof(DatePrevExpenses));
+            }
+        }
+
+
         private string _clientName { get; set; }
         public string ClientName
         {
@@ -249,6 +264,37 @@ namespace SOCE.Library.UI
             }
         }
 
+
+        private double _expensePrevious { get; set; }
+        public double ExpensePrevious
+        {
+            get
+            {
+                return _expensePrevious;
+            }
+            set
+            {
+                _expensePrevious = value;
+                RaisePropertyChanged(nameof(ExpensePrevious));
+            }
+        }
+
+        private double _expenseDue { get; set; }
+        public double ExpenseDue
+        {
+            get
+            {
+                return _expenseDue;
+            }
+            set
+            {
+                _expenseDue = value;
+                RaisePropertyChanged(nameof(ExpenseDue));
+            }
+        }
+
+
+
         public List<int> TimesheetIds { get; set; } = new List<int>();
         public List<int> ExpenseReportIds { get; set; } = new List<int>();
 
@@ -309,7 +355,7 @@ namespace SOCE.Library.UI
             InvoiceId = iDb.InvoiceNumber;
             PreviousSpent = iDb.PreviousSpent;
             AmountDue = iDb.AmountDue;
-            ToDate = PreviousSpent + AmountDue ;
+            ToDate = PreviousSpent + AmountDue;
             Date =  DateTime.ParseExact(iDb.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
             ClientName = iDb.ClientName;
             ClientCompany = iDb.ClientCompany;
@@ -319,6 +365,17 @@ namespace SOCE.Library.UI
             LocationofLink = iDb.Link;
             Logged = Convert.ToBoolean(iDb.IsLogged);
             Revised = Convert.ToBoolean(iDb.IsRevised);
+            ExpensePrevious = iDb.ExpensesPrevious;
+            ExpenseDue = iDb.ExpensesDue;
+
+            if (iDb.ExpensePreviousDate != 0)
+            {
+                try
+                {
+                    DatePrevExpenses = DateTime.ParseExact(iDb.ExpensePreviousDate.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                }
+                catch { }
+            }
 
             if (iDb.AddServicesDate != 0)
             {

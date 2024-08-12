@@ -120,6 +120,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void AskArchiveProject(ProjectListModel plm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             YesNoView ynv = new YesNoView();
             YesNoVM ynvm = new YesNoVM(plm);
             ynv.DataContext = ynvm;
@@ -157,6 +163,8 @@ namespace SOCE.Library.UI.ViewModels
                     RunSearch();
                 }
             }
+
+            ButtonInAction = true;
         }
 
         private void Constructor()
@@ -172,6 +180,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void RunSearch()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             //async here
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
@@ -199,10 +213,17 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+            ButtonInAction = true;
+
         }
 
         private async void ClearInputsandReload()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
             //async here
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
@@ -211,10 +232,17 @@ namespace SOCE.Library.UI.ViewModels
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
 
+            ButtonInAction = true;
         }
 
         private async void Print()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             //async here
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
@@ -280,10 +308,17 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+            ButtonInAction = true;
         }
 
         private async void Reload()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -296,6 +331,8 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         public void LoadClients()

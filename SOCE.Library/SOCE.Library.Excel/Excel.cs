@@ -258,8 +258,10 @@ namespace SOCE.Library.Excel
         {
             var cell = activeworksheet.Cell(row, column);
             cell.DataType = XLDataType.Number;
-            cell.Style.NumberFormat.Format = "_ $* # ##0.00_ ;_ $* -# ##0.00_ ;_ $* \"-\"??_ ;_ @_ ";
             cell.Style.NumberFormat.SetNumberFormatId(43);
+            cell.Style.NumberFormat.Format = @"_(""$""* #,##0.00_);_(""$""* \(#,##0.00\);_(""$""* ""-""??_);_(@_)";
+            //cell.Style.NumberFormat.Format = "_ $* # ##0.00_ ;_ $* -# ##0.00_ ;_ $* \"-\"??_ ;_ @_ ";
+            //
         }
 
         public void SetCellAsPercentage(int row, int column)

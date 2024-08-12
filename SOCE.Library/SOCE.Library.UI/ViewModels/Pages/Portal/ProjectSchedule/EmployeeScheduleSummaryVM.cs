@@ -60,6 +60,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void Print()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -114,14 +120,21 @@ namespace SOCE.Library.UI.ViewModels
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
 
+            ButtonInAction = true;
         }
 
         private void GoBack()
         {
+            if(!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
 
             portAI.RightDrawerOpen = false;
+            ButtonInAction = true;
         }
 
         private void CollectEmployeeSummary()

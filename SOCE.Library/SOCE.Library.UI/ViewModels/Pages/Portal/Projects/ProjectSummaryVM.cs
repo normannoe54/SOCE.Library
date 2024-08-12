@@ -155,7 +155,8 @@ namespace SOCE.Library.UI.ViewModels
 
                                 if (rolefound == null)
                                 {
-                                    RoleSummaryModel role = new RoleSummaryModel(rpspm, spsm, this, Employees);
+                                    List<TimesheetRowDbModel> foundtime = time.Where(x => x.EmployeeId == rpspm.EmployeeId && x.SubProjectId == rpspm.SubProjectId).ToList();
+                                    RoleSummaryModel role = new RoleSummaryModel(rpspm, spsm, this, Employees, foundtime);
                                     role.CanDelete = false;
                                     newroles.Add(role);
                                 }
@@ -180,7 +181,8 @@ namespace SOCE.Library.UI.ViewModels
                         List<RoleSummaryModel> newroles = new List<RoleSummaryModel>();
                         foreach (RolePerSubProjectDbModel rpspm in roles)
                         {
-                            RoleSummaryModel role = new RoleSummaryModel(rpspm, _selectedProjectPhase, this, Employees);
+                            List<TimesheetRowDbModel> foundtime = time.Where(x => x.EmployeeId == rpspm.EmployeeId && x.SubProjectId == rpspm.SubProjectId).ToList();
+                            RoleSummaryModel role = new RoleSummaryModel(rpspm, _selectedProjectPhase, this, Employees, foundtime);
                             //EmployeeLowResModel emlowres = Employees.Where(x => x.Id == rpspm.EmployeeId).FirstOrDefault();
 
                             //if (emlowres == null)
@@ -547,6 +549,8 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand MoveUpCommand { get; set; }
         public ICommand MoveDownCommand { get; set; }
 
+        List<TimesheetRowDbModel> time = new List<TimesheetRowDbModel>();
+
         public ProjectSummaryVM(ProjectViewResModel pm, EmployeeModel employee)
         {
             CanAddPhase = employee.Status != AuthEnum.Standard ? true : false;
@@ -581,10 +585,10 @@ namespace SOCE.Library.UI.ViewModels
 
             CollectSubProjectsInfo();
 
-            if (SubProjectsForSelection.Count > 0)
-            {
-                SelectedProjectPhase = SubProjectsForSelection[SubProjectsForSelection.Count - 1];
-            }
+            //if (SubProjectsForSelection.Count > 0)
+            //{
+            //    SelectedProjectPhase = SubProjectsForSelection[SubProjectsForSelection.Count - 1];
+            //}
 
             //pm.FormatData(true);
             //SubProjects = pm.SubProjects;
@@ -636,7 +640,9 @@ namespace SOCE.Library.UI.ViewModels
             double totalregbudget = 0;
             double totalbudgetspent = 0;
             double hoursleft = 0;
-            double hoursspent = 0;     
+            double hoursspent = 0;
+
+            time = SQLAccess.LoadTimeSheetDataByProjId(BaseProject.Id);
 
             foreach (SubProjectDbModel spdm in subdbmodels)
             {
@@ -645,38 +651,38 @@ namespace SOCE.Library.UI.ViewModels
                 List<RolePerSubProjectDbModel> roles = SQLAccess.LoadRolesPerSubProject(spdm.Id);
 
                 //Add roles if needed
-                List<TimesheetRowDbModel> timecheck = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
+                //List<TimesheetRowDbModel> timecheck = SQLAccess.LoadTimeSheetDatabySubId(spdm.Id);
 
-                var groupedlist = timecheck.GroupBy(x => x.EmployeeId).ToList();
+                //var groupedlist = timecheck.GroupBy(x => x.EmployeeId).ToList();
 
-                foreach (var item in groupedlist)
-                {
-                    TimesheetRowDbModel subitem = item.First();
-                    if (!roles.Any(x=>x.EmployeeId == subitem.EmployeeId))
-                    {
+                //foreach (var item in groupedlist)
+                //{
+                //    TimesheetRowDbModel subitem = item.First();
+                //    if (!roles.Any(x=>x.EmployeeId == subitem.EmployeeId))
+                //    {
 
-                        try
-                        {
-                            EmployeeDbModel em = SQLAccess.LoadEmployeeById(subitem.EmployeeId);
-                            if (em!= null)
-                            {
-                                RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
-                                {
-                                    SubProjectId = subitem.SubProjectId,
-                                    EmployeeId = em.Id,
-                                    Role = em.DefaultRoleId,
-                                    Rate = em.Rate,
-                                    BudgetHours = 0
-                                };
-                                SQLAccess.AddRolesPerSubProject(rpp);
-                                roles.Add(rpp);
-                            }
-                        }
-                        catch
-                        {
-                        }
-                    }
-                }
+                //        try
+                //        {
+                //            EmployeeDbModel em = SQLAccess.LoadEmployeeById(subitem.EmployeeId);
+                //            if (em!= null)
+                //            {
+                //                RolePerSubProjectDbModel rpp = new RolePerSubProjectDbModel()
+                //                {
+                //                    SubProjectId = subitem.SubProjectId,
+                //                    EmployeeId = em.Id,
+                //                    Role = em.DefaultRoleId,
+                //                    Rate = em.Rate,
+                //                    BudgetHours = 0
+                //                };
+                //                SQLAccess.AddRolesPerSubProject(rpp);
+                //                roles.Add(rpp);
+                //            }
+                //        }
+                //        catch
+                //        {
+                //        }
+                //    }
+                //}
 
                 double plannedbudget = 0;
                 double budgethours = 0;
@@ -684,12 +690,13 @@ namespace SOCE.Library.UI.ViewModels
                 double budgetspent = 0;
                 foreach (RolePerSubProjectDbModel rpspm in roles)
                 {
-                    EmployeeDbModel emdb = SQLAccess.LoadEmployeeById(rpspm.EmployeeId);
-                    List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(emdb.Id, spdm.Id);
-                    spenthours += time.Sum(x => x.TimeEntry);
+                    List<TimesheetRowDbModel> timefound = time.Where(x => x.EmployeeId == rpspm.EmployeeId && x.SubProjectId == rpspm.SubProjectId).ToList();
+                    //EmployeeDbModel emdb = SQLAccess.LoadEmployeeById(rpspm.EmployeeId);
+                    //List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(emdb.Id, spdm.Id);
+                    spenthours += timefound.Sum(x => x.TimeEntry);
                     budgethours += rpspm.BudgetHours;
                     plannedbudget += rpspm.BudgetHours * rpspm.Rate;
-                    budgetspent += time.Sum(x => x.BudgetSpent);
+                    budgetspent += timefound.Sum(x => x.BudgetSpent);
                 }
                 spm.HoursUsed = spenthours;
                 spm.HoursLeft = budgethours - spenthours;
@@ -701,7 +708,6 @@ namespace SOCE.Library.UI.ViewModels
 
                 spm.FeeLeft = BaseProject.ForecastHours ? (plannedbudget - budgetspent) : (spm.Fee - budgetspent);
 
-                
                 spm.PercentSpent = BaseProject.ForecastHours ? (budgetspent / plannedbudget) * 100 : (budgetspent / spm.Fee) * 100;
                 subs.Add(spm);
 
@@ -771,6 +777,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void RunExport()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             YesNoView view = new YesNoView();
             YesNoVM aysvm = new YesNoVM();
 
@@ -783,15 +795,8 @@ namespace SOCE.Library.UI.ViewModels
 
             YesNoVM vm = view.DataContext as YesNoVM;
             bool resultvm = vm.Result;
+            ButtonInAction = true;
 
-            //if (resultvm)
-            //{
-            //    ExportConfirmView ecv = new ExportConfirmView();
-            //    ExportConfirmVM ecvm = new ExportConfirmVM(new List<ProjectModel> { BaseProject });
-            //    //show progress bar and do stuff
-            //    ecv.DataContext = ecvm;
-            //    var newres = await DialogHost.Show(ecv, "RootDialog");
-            //}
         }
 
         //private void RunAdserviceCommand()
@@ -846,6 +851,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void MoveUpSub(SubProjectSummaryModel sub)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             int ind = SubProjects.IndexOf(sub);
 
             if (ind > 0)
@@ -855,11 +866,18 @@ namespace SOCE.Library.UI.ViewModels
                 SubProjects =  SubProjects.Renumber(false);
                 
             }
+            ButtonInAction = true;
 
         }
 
         private void MoveDownSub(SubProjectSummaryModel sub)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             int ind = SubProjects.IndexOf(sub);
 
             if (ind < SubProjects.Count - 1)
@@ -868,59 +886,18 @@ namespace SOCE.Library.UI.ViewModels
                 sub.NumberOrder = ind + 1;
                 SubProjects =  SubProjects.Renumber(false);
             }
+            ButtonInAction = true;
 
         }
 
-        //public void Renumber(bool firstload)
-        //{
-        //    bool toggle0 = false;
-        //    SubProjectModel Lastitem = null;
-        //    List<SubProjectModel> subs = new List<SubProjectModel>();
-        //    for (int i = 0; i < SubProjects.Count; i++)
-        //    {
-        //        SubProjectModel sub = SubProjects[i];
-
-        //        if (sub.Id != 0)
-        //        {
-        //            int num = 0;
-        //            if (firstload)
-        //            {
-        //                if (sub.NumberOrder == 0 && !toggle0)
-        //                {
-        //                    num = 0;
-        //                    toggle0 = true;
-        //                }
-        //                else
-        //                {
-        //                    num = sub.NumberOrder == 0 ? i : sub.NumberOrder;
-        //                }
-        //            }
-        //            else
-        //            {
-        //                num = i;
-        //            }
-
-        //            SQLAccess.UpdateNumberOrder(sub.Id, num);
-        //            sub.NumberOrder = num;
-        //            subs.Add(sub);
-        //        }
-        //        else
-        //        {
-        //            Lastitem = sub;
-        //        }
-        //    }
-
-        //    //SubProjects.ToList().Sort((x1, x2) =>  x1.NumberOrder - x2.NumberOrder );
-        //    SubProjects = new ObservableCollection<SubProjectModel>(subs.OrderBy(x => x.NumberOrder).ToList());
-
-        //    if (Lastitem != null)
-        //    {
-        //        SubProjects.Add(Lastitem);
-        //    }
-        //}
-
         private void DeleteRoleIfPossible(RoleSummaryModel rpsm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (rpsm.Id != 0)
             {
                 LeftViewToShow = new YesNoView();
@@ -933,12 +910,19 @@ namespace SOCE.Library.UI.ViewModels
             {
                 RolesPerSub.Remove(rpsm);
             }
+            ButtonInAction = true;
 
             //update roles
         }
 
         private void DeleteSub(SubProjectSummaryModel spm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (SubProjects.Count > 1)
             {
                 LeftViewToShow = new YesNoView();
@@ -947,10 +931,19 @@ namespace SOCE.Library.UI.ViewModels
                 ItemToDelete = spm;
                 LeftDrawerOpen = true;
             }
+
+            ButtonInAction = true;
+
         }
 
         private void AddRole()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (SelectedProjectPhase != null)
             {
                 RoleSummaryModel rpspm = new RoleSummaryModel(SelectedProjectPhase, SelectedProjectPhase.Fee, this, Employees);
@@ -958,27 +951,48 @@ namespace SOCE.Library.UI.ViewModels
                 rpspm.SpentHours = 0;
                 RolesPerSub.Add(rpspm);
             }
+            ButtonInAction = true;
+
         }
 
         private void OpenAd()
         {
-            //GlobalEditMode = true;
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             LeftViewToShow = new SubProjectInfoView();
             SubProjectInfoVM subvminfo = new SubProjectInfoVM(SelectedProjectPhase, this);
             LeftViewToShow.DataContext = subvminfo;
             LeftDrawerOpen = true;
+            ButtonInAction = true;
         }
 
         private void AddSubProject()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             LeftViewToShow = new AddSubProjectView();
             AddSubProjectVM addsubvm = new AddSubProjectVM(BaseProject, this);
             LeftViewToShow.DataContext = addsubvm;
             LeftDrawerOpen = true;
+            ButtonInAction = true;
         }
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             DialogHost.Close("RootDialog");
         }
     }

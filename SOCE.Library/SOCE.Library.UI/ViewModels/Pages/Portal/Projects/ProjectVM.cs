@@ -318,11 +318,12 @@ namespace SOCE.Library.UI.ViewModels
             ShowActiveProjects = true;
         }
 
-        public void Reload()
+        public Task Reload()
         {
             LoadProjectManagers();
             LoadProjects();
             ShowActiveProjects = true;
+            return Task.CompletedTask;
         }
 
         private void OpenRightDrawerClient()
@@ -507,6 +508,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void ExecuteOpenSubDialog(object o)
         {
+
             if (!ButtonInAction)
             {
                 return;
@@ -515,10 +517,23 @@ namespace SOCE.Library.UI.ViewModels
 
             ProjectViewResModel pm = (ProjectViewResModel)o;
             var view = new BaseProjectSummaryView();
-            BaseProjectSummaryVM vm = new BaseProjectSummaryVM(CurrentEmployee, pm, ViewEnum.ProjectSummary);
+            BaseProjectSummaryVM vm = null;
+            CoreAI CurrentPage2 = IoCCore.Application as CoreAI;
+            CurrentPage2.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            //await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() =>
+            {
+
+                vm = new BaseProjectSummaryVM(CurrentEmployee, pm, ViewEnum.ProjectSummary);
+                //show the dialog
+                //var result = await DialogHost.Show(view, "RootDialog");
+            }
+                        ));
+            await Task.Run(() => Task.Delay(100));
+            CurrentPage2.MakeClear();
             view.DataContext = vm;
-            //show the dialog
-            var result = await DialogHost.Show(view, "RootDialog");
+            var result = await DialogHost.Show(view, "RootDialog");       
             ButtonInAction = true;
         }
 
@@ -648,6 +663,7 @@ namespace SOCE.Library.UI.ViewModels
         public void LoadProjects()
         {
             List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
+            //List<ProjectDbModel> dbprojects2 = dbprojects.OrderBy(x=>x.ProjectNumber).Take(50).ToList();
 
             ObservableCollection<ProjectViewResModel> members = new ObservableCollection<ProjectViewResModel>();
 

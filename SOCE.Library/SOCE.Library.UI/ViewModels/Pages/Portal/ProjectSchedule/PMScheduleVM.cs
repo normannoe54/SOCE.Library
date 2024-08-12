@@ -137,6 +137,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void Print()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             IndividualSingleView view = new IndividualSingleView();
             IndividualSingleVM aysvm = new IndividualSingleVM();
             view.DataContext = aysvm;
@@ -213,6 +219,7 @@ namespace SOCE.Library.UI.ViewModels
                 await Task.Run(() => Task.Delay(600));
                 CurrentPage.MakeClear();
             }
+            ButtonInAction = true;
         }
 
         private void RunIndividualExport(ref Excel.Excel exinst, ref int rowid, EmployeeLowResModel pmofinterest)
@@ -286,6 +293,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void PreviousTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -296,6 +309,8 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         /// <summary>LoadScheduling
@@ -303,6 +318,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void NextTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -314,6 +335,7 @@ namespace SOCE.Library.UI.ViewModels
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
 
+            ButtonInAction = true;
         }
 
         /// <summary>
@@ -321,6 +343,12 @@ namespace SOCE.Library.UI.ViewModels
         /// </summary>
         private async void CurrentTimesheet()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             CoreAI CurrentPage = IoCCore.Application as CoreAI;
             CurrentPage.MakeBlurry();
             await Task.Run(() => Task.Delay(600));
@@ -331,6 +359,8 @@ namespace SOCE.Library.UI.ViewModels
             }));
             await Task.Run(() => Task.Delay(600));
             CurrentPage.MakeClear();
+
+            ButtonInAction = true;
         }
 
         private void UpdateDateSummary(DateTime currdate)

@@ -373,7 +373,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddSubProject()
         {
-            if (ButtonInAction)
+            if (!ButtonInAction)
             {
                 return;
             }
@@ -394,7 +394,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public void RunLogCommand()
         {
-            if (ButtonInAction)
+            if (!ButtonInAction)
             {
                 return;
             }

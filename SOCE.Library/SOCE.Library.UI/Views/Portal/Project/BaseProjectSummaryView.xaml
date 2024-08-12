@@ -39,7 +39,7 @@
                          SelectedValuePath="Value"/>
             </materialDesign:PopupBox>
             <Button Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" VerticalAlignment="Top" HorizontalAlignment="Right" Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CloseCommand}">
-                <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+                <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}" IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
             </Button>
         </StackPanel>
         <ContentControl Content="{Binding SelectedVM, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="top" HorizontalAlignment="Stretch" Panel.ZIndex="1"/>

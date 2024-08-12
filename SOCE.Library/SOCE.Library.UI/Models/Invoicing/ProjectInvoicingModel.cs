@@ -176,6 +176,34 @@ namespace SOCE.Library.UI
 
         }
 
+        public ProjectInvoicingModel(ProjectDbModel pm, List<InvoicingModelDb> invoices, List<TimesheetRowDbModel> time)
+        {
+            Id = pm.Id;
+            ProjectName = pm.ProjectName;
+            ProjectNumber = pm.ProjectNumber;
+            IsActive = Convert.ToBoolean(pm.IsActive);
+            Fee = pm.Fee;
+
+            //List<InvoicingModelDb> invoices = SQLAccess.LoadInvoices(pm.Id);
+
+            if (invoices.Count>0)
+            {
+                InvoicingModelDb closest = invoices.OrderBy(x => x.Date).LastOrDefault();
+                DateOfLastInvoice = DateTime.ParseExact(closest.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+                TotalFeeInvoiced = Math.Max(closest.PreviousSpent + closest.AmountDue,0);
+                PercentOfTotalFeeInvoiced = (TotalFeeInvoiced / (Fee + closest.ExpensesDue)) * 100;
+            }
+            else
+            {
+                DateOfLastInvoice = null;
+                TotalFeeInvoiced = 0;
+                PercentOfTotalFeeInvoiced = 0;
+            }
+
+            //List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByUninvoiced(pm.Id);
+            HoursSpentSinceLastInvoice = time.Sum(x => x.TimeEntry);
+        }
+
         public ProjectInvoicingModel(ProjectDbModel pm)
         {
             Id = pm.Id;
@@ -190,8 +218,8 @@ namespace SOCE.Library.UI
             {
                 InvoicingModelDb closest = invoices.OrderBy(x => x.Date).LastOrDefault();
                 DateOfLastInvoice = DateTime.ParseExact(closest.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                TotalFeeInvoiced = closest.PreviousSpent + closest.AmountDue;
-                PercentOfTotalFeeInvoiced = (TotalFeeInvoiced / Fee) * 100;
+                TotalFeeInvoiced = Math.Max(closest.PreviousSpent + closest.AmountDue, 0);
+                PercentOfTotalFeeInvoiced = (TotalFeeInvoiced / (Fee + closest.ExpensesDue)) * 100;
             }
             else
             {
@@ -202,8 +230,6 @@ namespace SOCE.Library.UI
 
             List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByUninvoiced(pm.Id);
             HoursSpentSinceLastInvoice = time.Sum(x => x.TimeEntry);
-
-
         }
     }
 }

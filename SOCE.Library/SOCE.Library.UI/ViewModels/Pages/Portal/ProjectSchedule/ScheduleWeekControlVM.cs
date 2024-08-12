@@ -237,6 +237,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private async void DeletePhase()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             int id = -1;
 
             if (SchedulingItems.Count > 0)
@@ -273,6 +279,8 @@ namespace SOCE.Library.UI.ViewModels
             }
 
             BaseVM.UpdatePhaseLists();
+
+            ButtonInAction = true;
         }
 
         //public void UpdateLists()
@@ -332,6 +340,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void AddRole()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (SelectedSubproject != null)
             {
                 ScheduleWeekModel rpspm = new ScheduleWeekModel();
@@ -365,11 +379,20 @@ namespace SOCE.Library.UI.ViewModels
                 SchedulingItems.Add(rpspm);
                 //UpdateLists();
             }
+
+            ButtonInAction = true;
         }
 
         private void DeleteRoleIfPossible(ScheduleWeekModel rpsm)
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             SchedulingItems.Remove(rpsm);
+            ButtonInAction = true;
             //UpdateLists();
         }
 

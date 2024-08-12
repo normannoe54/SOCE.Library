@@ -216,6 +216,15 @@ namespace SOCE.Library.Db
             }
         }
 
+        public static List<InvoicingModelDb> LoadAllInvoices()
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<InvoicingModelDb>("SELECT * FROM Invoicing");
+                return output.ToList();
+            }
+        }
+
         public static int AddInvoice(InvoicingModelDb invoice)
         {
             int output = 0;
@@ -223,8 +232,8 @@ namespace SOCE.Library.Db
             {
                 try
                 {
-                    int id = cnn.QuerySingle<int>("INSERT INTO Invoicing (ProjectId, Date, InvoiceNumber, PreviousSpent, AmountDue, ClientName, ClientCompany, ClientAddress, ClientCity, EmployeeSignedId, TimesheetIds, AddServicesDate, ExpenseReportIds, Link, IsLogged, IsRevised)" +
-                     " VALUES (@ProjectId, @Date, @InvoiceNumber, @PreviousSpent, @AmountDue, @ClientName, @ClientCompany, @ClientAddress, @ClientCity, @EmployeeSignedId, @TimesheetIds, @AddServicesDate, @ExpenseReportIds, @Link, @IsLogged, @IsRevised) returning id;", invoice);
+                    int id = cnn.QuerySingle<int>("INSERT INTO Invoicing (ProjectId, Date, InvoiceNumber, PreviousSpent, AmountDue, ClientName, ClientCompany, ClientAddress, ClientCity, EmployeeSignedId, TimesheetIds, AddServicesDate, ExpenseReportIds, Link, IsLogged, IsRevised, ExpensesPrevious, ExpensePreviousDate, ExpensesDue)" +
+                     " VALUES (@ProjectId, @Date, @InvoiceNumber, @PreviousSpent, @AmountDue, @ClientName, @ClientCompany, @ClientAddress, @ClientCity, @EmployeeSignedId, @TimesheetIds, @AddServicesDate, @ExpenseReportIds, @Link, @IsLogged, @IsRevised, @ExpensesPrevious, @ExpensePreviousDate, @ExpensesDue) returning id;", invoice);
                     output = id;
                 }
                 catch
@@ -1290,6 +1299,18 @@ namespace SOCE.Library.Db
             {
                 var output = cnn.Query<TimesheetRowDbModel>("SELECT * FROM Timesheets WHERE ProjIdRef = @projectId AND Invoiced = 0 AND Approved = 1"
                     , new { projectId});
+
+                return output.ToList();
+            }
+        }
+
+        public static List<TimesheetRowDbModel> LoadTimeSheetDataByProjId(int projectId)
+        {
+
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<TimesheetRowDbModel>("SELECT * FROM Timesheets WHERE ProjIdRef = @projectId"
+                    , new { projectId });
 
                 return output.ToList();
             }

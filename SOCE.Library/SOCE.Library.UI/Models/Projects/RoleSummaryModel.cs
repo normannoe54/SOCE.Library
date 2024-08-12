@@ -299,7 +299,7 @@ namespace SOCE.Library.UI
         {
         }
 
-        public RoleSummaryModel(RolePerSubProjectDbModel dbrole, SubProjectSummaryModel sub, ProjectSummaryVM vm, ObservableCollection<EmployeeLowResModel> employees)
+        public RoleSummaryModel(RolePerSubProjectDbModel dbrole, SubProjectSummaryModel sub, ProjectSummaryVM vm, ObservableCollection<EmployeeLowResModel> employees, List<TimesheetRowDbModel> time)
         {
             projectsummaryvm = vm;
             Subproject = sub;
@@ -323,7 +323,7 @@ namespace SOCE.Library.UI
             Role = (DefaultRoleEnum)dbrole.Role;
             BudgetedHours = dbrole.BudgetHours;
             Rate = dbrole.Rate;
-            List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(dbrole.EmployeeId, sub.Id);
+            //List<TimesheetRowDbModel> time = SQLAccess.LoadTimeSheetDataByIds(dbrole.EmployeeId, sub.Id);
             SpentHours = time.Sum(x => x.TimeEntry);
             SpentBudget = time.Sum(x => x.BudgetSpent);
             PlannedBudget = BudgetedHours * Rate;

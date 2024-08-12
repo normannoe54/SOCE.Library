@@ -302,10 +302,7 @@
                     <TextBlock Grid.Column="9" FontSize="14" Margin="70 0 0 0" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center"  Text="Directory"/>
                 </Grid>
 
-                <!--<ScrollViewer Grid.Row="4" Margin="0 0 5 5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">-->
-                <!--<ScrollViewer.Resources>
-                    <local:InvoicedColorConverter x:Key="valueconverter"/>
-                </ScrollViewer.Resources>-->
+
                 <ItemsControl Grid.Row="4" Margin="5,0,0,5" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding Projects}" BorderBrush="Black" BorderThickness="1">
                     <ItemsControl.Template>
                         <ControlTemplate>
@@ -682,9 +679,9 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-                <!--</ScrollViewer>-->
+
             </Grid>
         </Grid>
     </Grid>
-    <!--</materialDesign:DrawerHost>-->
+
 </UserControl>

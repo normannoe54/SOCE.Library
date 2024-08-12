@@ -269,20 +269,22 @@ namespace SOCE.Library.UI.ViewModels
 
         public void LoadProjects()
         {
-            SQLAccess sqldb = new SQLAccess();
-            sqldb.Open();
-
             List<ProjectDbModel> dbprojects = SQLAccess.LoadActiveProjects(ShowActiveProjects);
 
             ObservableCollection<ProjectInvoicingModel> members = new ObservableCollection<ProjectInvoicingModel>();
 
             ProjectInvoicingModel[] ProjectArray = new ProjectInvoicingModel[dbprojects.Count];
 
+            List<InvoicingModelDb> invoices = SQLAccess.LoadAllInvoices();
+            List<TimesheetRowDbModel> time = SQLAccess.LoadAllTimeSheetData();
+
             //Do not include the last layer
             Parallel.For(0, dbprojects.Count, i =>
             {
                 ProjectDbModel pdb = dbprojects[i];
-                ProjectInvoicingModel pm = new ProjectInvoicingModel(pdb);
+                List<InvoicingModelDb> invoicesfound = invoices.Where(x => x.ProjectId == pdb.Id).ToList();
+                List<TimesheetRowDbModel> timefound = time.Where(x => x.ProjIdRef == pdb.Id && x.Invoiced == 0 && x.Approved == 1).ToList();
+                ProjectInvoicingModel pm = new ProjectInvoicingModel(pdb, invoicesfound, timefound);
 
                 EmployeeLowResModel em = ProjectManagers.Where(x => x.Id == pdb.ManagerId).FirstOrDefault();
                 ClientModel cm = Clients.Where(x => x.Id == pdb.ClientId).FirstOrDefault();
@@ -293,7 +295,6 @@ namespace SOCE.Library.UI.ViewModels
                 ProjectArray[i] = pm;
             }
             );
-            sqldb.Close();
             ProjectArray = ProjectArray.Where(c => c != null).ToArray();
             AllProjects = ProjectArray.ToList();
             RunSearch();

@@ -31,6 +31,11 @@ namespace SOCE.Library.Db
 
         public int IsLogged { get; set; }
         public int IsRevised { get; set; }
+        public double ExpensesPrevious { get; set; }
+        public double ExpensesDue { get; set; }
+
+        public int ExpensePreviousDate { get; set; }
+
 
     }
 }

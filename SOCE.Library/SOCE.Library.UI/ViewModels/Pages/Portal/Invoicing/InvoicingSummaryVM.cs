@@ -648,6 +648,8 @@ namespace SOCE.Library.UI.ViewModels
 
                         List<TimesheetRowDbModel> timeperrole = SQLAccess.LoadTimeSheetBySub(firstdate.Value, lastdate.Value, em.Id, sub.Id);
 
+                        //if (timeperrole.Count > 0)
+                        //{
                         foreach (TimesheetRowDbModel timeind in timeperrole)
                         {
                             HourEntryModel hemfound = SelectedTimesheetInfo.Where(x => x.TimeId == timeind.Id).FirstOrDefault();
@@ -686,6 +688,7 @@ namespace SOCE.Library.UI.ViewModels
                         hsim.Entries = new ObservableCollection<HourEntryModel>(hoursordered);
                         employeesummary.Add(hsim);
                     }
+                    //}
                 }
                 hsma.EmployeeSummary = new ObservableCollection<HourSummaryIndModel>(employeesummary);
 
@@ -873,7 +876,7 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
-                List<SubProjectDbModel> subsbillable = subs.Where(x=>x.IsBillable == 1).ToList();
+                List<SubProjectDbModel> subsbillable = subs.Where(x => x.IsBillable == 1).ToList();
                 if (subsbillable.Count == 0)
                 {
                     string message = $"No billable phases in project, please revise.";
@@ -897,6 +900,12 @@ namespace SOCE.Library.UI.ViewModels
                 else
                 {
                     LeftViewToShow = new CreateInvoiceView();
+
+                    if (DateOfSelection == null)
+                    {
+                        DateOfSelection = DateTime.Today;
+                    }
+
                     CreateInvoiceVM addsubvm = new CreateInvoiceVM(BaseProject, this, HoursTotalSelection, BudgetTotalSelection, (DateTime)DateOfSelection, SelectedTimesheetInfo, selectedexpenses);
                     LeftViewToShow.DataContext = addsubvm;
                     LeftDrawerOpen = true;

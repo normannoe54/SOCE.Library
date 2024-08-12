@@ -351,11 +351,17 @@ namespace SOCE.Library.UI
             set
             {
 
+                if (!IsInvoicedEditable)
+                {
+                    return;
+                }
+                IsInvoicedEditable = false;
+
                 if (!_editSubFieldState && value)
                 {
                     UpdateSubProject();
                 }
-
+                IsInvoicedEditable = true;
                 _editSubFieldState = value;
                 RaisePropertyChanged(nameof(EditSubFieldState));
             }

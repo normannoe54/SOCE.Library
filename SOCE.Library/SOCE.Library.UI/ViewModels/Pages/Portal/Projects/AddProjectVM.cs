@@ -577,7 +577,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 5,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             clientdevproj.SetCollectionChanged();
             BudgetEstimateVM CLDevVM = new BudgetEstimateVM(clientdevproj, 0);
@@ -593,7 +594,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 5,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             proposalproj.SetCollectionChanged();
             BudgetEstimateVM PropVM = new BudgetEstimateVM(proposalproj, 0);
@@ -609,7 +611,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 10,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             sdproj.SetCollectionChanged();
             BudgetEstimateVM SDVM = new BudgetEstimateVM(sdproj, 0);
@@ -625,7 +628,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 10,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             ddproj.SetCollectionChanged();
             BudgetEstimateVM DDVM = new BudgetEstimateVM(ddproj, 0);
@@ -642,6 +646,7 @@ namespace SOCE.Library.UI.ViewModels
                 PercentBudget = 80,
                 Fee = 0,
                 isAddProj = true,
+                IsBillable = true
             };
             cdproj.SetCollectionChanged();
             BudgetEstimateVM CDVM = new BudgetEstimateVM(cdproj, 0);
@@ -657,7 +662,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 20,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             caproj.SetCollectionChanged();
             BudgetEstimateVM CAVM = new BudgetEstimateVM(caproj, 0);
@@ -673,7 +679,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 5,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             investigationproj.SetCollectionChanged();
             BudgetEstimateVM InvestigationVM = new BudgetEstimateVM(investigationproj, 0);
@@ -689,7 +696,8 @@ namespace SOCE.Library.UI.ViewModels
                 PercentComplete = 0,
                 PercentBudget = 5,
                 Fee = 0,
-                isAddProj = true
+                isAddProj = true,
+                IsBillable = true
             };
             constrobsproj.SetCollectionChanged();
             BudgetEstimateVM COVM = new BudgetEstimateVM(constrobsproj, 0);
@@ -801,7 +809,9 @@ namespace SOCE.Library.UI.ViewModels
                     IsInvoiced = 0,
                     PercentComplete = 0,
                     PercentBudget = bevm.SelectedProjectPhase.PercentBudget,
-                    IsScheduleActive = activephase
+                    IsScheduleActive = activephase,
+                    IsBillable = 1,
+                    IsHourly = 0
                 };
 
                 int subid = SQLAccess.AddSubProject(sub);
@@ -833,7 +843,7 @@ namespace SOCE.Library.UI.ViewModels
             BaseAI CurrentPage = IoCPortal.Application as BaseAI;
             PortalAI portAI = (PortalAI)CurrentPage;
             portAI.RefreshViews();
-
+            ButtonInAction = true;
             CloseWindow();
         }
 

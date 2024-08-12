@@ -75,7 +75,7 @@ namespace SOCE.Library.UI.ViewModels
                 return;
             }
 
-
+            ButtonInAction = true;
             //do stuff
             CloseWindow();
         }

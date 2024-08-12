@@ -95,6 +95,7 @@ namespace SOCE.Library.UI.ViewModels
         public InvoicingVM invm { get; set; }
         public BaseProjectSummaryVM(EmployeeModel employee, ProjectViewResModel baseproject, ViewEnum viewselection, InvoicingVM invoicing = null)
         {
+            ButtonInAction = true;
             this.CloseCommand = new RelayCommand(this.CloseWindow);
             CurrentEmployee = employee;
             BaseProject = baseproject;
@@ -108,6 +109,12 @@ namespace SOCE.Library.UI.ViewModels
 
         private void CloseWindow()
         {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
             if (invm != null)
             {
                 invm.LoadProjects();
