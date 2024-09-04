@@ -247,33 +247,42 @@ namespace SOCE.Library.UI
             if (dbem != null)
             {
                 EmployeeExp = dbem.FullName;
-                DateExp = DateTime.ParseExact(dbmodel.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                DescriptionExp = dbmodel.Description;
-                TypeExpense = (ExpenseEnum)dbmodel.TypeExpense;
-                DateExp = DateTime.ParseExact(dbmodel.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                DescriptionExp = dbmodel.Description;
-                MileageExp = dbmodel.Mileage;
-                TotalCostExp = dbmodel.TotalCost;
-                Rate = dbmodel.MileageRate;
-                IsClientBillable = Convert.ToBoolean(dbmodel.IsClientBillable);
-                IsReimbursable = Convert.ToBoolean(dbmodel.Reimbursable);
-                IsInvoiced = Convert.ToBoolean(dbmodel.Invoiced);
-
-                if (IsInvoiced)
-                {
-                    IsCustom = false;
-                }
-                else
-                {
-                    IsCustom = Convert.ToBoolean(dbmodel.IsCustom);
-                }
             }
+            else
+            {
+                EmployeeExp = "Administration";
+            }
+
+            //if (dbem != null)
+            //{
+            //    EmployeeExp = dbem.FullName;
+            DateExp = DateTime.ParseExact(dbmodel.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            DescriptionExp = dbmodel.Description;
+            TypeExpense = (ExpenseEnum)dbmodel.TypeExpense;
+            DateExp = DateTime.ParseExact(dbmodel.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            DescriptionExp = dbmodel.Description;
+            MileageExp = dbmodel.Mileage;
+            TotalCostExp = dbmodel.TotalCost;
+            Rate = dbmodel.MileageRate;
+            IsClientBillable = Convert.ToBoolean(dbmodel.IsClientBillable);
+            IsReimbursable = Convert.ToBoolean(dbmodel.Reimbursable);
+            IsInvoiced = Convert.ToBoolean(dbmodel.Invoiced);
+
+            if (IsInvoiced)
+            {
+                IsCustom = false;
+            }
+            else
+            {
+                IsCustom = Convert.ToBoolean(dbmodel.IsCustom);
+            }
+            //}
         }
 
         public void UpdateExpenseReport()
         {
             ExpenseReportDbModel exdb = new ExpenseReportDbModel()
-            { 
+            {
                 Id = Id,
                 Description = DescriptionExp,
                 Date = (int)long.Parse(DateExp.ToString("yyyyMMdd")),

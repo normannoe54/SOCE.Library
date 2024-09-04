@@ -277,7 +277,8 @@
                                  AcceptsReturn="True" TextAlignment="Left" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center" 
                                  materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"  
                                  IsHitTestVisible="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"/>
-                                <TextBlock Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" 
+                                <TextBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" 
+                                         IsHitTestVisible="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                    Visibility="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
                                    Text="{Binding ContractFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}" FontSize="14" />
                                 <TextBlock Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" 
@@ -406,7 +407,8 @@
                                  AcceptsReturn="True" TextAlignment="Left" FontSize="14" FontWeight="DemiBold" VerticalAlignment="Center" 
                                  materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"  
                                  IsHitTestVisible="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"/>
-                                <TextBlock Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" 
+                                <TextBox Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" 
+                                           IsHitTestVisible="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                    Visibility="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
                                    Text="{Binding ContractFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}" FontSize="14" />
                                 <TextBlock Grid.Column="2" VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Center" 

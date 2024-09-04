@@ -1190,6 +1190,11 @@ namespace SOCE.Library.UI.ViewModels
 
                     SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(nonadrow.SubId);
 
+                    if (sub.Fee != nonadrow.ContractFee && !nonadrow.IsHourly)
+                    {
+                        SQLAccess.UpdateSubFee(nonadrow.SubId, nonadrow.ContractFee);
+                    }
+
                     if (sub.PercentComplete < nonadrow.PercentComplete)
                     {
                         SQLAccess.UpdatePercentComplete(nonadrow.SubId, nonadrow.PercentComplete);
@@ -1224,6 +1229,11 @@ namespace SOCE.Library.UI.ViewModels
                     SQLAccess.AddInvoiceRow(invoicerow);
 
                     SubProjectDbModel sub = SQLAccess.LoadSubProjectsById(adrow.SubId);
+
+                    if (sub.Fee != adrow.ContractFee && !adrow.IsHourly)
+                    {
+                        SQLAccess.UpdateSubFee(adrow.SubId, adrow.ContractFee);
+                    }
 
                     if (sub.PercentComplete < adrow.PercentComplete)
                     {
@@ -1293,6 +1303,23 @@ namespace SOCE.Library.UI.ViewModels
                     SQLAccess.UpdateInvoiced(eim.Id, 1);
                 }
 
+                List<SubProjectSummaryModel> subs = new List<SubProjectSummaryModel>();
+                List<SubProjectDbModel> subdbmodels = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
+
+                double totalfee = 0;
+
+                foreach (SubProjectDbModel spdm in subdbmodels)
+                {
+                    if (Convert.ToBoolean(spdm.IsBillable))
+                    {
+                        totalfee += spdm.Fee;
+                    }
+                }
+                //update overall fee
+                if (BaseProject.Fee != totalfee)
+                {
+                    SQLAccess.UpdateFee(BaseProject.Id, totalfee);
+                }
 
                 Process.Start(LinkLocation);
                 //Process.Start(adservicefolderpath);

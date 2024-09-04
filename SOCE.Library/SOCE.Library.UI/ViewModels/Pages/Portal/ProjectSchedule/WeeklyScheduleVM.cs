@@ -323,7 +323,7 @@ namespace SOCE.Library.UI.ViewModels
                 values.Add(wsm.ClientNumber);
                 values.Add(wsm.PhaseName);
                 values.Add(wsm.DueDate ?? "");
-                values.Add(wsm.PercentComplete);
+                values.Add(wsm.PercentComplete * 0.01);
                 values.Add(wsm.PM);
 
                 foreach (SDEntryModel sd in wsm.Entries)

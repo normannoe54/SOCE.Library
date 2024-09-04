@@ -166,13 +166,21 @@ namespace SOCE.Library.UI
             if (dbem != null)
             {
                 EmployeeExp = dbem.FullName;
-                DateExp = DateTime.ParseExact(dbmodel.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
-                DescriptionExp = dbmodel.Description;
-                TotalCost = dbmodel.TotalCost;
-                IsBillable = Convert.ToBoolean(dbmodel.IsClientBillable);
-                TypeExpense = ((ExpenseEnum)dbmodel.TypeExpense).ToString();
-                IsInvoiced = Convert.ToBoolean(dbmodel.Invoiced);
             }
+            else
+            {
+                EmployeeExp = "Administration";
+            }
+
+            //if (dbem != null)
+            //{
+            DateExp = DateTime.ParseExact(dbmodel.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
+            DescriptionExp = dbmodel.Description;
+            TotalCost = dbmodel.TotalCost;
+            IsBillable = Convert.ToBoolean(dbmodel.IsClientBillable);
+            TypeExpense = ((ExpenseEnum)dbmodel.TypeExpense).ToString();
+            IsInvoiced = Convert.ToBoolean(dbmodel.Invoiced);
+            //}
             IsSelected = IsInvoiced;
         }
 

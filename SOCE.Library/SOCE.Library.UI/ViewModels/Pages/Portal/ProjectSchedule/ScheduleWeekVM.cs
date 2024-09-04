@@ -139,6 +139,7 @@ namespace SOCE.Library.UI.ViewModels
                 //CollectSubProjects();
                 if (SchedulingViews.Count > 0 && IsEditableItems)
                 {
+                    ButtonInAction = true;
                     SaveData();
                 }
 

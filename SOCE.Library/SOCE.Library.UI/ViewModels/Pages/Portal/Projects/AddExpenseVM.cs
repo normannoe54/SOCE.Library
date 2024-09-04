@@ -219,7 +219,7 @@ namespace SOCE.Library.UI.ViewModels
             ExpenseReportDbModel exdb = new ExpenseReportDbModel()
             {
                 ProjectId = baseProject.Id,
-                EmployeeId = CurrentEmployee.Id,
+                EmployeeId = -1,
                 Description = DescriptionExp,
                 Date = (int)long.Parse(DateExp.ToString("yyyyMMdd")),
                 TypeExpense = (int)TypeExpense,

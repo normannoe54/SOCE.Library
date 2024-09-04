@@ -861,56 +861,62 @@ namespace SOCE.Library.UI.ViewModels
         {
             List<ExpenseInvoiceModel> selectedexpenses = Expenses.Where(x => x.IsSelected && !x.IsInvoiced).ToList();
 
-            if (DateOfSelection != null || selectedexpenses.Count > 0)
+            //if (DateOfSelection != null || selectedexpenses.Count > 0)
+            //{
+
+            if (DateOfSelection == null)
             {
-                bool subcheck = false;
+                DateOfSelection = DateTime.Today;
+            }
 
-                List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
+            bool subcheck = false;
 
-                foreach (SubProjectDbModel sub in subs)
+            List<SubProjectDbModel> subs = SQLAccess.LoadSubProjectsByProject(BaseProject.Id);
+
+            foreach (SubProjectDbModel sub in subs)
+            {
+                if (Convert.ToBoolean(sub.IsBillable) && sub.PercentComplete < 100)
                 {
-                    if (Convert.ToBoolean(sub.IsBillable) && sub.PercentComplete < 100)
-                    {
-                        subcheck = true;
-                        break;
-                    }
-                }
-
-                List<SubProjectDbModel> subsbillable = subs.Where(x => x.IsBillable == 1).ToList();
-                if (subsbillable.Count == 0)
-                {
-                    string message = $"No billable phases in project, please revise.";
-                    MessageBoxVM addsubvm = new MessageBoxVM(message, this);
-
-                    LeftViewToShow = new MessageBoxView();
-                    LeftViewToShow.DataContext = addsubvm;
-                    LeftDrawerOpen = true;
-                }
-                else if (!subcheck)
-                {
-                    InvoicingModel invlatest = Invoices.LastOrDefault();
-                    YesNoVM addsubvm = new YesNoVM(invlatest, this);
-                    addsubvm.Message = $"Project is fully invoiced {Environment.NewLine} Add overhead time to";
-                    addsubvm.SubMessage = $"Invoice Number {Environment.NewLine} {invlatest.InvoiceId}";
-
-                    LeftViewToShow = new YesNoView();
-                    LeftViewToShow.DataContext = addsubvm;
-                    LeftDrawerOpen = true;
-                }
-                else
-                {
-                    LeftViewToShow = new CreateInvoiceView();
-
-                    if (DateOfSelection == null)
-                    {
-                        DateOfSelection = DateTime.Today;
-                    }
-
-                    CreateInvoiceVM addsubvm = new CreateInvoiceVM(BaseProject, this, HoursTotalSelection, BudgetTotalSelection, (DateTime)DateOfSelection, SelectedTimesheetInfo, selectedexpenses);
-                    LeftViewToShow.DataContext = addsubvm;
-                    LeftDrawerOpen = true;
+                    subcheck = true;
+                    break;
                 }
             }
+
+            List<SubProjectDbModel> subsbillable = subs.Where(x => x.IsBillable == 1).ToList();
+            if (subsbillable.Count == 0)
+            {
+                string message = $"No billable phases in project, please revise.";
+                MessageBoxVM addsubvm = new MessageBoxVM(message, this);
+
+                LeftViewToShow = new MessageBoxView();
+                LeftViewToShow.DataContext = addsubvm;
+                LeftDrawerOpen = true;
+            }
+            else if (!subcheck)
+            {
+                InvoicingModel invlatest = Invoices.LastOrDefault();
+                YesNoVM addsubvm = new YesNoVM(invlatest, this);
+                addsubvm.Message = $"Project is fully invoiced {Environment.NewLine} Add overhead time to";
+                addsubvm.SubMessage = $"Invoice Number {Environment.NewLine} {invlatest.InvoiceId}";
+
+                LeftViewToShow = new YesNoView();
+                LeftViewToShow.DataContext = addsubvm;
+                LeftDrawerOpen = true;
+            }
+            else
+            {
+                LeftViewToShow = new CreateInvoiceView();
+
+                if (DateOfSelection == null)
+                {
+                    DateOfSelection = DateTime.Today;
+                }
+
+                CreateInvoiceVM addsubvm = new CreateInvoiceVM(BaseProject, this, HoursTotalSelection, BudgetTotalSelection, (DateTime)DateOfSelection, SelectedTimesheetInfo, selectedexpenses);
+                LeftViewToShow.DataContext = addsubvm;
+                LeftDrawerOpen = true;
+            }
+            //}
         }
     }
 }
