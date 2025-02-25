@@ -10,7 +10,7 @@ namespace SOCE.Library.UI
     public class InvoicedColorConverter : IValueConverter
     {
         private readonly Color _zerocolor = (Color)ColorConverter.ConvertFromString("#EACFFA");
-        private readonly Color _nonzerocolor = (Color)ColorConverter.ConvertFromString("#F5F7CD");
+        private readonly Color _nonzerocolor = (Color)ColorConverter.ConvertFromString("#90EE90");
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {

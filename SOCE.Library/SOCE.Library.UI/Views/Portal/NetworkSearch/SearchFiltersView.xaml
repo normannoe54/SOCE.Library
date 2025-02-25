@@ -8,56 +8,67 @@
              xmlns:local="clr-namespace:SOCE.Library.UI"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
-             Background="Transparent" Width="600" Height="350" >
+             Background="Transparent" Width="700" Height="550" >
 
     <Grid Margin="16" VerticalAlignment="Stretch">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height ="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-
-        <Grid Grid.Row="0">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
-            </Grid.RowDefinitions>
-            <TextBlock Grid.Row="0" Text="Search Filters" FontSize="24" HorizontalAlignment="Center" />
-            <TextBlock Grid.Row="1" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Left" HorizontalAlignment="Stretch" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
-                <TextBlock.Triggers>
-                    <EventTrigger RoutedEvent="Binding.TargetUpdated">
-                        <BeginStoryboard>
-                            <Storyboard>
-                                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
-                                    <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
-                                    <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
-                                </DoubleAnimationUsingKeyFrames>
-                            </Storyboard>
-                        </BeginStoryboard>
-                    </EventTrigger>
-                </TextBlock.Triggers>
-            </TextBlock>
+        <TextBlock Grid.Row="0" Text="Search Filters" FontSize="24" HorizontalAlignment="Center" />
+        <TextBlock Grid.Row="1" FontSize="14" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Stretch" Text="{Binding Message, NotifyOnTargetUpdated=True}" Margin="0,12">
+            <TextBlock.Triggers>
+                <EventTrigger RoutedEvent="Binding.TargetUpdated">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="Opacity">
+                                <EasingDoubleKeyFrame KeyTime="0" Value="0"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:0.25" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:4" Value="1"/>
+                                <EasingDoubleKeyFrame KeyTime="0:0:5" Value="0"/>
+                            </DoubleAnimationUsingKeyFrames>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </TextBlock.Triggers>
+        </TextBlock>
+        <Grid Grid.Row="1" HorizontalAlignment ="Left">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+            <TextBlock Grid.Column="0"  VerticalAlignment="Center" FontSize="14" FontWeight="SemiBold" Text="Add Filter" />
+            <Button Grid.Column="1" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" 
+                        Foreground="Black" Background="Transparent" 
+                        BorderBrush="Transparent"
+                        Command="{Binding AddSetting}">
+                <materialDesign:PackIcon Kind="Plus" VerticalAlignment="Center" />
+            </Button>
         </Grid>
-        <Border Grid.Row="1" Margin="0 10 18 0" BorderBrush="Black" BorderThickness="0 0 0 1">
+        <Border Grid.Row="2" Margin="0 0 18 0" BorderBrush="Black" BorderThickness="0 0 0 1">
             <Grid >
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="25"/>
-                    <ColumnDefinition Width="65"/>
-                    <ColumnDefinition Width="80"/>
+                    <ColumnDefinition Width="35"/>
+                    <ColumnDefinition Width="120"/>
                     <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="100"/>
+                    <ColumnDefinition Width="60"/>
                     <ColumnDefinition Width="40"/>
                 </Grid.ColumnDefinitions>
 
-                <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Header" />
-                <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Path" Margin="10 0 0 0"/>
-                <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Active"/>
+                <TextBlock Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Header" Margin="10 0 0 0"/>
+                <TextBlock Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Left" VerticalAlignment="Center" Text="Path" Margin="20 0 0 0"/>
+                <TextBlock Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Search Type"/>
+                <TextBlock Grid.Column="5" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Layers"/>
+                <TextBlock Grid.Column="6" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center" Text="Active"/>
             </Grid>
         </Border>
 
-        <ItemsControl Grid.Row="2" Margin="0 5 0 0" ItemsSource="{Binding Settings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+        <ItemsControl Grid.Row="3" Margin="0 5 0 0" ItemsSource="{Binding Settings, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
             <ItemsControl.Resources>
                 <local:IsBillableKindConverter x:Key="valueconverter"/>
             </ItemsControl.Resources>
@@ -81,9 +92,11 @@
                     <Grid Margin="0 5 0 5">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="25"/>
-                            <ColumnDefinition Width="65"/>
-                            <ColumnDefinition Width="80"/>
+                            <ColumnDefinition Width="35"/>
+                            <ColumnDefinition Width="120"/>
                             <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="60"/>
                             <ColumnDefinition Width="40"/>
                         </Grid.ColumnDefinitions>
                         <VirtualizingStackPanel Grid.Column="0"  Orientation="Vertical" HorizontalAlignment="Center">
@@ -121,9 +134,34 @@
                             </Button.Content>
                         </Button>
                         <TextBox Grid.Column="3" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Left"
-                                 Text="{Binding FolderPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 10 0"/>
-                        
-                        <CheckBox Grid.Column="4" Style="{StaticResource MaterialDesignCheckBox}" 
+                                 Text="{Binding FolderPath, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="30 0 10 0"/>
+
+                        <CheckBox Grid.Column="4"  HorizontalAlignment="Stretch" 
+                              IsChecked="{Binding SearchFileType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" BorderBrush="Black" FontSize="12" FontWeight="SemiBold" 
+                              Content="{Binding SearchFileName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                            <CheckBox.Style>
+                                <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignFilterChipCheckBox}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter Property="Foreground" Value="{StaticResource SOCEBlueCompliment}"/>
+                                        </Trigger>
+                                        <Trigger Property="IsChecked"  Value="False">
+                                            <Setter Property="Foreground" Value="{StaticResource SOCEGray}"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </CheckBox.Style>
+                        </CheckBox>
+
+                        <TextBox Grid.Column="5" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center "
+                                 Text="{Binding SubLayer, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                 Visibility="{Binding SearchFileType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
+
+                        <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center "
+                                 Text="All" FontStyle="Italic"
+                                 Visibility="{Binding SearchFileType, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
+
+                        <CheckBox Grid.Column="6" Style="{StaticResource MaterialDesignCheckBox}" 
                                       IsChecked="{Binding Active, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      HorizontalAlignment="Center" Background="DarkGray" />
                     </Grid>
@@ -132,7 +170,7 @@
             </ItemsControl.ItemTemplate>
         </ItemsControl>
 
-        <StackPanel Orientation="Horizontal" Grid.Row="6" Margin="0 16 0 0" HorizontalAlignment="Center">
+        <StackPanel Orientation="Horizontal" Grid.Row="4" Margin="0 16 0 0" HorizontalAlignment="Center">
             <Button Foreground="{StaticResource SOCERed}" IsDefault="True" Style="{DynamicResource MaterialDesignFlatButton}" Command="{Binding AcceptCommand}">
                 <TextBlock Text="SAVE"/>
             </Button>

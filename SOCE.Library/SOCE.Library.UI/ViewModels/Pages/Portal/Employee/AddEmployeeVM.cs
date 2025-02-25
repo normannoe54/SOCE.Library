@@ -121,16 +121,16 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _sickLeave;
-        public double SickLeave
-        {
-            get { return _sickLeave; }
-            set
-            {
-                _sickLeave = value;
-                RaisePropertyChanged("SickLeave");
-            }
-        }
+        //private double _sickLeave;
+        //public double SickLeave
+        //{
+        //    get { return _sickLeave; }
+        //    set
+        //    {
+        //        _sickLeave = value;
+        //        RaisePropertyChanged("SickLeave");
+        //    }
+        //}
 
         private double _holidayHours;
         public double HolidayHours
@@ -184,7 +184,7 @@ namespace SOCE.Library.UI.ViewModels
 
             ButtonInAction = false;
             if (String.IsNullOrEmpty(FirstNameInp) || String.IsNullOrEmpty(LastNameInp) || String.IsNullOrEmpty(TitleInp) || SelectedAuthorization == null || SelectedDefaultRole == null || String.IsNullOrEmpty(EmailInp) ||
-                 String.IsNullOrEmpty(PhoneNumberInp) || String.IsNullOrEmpty(ExtensionInp) || BillableRate == 0 || YearlyPTO == 0 || SickLeave == 0 || HolidayHours == 0 || String.IsNullOrEmpty(TemporaryPassInp))
+                 String.IsNullOrEmpty(PhoneNumberInp) || String.IsNullOrEmpty(ExtensionInp) || BillableRate == 0 || YearlyPTO == 0 || HolidayHours == 0 || String.IsNullOrEmpty(TemporaryPassInp))
             {
                 ErrorMessage = $"Double check that all inputs have been {Environment.NewLine}filled out correctly and try again.";
                 ButtonInAction = true;
@@ -203,7 +203,8 @@ namespace SOCE.Library.UI.ViewModels
                 Extension = ExtensionInp,
                 Rate = BillableRate,
                 PTORate = YearlyPTO,
-                SickRate = SickLeave,
+                PTOCarryover = 0,
+                //SickRate = SickLeave,
                 Password = TemporaryPassInp,
                 HolidayHours = HolidayHours,
                 IsActive = 1,

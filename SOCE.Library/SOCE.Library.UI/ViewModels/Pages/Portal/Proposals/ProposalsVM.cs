@@ -375,7 +375,7 @@ namespace SOCE.Library.UI.ViewModels
         {
             //let's set up a little MVVM, cos that's what the cool kids are doing:
             var view = new AddProposalsView();
-            view.DataContext = new AddProposalsVM(CurrentEmployee);
+            view.DataContext = new AddProposalsVM(CurrentEmployee, this);
             //show the dialog
             var result = await DialogHost.Show(view, "RootDialog");
 

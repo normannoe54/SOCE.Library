@@ -38,7 +38,7 @@
                 <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <TextBlock Grid.Row="0" Grid.Column="0" Text="Invoice" FontSize="24" />
+            <TextBlock Grid.Row="0" Grid.Column="0" Text="Preview Invoice" FontSize="24" />
 
             <TextBlock Margin="30 0 0 0" Grid.ColumnSpan="2" FontSize="12" Foreground="{StaticResource SOCERed}" VerticalAlignment="Center" TextAlignment="Center" HorizontalAlignment="Center" Text="{Binding ErrorMessage, NotifyOnTargetUpdated=True}">
                 <TextBlock.Triggers>
@@ -286,7 +286,7 @@
                                    Text="{Binding HourlyStatement, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" />
                                 <TextBox Grid.Column="3" Padding="0"  VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="right" Margin="0 0 10 0"
                                  Style="{StaticResource NonUnderLineTextBox}"
-                                 FontWeight="DemiBold"
+                                 FontWeight="DemiBold" Visibility="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
                                  Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" materialDesign:TextFieldAssist.SuffixText="%"
                                   IsHitTestVisible="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"/>
                                 <TextBlock Grid.Column="4" Padding="0"  VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left" Margin="10 0 0 0"
@@ -417,6 +417,7 @@
                                 <TextBox Grid.Column="3" Padding="0"  VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Right" Margin="0 0 10 0"
                                  Style="{StaticResource NonUnderLineTextBox}"
                                  FontWeight="DemiBold"
+                                         Visibility="{Binding IsHourly, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"
                                  Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" FontSize="14" materialDesign:TextFieldAssist.SuffixText="%"
                                   IsHitTestVisible="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"/>
                                 <TextBlock Grid.Column="4" Padding="0"  VerticalAlignment="Center" HorizontalAlignment="Stretch" TextAlignment="Left" Margin="10 0 0 0"

@@ -257,7 +257,7 @@
                             </Grid>
 
                             <DatePicker Grid.Column="1" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                                 Text="{Binding DateExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0"
+                                 Text="{Binding DateExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0" Focusable="False"
                                         DisplayDateStart="{Binding Path=DataContext.Payperiodbeginning, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}" 
                                         DisplayDateEnd="{Binding Path=DataContext.Payperiodend, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ListView}}}"/>
 
@@ -284,7 +284,7 @@
                                          Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                                 <TextBox Grid.Column="1" Width="60" Margin="10 0 10 0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center"
-                                         Text="{Binding MileageExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.SuffixText="/mi."
+                                         Text="{Binding MileageExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.SuffixText="mi."
                                          Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
                                 <TextBox Grid.Column="2" FontSize="12" TextAlignment="Left" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center"

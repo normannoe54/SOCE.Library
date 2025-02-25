@@ -24,10 +24,15 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
+
+            
+
         <TextBlock Grid.Row="0" Text="Time Sheet Review"  Style="{StaticResource PageHeader}" HorizontalAlignment="left"/>
         <StackPanel Orientation="Vertical" VerticalAlignment="Top" Grid.Row="1">
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold"/>
+                <DatePicker FontSize="14" HorizontalAlignment="Left" VerticalAlignment="Center" Padding="0" SelectedDate="{Binding DateSelected,Mode=TwoWay,UpdateSourceTrigger=PropertyChanged}" 
+                        materialDesign:HintAssist.Hint="Select Date" Width="18"/>
+                <TextBlock Text="{Binding MonthYearString}" FontSize="18" FontWeight="SemiBold" Margin="5 0 0 0"/>
                 <TextBlock Margin="10 0 0 0" Text="{Binding DateString}" Grid.Row="2" FontSize="18" FontWeight="Regular"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Bottom" Margin="0 5 0 0" >

@@ -123,15 +123,16 @@
                                     <ColumnDefinition Width="80"/>
                                 </Grid.ColumnDefinitions>
 
-                                <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="5 0 0 0" IsEnabled="{Binding IsCustom}">
+                                <VirtualizingStackPanel Grid.Column="0" Orientation="Horizontal" Margin="5 0 0 0" >
                                     <Button HorizontalAlignment="Left" Style="{StaticResource MaterialDesignFloatingActionMiniLightButton}" Background="Transparent" BorderBrush="Transparent"  Foreground="Black" Height="20" Width="20"
-                                            Command="{Binding Path=DataContext.DeleteExpenseCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete">
+                                            Command="{Binding Path=DataContext.DeleteExpenseCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}" ToolTip="Delete"
+                                            IsEnabled="{Binding IsCustom, Converter={StaticResource InvertBooleanConverter}}">
                                         <Button.Content>
                                             <materialDesign:PackIcon Height="15" Width="15" Kind="TrashCan" VerticalAlignment="Center" HorizontalAlignment="Center"/>
                                         </Button.Content>
                                     </Button>
                                     <ToggleButton Style="{StaticResource MaterialDesignActionToggleButton}" Background="Transparent" Foreground="Black" Height="20" Width="20" 
-                                                      IsChecked="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
+                                                  IsChecked="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
                                         <ToggleButton.Content>
                                             <materialDesign:PackIcon Height="15" Width="15" Kind="ContentSave" VerticalAlignment="Center" HorizontalAlignment="Center" ToolTip="Save"/>
                                         </ToggleButton.Content>
@@ -148,10 +149,11 @@
                                  Text="{Binding DateExp, StringFormat=d, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0" IsReadOnly="True"/>-->
 
                                 <DatePicker Grid.Column="2" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
-                                 Text="{Binding DateExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0" 
+                                 Text="{Binding DateExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0" IsHitTestVisible="{Binding IsCustom}"
                                         IsEnabled="{Binding EditFieldState, Converter={StaticResource InvertBooleanConverter}}"/>
 
                                 <ComboBox Grid.Column="3" Margin="10 0 0 0" FontSize="12"
+                                          IsHitTestVisible="{Binding IsCustom}"
                                   IsEnabled="{Binding EditFieldState, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InvertBooleanConverter}}"
                                   ItemsSource="{Binding Source={local:EnumerationExtension {x:Type local:ExpenseEnum}}}" 
                                   DisplayMemberPath="Description" 
@@ -161,7 +163,7 @@
                                 <!--<TextBox Grid.Column="3" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
                                  Text="{Binding TypeExpense, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="10 0 0 0" IsReadOnly="{Binding EditFieldState}"/>-->
 
-                                <TextBox Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" 
+                                <TextBox Grid.Column="4" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsHitTestVisible="{Binding IsCustom}"
                                  Text="{Binding DescriptionExp, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="5 0 0 0" IsReadOnly="{Binding EditFieldState}"/>
 
                                 <Grid Grid.Column="5" Margin="10 0 0 0" HorizontalAlignment="Stretch" >
@@ -172,15 +174,15 @@
                                     </Grid.ColumnDefinitions>
 
                                     <TextBox Grid.Column="0" Width="60" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center"
-                                         Text="{Binding Rate, StringFormat='{}{0:#,0.##}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
+                                         Text="{Binding Rate, StringFormat='{}{0:#,0.##}', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsHitTestVisible="{Binding IsCustom}"
                                          materialDesign:TextFieldAssist.PrefixText="$" materialDesign:TextFieldAssist.SuffixText="/mi." IsReadOnly="{Binding EditFieldState}"
                                          Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                                    <TextBox Grid.Column="1" Width="60" Margin="10 0 10 0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center"
+                                    <TextBox Grid.Column="1" Width="60" Margin="10 0 10 0" FontSize="12" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" TextAlignment="Center" IsHitTestVisible="{Binding IsCustom}"
                                          Text="{Binding MileageExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" materialDesign:TextFieldAssist.SuffixText="/mi." IsReadOnly="{Binding EditFieldState}"
                                          Visibility="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"/>
 
-                                    <TextBox Grid.Column="2" FontSize="12" TextAlignment="Left" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center"
+                                    <TextBox Grid.Column="2" FontSize="12" TextAlignment="Left" FontWeight="SemiBold" HorizontalAlignment="Stretch" VerticalAlignment="Center" IsHitTestVisible="{Binding IsCustom}"
                                          Text="{Binding TotalCostExp, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"  materialDesign:TextFieldAssist.PrefixText="$"
                                          IsReadOnly="{Binding MileageVis, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                          IsEnabled="{Binding EditFieldState, Converter={StaticResource InvertBooleanConverter}}"/>
@@ -194,7 +196,7 @@
                                       Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsReimbursable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                       HorizontalAlignment="Center" Background="DarkGray" />
 
-                                <CheckBox Grid.Column="8" IsHitTestVisible="{Binding EditFieldState, Converter={StaticResource InvertBooleanConverter}}"
+                                <CheckBox Grid.Column="8" IsHitTestVisible="{Binding EditFieldState, Converter={StaticResource InvertBooleanConverter}}" 
                                       Style="{StaticResource MaterialDesignCheckBox}" IsChecked="{Binding IsClientBillable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" 
                                       HorizontalAlignment="Center" Background="DarkGray" />
                             </Grid>

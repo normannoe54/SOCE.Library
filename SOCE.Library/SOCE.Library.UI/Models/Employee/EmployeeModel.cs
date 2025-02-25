@@ -213,16 +213,16 @@ namespace SOCE.Library.UI
             }
         }
 
-        private double _sickRate;
-        public double SickRate
-        {
-            get { return _sickRate; }
-            set
-            {
-                _sickRate = value;
-                RaisePropertyChanged(nameof(SickRate));
-            }
-        }
+        //private double _sickRate;
+        //public double SickRate
+        //{
+        //    get { return _sickRate; }
+        //    set
+        //    {
+        //        _sickRate = value;
+        //        RaisePropertyChanged(nameof(SickRate));
+        //    }
+        //}
 
         private double _hoursPerWeek;
         public double HoursPerWeek
@@ -246,38 +246,38 @@ namespace SOCE.Library.UI
         //    }
         //}
 
-        private double _sickUsed;
-        public double SickUsed
-        {
-            get { return _sickUsed; }
-            set
-            {
-                _sickUsed = value;
-                RaisePropertyChanged(nameof(SickUsed));
-            }
-        }
+        //private double _sickUsed;
+        //public double SickUsed
+        //{
+        //    get { return _sickUsed; }
+        //    set
+        //    {
+        //        _sickUsed = value;
+        //        RaisePropertyChanged(nameof(SickUsed));
+        //    }
+        //}
 
-        private double _sickEarned;
-        public double SickEarned
-        {
-            get { return _sickEarned; }
-            set
-            {
-                _sickEarned = value;
-                RaisePropertyChanged(nameof(SickEarned));
-            }
-        }
+        //private double _sickEarned;
+        //public double SickEarned
+        //{
+        //    get { return _sickEarned; }
+        //    set
+        //    {
+        //        _sickEarned = value;
+        //        RaisePropertyChanged(nameof(SickEarned));
+        //    }
+        //}
 
-        private double _sickHours;
-        public double SickHours
-        {
-            get { return _sickHours; }
-            set
-            {
-                _sickHours = value;
-                RaisePropertyChanged(nameof(SickHours));
-            }
-        }
+        //private double _sickHours;
+        //public double SickHours
+        //{
+        //    get { return _sickHours; }
+        //    set
+        //    {
+        //        _sickHours = value;
+        //        RaisePropertyChanged(nameof(SickHours));
+        //    }
+        //}
 
         private double _holidayHours;
         public double HolidayHours
@@ -683,7 +683,7 @@ namespace SOCE.Library.UI
             ThursdayHours = emdb.ThursdayHours;
             FridayHours = emdb.FridayHours;
             ScheduledTotalHours = MondayHours + TuesdayHours + WednesdayHours + ThursdayHours + FridayHours;
-            SickRate = emdb.SickRate;
+            //SickRate = emdb.SickRate;
             HolidayHours = emdb.HolidayHours;
         }
 
@@ -708,44 +708,79 @@ namespace SOCE.Library.UI
         public void CollectTimesheetSubmission()
         {
             double ptospent = 0;
+            double ptoadded = 0;
             double otspent = 0;
-            double sickspent = 0;
+            //double sickspent = 0;
             double holidayspent = 0;
             //load timesheet submissions
             List<TimesheetSubmissionModel> tsm = new List<TimesheetSubmissionModel>();
 
             //years
-            int count = 0;
+            //int count = 0;
             List<TimesheetSubmissionDbModel> dbdata = SQLAccess.LoadTimesheetSubmissionByEmployee(Id);
+            List<TimesheetSubmissionDbModel> dbdataordered = dbdata.OrderBy(x => x.Date).ToList();
 
             int year = DateTime.Now.Year;
             DateTime firstDay = new DateTime(year, 1, 1);
+            int icount = 1;
+            bool cancelpto = false;
+            double runningptototal = 0;
 
-            foreach (TimesheetSubmissionDbModel tsmdb in dbdata)
+            foreach (TimesheetSubmissionDbModel tsmdb in dbdataordered)
             {
                 TimesheetSubmissionModel tsmnew = new TimesheetSubmissionModel(tsmdb, this);
                 tsm.Add(tsmnew);
 
+                //your first timesheet is not on the first of a month for the year, cancel that pto
                 if (tsmnew.Date >= firstDay)
                 {
-                    count++;
+                    //count++;
                     ptospent += tsmdb.PTOHours;
                     otspent += tsmdb.OTHours;
-                    sickspent += tsmdb.SickHours;
                     holidayspent += tsmdb.HolidayHours;
+
+                    if (icount == 1 && tsmnew.Date.Day == 17)
+                    {
+                        cancelpto = true;
+                    }
+
+                    if (icount == 2 && runningptototal == 0)
+                    {
+                        runningptototal = 0;
+                    }
+                    else if (!cancelpto)
+                    {
+                        runningptototal += tsmnew.PTOAdded;
+                    }
+
+                    if (icount == 2)
+                    {
+                        if (!cancelpto)
+                        {
+                            ptoadded += runningptototal;
+                        }
+                        icount = 1;
+                        runningptototal = 0;
+                        cancelpto = false;
+                    }
+                    else
+                    {
+                        icount++;
+                    }
                 }
             }
+
             List<TimesheetSubmissionModel> tsmfinal = tsm.OrderByDescending(x => x.Date).ToList(); 
             TimesheetSubmissions = new ObservableCollection<TimesheetSubmissionModel>(tsmfinal);
             PTOUsed = ptospent;
             TotalOT = otspent;
-            SickUsed = sickspent;
-            PTOEarned = (PTORate * count) / 2;
-            SickEarned = (SickRate * count) / 2;
+            //SickUsed = sickspent;
+            PTOEarned = ptoadded;
+            //SickEarned = (SickRate * count) / 2;
             HolidayUsed = holidayspent;
             HolidayLeft = HolidayHours - HolidayUsed;
             PTOHours = PTOCarryover + PTOEarned - PTOUsed;
-            SickHours = SickEarned - SickUsed;
+            //SickHours = SickEarned - SickUsed;
         }
 
         public void SetEmployeeModelfromUser(EmployeeModel currentuser)
@@ -825,7 +860,7 @@ namespace SOCE.Library.UI
                     PTOCarryover = PTOCarryover,
                     HolidayHours = HolidayHours,
                     //SickHours = SickHours,
-                    SickRate = SickRate,
+                    //SickRate = SickRate,
                     MondayHours = MondayHours,
                     TuesdayHours = TuesdayHours,
                     WednesdayHours = WednesdayHours,

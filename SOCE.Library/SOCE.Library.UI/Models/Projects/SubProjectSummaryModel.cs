@@ -137,10 +137,13 @@ namespace SOCE.Library.UI
             set
             {
                 _percentComplete = value;
-                IsInvoicedEditable = PercentComplete <= 0;
+                IsInvoicedEditable = PercentComplete <= 0 || IsHourly;
+
                 RaisePropertyChanged(nameof(PercentComplete));
             }
         }
+
+        public double invoicedamount;
 
         private double _totalHours { get; set; }
         public double TotalHours
@@ -446,7 +449,7 @@ namespace SOCE.Library.UI
             }
         }
 
-        
+
         public ProjectSummaryVM projectsummary;
 
         public ProjectViewResModel baseproject;
@@ -469,6 +472,7 @@ namespace SOCE.Library.UI
             IsInvoiced = Convert.ToBoolean(spm.IsInvoiced);
             IsHourly = Convert.ToBoolean(spm.IsHourly);
             PercentComplete = spm.PercentComplete;
+            invoicedamount = PercentComplete * 0.01 * Fee;
             //PercentBudget = spm.PercentBudget;
             IsAddService = Convert.ToBoolean(spm.IsAdservice);
             NumberOrder = spm.NumberOrder;
@@ -482,16 +486,33 @@ namespace SOCE.Library.UI
                 IsActive = true;
             }
 
+            //if (IsHourly)
+            //{
+            //    if (PercentComplete == 0)
+            //    {
+            //        PercentComplete = (invoicedamount / Fee) * 100;
+            //    }
+            //    else if (Fee >= (invoicedamount / (PercentComplete * 0.01)))
+            //    {
+            //        PercentComplete = (invoicedamount / Fee) * 100;
+            //    }
+            //    else
+            //    {
+            //        Fee = (invoicedamount / (PercentComplete * 0.01));
+            //    }
+            //    //Fee =invoicedamount
+            //}
+
             //if (!IsActive)
             //{
             //    List<SubProjectDbModel> subs = SQLAccess.LoadAllSubProjectsByProject(baseproject.Id);
             //    bool found = subs.Any(x => x.IsActive == 1);
             //}
 
-            if (IsHourly)
-            {
-                Fee = 0;
-            }
+            //if (IsHourly)
+            //{
+            //    Fee = 0;
+            //}
 
             SubProjectDbModel subproject = new SubProjectDbModel()
             {
@@ -500,11 +521,11 @@ namespace SOCE.Library.UI
                 Description = Description,
                 Fee = Fee,
                 IsActive = IsActive ? 1 : 0,
-                PercentComplete =  PercentComplete,
+                PercentComplete = PercentComplete,
                 PercentBudget = PercentBudget,
                 IsInvoiced = IsInvoiced ? 1 : 0,
-                IsBillable = IsBillable ? 1: 0,
-                IsHourly = IsHourly ? 1: 0,
+                IsBillable = IsBillable ? 1 : 0,
+                IsHourly = IsHourly ? 1 : 0,
                 //SubStart = DateInitiated != null ? (int)long.Parse(spm.DateInitiated?.ToString("yyyyMMdd")) : (int?)null,
                 //SubEnd = DateInvoiced != null ? (int)long.Parse(spm.DateInvoiced?.ToString("yyyyMMdd")) : (int?)null,
                 ExpandedDescription = ExpandedDescription,

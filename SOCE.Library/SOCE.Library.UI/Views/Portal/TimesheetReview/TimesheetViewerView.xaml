@@ -81,7 +81,7 @@
                         </TextBlock.Style>
                     </TextBlock>
                 </Border>
-                <TextBlock Grid.Row="1" Text="{Binding basevm.BaseHours, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="5 10 5 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+                <TextBlock Grid.Row="1" Text="{Binding basevm.BaseHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat= 'Base Hours {0} hrs.'}" FontSize="16" Margin="5 10 5 0" FontWeight="SemiBold" Foreground="Black" HorizontalAlignment="Right" VerticalAlignment="Center"/>
                 <Button Grid.Row="2" HorizontalAlignment="Stretch" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding ExportToExcel}" 
                             VerticalAlignment="Center"  Height="30" Margin="5 5 5 5" BorderBrush="Black" BorderThickness="1">
                     <StackPanel Orientation="Horizontal">

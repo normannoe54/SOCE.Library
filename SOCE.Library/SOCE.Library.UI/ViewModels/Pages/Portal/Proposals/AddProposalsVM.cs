@@ -221,8 +221,10 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand OpenFolderCommand { get; set; }
         public ICommand CloseCommand { get; set; }
 
-        public AddProposalsVM(EmployeeModel employee)
+        ProposalsVM propsumvm;
+        public AddProposalsVM(EmployeeModel employee, ProposalsVM propvm)
         {
+            propsumvm = propvm;
             MarketsAvailable.Clear();
             ClientsAvailable.Clear();
             this.OpenFolderCommand = new RelayCommand(this.SelectLinkFolder); 
@@ -307,11 +309,11 @@ namespace SOCE.Library.UI.ViewModels
             //    ErrorMessage = $"Project number exists{Environment.NewLine}check inactive projects.";
             //    return;
             //}
-
+            propsumvm.Reload();
             //update view models?
-            BaseAI CurrentPage = IoCPortal.Application as BaseAI;
-            PortalAI portAI = (PortalAI)CurrentPage;
-            portAI.RefreshViews();
+            //BaseAI CurrentPage = IoCPortal.Application as BaseAI;
+            //PortalAI portAI = (PortalAI)CurrentPage;
+            //await portAI.RefreshViews();
 
             CloseWindow();
         }

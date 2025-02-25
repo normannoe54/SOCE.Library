@@ -100,6 +100,21 @@ namespace SOCE.Library.Excel
             return sheetfound;
         }
 
+        public bool SheetExist(string name)
+        {
+            bool issheetfound = false;
+
+            foreach (IXLWorksheet sheet in document.Worksheets)
+            {
+                if (sheet.Name == name)
+                {
+                    issheetfound = true;
+                    break;
+                }
+            }
+            return issheetfound;
+        }
+
         public void SetActiveSheetByName(string name)
         {
             IXLWorksheet sheet = GetSheet(name);

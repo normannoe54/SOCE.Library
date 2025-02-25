@@ -280,6 +280,23 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
+        private DateTime _dateSelected;
+        public DateTime DateSelected
+        {
+            get { return _dateSelected; }
+            set
+            {
+                _dateSelected = value;
+                if (allowdatechange)
+                {
+                    SelectedTimesheet();
+                }
+                RaisePropertyChanged(nameof(DateSelected));
+            }
+        }
+
+        private bool allowdatechange = true;
+
         private ObservableCollection<TREntryModel> BlankEntry = new ObservableCollection<TREntryModel>();
 
         public TimesheetVM(EmployeeModel loggedinEmployee)
@@ -682,6 +699,23 @@ namespace SOCE.Library.UI.ViewModels
             ButtonInAction = true;
         }
 
+        private async void SelectedTimesheet()
+        {
+            if (!ButtonInAction)
+            {
+                return;
+            }
+            ButtonInAction = false;
+
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(DispatcherPriority.Background, new Action(() => LoadCurrentTimesheet(DateSelected)));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
+            ButtonInAction = true;
+        }
+
         /// <summary>
         /// Button Press
         /// </summary>
@@ -913,9 +947,46 @@ namespace SOCE.Library.UI.ViewModels
                 SaveCommand(1);
                 double pto = 0;
                 double ot = 0;
-                double sick = 0;
+                bool cancelpto = false;
                 double holiday = 0;
                 double sum = 0;
+
+                List<TimesheetSubmissionDbModel> subsmissions = SQLAccess.LoadTimesheetSubmissionByEmployee(CurrentEmployee.Id);
+                int numberofworkdays = 0;
+                DateTime firstday = DateSummary.First().Value;
+
+                if ((subsmissions.Count == 0 && firstday.Day == 17))
+                {
+                    cancelpto = true;
+                }
+                else if ((subsmissions.Count == 0 && firstday.Day == 1) || (subsmissions.Count == 1 && firstday.Day == 17))
+                {
+                    if (CurrentEmployee.MondayHours > 0)
+                    {
+                        numberofworkdays += DateSummary.Where(x => x.Value.DayOfWeek == DayOfWeek.Monday).Count();
+                    }
+                    if (CurrentEmployee.TuesdayHours > 0)
+                    {
+                        numberofworkdays += DateSummary.Where(x => x.Value.DayOfWeek == DayOfWeek.Tuesday).Count();
+                    }
+                    if (CurrentEmployee.WednesdayHours > 0)
+                    {
+                        numberofworkdays += DateSummary.Where(x => x.Value.DayOfWeek == DayOfWeek.Wednesday).Count();
+                    }
+                    if (CurrentEmployee.ThursdayHours > 0)
+                    {
+                        numberofworkdays += DateSummary.Where(x => x.Value.DayOfWeek == DayOfWeek.Thursday).Count();
+                    }
+                    if (CurrentEmployee.FridayHours > 0)
+                    {
+                        numberofworkdays += DateSummary.Where(x => x.Value.DayOfWeek == DayOfWeek.Friday).Count();
+                    }
+
+                    int countoftotal = TotalHeader.Where(x => x.Value != 0).Count();
+
+                    cancelpto = numberofworkdays > countoftotal;
+                }
+
                 foreach (TimesheetRowModel trm in Rowdata)
                 {
                     //adding or modifying an existing submission
@@ -924,14 +995,13 @@ namespace SOCE.Library.UI.ViewModels
                         if (trentry.TimeEntry > 0)
                         {
                             sum += trentry.TimeEntry;
-
-                            if (trm.Project.ProjectName.ToUpper() == "VACATION")
+                            if (trm.Project.ProjectName.ToUpper() == "MATERNITY PATERNITY LEAVE")
+                            {
+                                cancelpto = true;
+                            }
+                            if (trm.Project.ProjectName.ToUpper() == "PAID TIME OFF (PTO)")
                             {
                                 pto += trentry.TimeEntry;
-                            }
-                            else if (trm.Project.ProjectName.ToUpper() == "SICK")
-                            {
-                                sick += trentry.TimeEntry;
                             }
                             else if (trm.Project.ProjectName.ToUpper() == "HOLIDAY")
                             {
@@ -957,6 +1027,8 @@ namespace SOCE.Library.UI.ViewModels
                     }
                 }
 
+                double ptoaccrued = cancelpto ? 0 : CurrentEmployee.PTORate * 0.5;
+
                 TimesheetSubmissionDbModel timesheetsubdbmodel = new TimesheetSubmissionDbModel()
                 {
                     EmployeeId = CurrentEmployee.Id,
@@ -964,7 +1036,7 @@ namespace SOCE.Library.UI.ViewModels
                     TotalHours = sum,
                     PTOHours = pto,
                     OTHours = ot,
-                    SickHours = sick,
+                    PTOAdded = ptoaccrued,
                     HolidayHours = holiday,
                     Approved = 0,
                     ExpensesCost = total //not approved yet
@@ -1148,6 +1220,7 @@ namespace SOCE.Library.UI.ViewModels
 
         private void UpdateDateSummary(DateTime currdate)
         {
+            allowdatechange = false;
             BlankEntry = null;
             DateTime firstdate;
             DateTime lastdate;
@@ -1207,7 +1280,8 @@ namespace SOCE.Library.UI.ViewModels
             int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays, 0));
             DueDateValue = difference;
             ExpectedProgress = 100 - Math.Min(Math.Round((Convert.ToDouble(DueDateValue) / Convert.ToDouble(diff)) * 100, 2), 100);
-
+            DateSelected = firstdate;
+            allowdatechange = true;
         }
 
         //private void RowDataChanged(object sender, NotifyCollectionChangedEventArgs e)

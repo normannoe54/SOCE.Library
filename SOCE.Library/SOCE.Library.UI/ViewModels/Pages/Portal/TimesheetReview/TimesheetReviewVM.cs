@@ -106,8 +106,25 @@ namespace SOCE.Library.UI.ViewModels
 
         public DateTime lastdate;
 
-        public TimesheetReviewVM(EmployeeModel loggedinEmployee)
+        private DateTime _dateSelected;
+        public DateTime DateSelected
         {
+            get { return _dateSelected; }
+            set
+            {
+                _dateSelected = value;
+                if (allowdatechange)
+                {
+                    SelectedTimesheet();
+                }
+                RaisePropertyChanged(nameof(DateSelected));
+            }
+        }
+
+        private bool allowdatechange = true;
+
+        public TimesheetReviewVM(EmployeeModel loggedinEmployee)
+        { 
             CurrentEmployee = loggedinEmployee;
             UpdateDates(DateTime.Now);
             
@@ -123,6 +140,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public void UpdateDates(DateTime currdate)
         {
+            allowdatechange = false;
             if (currdate.Day > 16)
             {
                 //second tier
@@ -138,31 +156,46 @@ namespace SOCE.Library.UI.ViewModels
 
             int diff = (lastdate - firstdate).Days;
             List<DateWrapper> dates = new List<DateWrapper>();
-            double basehours = 0;
+            //double basehours = 0;
             for (int i = 0; i <= diff; i++)
             {
                 DateTime dt = firstdate.AddDays(i);
                 dates.Add(new DateWrapper(dt.Date));
+            }
 
-                if (dt.DayOfWeek == DayOfWeek.Friday)
+            double basehours = 0;
+
+            if (ReviewVM != null)
+            {
+                TimesheetViewerVM vm = ReviewVM as TimesheetViewerVM;
+
+                if (vm != null)
                 {
-                    basehours += CurrentEmployee.FridayHours;
-                }
-                else if (dt.DayOfWeek == DayOfWeek.Thursday)
-                {
-                    basehours += CurrentEmployee.ThursdayHours;
-                }
-                else if (dt.DayOfWeek == DayOfWeek.Wednesday)
-                {
-                    basehours += CurrentEmployee.WednesdayHours;
-                }
-                else if (dt.DayOfWeek == DayOfWeek.Tuesday)
-                {
-                    basehours += CurrentEmployee.TuesdayHours;
-                }
-                else if (dt.DayOfWeek == DayOfWeek.Monday)
-                {
-                    basehours += CurrentEmployee.MondayHours;
+                    for (int i = 0; i <= diff; i++)
+                    {
+                        DateTime dt = firstdate.AddDays(i);
+
+                        if (dt.DayOfWeek == DayOfWeek.Friday)
+                        {
+                            basehours += vm.SelectedEmployee.FridayHours;
+                        }
+                        else if (dt.DayOfWeek == DayOfWeek.Thursday)
+                        {
+                            basehours += vm.SelectedEmployee.ThursdayHours;
+                        }
+                        else if (dt.DayOfWeek == DayOfWeek.Wednesday)
+                        {
+                            basehours += vm.SelectedEmployee.WednesdayHours;
+                        }
+                        else if (dt.DayOfWeek == DayOfWeek.Tuesday)
+                        {
+                            basehours += vm.SelectedEmployee.TuesdayHours;
+                        }
+                        else if (dt.DayOfWeek == DayOfWeek.Monday)
+                        {
+                            basehours += vm.SelectedEmployee.MondayHours;
+                        }
+                    }
                 }
             }
 
@@ -174,6 +207,21 @@ namespace SOCE.Library.UI.ViewModels
             //DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
             DateTime enddate = DateSummary.Last().Value;
             int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays, 0));
+            DateSelected = firstdate;
+            allowdatechange = true;
+        }
+
+        private async void SelectedTimesheet()
+        {
+            CoreAI CurrentPage = IoCCore.Application as CoreAI;
+            CurrentPage.MakeBlurry();
+            await Task.Run(() => Task.Delay(600));
+            await Application.Current.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                LoadCurrentTimesheet(DateSelected);
+            }));
+            await Task.Run(() => Task.Delay(600));
+            CurrentPage.MakeClear();
         }
 
         /// <summary>

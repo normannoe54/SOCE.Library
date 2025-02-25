@@ -139,6 +139,73 @@ namespace SOCE.Library.Db
         }
         #endregion
 
+        #region SearchFilters
+        public static List<SearchFilterDbModel> LoadSearchFilterByEmployeeId(int employeeId)
+        {
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Query<SearchFilterDbModel>("SELECT * FROM SearchFilters WHERE EmployeeId = @employeeId", new { employeeId });
+                return output.ToList();
+            }
+        }
+
+        public static int AddSearchFilter(SearchFilterDbModel market)
+        {
+            int output = 0;
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    int id = cnn.QuerySingle<int>("INSERT INTO SearchFilters (Header, FolderPath, NumberOrder, Active, SearchFileType, EmployeeId, SubLayer) " +
+                        "VALUES (@Header, @FolderPath, @NumberOrder, @Active, @SearchFileType, @EmployeeId, @SubLayer) returning id", market);
+                    output = id;
+                }
+                catch
+                {
+                }
+            }
+            return output;
+        }
+
+        public static void DeleteSearchFilter(int id)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                var output = cnn.Execute("DELETE FROM SearchFilters WHERE Id = @id", new { id });
+            }
+        }
+
+        //public static void ArchiveMarket(int id)
+        //{
+        //    //check if date and subproject already exist
+        //    using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+        //    {
+        //        var output = cnn.Execute("UPDATE Markets SET IsActive = 0 WHERE Id = @id"
+        //            , new { id });
+        //    }
+        //}
+
+        public static void UpdateSearchFilter(SearchFilterDbModel filter)
+        {
+            //check if date and subproject already exist
+            using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
+            {
+                try
+                {
+                    cnn.Execute("UPDATE SearchFilters SET Header = @Header, FolderPath = @FolderPath, NumberOrder = @NumberOrder, Active = @Active, SearchFileType = @SearchFileType, SubLayer = @SubLayer WHERE Id = @Id"
+                                        , new { filter.Header, filter.FolderPath, filter.NumberOrder, filter.Active, filter.SearchFileType, filter.SubLayer, filter.Id });
+                }
+                catch
+                {
+
+                }
+                
+            }
+        }
+
+        #endregion
+
         #region Clients
         public static List<ClientDbModel> LoadClients()
         {
@@ -384,8 +451,8 @@ namespace SOCE.Library.Db
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT INTO Employees (FirstName, LastName, AuthId, Title, Email, Password, PhoneNumber, Extension, PTORate, PTOCarryover, SickRate, HolidayHours, Rate, StartDate, IsActive, DefaultRoleId, MondayHours, TuesdayHours, WednesdayHours, ThursdayHours, FridayHours, PMSignature)" +
-                    "VALUES (@FirstName, @LastName, @AuthId, @Title, @Email, @Password, @PhoneNumber, @Extension, @PTORate, @PTOCarryover, @SickRate, @HolidayHours, @Rate, @StartDate, @IsActive, @DefaultRoleId, @MondayHours, @TuesdayHours, @WednesdayHours, @ThursdayHours, @FridayHours, @PMSignature)", employee);
+                cnn.Execute("INSERT INTO Employees (FirstName, LastName, AuthId, Title, Email, Password, PhoneNumber, Extension, PTORate, PTOCarryover, HolidayHours, Rate, StartDate, IsActive, DefaultRoleId, MondayHours, TuesdayHours, WednesdayHours, ThursdayHours, FridayHours, PMSignature)" +
+                    "VALUES (@FirstName, @LastName, @AuthId, @Title, @Email, @Password, @PhoneNumber, @Extension, @PTORate, @PTOCarryover, @HolidayHours, @Rate, @StartDate, @IsActive, @DefaultRoleId, @MondayHours, @TuesdayHours, @WednesdayHours, @ThursdayHours, @FridayHours, @PMSignature)", employee);
             }
         }
 
@@ -425,7 +492,7 @@ namespace SOCE.Library.Db
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
                 cnn.Execute("UPDATE Employees SET FirstName = @FirstName, LastName = @LastName, Title = @Title, AuthId = @AuthId, DefaultRoleId = @DefaultRoleId, Email = @Email, PhoneNumber = @PhoneNumber, Extension = @Extension, Rate = @Rate," +
-                    " PTORate = @PTORate, PTOCarryover = @PTOCarryover, HolidayHours = @HolidayHours, SickRate = @SickRate, StartDate = @StartDate, IsActive = @IsActive, PMSignature = @PMSignature," +
+                    " PTORate = @PTORate, PTOCarryover = @PTOCarryover, HolidayHours = @HolidayHours, StartDate = @StartDate, IsActive = @IsActive, PMSignature = @PMSignature," +
                     " MondayHours = @MondayHours, TuesdayHours = @TuesdayHours, WednesdayHours = @WednesdayHours, ThursdayHours = @ThursdayHours, FridayHours = @FridayHours WHERE Id = @Id",
                         new
                         {
@@ -441,7 +508,6 @@ namespace SOCE.Library.Db
                             employee.PTORate,
                             employee.PTOCarryover,
                             employee.HolidayHours,
-                            employee.SickRate,
                             employee.StartDate,
                             employee.IsActive,
                             employee.PMSignature,
@@ -989,8 +1055,8 @@ namespace SOCE.Library.Db
         {
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("INSERT INTO SubmittedTimesheets (EmployeeId, Date, TotalHours, PTOHours, OTHours, SickHours, HolidayHours, Approved, ExpensesCost)" +
-                    "VALUES (@EmployeeId, @Date, @TotalHours, @PTOHours, @OTHours, @SickHours, @HolidayHours, @Approved, @ExpensesCost)", timesheetsubmission);
+                cnn.Execute("INSERT INTO SubmittedTimesheets (EmployeeId, Date, TotalHours, PTOHours, OTHours, PTOAdded, HolidayHours, Approved, ExpensesCost)" +
+                    "VALUES (@EmployeeId, @Date, @TotalHours, @PTOHours, @OTHours, @PTOAdded, @HolidayHours, @Approved, @ExpensesCost)", timesheetsubmission);
             }
         }
 
@@ -1042,9 +1108,9 @@ namespace SOCE.Library.Db
             //check if date and subproject already exist
             using (IDbConnection cnn = new SQLiteConnection(LoadConnectionString()))
             {
-                cnn.Execute("UPDATE SubmittedTimesheets SET EmployeeId = @EmployeeId, Date = @Date, TotalHours = @TotalHours, PTOHours = @PTOHours, OTHours = @OTHours, SickHours = @SickHours, HolidayHours = @HolidayHours, Approved = @Approved, " +
+                cnn.Execute("UPDATE SubmittedTimesheets SET EmployeeId = @EmployeeId, Date = @Date, TotalHours = @TotalHours, PTOHours = @PTOHours, OTHours = @OTHours, PTOAdded = @PTOAdded, HolidayHours = @HolidayHours, Approved = @Approved, " +
                     "ExpensesCost = @ExpensesCost WHERE Id = @Id",
-                        new { ts.EmployeeId, ts.Date, ts.TotalHours, ts.PTOHours, ts.OTHours, ts.SickHours, ts.HolidayHours, ts.Approved, ts.ExpensesCost, ts.Id });
+                        new { ts.EmployeeId, ts.Date, ts.TotalHours, ts.PTOHours, ts.OTHours, ts.PTOAdded, ts.HolidayHours, ts.Approved, ts.ExpensesCost, ts.Id });
             }
         }
 

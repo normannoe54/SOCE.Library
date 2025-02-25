@@ -48,14 +48,14 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private string _errorMessage = "";
-        public string ErrorMessage
+        private string _message = "";
+        public string Message
         {
-            get { return _errorMessage; }
+            get { return _message; }
             set
             {
-                _errorMessage = value;
-                RaisePropertyChanged("ErrorMessage");
+                _message = value;
+                RaisePropertyChanged("Message");
             }
         }
 
@@ -67,9 +67,12 @@ namespace SOCE.Library.UI.ViewModels
         public ICommand MoveDownCommand { get; set; }
         public ICommand DeleteSearchFilterCommand { get; set; }
         public ICommand OpenPathCommand { get; set; }
-        
-        public SearchFiltersVM(EmployeeModel curremployee)
+
+        private NetworkSearchVM BaseVM;
+
+        public SearchFiltersVM(EmployeeModel curremployee, NetworkSearchVM basevm)
         {
+            BaseVM = basevm;
             CurrentEmployee = curremployee;
             //load current setting
             this.MoveUpCommand = new RelayCommand<SearchSettingsModel>(this.MoveUp);
@@ -81,49 +84,170 @@ namespace SOCE.Library.UI.ViewModels
             this.CloseCommand = new RelayCommand(this.CloseWindow);
 
             //for testing purposesonly
-            List<SearchSettingsModel> settings = new List<SearchSettingsModel>();
-            settings.Add(new SearchSettingsModel("Projects", $"P:\\", 1, true));
-            settings.Add(new SearchSettingsModel("Drawings", $"N:\\dwg", 1, true));
-            settings.Add(new SearchSettingsModel("Architecturals", $"N:\\ARCHITECTURALS", 1, true));
-            settings.Add(new SearchSettingsModel("Plots", $"N:\\Plot", 1, true));
-            settings.Add(new SearchSettingsModel("Archive", $"R:\\", 1, true));
-            Settings = new ObservableCollection<SearchSettingsModel>(settings);
+            LoadSearchFilters();
+            //List<SearchSettingsModel> settings = new List<SearchSettingsModel>();
+            //settings.Add(new SearchSettingsModel("Projects", $"P:\\", 1, true));
+            //settings.Add(new SearchSettingsModel("Drawings", $"N:\\dwg", 1, true));
+            //settings.Add(new SearchSettingsModel("Architecturals", $"N:\\ARCHITECTURALS", 1, true));
+            //settings.Add(new SearchSettingsModel("Plots", $"N:\\Plot", 1, true));
+            //settings.Add(new SearchSettingsModel("Archive", $"R:\\", 1, true));
+            //Settings = new ObservableCollection<SearchSettingsModel>(settings);
         }
 
         private void OpenPath(SearchSettingsModel mod)
         {
+            CommonOpenFileDialog dialog = new CommonOpenFileDialog();
+            //dialog.InitialDirectory = "C:\\Users";
+            dialog.IsFolderPicker = true;
 
+            // Process open file dialog box results
+            if (dialog.ShowDialog() == CommonFileDialogResult.Ok)
+            {
+                //save file
+                mod.FolderPath = dialog.FileName;
+            }
         }
 
         private void MoveUp(SearchSettingsModel mod)
         {
+            int id = Settings.IndexOf(mod);
+
+            if (id != 0 && id != -1)
+            {
+                Settings.Move(id, id - 1);
+                Reorder();
+            }
 
         }
 
         private void MoveDown(SearchSettingsModel mod)
         {
+            int id = Settings.IndexOf(mod);
 
+            if (id != -1 && id != Settings.Count - 1)
+            {
+                Settings.Move(id, id + 1);
+                Reorder();
+            }
+        }
+
+        private void LoadSearchFilters()
+        {
+            List<SearchFilterDbModel> filters = SQLAccess.LoadSearchFilterByEmployeeId(CurrentEmployee.Id);
+            List<SearchSettingsModel> ssms = new List<SearchSettingsModel>();
+
+            foreach (SearchFilterDbModel filter in filters)
+            {
+                SearchSettingsModel ssm = new SearchSettingsModel(filter);
+                ssms.Add(ssm);
+            }
+            List<SearchSettingsModel> ssmsordered = ssms.OrderBy(x => x.NumberOrder).ToList();
+            Settings = new ObservableCollection<SearchSettingsModel>(ssmsordered);
         }
 
         private void DeleteSearch(SearchSettingsModel mod)
         {
+            try
+            {
+                Settings.Remove(mod);
+            }
+            catch
+            {
 
+            }
         }
 
         private void SettingAdd()
         {
+            Settings.Add(new SearchSettingsModel());
+            Reorder();
+        }
 
+        private void Reorder()
+        {
+            for (int i = 0; i < Settings.Count; i++)
+            {
+                SearchSettingsModel mod = Settings[i];
+                mod.NumberOrder = i;
+            }
         }
 
         private void CloseWindow()
         {
+            BaseVM.LoadFilters();
             DialogHost.Close("RootDialog");
         }
 
         private void Save()
         {
+            //Reorder();
+            List<SearchSettingsModel> itemstoremove = new List<SearchSettingsModel>();
+
+            foreach (SearchSettingsModel ssm in Settings)
+            {
+                if (String.IsNullOrEmpty(ssm.Header) || String.IsNullOrEmpty(ssm.FolderPath))
+                {
+                    itemstoremove.Add(ssm);
+                }
+            }
+
+            foreach (SearchSettingsModel ssm in itemstoremove)
+            {
+                Settings.Remove(ssm);
+            }
+
+            Reorder();
+
+            foreach (SearchSettingsModel ssm in Settings)
+            {
+                int activeint = Convert.ToInt32(ssm.Active);
+                int searchfiletype = Convert.ToInt32(ssm.SearchFileType);
+
+                SearchFilterDbModel sfdb = new SearchFilterDbModel()
+                {
+                    EmployeeId = CurrentEmployee.Id,
+                    Header = ssm.Header,
+                    FolderPath = ssm.FolderPath,
+                    NumberOrder = ssm.NumberOrder,
+                    Active = activeint,
+                    SearchFileType = searchfiletype,
+                    SubLayer = ssm.SubLayer
+                };
+
+                if (ssm.Id != 0)
+                {
+                    try
+                    {
+                        sfdb.Id = ssm.Id;
+                        SQLAccess.UpdateSearchFilter(sfdb);
+                    }
+                    catch
+                    {
+
+                    }
+                }
+                else
+                {
+                    int id = SQLAccess.AddSearchFilter(sfdb);
+                    ssm.Id = id;
+                }
+
+
+            }
+
+            List<SearchFilterDbModel> allfilters = SQLAccess.LoadSearchFilterByEmployeeId(CurrentEmployee.Id);
+
+            foreach (SearchFilterDbModel sfcheck in allfilters)
+            {
+                if (!Settings.Any(x => x.Id == sfcheck.Id))
+                {
+                    SQLAccess.DeleteSearchFilter(sfcheck.Id);
+                }
+            }
+
+            Message = "Filters Saved";
             //save stuff
-            CloseWindow();
+            //CloseWindow();
         }
 
     }

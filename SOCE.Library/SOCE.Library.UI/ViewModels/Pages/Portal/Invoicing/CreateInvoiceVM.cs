@@ -810,7 +810,7 @@ namespace SOCE.Library.UI.ViewModels
                         {
                             InvoicingRowsDb rowfound = SQLAccess.LoadInvoiceRowsByInvoiceAndSubId(sub.Id, invsingle.Id);
 
-                            if (first == null || founditem == null || rowfound.PercentComplete > founditem.PercentComplete)
+                            if (first == null || founditem == null || rowfound.PercentComplete > founditem.PercentComplete || sub.IsHourly == 1)
                             {
                                 first = invsingle;
                                 founditem = rowfound;
@@ -1200,7 +1200,7 @@ namespace SOCE.Library.UI.ViewModels
                         SQLAccess.UpdatePercentComplete(nonadrow.SubId, nonadrow.PercentComplete);
                     }
 
-                    if (nonadrow.PercentComplete == 100)
+                    if (nonadrow.PercentComplete == 100 || (sub.IsHourly == 1 && nonadrow.ThisPeriodInvoiced > 0))
                     {
                         SQLAccess.UpdateInvoiced(nonadrow.SubId, 1, duedatevar, 100);
                     }
@@ -1240,7 +1240,7 @@ namespace SOCE.Library.UI.ViewModels
                         SQLAccess.UpdatePercentComplete(adrow.SubId, adrow.PercentComplete);
                     }
 
-                    if (adrow.PercentComplete == 100)
+                    if (adrow.PercentComplete == 100 || (sub.IsHourly == 1 && adrow.ThisPeriodInvoiced > 0))
                     {
                         SQLAccess.UpdateInvoiced(adrow.SubId, 1, duedatevar, 100);
                     }
@@ -1373,10 +1373,10 @@ namespace SOCE.Library.UI.ViewModels
                     {
                         exinst.SetCellAsAccounting(row, 3);
                         exinst.WriteCell(row, 3, nonadrow.ContractFee.ToString());
+                        double percent = nonadrow.PercentComplete / 100;
+                        exinst.SetCellAsPercentage(row, 4);
+                        exinst.WriteCell(row, 4, percent.ToString());
                     }
-                    double percent = nonadrow.PercentComplete / 100;
-                    exinst.SetCellAsPercentage(row, 4);
-                    exinst.WriteCell(row, 4, percent.ToString());
                     exinst.SetCellAsAccounting(row, 5);
                     exinst.WriteCell(row, 5, nonadrow.InvoicedtoDate.ToString());
                     exinst.SetCellAsAccounting(row, 6);

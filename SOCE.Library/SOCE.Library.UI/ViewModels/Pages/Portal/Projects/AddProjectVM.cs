@@ -138,7 +138,7 @@ namespace SOCE.Library.UI.ViewModels
                 int clientnum = ClientInp.ClientNumber;
 
                 //collect all and find next iteration
-                int newNumber = int.Parse(year.ToString() + clientnum.ToString() + "00");
+                int newNumber = int.Parse(year.ToString() + clientnum.ToString("00") + "00");
                 ProjectNumberInp = newNumber;
 
                 RaisePropertyChanged("ClientInp");

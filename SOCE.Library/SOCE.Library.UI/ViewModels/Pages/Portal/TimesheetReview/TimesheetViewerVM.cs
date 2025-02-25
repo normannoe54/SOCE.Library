@@ -63,7 +63,7 @@ namespace SOCE.Library.UI.ViewModels
 
         public ICommand PreviousCommand { get; set; }
         public ICommand BackToSummaryCommand { get; set; }
-        
+
         public ICommand NextCommand { get; set; }
 
         public ICommand CurrentCommand { get; set; }
@@ -115,18 +115,18 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
-        public ObservableCollection<DateWrapper> DateSummary
-        {
-            get { return _datesummary; }
-            set
-            {
-                _datesummary = value;
-                RaisePropertyChanged(nameof(DateSummary));
-            }
-        }
+        //private ObservableCollection<DateWrapper> _datesummary = new ObservableCollection<DateWrapper>();
+        //public ObservableCollection<DateWrapper> DateSummary
+        //{
+        //    get { return _datesummary; }
+        //    set
+        //    {
+        //        _datesummary = value;
+        //        RaisePropertyChanged(nameof(DateSummary));
+        //    }
+        //}
 
-        //private int DateTimesheet;
+        private int DateTimesheet;
 
         private double _baseHours = 0;
         public double BaseHours
@@ -153,16 +153,29 @@ namespace SOCE.Library.UI.ViewModels
         public TimesheetReviewVM basevm { get; set; }
         public TimesheetViewerVM(TimesheetReviewVM vmbase, TimesheetSubmissionModel tsm)
         {
+            vmbase.ReviewVM = this;
             basevm = vmbase;
             SubmittedTimesheet = tsm;
-            BaseHours = basevm.BaseHours;
+
             this.ApproveTimesheetCommand = new RelayCommand<bool>(ReportTimesheet);
             this.DenyTimesheetCommand = new RelayCommand<bool>(ReportTimesheet);
             this.BackToSummaryCommand = new RelayCommand(BackToSummary);
             this.ExportToExcel = new RelayCommand(ExportCurrentTimesheetToExcel);
             SelectedEmployee = tsm.Employee;
-            basevm.UpdateDates(basevm.firstdate);
+            UpdateDates(basevm.firstdate);
             LoadTimesheetData(tsm.Employee);
+        }
+
+        public void UpdateDates(DateTime currdate)
+        {
+            basevm.UpdateDates(currdate);
+            //DateSummary = new ObservableCollection<DateWrapper>(dates);
+            
+            //MonthYearString = $"{firstdate.ToString("MMMM")} {firstdate.Year}";
+            //DateString = $"[{firstdate.Day} - {lastdate.Day}]";
+            //DateTimesheet = (int)long.Parse(firstdate.Date.ToString("yyyyMMdd"));
+            //DateTime enddate = DateSummary.Last().Value;
+            //int difference = (int)Math.Ceiling(Math.Max((enddate - DateTime.Now).TotalDays, 0));
         }
 
         /// <summary>
@@ -195,7 +208,7 @@ namespace SOCE.Library.UI.ViewModels
             Rowdata.Clear();
             DateTime datestart = basevm.DateSummary.First().Value;
             DateTime dateend = basevm.DateSummary.Last().Value;
-
+            //BaseHours = em.HoursPerWeek;
             //update employee Id
             List<TimesheetRowDbModel> dbtimesheetdata = SQLAccess.LoadTimeSheet(datestart, dateend, em.Id);
 
@@ -277,7 +290,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 //make 0s
                 TotalHeader.Clear();
-                foreach (DateWrapper date in DateSummary)
+                foreach (DateWrapper date in basevm.DateSummary)
                 {
                     TotalHeader.Add(new DoubleWrapper(0));
                 }
@@ -471,7 +484,8 @@ namespace SOCE.Library.UI.ViewModels
                             TotalHours = SubmittedTimesheet.TotalHours,
                             PTOHours = SubmittedTimesheet.PTOHours,
                             OTHours = SubmittedTimesheet.OTHours,
-                            SickHours = SubmittedTimesheet.SickHours,
+                            PTOAdded = SubmittedTimesheet.PTOAdded,
+                            //SickHours = SubmittedTimesheet.SickHours,
                             HolidayHours = SubmittedTimesheet.HolidayHours,
                             Approved = Convert.ToInt32(approve),
                             ExpensesCost = SubmittedTimesheet.ExpensesCost
@@ -528,7 +542,7 @@ namespace SOCE.Library.UI.ViewModels
             }
             else
             {
-                SubmittedTimesheet =  new TimesheetSubmissionModel(tsdbm, SelectedEmployee);
+                SubmittedTimesheet = new TimesheetSubmissionModel(tsdbm, SelectedEmployee);
                 LoadTimesheetData(SelectedEmployee);
             }
 

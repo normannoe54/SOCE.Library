@@ -386,16 +386,20 @@ namespace SOCE.Library.UI
                 string input = iDb.TimesheetIds;
                 List<int> TagIds = input.Split(',').Select(int.Parse).ToList();
                 TimesheetIds = TagIds;
-
+            }
+            catch
+            {
+            }
+            try
+            {
                 string input2 = iDb.ExpenseReportIds;
                 List<int> TagIdsex = input2.Split(',').Select(int.Parse).ToList();
                 ExpenseReportIds = TagIdsex;
             }
             catch
             {
-
             }
-
+                
             onstartup = false;
 
         }

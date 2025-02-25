@@ -111,7 +111,8 @@ namespace SOCE.Library.UI.ViewModels
                                 TotalHours = tsm.TotalHours,
                                 PTOHours = tsm.PTOHours,
                                 OTHours = tsm.OTHours,
-                                SickHours = tsm.SickHours,
+                                PTOAdded = tsm.PTOAdded,
+                                //SickHours = tsm.SickHours,
                                 HolidayHours = tsm.HolidayHours,
                                 Approved = 1
                             };

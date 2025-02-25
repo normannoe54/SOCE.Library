@@ -104,7 +104,7 @@ namespace SOCE.Library.UI
 
         public double HolidayHours { get; set; }
 
-        public double SickHours { get; set; }
+        public double PTOAdded { get; set; }
 
         private double _totalHours { get; set; }
         public double TotalHours
@@ -178,7 +178,7 @@ namespace SOCE.Library.UI
             Date = DateTime.ParseExact(emdb.Date.ToString(), "yyyyMMdd", CultureInfo.InvariantCulture, DateTimeStyles.None);
             TotalHours = emdb.TotalHours;
             PTOHours = emdb.PTOHours;
-            SickHours = emdb.SickHours;
+            PTOAdded = emdb.PTOAdded;
             HolidayHours = emdb.HolidayHours;
             OTHours = emdb.OTHours;
             Approved = Convert.ToBoolean(emdb.Approved);
@@ -208,7 +208,7 @@ namespace SOCE.Library.UI
             TimesheetSubmissionModel tsm = new TimesheetSubmissionModel();
             tsm.TotalHours = 0;
             tsm.PTOHours = 0;
-            tsm.SickHours = 0;
+            tsm.PTOAdded = 0;
             tsm.Employee = em;
             tsm.HolidayHours = 0;
             tsm.Approved = false;

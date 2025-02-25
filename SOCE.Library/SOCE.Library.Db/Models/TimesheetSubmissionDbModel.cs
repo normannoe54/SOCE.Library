@@ -14,7 +14,7 @@ namespace SOCE.Library.Db
         public double TotalHours { get; set; }
         public double PTOHours { get; set; }
         public double OTHours { get; set; }
-        public double SickHours { get; set; }
+        public double PTOAdded { get; set; }
         public double HolidayHours { get; set; }
         public int Approved { get; set; }
 

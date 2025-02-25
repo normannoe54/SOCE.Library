@@ -94,18 +94,17 @@
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="80"/>
-                        <ColumnDefinition Width="80"/>
                         <ColumnDefinition Width="*"/>
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0" FontSize="14" FontWeight="SemiBold" Text="Review" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="1" FontSize="14" FontWeight="SemiBold" Text="Date" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total"/>
-                    <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Vacation"/>
+                    <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="PTO"/>
                     <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT"/>
-                    <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick"/>
-                    <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Holiday"/>
-                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Expenses"/>
-                    <TextBlock Grid.Column="8" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status" Margin="0 0 20 0"/>
+                    <!--<TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick"/>-->
+                    <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Holiday"/>
+                    <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Expenses"/>
+                    <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status" Margin="0 0 20 0"/>
                 </Grid>
 
                 <ItemsControl ItemsSource="{Binding SelectedEmployee.TimesheetSubmissions}" Grid.Row="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" >
@@ -138,7 +137,6 @@
                                         <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="80"/>
-                                        <ColumnDefinition Width="80"/>
                                         <ColumnDefinition Width="*"/>
                                     </Grid.ColumnDefinitions>
                                     <Button Grid.Column="0" Style="{StaticResource MaterialDesignFlatButton}" IsEnabled="{Binding Path=DataContext.CanReviewTimesheet, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type Expander}}}" 
@@ -152,12 +150,12 @@
                                     <TextBlock Grid.Column="2"  FontSize="14" FontWeight="Regular" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}"/>
                                     <TextBlock Grid.Column="3" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}"/>
                                     <TextBlock Grid.Column="4" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}"/>
-                                    <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}"/>
-                                    <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HolidayHours, StringFormat = ' {0} hr.'}"/>
-                                    <TextBlock Grid.Column="7" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" 
+                                    <!--<TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}"/>-->
+                                    <TextBlock Grid.Column="5" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding HolidayHours, StringFormat = ' {0} hr.'}"/>
+                                    <TextBlock Grid.Column="6" FontWeight="Regular" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Center" 
                                                Text="{Binding ExpensesCost, StringFormat = '{}{0:c}'}"  />
 
-                                    <Border Grid.Column="8" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="120" Margin="0 0 20 0">
+                                    <Border Grid.Column="7" VerticalAlignment="Center" HorizontalAlignment="Center" CornerRadius="3" BorderThickness="2" Background="Transparent" Width="120" Margin="0 0 20 0">
                                         <Border.Style>
                                             <Style TargetType="{x:Type Border}">
                                                 <Style.Triggers>
@@ -266,7 +264,7 @@
         <Grid Grid.Row="4" Margin="0 20 0 0">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="*"/>
+                <!--<ColumnDefinition Width="*"/>-->
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
             <materialDesign:Card Grid.Column="0" Margin="10" Padding="10" >
@@ -277,14 +275,14 @@
                     </Grid.RowDefinitions>
 
                     <VirtualizingStackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Kind="AirplaneTakeoff" Width="40" Height="40"/>
-                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" FontSize="36" FontWeight="SemiBold" Text="Vacation"/>
+                        <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Kind="Clock" Width="40" Height="40"/>
+                        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" FontSize="36" FontWeight="SemiBold" Text="PTO"/>
                     </VirtualizingStackPanel>
                     <Grid Grid.Row="1" Margin="0 20 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="120"/>
+                            <ColumnDefinition Width="150"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
@@ -309,7 +307,7 @@
                 </Grid>
             </materialDesign:Card>
 
-            <materialDesign:Card Grid.Column="1" Margin="10" Padding="10" >
+            <!--<materialDesign:Card Grid.Column="1" Margin="10" Padding="10" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -342,9 +340,9 @@
                         <TextBox Grid.Column="2" Grid.Row="3" IsReadOnly="True" HorizontalAlignment="Stretch" TextAlignment="Right" VerticalAlignment="Bottom" FontWeight="DemiBold" FontSize="14" Margin="5 5 0 0" Text="{Binding SelectedEmployee.SickHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText=" hr."/>
                     </Grid>
                 </Grid>
-            </materialDesign:Card>
+            </materialDesign:Card>-->
 
-            <materialDesign:Card Grid.Column="2" Margin="10" Padding="10" >
+            <materialDesign:Card Grid.Column="1" Margin="10" Padding="10" >
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"/>
@@ -352,14 +350,14 @@
                     </Grid.RowDefinitions>
 
                     <VirtualizingStackPanel Grid.Row="0" Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Kind="ChristmasLights" Width="40" Height="40"/>
+                        <materialDesign:PackIcon VerticalAlignment="Center" HorizontalAlignment="Center" Kind="Celebration" Width="40" Height="40"/>
                         <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Margin="5" FontSize="36" FontWeight="SemiBold" Text="Holiday"/>
                     </VirtualizingStackPanel>
                     <Grid Grid.Row="1" Margin="0 20 0 0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto"/>
                             <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="150"/>
                         </Grid.ColumnDefinitions>
                         <Grid.RowDefinitions>
                             <RowDefinition Height="30"/>
@@ -367,7 +365,7 @@
                             <RowDefinition Height="*"/>
                         </Grid.RowDefinitions>
 
-                        <TextBlock Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="Yearly Balance:"/>
+                        <TextBlock Grid.Column="0" Grid.Row="0" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="Yearly Total:"/>
                         <TextBlock Grid.Column="0" Grid.Row="1" HorizontalAlignment="Left" VerticalAlignment="Center" FontWeight="Regular" FontSize="14" Text="Total Used:"/>
                         <TextBlock Grid.Column="0" Grid.Row="2" HorizontalAlignment="Left" VerticalAlignment="Bottom" FontWeight="DemiBold" FontSize="14" Text="Current Balance:"/>
 

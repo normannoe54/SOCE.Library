@@ -217,7 +217,18 @@ namespace SOCE.Library.UI.ViewModels
             }
             ButtonInAction = false;
 
-            Rowdata.Add(new ExpenseReportModel(ProjectList.ToList(), Payperiodbeginning, 0.67, this));
+            DateTime date = DateTime.Now;
+
+            if (date > Payperiodend)
+            {
+                date = Payperiodend;
+            }
+            else if (date < Payperiodbeginning)
+            {
+                date = Payperiodbeginning;
+            }
+
+            Rowdata.Add(new ExpenseReportModel(ProjectList.ToList(), date, 0.7, this));
 
             ButtonInAction = true;
         }

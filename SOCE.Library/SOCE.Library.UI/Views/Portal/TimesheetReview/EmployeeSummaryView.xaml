@@ -50,7 +50,7 @@
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="100"/>
-                <ColumnDefinition Width="100"/>
+                <!--<ColumnDefinition Width="100"/>-->
                 <ColumnDefinition Width="100"/>
                 <ColumnDefinition Width="200"/>
             </Grid.ColumnDefinitions>
@@ -59,9 +59,9 @@
             <TextBlock Grid.Column="2" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Status"/>
             <TextBlock Grid.Column="3" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Expenses"/>
             <TextBlock Grid.Column="4" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="PTO Hours"/>
-            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick Hours"/>
-            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT Hours"/>
-            <TextBlock Grid.Column="7" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total Hours" />
+            <!--<TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Sick Hours"/>-->
+            <TextBlock Grid.Column="5" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="OT Hours"/>
+            <TextBlock Grid.Column="6" FontSize="14" FontWeight="SemiBold" HorizontalAlignment="Center" VerticalAlignment="Center"  Text="Total Hours" />
         </Grid>
 
         <ScrollViewer Grid.Row="2" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="Transparent" Margin="0 10 0 0">
@@ -75,7 +75,7 @@
                                 <ColumnDefinition Width="150"/>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
-                                <ColumnDefinition Width="100"/>
+                                <!--<ColumnDefinition Width="100"/>-->
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="160"/>
@@ -129,16 +129,16 @@
                                      Text="{Binding ExpensesCost, StringFormat='N2', Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                      materialDesign:TextFieldAssist.PrefixText="$" Margin="10 0 10 0"/>
                             <TextBox Grid.Column="4" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding PTOHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-                            <TextBox Grid.Column="5" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-                            <TextBox Grid.Column="6" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
-                            <TextBox Grid.Column="7" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
+                            <!--<TextBox Grid.Column="5" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding SickHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>-->
+                            <TextBox Grid.Column="5" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding OTHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
+                            <TextBox Grid.Column="6" IsReadOnly="True" HorizontalAlignment="Stretch" FontSize="16" VerticalAlignment="Center" Text="{Binding TotalHours, StringFormat = ' {0} hr.'}" Margin="10 0 10 0"/>
 
-                            <Button Margin="10 0 0 0" Grid.Column="8" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.OpenTimesheetSubmission, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
+                            <Button Margin="10 0 0 0" Grid.Column="7" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding Path=DataContext.OpenTimesheetSubmission, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                     CommandParameter="{Binding}" HorizontalAlignment="Center" VerticalAlignment="Center"  BorderBrush="Black" BorderThickness="1">
                                 <TextBlock Text="Open Time Sheet" Foreground="black" VerticalAlignment="Center"/>
                             </Button
                                     >
-                            <Button Grid.Column="9" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Padding="5" 
+                            <Button Grid.Column="8" Style="{StaticResource MaterialDesignFlatButton}" HorizontalAlignment="Left" VerticalAlignment="Stretch" Padding="5" 
                                     Visibility="{Binding ExpensesPresent,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}"
                                     Margin="10 0 0 0" ToolTip="Expense Report" Command="{Binding Path=DataContext.OpenExpenseReport, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}"
                                     CommandParameter="{Binding}">

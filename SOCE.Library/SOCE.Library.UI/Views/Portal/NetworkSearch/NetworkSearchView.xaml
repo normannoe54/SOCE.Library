@@ -66,16 +66,16 @@
                 </StackPanel>
             </Button>
 
-            <!--<Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenSearchFiltersCommand}" BorderBrush="Black"
+            <Button Grid.Column="2" Style="{StaticResource MaterialDesignFlatButton}" Foreground="Black" Command="{Binding OpenSearchFiltersCommand}" BorderBrush="Black"
                          VerticalAlignment="Bottom"  BorderThickness="1" HorizontalContentAlignment="right" Width="165" Margin="0 0 10 0" HorizontalAlignment="Right">
                 <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                     <TextBlock Text="Search Filters" VerticalAlignment="Center" Margin="0 0 20 0"/>
                     <materialDesign:PackIcon Kind="Magnify" VerticalAlignment="Center" Width="20" Height="20"/>
                 </StackPanel>
-            </Button>-->
+            </Button>
         </Grid>
-        
-        
+
+
         <!--<Grid Grid.Row="3" Margin="0 20 0 0" HorizontalAlignment="Stretch">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
@@ -91,51 +91,99 @@
             <TextBlock Grid.Column="4" Text="Archive Folder" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
 
         </Grid>-->
-        <Grid Grid.Row="3" Margin="0 20 0 0" HorizontalAlignment="Stretch">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
+        <ItemsControl Grid.Row="3" Margin="0 20 0 0" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" ItemsSource="{Binding SearchFilters}">
+            <!--<ItemsControl.Template>
+                <ControlTemplate>
+                    <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" Focusable="False">
+                        <ItemsPresenter />
+                    </ScrollViewer>
+                </ControlTemplate>
+            </ItemsControl.Template>-->
+
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <UniformGrid Rows="1"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+
+            <!--<ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>-->
+            <!--<ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>-->
+
+            <ItemsControl.ItemTemplate>
+                <DataTemplate>
+                    <!--<Grid Grid.Row="3" Margin="0 20 0 0" HorizontalAlignment="Stretch">-->
+                    <Grid HorizontalAlignment="Stretch">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="3"/>
+                            <!--<ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="3"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="3"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="3"/>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="3"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock Grid.Row="0" Text="Project Folder" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center"/>
-                <ItemsControl Grid.Row="1" Margin="0 20 0 0" HorizontalAlignment="Stretch" ItemsSource="{Binding ProjectFolders}"  BorderBrush="Black" BorderThickness="0 0 0 1">
-                <ItemsControl.Template>
-                    <ControlTemplate>
-                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}" >
-                            <ItemsPresenter/>
-                        </ScrollViewer>
-                    </ControlTemplate>
-                </ItemsControl.Template>
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate DataType="{x:Type sys:String}">
-                        <Button HorizontalAlignment ="Stretch" HorizontalContentAlignment="Left" BorderThickness="0 0 0 2" BorderBrush="Black" Padding="5" Margin="5"
-                                Style="{StaticResource MaterialDesignFlatButton}" FontSize="14" Foreground="Black" FontWeight="Regular" Content="{Binding PartialFolderPath}" 
-                                Command="{Binding Path=DataContext.OpenProjectCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type ItemsControl}}}" CommandParameter="{Binding}"/>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
-            </Grid>
-            <GridSplitter Grid.Column="1" Width="3"
-                   Background="{StaticResource SOCELightGray}" 
-                  VerticalAlignment="Stretch" 
-                  HorizontalAlignment="Center" />
-            <Grid Grid.Column="2">
+                <ColumnDefinition Width="*"/>-->
+                        </Grid.ColumnDefinitions>
+                        <Grid Grid.Column="0">
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="Auto"/>
+                                <RowDefinition Height="*"/>
+                            </Grid.RowDefinitions>
+                            <StackPanel Grid.Row="0" Orientation="Horizontal" HorizontalAlignment="Center">
+                                <!--StringFormat='${0:#,0.##}'}"-->
+                                <TextBlock Text="{Binding SubLayer, StringFormat='{}({0})'}" FontSize="10" FontWeight="Bold" VerticalAlignment="Bottom" Margin="0 0 0 10"
+                                           Visibility="{Binding SearchType, Converter={StaticResource BooleanToVisibilityConverter}}" Panel.ZIndex="3"/>
+                                <materialDesign:PackIcon Kind="Folder" Width="18" Height="18" Background="Transparent" Foreground="{StaticResource SOCELightRed}" VerticalAlignment="Bottom"
+                                                         Visibility="{Binding SearchType, Converter={StaticResource BooleanToVisibilityConverter}}" ToolTip="Folder" Margin="0 0 10 0"/>
+                                
+                                <materialDesign:PackIcon Kind="File" Width="18" Height="18" Background="Transparent" Foreground="{StaticResource SOCEBlueCompliment}" VerticalAlignment="Bottom"
+                                                         Visibility="{Binding SearchType, Converter={StaticResource InverseBoolToVisConverter}}" ToolTip="File" Margin="0 0 10 0"/>
+
+                                <TextBlock Text="{Binding Header}" FontSize="16" FontWeight="Bold" HorizontalAlignment="Center" VerticalAlignment="Bottom"/>
+
+                                <!--<materialDesign:PackIcon Kind="InformationCircle" Width="18" Height="18" Background="Transparent" Foreground="Black" ToolTip="{Binding BaseFolderPath}"
+                                                         VerticalAlignment="Bottom" Margin="10 0 0 0"/>-->
+                                
+                            </StackPanel>
+                            <TextBox Grid.Row="1" Text="{Binding BaseFolderPath}" FontSize="14" FontWeight="DemiBold" FontStyle="Italic" HorizontalAlignment="Center" Margin="10 8 10 0" IsReadOnly="True"
+                                     materialDesign:TextFieldAssist.DecorationVisibility="Hidden" BorderThickness="0"/>
+                            <ItemsControl Grid.Row="2" Margin="0 20 0 0" HorizontalAlignment="Stretch" ItemsSource="{Binding Folders}"  BorderBrush="Black" BorderThickness="0 0 0 1">
+                                <ItemsControl.Template>
+                                    <ControlTemplate>
+                                        <ScrollViewer CanContentScroll="True" Padding="{TemplateBinding Padding}">
+                                            <ItemsPresenter/>
+                                        </ScrollViewer>
+                                    </ControlTemplate>
+                                </ItemsControl.Template>
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <VirtualizingStackPanel IsVirtualizing="True" VirtualizationMode="Recycling" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate DataType="{x:Type sys:String}">
+                                        <Button HorizontalAlignment ="Stretch" HorizontalContentAlignment="Left" BorderThickness="0 0 0 2" BorderBrush="Black" Padding="5" Margin="5"
+                                Style="{StaticResource MaterialDesignFlatButton}" FontSize="14" Foreground="Black" FontWeight="Regular" Content="{Binding PartialFolderPath}" ToolTip="{Binding FullFolderPath}"
+                                Command="{Binding Path=DataContext.OpenProjectCommand, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}}" CommandParameter="{Binding}"/>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Grid>
+                        <GridSplitter Grid.Column="1" Width="3" Background="{StaticResource SOCELightGray}" VerticalAlignment="Stretch" HorizontalAlignment="Center" ResizeBehavior="PreviousAndNext" ResizeDirection="Columns"/>
+                    </Grid>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+        <!--<Grid Grid.Column="2">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -162,12 +210,12 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </Grid>
-            <GridSplitter Grid.Column="3" Width="3"
+            </Grid>-->
+        <!--<GridSplitter Grid.Column="3" Width="3"
                    Background="{StaticResource SOCELightGray}" 
                   VerticalAlignment="Stretch" 
-                  HorizontalAlignment="Center" />
-            <Grid Grid.Column="4">
+                  HorizontalAlignment="Center" />-->
+        <!--<Grid Grid.Column="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -194,14 +242,14 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </Grid>
+            </Grid>-->
 
-            <GridSplitter Grid.Column="5" Width="3"
+        <!--<GridSplitter Grid.Column="5" Width="3"
                    Background="{StaticResource SOCELightGray}" 
                   VerticalAlignment="Stretch" 
-                  HorizontalAlignment="Center" />
-            
-            <Grid Grid.Column="6">
+                  HorizontalAlignment="Center" />-->
+
+        <!--<Grid Grid.Column="6">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -233,9 +281,9 @@
             <GridSplitter Grid.Column="7" Width="3"
                    Background="{StaticResource SOCELightGray}" 
                   VerticalAlignment="Stretch" 
-                  HorizontalAlignment="Center" />
-            
-            <Grid Grid.Column="8">
+                  HorizontalAlignment="Center" />-->
+
+        <!--<Grid Grid.Column="8">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="*"/>
@@ -262,7 +310,9 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
-            </Grid>
-        </Grid>
+            </Grid>-->
+
+        <!--</Grid>-->
+        <!--</Grid>-->
     </Grid>
 </UserControl>

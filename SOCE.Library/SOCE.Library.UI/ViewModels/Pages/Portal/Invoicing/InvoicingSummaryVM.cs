@@ -896,7 +896,7 @@ namespace SOCE.Library.UI.ViewModels
             {
                 InvoicingModel invlatest = Invoices.LastOrDefault();
                 YesNoVM addsubvm = new YesNoVM(invlatest, this);
-                addsubvm.Message = $"Project is fully invoiced {Environment.NewLine} Add overhead time to";
+                addsubvm.Message = $"Project is fully invoiced {Environment.NewLine} Add unbillable time to";
                 addsubvm.SubMessage = $"Invoice Number {Environment.NewLine} {invlatest.InvoiceId}";
 
                 LeftViewToShow = new YesNoView();

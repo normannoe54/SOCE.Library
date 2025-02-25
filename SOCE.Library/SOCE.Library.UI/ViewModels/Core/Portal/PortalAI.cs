@@ -118,7 +118,7 @@ namespace SOCE.Library.UI.ViewModels
         private InvoicingVM invoicingVM;
         //private ProjectDataVM projectDataVM;
         private ProjectVM projectVM;
-        //private ProposalsVM proposalsVM;
+        private ProposalsVM proposalsVM;
         private PortalPage currentPage;
 
         public ICommand GoToNewViewCommand { get; set; }
@@ -152,7 +152,7 @@ namespace SOCE.Library.UI.ViewModels
 
                 projectScheduleVM = new ProjectScheduleVM(employee);
                 projectVM = new ProjectVM(employee);
-                //proposalsVM = new ProposalsVM(employee);
+                proposalsVM = new ProposalsVM(employee);
                 if (employee.Status == AuthEnum.Admin || employee.Status == AuthEnum.Principal)
                 {
                     invoicingVM = new InvoicingVM(employee);
@@ -218,9 +218,9 @@ namespace SOCE.Library.UI.ViewModels
                     case PortalPage.NetworkSearch:
                         CurrentPage = networkSearchVM;
                         break;
-                    //case PortalPage.Proposals:
-                    //    CurrentPage = proposalsVM;
-                    //    break;
+                    case PortalPage.Proposals:
+                        CurrentPage = proposalsVM;
+                        break;
                     case PortalPage.Invoicing:
                         CurrentPage = invoicingVM;
                         break;

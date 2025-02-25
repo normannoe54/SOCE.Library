@@ -105,11 +105,15 @@ namespace SOCE.Library.UI.ViewModels
             {
                 //are you sure you want to blah?
                 ErrorMessage = "Specify project folder before exporting.";
+                ButtonInAction = true;
+                return;
             }
             else if (SubProjects.Count == 0)
             {
                 //are you sure you want to blah?
                 ErrorMessage = "Select something to log or cancel.";
+                ButtonInAction = true;
+                return;
             }
             //else if (checkfornonbillablepublish)
             //{
@@ -133,6 +137,29 @@ namespace SOCE.Library.UI.ViewModels
                     }
                     else
                     {
+                        //check if file exists here, and if its the correct base file.
+                        foreach (string file in files)
+                        {
+                            try
+                            {
+                                Excel.Excel exinst = new Excel.Excel(file);
+                                bool item = exinst.SheetExist("Default");
+
+                                if (!item)
+                                {
+                                    ErrorMessage = "Error has occured, add service log was started with incorrect base file";
+                                    ButtonInAction = true;
+                                    return;
+                                }
+                            }
+                            catch
+                            {
+                                ErrorMessage = "Error has occured, add service log is incorrectly formatted";
+                                ButtonInAction = true;
+                                return;
+                            }
+                        }
+
                         string archivepath = adservicefolderpath + "\\Archive";
 
                         if (!Directory.Exists(archivepath))

@@ -235,6 +235,7 @@
     <Compile Include="Models\Invoicing\InvoicingRows.cs" />
     <Compile Include="Models\Invoicing\ProjectInvoicingModel.cs" />
     <Compile Include="Models\Invoicing\SettingsEnum.cs" />
+    <Compile Include="Models\NetworkSearch\SearchFilterModel.cs" />
     <Compile Include="Models\NetworkSearch\SearchSettingsModel.cs" />
     <Compile Include="Models\NetworkSearch\FolderModel.cs" />
     <Compile Include="Models\ProjectData\DataTypeEnum.cs" />

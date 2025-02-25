@@ -122,18 +122,18 @@
                               IsChecked="{Binding IsForecastHoursChecked, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" BorderThickness="1" BorderBrush="Black" FontSize="16" FontWeight="SemiBold" 
                               Content="{Binding ForecastChipName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsEnabled="{Binding BaseProject.IsActive}" 
                               IsHitTestVisible="{Binding ButtonInAction, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}">
-                    <CheckBox.Style>
-                        <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignFilterChipCheckBox}">
-                            <Style.Triggers>
-                                <Trigger Property="IsChecked" Value="True">
-                                    <Setter Property="Foreground" Value="{StaticResource SOCEBlueCompliment}"/>
-                                </Trigger>
-                                <Trigger Property="IsChecked"  Value="False">
-                                    <Setter Property="Foreground" Value="{StaticResource SOCEGray}"/>
-                                </Trigger>
-                            </Style.Triggers>
-                        </Style>
-                    </CheckBox.Style>
+                        <CheckBox.Style>
+                            <Style TargetType="{x:Type CheckBox}" BasedOn="{StaticResource MaterialDesignFilterChipCheckBox}">
+                                <Style.Triggers>
+                                    <Trigger Property="IsChecked" Value="True">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEBlueCompliment}"/>
+                                    </Trigger>
+                                    <Trigger Property="IsChecked"  Value="False">
+                                        <Setter Property="Foreground" Value="{StaticResource SOCEGray}"/>
+                                    </Trigger>
+                                </Style.Triggers>
+                            </Style>
+                        </CheckBox.Style>
                     </CheckBox>
 
                     <!--materialDesign:HintAssist.Hint="   Select Active Phase"-->
@@ -333,21 +333,32 @@
                                     <TextBox Grid.Column="4" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" 
                                              Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.PrefixText="$"
                                              IsHitTestVisible="{Binding IsInvoicedEditable, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
-                                    <StackPanel Grid.Column="4" HorizontalAlignment="Stretch" VerticalAlignment="Center" Orientation="Horizontal"
+                                    Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
+                                    <!--<StackPanel Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal"
                                                 Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
                                         <TextBlock  FontWeight="Bold" FontSize="8" VerticalAlignment="Top" Text="H" />
-                                        <TextBlock  Margin="2 0 0 0" FontWeight="Regular" FontSize="12" FontStyle="Italic" VerticalAlignment="Center" 
+                                        <TextBox Margin="2 0 0 0" IsReadOnly="{Binding EditSubFieldState}" FontWeight="Regular" FontSize="12"
+                                                 HorizontalAlignment="Center" VerticalAlignment="Center"
+                                                 Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}"
+                                                 materialDesign:TextFieldAssist.PrefixText="$"/>
+                                        --><!--<TextBox  Margin="2 0 0 0" FontWeight="Regular" FontSize="12" FontStyle="Italic" VerticalAlignment="Center" 
+                                             Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='(${0:#,0.##})'}"/>--><!--
+                                    </StackPanel>-->
+                                    <StackPanel Grid.Column="4" HorizontalAlignment="Center" VerticalAlignment="Center" Orientation="Horizontal" 
+                                                Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                        <TextBlock  FontWeight="Bold" FontSize="8" VerticalAlignment="Top" Text="H" />
+                                        <TextBlock  Margin="3 0 0 0" FontWeight="Regular" FontSize="12" FontStyle="Italic" VerticalAlignment="Center" 
                                              Text="{Binding Fee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='(${0:#,0.##})'}"/>
                                     </StackPanel>
-                                    
+
                                     <TextBlock Grid.Column="5" Width="80" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding RegulatedBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='${0:#,0.##}'}"
                                                Visibility="{Binding Path= DataContext.BaseProject.ForecastHours, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Grid.Column="6" Width="70" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentofInvoicedFee, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"
                                                Visibility="{Binding Path= DataContext.BaseProject.ForecastHours, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
                                     <TextBlock Grid.Column="7" Width="70" FontWeight="Regular" FontSize="12" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentBudget, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##}%'}"
                                                Visibility="{Binding Path= DataContext.BaseProject.ForecastHours, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-                                    <TextBox Grid.Column="8" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%"/>
+                                    <TextBox Grid.Column="8" IsReadOnly="True" FontWeight="Regular" FontSize="12" HorizontalAlignment="Center" VerticalAlignment="Center" Text="{Binding PercentComplete, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat='{}{0:#,0.##}'}" materialDesign:TextFieldAssist.SuffixText="%"
+                                             Visibility="{Binding IsHourly, Mode=TwoWay,UpdateSourceTrigger=PropertyChanged, Converter={StaticResource InverseBoolToVisConverter}}"/>
 
                                     <TextBlock Grid.Column="9" Width="60" FontWeight="SemiBold" FontSize="12" HorizontalAlignment="Stretch" TextAlignment="Center" VerticalAlignment="Center" Text="{Binding TotalHours, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, StringFormat=' {0:#,0.##} hr.'}"
                                                Visibility="{Binding Path= DataContext.BaseProject.ForecastHours, RelativeSource= {RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Converter={StaticResource BooleanToVisibilityConverter}, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
