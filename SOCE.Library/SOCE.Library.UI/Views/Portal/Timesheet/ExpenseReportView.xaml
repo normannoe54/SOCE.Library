@@ -43,7 +43,11 @@
                 </EventTrigger>
             </TextBlock.Triggers>
         </TextBlock>
-
+        
+        <Button Grid.Row="0" Style="{StaticResource MaterialDesignFloatingActionMiniAccentButton}" HorizontalAlignment="Right"  Margin="0 0 5 0" 
+                Width="40" Height="40" Background="Transparent" BorderBrush="Transparent" ToolTip="Close" Command="{Binding CancelCommand}">
+            <materialDesign:PackIcon Kind="Close" Padding="0" Width="25" Height="25" Foreground="{StaticResource SOCERed}"/>
+        </Button>
 
         <Grid Grid.Row="1" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Margin="0 15 0 0">
             <Grid.ColumnDefinitions>
@@ -341,8 +345,8 @@
                     <s:Int32>0</s:Int32>
                 </Button.CommandParameter>
                 <StackPanel Orientation="Horizontal">
-                    <materialDesign:PackIcon Kind="Cancel" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
-                    <TextBlock Text="Cancel"/>
+                    <materialDesign:PackIcon Kind="Close" VerticalAlignment="Center" Margin="0 1 8 0" Width="11" Height="11"/>
+                    <TextBlock Text="Close"/>
                 </StackPanel>
             </Button>
         </Grid>

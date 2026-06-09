@@ -592,7 +592,7 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 5,
+                PercentBudget = 0,
                 Fee = 0,
                 isAddProj = true,
                 IsBillable = true
@@ -609,7 +609,7 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 10,
+                PercentBudget = 0,
                 Fee = 0,
                 isAddProj = true,
                 IsBillable = true
@@ -626,7 +626,7 @@ namespace SOCE.Library.UI.ViewModels
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 10,
+                PercentBudget = 0,
                 Fee = 0,
                 isAddProj = true,
                 IsBillable = true
@@ -672,12 +672,12 @@ namespace SOCE.Library.UI.ViewModels
             InvestigationView = new BudgetEstimateView();
             SubProjectModel investigationproj = new SubProjectModel
             {
-                PointNumber = "INV",
-                Description = "Investigation",
+                PointNumber = "ASM",
+                Description = "Assessment",
                 IsActive = true,
                 IsInvoiced = false,
                 PercentComplete = 0,
-                PercentBudget = 5,
+                PercentBudget = 0,
                 Fee = 0,
                 isAddProj = true,
                 IsBillable = true

@@ -89,7 +89,7 @@ namespace SOCE.Library.UI.ViewModels
             }
         }
 
-        private double _rate = 0.67;
+        private double _rate = 0.75;
         public double Rate
         {
             get
